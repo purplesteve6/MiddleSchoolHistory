@@ -51,7 +51,13 @@ a{ color: inherit; text-decoration: none; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: linear-gradient(180deg, var(--brown-2), var(--brown-1) 50%, var(--brown-3));
+  background: linear-gradient(
+    180deg,
+    var(--brown-2) 0%,
+    var(--brown-1) 55%,
+    #3f2a19 85%,
+    #2f1e12 100%
+  );
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
