@@ -1,0 +1,16 @@
+[
+  {
+    "grade": 6,
+    "title": "Greek Mythology",
+    "url": "/6/GreekMythology/",
+    "description": "Gods, heroes, monsters — and how myths shaped Greek culture.",
+    "image": "/assets/images/featured/greek-mythology.jpg"
+  },
+  {
+    "grade": 6,
+    "title": "Roman Emperors",
+    "url": "/6/RomanEmperors/",
+    "description": "Power, propaganda, and the rulers who shaped Rome’s empire.",
+    "image": "/assets/images/featured/roman-emperors.jpg"
+  }
+]

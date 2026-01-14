@@ -57,7 +57,17 @@
             <span class="nav-text">Grade 8</span>
           </a>
         </li>
+
+<!-- TEACHER RESOURCES (no dropdown) -->
+<li class="nav-item" data-menu="teacher">
+  <a class="nav-link" href="/teacher-resources/">
+    <span class="nav-icon" aria-hidden="true">📚</span>
+    <span class="nav-text">Teacher Resources</span>
+  </a>
+</li>
+
       </ul>
+
 
       <!-- Dropdown banner (NatGeo-style “white band”) -->
       <div class="dropdown-band" id="dropdownBand" aria-hidden="true">
@@ -93,38 +103,24 @@
   </header>
 
   <main class="page">
-    <section class="hero">
-      <div class="hero-card">
-        <h1>Middle School History with Mr. Sovocool</h1>
-        <p>
-          Kid-friendly history hubs aligned to the NYS K–8 Social Studies Framework —
-          with WebQuests and quizzes.
-        </p>
-
-        <div class="cta-row">
-          <a class="btn primary" href="/6/">Start with Grade 6</a>
-          <a class="btn ghost" href="/webquests/">Explore WebQuests</a>
-        </div>
+  <section class="featured-hero" aria-label="Featured Content">
+    <a class="featured-hero-link" id="featuredLink" href="#">
+      <div class="featured-hero-media" id="featuredMedia">
+        <!-- background image set by JS -->
       </div>
 
-      <div class="featured">
-        <div class="featured-card">
-          <div class="featured-label">Featured</div>
-          <h2>Greek Mythology</h2>
-          <p>Gods, heroes, monsters — and how myths shaped Greek culture.</p>
-          <a class="btn secondary" href="/6/GreekMythology/">Open Topic</a>
-        </div>
-
-        <div class="featured-card">
-          <div class="featured-label">Featured</div>
-          <h2>Roman Emperors</h2>
-          <p>Power, propaganda, and the rulers who shaped Rome’s empire.</p>
-          <a class="btn secondary" href="/6/RomanEmperors/">Open Topic</a>
-        </div>
+      <div class="featured-hero-overlay">
+        <div class="featured-hero-badge" id="featuredBadge">Featured Content</div>
+        <h1 class="featured-hero-title" id="featuredTitle">Loading…</h1>
+        <p class="featured-hero-desc" id="featuredDesc"></p>
+        <div class="featured-hero-cta">Open Topic →</div>
       </div>
-    </section>
-  </main>
+    </a>
+  </section>
+</main>
 
   <script src="nav.js"></script>
+<script src="featured.js"></script>
+
 </body>
 </html>

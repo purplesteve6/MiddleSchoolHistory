@@ -4,6 +4,9 @@
   const navItems = document.querySelectorAll(".nav-item");
   const panels = document.querySelectorAll(".dropdown-panel");
 
+  // The arrow is positioned inside dropdown-inner (which is position: relative in CSS)
+  const inner = band ? band.querySelector(".dropdown-inner") : null;
+
   let activeKey = null;
   let closeTimer = null;
 
@@ -25,12 +28,27 @@
     band.classList.add("is-open");
     band.setAttribute("aria-hidden", "false");
 
-    // Position arrow under hovered item (centered)
-    const rect = anchorEl.getBoundingClientRect();
-    const parentRect = band.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const left = centerX - parentRect.left - 10; // 10 = half arrow width
-    arrow.style.left = `${Math.max(18, left)}px`;
+    // ---- Arrow positioning (centered under icon + label) ----
+    // IMPORTANT: arrow is absolutely positioned inside .dropdown-inner,
+    // so we compute left relative to .dropdown-inner’s bounding box.
+    if (anchorEl && inner && arrow) {
+      const rect = anchorEl.getBoundingClientRect();       // hovered nav-link
+      const innerRect = inner.getBoundingClientRect();     // positioning context
+
+      const arrowHalf = 10; // matches your CSS arrow (20px wide base)
+      const centerX = rect.left + rect.width / 2;
+
+      // Convert viewport X to inner-relative X
+      let left = centerX - innerRect.left - arrowHalf;
+
+      // Clamp so it stays within the inner padding area
+      const minLeft = 18; // matches dropdown-inner padding in CSS
+      const maxLeft = innerRect.width - 18 - (arrowHalf * 2);
+      left = Math.max(minLeft, Math.min(left, maxLeft));
+
+      arrow.style.left = `${left}px`;
+    }
+    // ---------------------------------------------
 
     activeKey = key;
   }
@@ -57,17 +75,18 @@
 
     item.addEventListener("mouseenter", () => {
       clearTimeout(closeTimer);
+
       if (!isDropdown) {
-        // Option: show “home” panel or close for non-dropdown items.
-        // Here we close for non-dropdowns to keep it clean.
         hideBand();
         return;
       }
-      showPanel(key, item);
+
+      // Anchor to the nav-link so arrow centers under icon+text (not the whole LI)
+      const link = item.querySelector(".nav-link");
+      showPanel(key, link);
     });
 
     item.addEventListener("mouseleave", () => {
-      // Only schedule close if the cursor isn't entering the band
       scheduleClose();
     });
   });
