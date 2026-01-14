@@ -1,0 +1,315 @@
+/* ===== Base ===== */
+:root{
+  /* Midnight purple background */
+  --bg-1: #12081f;
+  --bg-2: #220a3a;
+  --bg-3: #0d0615;
+
+  /* Brown header gradient */
+  --brown-1: #2b1a12;
+  --brown-2: #3a2418;
+  --brown-3: #24140e;
+
+  --white: #ffffff;
+  --ink: #141414;
+
+  --text: #f4f1ff;
+  --muted: rgba(244, 241, 255, 0.78);
+
+  --card: rgba(255,255,255,0.06);
+  --card2: rgba(255,255,255,0.10);
+
+  --accent: #b58cff; /* subtle lavender highlight */
+  --ring: rgba(181, 140, 255, 0.35);
+
+  --radius: 18px;
+  --shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+*{ box-sizing: border-box; }
+html, body { height: 100%; }
+
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+
+  /* This gradient will continue as the page grows */
+  background:
+    radial-gradient(1200px 600px at 20% 0%, rgba(181,140,255,0.20), transparent 55%),
+    radial-gradient(900px 500px at 80% 20%, rgba(255,255,255,0.08), transparent 55%),
+    linear-gradient(180deg, var(--bg-2), var(--bg-1) 45%, var(--bg-3));
+  background-attachment: fixed; /* keeps the “midnight” look consistent */
+}
+
+a{ color: inherit; text-decoration: none; }
+
+/* ===== Header ===== */
+.site-header{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: linear-gradient(180deg, var(--brown-2), var(--brown-1) 50%, var(--brown-3));
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.topbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  gap: 16px;
+}
+
+.logo{
+  height: 44px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.35));
+}
+
+.top-actions{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.top-link{
+  color: rgba(255,255,255,0.92);
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+.top-link:hover{
+  background: rgba(255,255,255,0.10);
+}
+
+/* ===== Nav ===== */
+.main-nav{
+  position: relative;
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+
+.nav-list{
+  margin: 0;
+  padding: 10px 14px;
+  list-style: none;
+
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+}
+
+.nav-item{
+  position: relative;
+  border-radius: 16px;
+}
+
+.nav-link{
+  display: grid;
+  grid-template-rows: auto auto;
+  justify-items: center;
+  gap: 6px;
+
+  min-width: 120px;
+  padding: 10px 14px;
+  border-radius: 16px;
+
+  color: rgba(255,255,255,0.92);
+  font-weight: 750;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.nav-icon{
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.10);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16);
+  font-size: 18px;
+}
+
+.nav-item:hover .nav-link,
+.nav-item.is-active .nav-link{
+  background: rgba(255,255,255,0.08);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14);
+}
+
+/* ===== Dropdown “white band” ===== */
+.dropdown-band{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+
+  background: rgba(255,255,255,0.97);
+  color: var(--ink);
+
+  transform-origin: top;
+  transform: scaleY(0);
+  opacity: 0;
+  pointer-events: none;
+
+  transition: transform 140ms ease, opacity 140ms ease;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.dropdown-band.is-open{
+  transform: scaleY(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dropdown-inner{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 18px 22px;
+  position: relative;
+}
+
+/* The little triangle arrow that points to the hovered nav item */
+.dropdown-arrow{
+  position: absolute;
+  top: -10px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgba(255,255,255,0.97);
+  filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.12));
+}
+
+/* Panels */
+.dropdown-panel{
+  display: none;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dropdown-panel.is-visible{
+  display: flex;
+}
+
+.topic-link{
+  font-weight: 750;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.topic-link:hover{
+  background: rgba(0,0,0,0.07);
+}
+.topic-link.is-muted{
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ===== Page content ===== */
+.page{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 26px 18px 70px;
+}
+
+.hero{
+  display: grid;
+  gap: 18px;
+}
+
+.hero-card{
+  padding: 22px;
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.hero-card h1{
+  margin: 0 0 10px;
+  font-size: clamp(26px, 4vw, 40px);
+  line-height: 1.08;
+}
+
+.hero-card p{
+  margin: 0 0 16px;
+  color: var(--muted);
+  max-width: 70ch;
+}
+
+.cta-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.featured{
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.featured-card{
+  padding: 18px;
+  border-radius: var(--radius);
+  background: var(--card2);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: var(--shadow);
+}
+
+.featured-label{
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  background: rgba(181,140,255,0.18);
+  border: 1px solid rgba(181,140,255,0.28);
+  margin-bottom: 10px;
+}
+
+/* ===== Buttons ===== */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-weight: 800;
+  border: 1px solid transparent;
+}
+
+.btn.primary{
+  background: rgba(181,140,255,0.22);
+  border-color: rgba(181,140,255,0.30);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+}
+.btn.primary:hover{
+  box-shadow: 0 14px 30px rgba(0,0,0,0.32);
+}
+
+.btn.secondary{
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.16);
+}
+
+.btn.ghost{
+  background: transparent;
+  border-color: rgba(255,255,255,0.18);
+}
+
+/* ===== Mobile tweaks ===== */
+@media (max-width: 720px){
+  .nav-link{ min-width: 92px; font-size: 12px; }
+  .nav-icon{ width: 34px; height: 34px; }
+  .topbar{ padding: 12px 14px; }
+}
