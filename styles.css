@@ -9,25 +9,16 @@
 }
 
 :root{
-  /* ===== Background: lighter midnight purple ===== */
-  --bg-1: #2a1746;   /* main purple */
-  --bg-2: #3a1f63;   /* lighter top */
-  --bg-3: #1f0f33;   /* subtle depth */
+  /* Background: midnight purple */
+  --bg-1: #2a1746;
+  --bg-2: #3a1f63;
+  --bg-3: #1f0f33;
 
-  --white: #ffffff;
   --ink: #1c1a1f;
-
   --text: #f7f3ff;
   --muted: rgba(247, 243, 255, 0.82);
 
-  /* Lighter cards so content breathes */
-  --card: rgba(255,255,255,0.14);
-  --card2: rgba(255,255,255,0.20);
-
-  /* Accent: academic lavender */
   --accent: #c9a8ff;
-  --ring: rgba(201, 168, 255, 0.45);
-
   --radius: 18px;
   --shadow: 0 12px 26px rgba(0,0,0,0.28);
 }
@@ -40,12 +31,11 @@ body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   color: var(--text);
 
-  /* This gradient will continue as the page grows */
   background:
     radial-gradient(1200px 600px at 20% 0%, rgba(181,140,255,0.20), transparent 55%),
     radial-gradient(900px 500px at 80% 20%, rgba(255,255,255,0.08), transparent 55%),
     linear-gradient(180deg, var(--bg-2), var(--bg-1) 45%, var(--bg-3));
-  background-attachment: fixed; /* keeps the “midnight” look consistent */
+  background-attachment: fixed;
 }
 
 a{ color: inherit; text-decoration: none; }
@@ -68,27 +58,20 @@ a{ color: inherit; text-decoration: none; }
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* Dark TOP bar (logo + Search/Shop) */
+/* ===== Top Bar (dark brown, Search/Shop right) ===== */
 .topbar{
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: space-between;
   padding: 14px 20px;
   gap: 16px;
 
   background: linear-gradient(
     180deg,
-    #5a3a23 0%,   /* dark leather */
+    #5a3a23 0%,
     #3f2817 70%,
     #2f1e12 100%
   );
-}
-
-.logo{
-  height: 44px;
-  width: auto;
-  display: block;
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.35));
 }
 
 .top-actions{
@@ -101,16 +84,14 @@ a{ color: inherit; text-decoration: none; }
   color: rgba(255,255,255,0.92);
   padding: 8px 10px;
   border-radius: 10px;
-  text-transform: none; /* ensure not forced to caps */
+  text-transform: none;
 }
 
 .top-link:hover{
   background: rgba(255,255,255,0.10);
 }
 
-/* ===== Nav ===== */
-
-/* Lighter (but richer) LOWER bar */
+/* ===== Bottom Nav (lighter brown) ===== */
 .main-nav{
   position: relative;
   background: linear-gradient(180deg,
@@ -121,16 +102,47 @@ a{ color: inherit; text-decoration: none; }
   border-top: 1px solid rgba(255,255,255,0.14);
 }
 
+/* Logo flush-left to the PAGE edge (NatGeo-style) */
+.nav-logo{
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-left: 12px;
+  padding-right: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-logo-img{
+  height: 40px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35));
+}
+
+/* Centered container for the menu only */
+.nav-inner{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 14px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .nav-list{
   margin: 0;
-  padding: 10px 14px;
+  padding: 10px 0;
   list-style: none;
 
   display: flex;
   align-items: stretch;
   justify-content: center;
   gap: 8px;
-  flex-wrap: wrap; /* helps if you add more items later */
+  flex-wrap: wrap;
 }
 
 .nav-item{
@@ -149,12 +161,7 @@ a{ color: inherit; text-decoration: none; }
   border-radius: 16px;
 
   color: rgba(255,255,255,0.92);
-
-  /* IMPORTANT: remove the old “shouty” styling */
   text-transform: none;
-  letter-spacing: 0.02em;
-  font-weight: 700;
-
   font-size: 13px;
 }
 
@@ -175,7 +182,7 @@ a{ color: inherit; text-decoration: none; }
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14);
 }
 
-/* ===== Dropdown “white band” ===== */
+/* ===== Dropdown band ===== */
 .dropdown-band{
   position: absolute;
   left: 0;
@@ -207,7 +214,6 @@ a{ color: inherit; text-decoration: none; }
   position: relative;
 }
 
-/* The little triangle arrow that points to the hovered nav item */
 .dropdown-arrow{
   position: absolute;
   top: -10px;
@@ -219,7 +225,6 @@ a{ color: inherit; text-decoration: none; }
   filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.12));
 }
 
-/* Panels */
 .dropdown-panel{
   display: none;
   gap: 12px;
@@ -232,13 +237,13 @@ a{ color: inherit; text-decoration: none; }
 }
 
 .topic-link{
-  font-weight: 700;         /* match Tommy Soft bold */
-  letter-spacing: 0.01em;   /* dropdown reads nicer slightly tighter */
+  font-weight: 700;
+  letter-spacing: 0.01em;
   padding: 10px 12px;
   border-radius: 12px;
   background: rgba(0,0,0,0.04);
   border: 1px solid rgba(0,0,0,0.08);
-  display: inline-block; /* supports <a> or <span> if you change muted items later */
+  display: inline-block;
 }
 
 .topic-link:hover{
@@ -250,18 +255,14 @@ a{ color: inherit; text-decoration: none; }
   cursor: default;
 }
 
-/* ===== Page content wrapper ===== */
+/* ===== Page ===== */
 .page{
   max-width: 1100px;
   margin: 0 auto;
   padding: 26px 18px 70px;
 }
 
-/* =======================================================================
-   NEW: Single large “Featured Content” hero (wallpaper with overlay)
-   (Use this instead of the old 3-panel hero/featured cards)
-   ======================================================================= */
-
+/* ===== Big Featured Hero (video-sized wallpaper tile) ===== */
 .featured-hero{
   max-width: 1100px;
   margin: 0 auto;
@@ -278,14 +279,13 @@ a{ color: inherit; text-decoration: none; }
 }
 
 .featured-hero-media{
-  height: clamp(340px, 52vw, 520px); /* big like NatGeo center tile */
+  height: clamp(340px, 52vw, 520px);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   transform: scale(1.01);
 }
 
-/* Dark gradient overlay so text always readable */
 .featured-hero-link::after{
   content: "";
   position: absolute;
@@ -347,61 +347,11 @@ a{ color: inherit; text-decoration: none; }
   transition: transform 180ms ease;
 }
 
-/* =======================================================================
-   Legacy (old) hero/card layout — safe to keep, but hidden if you removed it
-   ======================================================================= */
-
-.hero,
-.hero-card,
-.cta-row,
-.featured,
-.featured-card,
-.featured-label{
-  /* If these elements are no longer in index.html, these rules do nothing.
-     Leaving them here is harmless, but you can delete later if you want. */
-}
-
-/* ===== Buttons ===== */
-.btn{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  padding: 10px 14px;
-  border-radius: 14px;
-  font-weight: 800;
-  border: 1px solid transparent;
-}
-
-.btn.primary{
-  background: rgba(181,140,255,0.22);
-  border-color: rgba(181,140,255,0.30);
-  box-shadow: 0 10px 22px rgba(0,0,0,0.25);
-}
-
-.btn.primary:hover{
-  box-shadow: 0 14px 30px rgba(0,0,0,0.32);
-}
-
-.btn.secondary{
-  background: rgba(255,255,255,0.10);
-  border-color: rgba(255,255,255,0.16);
-}
-
-.btn.ghost{
-  background: transparent;
-  border-color: rgba(255,255,255,0.18);
-}
-
-/* ===== Mobile tweaks ===== */
+/* ===== Mobile ===== */
 @media (max-width: 720px){
+  .nav-logo-img{ height: 34px; }
   .nav-link{ min-width: 92px; font-size: 12px; }
   .nav-icon{ width: 34px; height: 34px; }
   .topbar{ padding: 12px 14px; }
-
-  /* On small screens, make overlay text a bit tighter */
-  .featured-hero-overlay{
-    max-width: 100%;
-  }
+  .featured-hero-overlay{ max-width: 100%; }
 }

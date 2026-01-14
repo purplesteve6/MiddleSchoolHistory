@@ -9,67 +9,71 @@
 
 <body>
   <header class="site-header">
+    <!-- TOP BAR (Search/Shop only, right aligned) -->
     <div class="topbar">
-      <a class="brand" href="/">
-        <img
-          class="logo"
-          src="/assets/images/logo/MSHistory_Logo_Basic_Web.png"
-          alt="Middle School History with Mr. Sovocool"
-        />
-      </a>
-
       <div class="top-actions">
         <a class="top-link" href="/search/">Search 🔎</a>
         <a class="top-link" href="/shop/">Shop 🛒</a>
       </div>
     </div>
 
+    <!-- BOTTOM BAR (Logo flush-left, menu centered) -->
     <nav class="main-nav" aria-label="Primary">
-      <ul class="nav-list">
-        <!-- HOME -->
-        <li class="nav-item" data-menu="home">
-          <a class="nav-link" href="/">
-            <span class="nav-icon" aria-hidden="true">⌂</span>
-            <span class="nav-text">Home</span>
-          </a>
-        </li>
+      <!-- LOGO (flush-left to page edge) -->
+      <a class="nav-logo" href="/" aria-label="Home">
+        <img
+          class="nav-logo-img"
+          src="/assets/images/logo/MSHistory_Logo_Basic_Web.png"
+          alt="Middle School History with Mr. Sovocool"
+        />
+      </a>
 
-        <!-- GRADE 6 -->
-        <li class="nav-item has-dropdown" data-menu="g6">
-          <a class="nav-link" href="/6/">
-            <span class="nav-icon" aria-hidden="true">Ⅵ</span>
-            <span class="nav-text">Grade 6</span>
-          </a>
-        </li>
+      <!-- CENTERED NAV ITEMS -->
+      <div class="nav-inner">
+        <ul class="nav-list">
+          <!-- HOME (no dropdown) -->
+          <li class="nav-item" data-menu="home">
+            <a class="nav-link" href="/">
+              <span class="nav-icon" aria-hidden="true">⌂</span>
+              <span class="nav-text">Home</span>
+            </a>
+          </li>
 
-        <!-- GRADE 7 -->
-        <li class="nav-item has-dropdown" data-menu="g7">
-          <a class="nav-link" href="/7/">
-            <span class="nav-icon" aria-hidden="true">Ⅶ</span>
-            <span class="nav-text">Grade 7</span>
-          </a>
-        </li>
+          <!-- GRADE 6 -->
+          <li class="nav-item has-dropdown" data-menu="g6">
+            <a class="nav-link" href="/6/">
+              <span class="nav-icon" aria-hidden="true">Ⅵ</span>
+              <span class="nav-text">Grade 6</span>
+            </a>
+          </li>
 
-        <!-- GRADE 8 -->
-        <li class="nav-item has-dropdown" data-menu="g8">
-          <a class="nav-link" href="/8/">
-            <span class="nav-icon" aria-hidden="true">Ⅷ</span>
-            <span class="nav-text">Grade 8</span>
-          </a>
-        </li>
+          <!-- GRADE 7 -->
+          <li class="nav-item has-dropdown" data-menu="g7">
+            <a class="nav-link" href="/7/">
+              <span class="nav-icon" aria-hidden="true">Ⅶ</span>
+              <span class="nav-text">Grade 7</span>
+            </a>
+          </li>
 
-<!-- TEACHER RESOURCES (no dropdown) -->
-<li class="nav-item" data-menu="teacher">
-  <a class="nav-link" href="/teacher-resources/">
-    <span class="nav-icon" aria-hidden="true">📚</span>
-    <span class="nav-text">Teacher Resources</span>
-  </a>
-</li>
+          <!-- GRADE 8 -->
+          <li class="nav-item has-dropdown" data-menu="g8">
+            <a class="nav-link" href="/8/">
+              <span class="nav-icon" aria-hidden="true">Ⅷ</span>
+              <span class="nav-text">Grade 8</span>
+            </a>
+          </li>
 
-      </ul>
+          <!-- TEACHER RESOURCES (no dropdown) -->
+          <li class="nav-item" data-menu="teacher">
+            <a class="nav-link" href="/teacher-resources/">
+              <span class="nav-icon" aria-hidden="true">📚</span>
+              <span class="nav-text">Teacher Resources</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
-
-      <!-- Dropdown banner (NatGeo-style “white band”) -->
+      <!-- DROPDOWN BAND (NatGeo-style) -->
       <div class="dropdown-band" id="dropdownBand" aria-hidden="true">
         <div class="dropdown-inner">
           <div class="dropdown-arrow" id="dropdownArrow" aria-hidden="true"></div>
@@ -78,24 +82,17 @@
           <div class="dropdown-panel" data-panel="g6">
             <a class="topic-link" href="/6/GreekMythology/">Greek Mythology</a>
             <a class="topic-link" href="/6/RomanEmperors/">Roman Emperors</a>
-            <a class="topic-link is-muted" href="#" aria-disabled="true">More coming soon…</a>
+            <span class="topic-link is-muted" aria-disabled="true">More coming soon…</span>
           </div>
 
-          <!-- Grade 7 Topics (placeholders for now) -->
+          <!-- Grade 7 Topics -->
           <div class="dropdown-panel" data-panel="g7">
-            <a class="topic-link is-muted" href="#" aria-disabled="true">Grade 7 topics coming soon…</a>
+            <span class="topic-link is-muted" aria-disabled="true">Grade 7 topics coming soon…</span>
           </div>
 
-          <!-- Grade 8 Topics (placeholders for now) -->
+          <!-- Grade 8 Topics -->
           <div class="dropdown-panel" data-panel="g8">
-            <a class="topic-link is-muted" href="#" aria-disabled="true">Grade 8 topics coming soon…</a>
-          </div>
-
-          <!-- Home panel (optional) -->
-          <div class="dropdown-panel" data-panel="home">
-            <a class="topic-link" href="/about/">About Mr. Sovocool</a>
-            <a class="topic-link" href="/webquests/">WebQuests</a>
-            <a class="topic-link" href="/contact/">Contact</a>
+            <span class="topic-link is-muted" aria-disabled="true">Grade 8 topics coming soon…</span>
           </div>
         </div>
       </div>
@@ -103,24 +100,22 @@
   </header>
 
   <main class="page">
-  <section class="featured-hero" aria-label="Featured Content">
-    <a class="featured-hero-link" id="featuredLink" href="#">
-      <div class="featured-hero-media" id="featuredMedia">
-        <!-- background image set by JS -->
-      </div>
+    <!-- BIG RANDOM FEATURED CONTENT HERO -->
+    <section class="featured-hero" aria-label="Featured Content">
+      <a class="featured-hero-link" id="featuredLink" href="#">
+        <div class="featured-hero-media" id="featuredMedia"></div>
 
-      <div class="featured-hero-overlay">
-        <div class="featured-hero-badge" id="featuredBadge">Featured Content</div>
-        <h1 class="featured-hero-title" id="featuredTitle">Loading…</h1>
-        <p class="featured-hero-desc" id="featuredDesc"></p>
-        <div class="featured-hero-cta">Open Topic →</div>
-      </div>
-    </a>
-  </section>
-</main>
+        <div class="featured-hero-overlay">
+          <div class="featured-hero-badge" id="featuredBadge">Featured Content</div>
+          <h1 class="featured-hero-title" id="featuredTitle">Loading…</h1>
+          <p class="featured-hero-desc" id="featuredDesc"></p>
+          <div class="featured-hero-cta">Open Topic →</div>
+        </div>
+      </a>
+    </section>
+  </main>
 
   <script src="nav.js"></script>
-<script src="featured.js"></script>
-
+  <script src="featured.js"></script>
 </body>
 </html>
