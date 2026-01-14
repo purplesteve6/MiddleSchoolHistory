@@ -51,22 +51,15 @@ a{ color: inherit; text-decoration: none; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: linear-gradient(
-    180deg,
-    var(--brown-2) 0%,
-    var(--brown-1) 55%,
-    #3f2a19 85%,
-    #2f1e12 100%
-  );
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
 .topbar{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  gap: 16px;
+  background: linear-gradient(
+    180deg,
+    #9a6e4b 0%,
+    #8a6242 100%
+  );
 }
 
 .logo{
@@ -95,8 +88,12 @@ a{ color: inherit; text-decoration: none; }
 
 /* ===== Nav ===== */
 .main-nav{
-  position: relative;
-  border-top: 1px solid rgba(255,255,255,0.12);
+  background: linear-gradient(
+    180deg,
+    #5a3a23 0%,
+    #3f2817 100%
+  );
+  border-top: 1px solid rgba(255,255,255,0.18);
 }
 
 .nav-list{
