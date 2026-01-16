@@ -56,7 +56,7 @@ a{ color: inherit; text-decoration: none; }
   top: 0;
   z-index: 50;
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  /* Let the logo act like a "patch" that can overlap both header bands */
+  /* Let the logo overlap outside the bands */
   overflow: visible;
 }
 
@@ -104,44 +104,39 @@ a{ color: inherit; text-decoration: none; }
   border-top: 1px solid rgba(255,255,255,0.14);
 }
 
-/* Logo "patch" that overlaps the two brown header bands */
+/* Logo "patch" — large, transparent, overlapping BOTH header bands */
 .nav-logo{
   position: absolute;
-  left: 0;
-  /* Center the logo within the full header height (topbar + main-nav)
-     so it naturally overlaps both bands. */
-  top: 50%;
-  transform: translateY(-50%);
+  left: 12px;
 
-  padding-left: 12px;
-  padding-right: 10px;
-  z-index: 60;
+  /* Pull upward so it overlaps the topbar + main-nav */
+  top: -52px;
 
+  z-index: 999;
   display: inline-flex;
   align-items: center;
 }
 
 .nav-logo-img{
-  height: 104px;
+  height: 140px;
   width: auto;
   max-width: none;
   display: block;
 
+  /* fully transparent: remove the "box" */
   background: transparent;
-  padding: 10px 12px;
-  border-radius: 14px;
-  box-shadow:
-    0 10px 22px rgba(0,0,0,0.35),
-    inset 0 0 0 1px rgba(255,255,255,0.10);
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
-
 
 /* Centered container for the menu only */
 .nav-inner{
   max-width: 1100px;
   margin: 0 auto;
-  /* Leave room so the larger logo patch doesn't collide with the menu */
-  padding: 0 14px 0 170px;
+
+  /* Leave room so the bigger logo doesn't collide with the menu */
+  padding: 0 14px 0 230px;
 
   display: flex;
   justify-content: center;
@@ -364,8 +359,14 @@ a{ color: inherit; text-decoration: none; }
 
 /* ===== Mobile ===== */
 @media (max-width: 720px){
-  .nav-logo-img{ height: 74px; padding: 8px 10px; border-radius: 12px; }
-  .nav-inner{ padding-left: 128px; }
+  .nav-logo-img{
+    height: 110px;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  .nav-inner{ padding-left: 190px; }
   .nav-link{ min-width: 92px; font-size: 12px; }
   .nav-icon{ width: 34px; height: 34px; }
   .topbar{ padding: 12px 14px; }
