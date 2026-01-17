@@ -113,12 +113,12 @@ a{ color: inherit; text-decoration: none; }
   top: -52px;
 
   z-index: 999;
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  align-items: flex-end; /* helps keep the text graphic inside the brown band */
+  gap: 10px;
 }
 
 .nav-logo-img{
-  height: 140px;
   width: auto;
   max-width: none;
   display: block;
@@ -128,6 +128,20 @@ a{ color: inherit; text-decoration: none; }
   padding: 0;
   border-radius: 0;
   box-shadow: none;
+
+  /* default behavior (matches prior single-logo setup) */
+  height: 140px;
+}
+
+/* Primary logo icon (existing image) */
+.logo-icon{
+  height: 140px;
+}
+
+/* Secondary logo text (new image) — stays within the lower brown band */
+.logo-text{
+  height: 56px;      /* preserves 549x150 ratio via width:auto */
+  margin-bottom: 6px; /* nudge up from the band’s bottom edge */
 }
 
 /* Centered container for the menu only */
@@ -366,6 +380,16 @@ a{ color: inherit; text-decoration: none; }
     box-shadow: none;
     background: transparent;
   }
+
+  .logo-icon{
+    height: 110px;
+  }
+
+  .logo-text{
+    height: 44px;
+    margin-bottom: 5px;
+  }
+
   .nav-inner{ padding-left: 190px; }
   .nav-link{ min-width: 92px; font-size: 12px; }
   .nav-icon{ width: 34px; height: 34px; }
