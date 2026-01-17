@@ -19,30 +19,31 @@
 
     <!-- BOTTOM BAR (Logo flush-left, menu centered) -->
     <nav class="main-nav" aria-label="Primary">
-      <!-- LOGO (flush-left to page edge) -->
+      <!-- LOGO -->
       <a class="nav-logo" href="/" aria-label="Home">
-  <img
-    class="nav-logo-img logo-icon"
-    src="/assets/images/logo/MSHistory_Logo_Basic_Web.png"
-    alt="Middle School History with Mr. Sovocool"
-  />
-
-  <img
-    class="nav-logo-img logo-text"
-    src="/assets/images/logo/MSHistory_Logo_Text_Basic.png"
-    alt=""
-    aria-hidden="true"
-  />
-</a>
-
+        <img
+          class="nav-logo-img logo-icon"
+          src="/assets/images/logo/MSHistory_Logo_Basic_Web.png"
+          alt="Middle School History with Mr. Sovocool"
+        />
+        <img
+          class="nav-logo-img logo-text"
+          src="/assets/images/logo/MSHistory_Logo_Text_Basic.png"
+          alt=""
+          aria-hidden="true"
+        />
+      </a>
 
       <!-- CENTERED NAV ITEMS -->
       <div class="nav-inner">
         <ul class="nav-list">
-          <!-- HOME (no dropdown) -->
+
+          <!-- HOME -->
           <li class="nav-item" data-menu="home">
             <a class="nav-link" href="/">
-              <span class="nav-icon" aria-hidden="true">⌂</span>
+              <span class="nav-icon">
+                <img src="/assets/images/icons/Home_icon.png" alt="" aria-hidden="true">
+              </span>
               <span class="nav-text">Home</span>
             </a>
           </li>
@@ -50,7 +51,9 @@
           <!-- GRADE 6 -->
           <li class="nav-item has-dropdown" data-menu="g6">
             <a class="nav-link" href="/6/">
-              <span class="nav-icon" aria-hidden="true">Ⅵ</span>
+              <span class="nav-icon">
+                <img src="/assets/images/icons/6_icon.png" alt="" aria-hidden="true">
+              </span>
               <span class="nav-text">Grade 6</span>
             </a>
           </li>
@@ -58,7 +61,9 @@
           <!-- GRADE 7 -->
           <li class="nav-item has-dropdown" data-menu="g7">
             <a class="nav-link" href="/7/">
-              <span class="nav-icon" aria-hidden="true">Ⅶ</span>
+              <span class="nav-icon">
+                <img src="/assets/images/icons/7_icon.png" alt="" aria-hidden="true">
+              </span>
               <span class="nav-text">Grade 7</span>
             </a>
           </li>
@@ -66,41 +71,47 @@
           <!-- GRADE 8 -->
           <li class="nav-item has-dropdown" data-menu="g8">
             <a class="nav-link" href="/8/">
-              <span class="nav-icon" aria-hidden="true">Ⅷ</span>
+              <span class="nav-icon">
+                <img src="/assets/images/icons/8_icon.png" alt="" aria-hidden="true">
+              </span>
               <span class="nav-text">Grade 8</span>
             </a>
           </li>
 
-          <!-- TEACHER RESOURCES (no dropdown) -->
+          <!-- TEACHER RESOURCES -->
           <li class="nav-item" data-menu="teacher">
             <a class="nav-link" href="/teacher-resources/">
-              <span class="nav-icon" aria-hidden="true">📚</span>
+              <span class="nav-icon">
+                <img src="/assets/images/icons/TeacherResources_icon.png" alt="" aria-hidden="true">
+              </span>
               <span class="nav-text">Teacher Resources</span>
             </a>
           </li>
+
         </ul>
       </div>
 
-      <!-- DROPDOWN BAND (NatGeo-style) -->
+      <!-- DROPDOWN BAND -->
       <div class="dropdown-band" id="dropdownBand" aria-hidden="true">
         <div class="dropdown-inner">
           <div class="dropdown-arrow" id="dropdownArrow" aria-hidden="true"></div>
 
-          <!-- Grade 6 Topics -->
           <div class="dropdown-panel" data-panel="g6">
             <a class="topic-link" href="/6/GreekMythology/">Greek Mythology</a>
             <a class="topic-link" href="/6/RomanEmperors/">Roman Emperors</a>
             <span class="topic-link is-muted" aria-disabled="true">More coming soon…</span>
           </div>
 
-          <!-- Grade 7 Topics -->
           <div class="dropdown-panel" data-panel="g7">
-            <span class="topic-link is-muted" aria-disabled="true">Grade 7 topics coming soon…</span>
+            <span class="topic-link is-muted" aria-disabled="true">
+              Grade 7 topics coming soon…
+            </span>
           </div>
 
-          <!-- Grade 8 Topics -->
           <div class="dropdown-panel" data-panel="g8">
-            <span class="topic-link is-muted" aria-disabled="true">Grade 8 topics coming soon…</span>
+            <span class="topic-link is-muted" aria-disabled="true">
+              Grade 8 topics coming soon…
+            </span>
           </div>
         </div>
       </div>
@@ -108,7 +119,7 @@
   </header>
 
   <main class="page">
-    <!-- BIG RANDOM FEATURED CONTENT HERO -->
+    <!-- FEATURED HERO -->
     <section class="featured-hero" aria-label="Featured Content">
       <a class="featured-hero-link" id="featuredLink" href="#">
         <div class="featured-hero-media" id="featuredMedia"></div>

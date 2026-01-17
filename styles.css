@@ -9,14 +9,13 @@
 }
 
 :root{
-  /* Background: midnight purple */
   --bg-1: #2a1746;
   --bg-2: #3a1f63;
   --bg-3: #1f0f33;
 
   --ink: #1c1a1f;
   --text: #f7f3ff;
-  --muted: rgba(247, 243, 255, 0.82);
+  --muted: rgba(247,243,255,0.82);
 
   --accent: #c9a8ff;
   --radius: 18px;
@@ -40,7 +39,7 @@ body{
 
 a{ color: inherit; text-decoration: none; }
 
-/* Navigation & menu labels */
+/* Typography */
 .top-link,
 .nav-link,
 .nav-text,
@@ -51,16 +50,17 @@ a{ color: inherit; text-decoration: none; }
 }
 
 /* ===== Header ===== */
+
 .site-header{
   position: sticky;
   top: 0;
   z-index: 50;
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  /* Let the logo overlap outside the bands */
   overflow: visible;
 }
 
-/* ===== Top Bar (dark brown, Search/Shop right) ===== */
+/* ===== Top Bar ===== */
+
 .topbar{
   display: flex;
   justify-content: flex-end;
@@ -86,17 +86,18 @@ a{ color: inherit; text-decoration: none; }
   color: rgba(255,255,255,0.92);
   padding: 8px 10px;
   border-radius: 10px;
-  text-transform: none;
 }
 
 .top-link:hover{
   background: rgba(255,255,255,0.10);
 }
 
-/* ===== Bottom Nav (lighter brown) ===== */
+/* ===== Bottom Nav ===== */
+
 .main-nav{
   position: relative;
-  background: linear-gradient(180deg,
+  background: linear-gradient(
+    180deg,
     #9b6e4a 0%,
     #7f573b 55%,
     #64402a 100%
@@ -104,52 +105,36 @@ a{ color: inherit; text-decoration: none; }
   border-top: 1px solid rgba(255,255,255,0.14);
 }
 
-/* Logo "patch" — large, transparent, overlapping BOTH header bands */
+/* Logo */
+
 .nav-logo{
   position: absolute;
   left: 12px;
-
-  /* Pull upward so it overlaps the topbar + main-nav */
   top: -52px;
-
   z-index: 999;
+
   display: flex;
-  align-items: flex-end; /* helps keep the text graphic inside the brown band */
+  align-items: flex-end;
   gap: 10px;
 }
 
 .nav-logo-img{
+  height: 140px;
   width: auto;
-  max-width: none;
   display: block;
-
-  /* fully transparent: remove the "box" */
   background: transparent;
-  padding: 0;
-  border-radius: 0;
-  box-shadow: none;
-
-  /* default behavior (matches prior single-logo setup) */
-  height: 140px;
 }
 
-/* Primary logo icon (existing image) */
-.logo-icon{
-  height: 140px;
-}
-
-/* Secondary logo text (new image) — stays within the lower brown band */
 .logo-text{
-  height: 56px;      /* preserves 549x150 ratio via width:auto */
-  margin-bottom: 6px; /* nudge up from the band’s bottom edge */
+  height: 56px;
+  margin-bottom: 6px;
 }
 
-/* Centered container for the menu only */
+/* ===== Navigation Layout ===== */
+
 .nav-inner{
   max-width: 1100px;
   margin: 0 auto;
-
-  /* Leave room so the bigger logo doesn't collide with the menu */
   padding: 0 14px 0 230px;
 
   display: flex;
@@ -163,11 +148,11 @@ a{ color: inherit; text-decoration: none; }
   list-style: none;
 
   display: flex;
-  align-items: stretch;
-  justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
 }
+
+/* ===== Nav Items ===== */
 
 .nav-item{
   position: relative;
@@ -185,20 +170,30 @@ a{ color: inherit; text-decoration: none; }
   border-radius: 16px;
 
   color: rgba(255,255,255,0.92);
-  text-transform: none;
   font-size: 13px;
 }
 
+/* ===== ICON SYSTEM (UPDATED) ===== */
+
 .nav-icon{
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 40px;
+
   display: grid;
   place-items: center;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.10);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16);
-  font-size: 18px;
+
+  background: none;
+  box-shadow: none;
 }
+
+.nav-icon img{
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  display: block;
+}
+
+/* Hover state */
 
 .nav-item:hover .nav-link,
 .nav-item.is-active .nav-link{
@@ -206,7 +201,8 @@ a{ color: inherit; text-decoration: none; }
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14);
 }
 
-/* ===== Dropdown band ===== */
+/* ===== Dropdown Band ===== */
+
 .dropdown-band{
   position: absolute;
   left: 0;
@@ -241,56 +237,35 @@ a{ color: inherit; text-decoration: none; }
 .dropdown-arrow{
   position: absolute;
   top: -10px;
-  width: 0;
-  height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid rgba(255,255,255,0.97);
-  filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.12));
 }
 
 .dropdown-panel{
   display: none;
   gap: 12px;
   flex-wrap: wrap;
-  align-items: center;
 }
 
 .dropdown-panel.is-visible{
   display: flex;
 }
 
-.topic-link{
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.08);
-  display: inline-block;
-}
-
-.topic-link:hover{
-  background: rgba(0,0,0,0.07);
-}
-
-.topic-link.is-muted{
-  opacity: 0.55;
-  cursor: default;
-}
-
 /* ===== Page ===== */
+
 .page{
   max-width: 1100px;
   margin: 0 auto;
   padding: 26px 18px 70px;
 }
 
-/* ===== Big Featured Hero (video-sized wallpaper tile) ===== */
+/* ===== Featured Hero ===== */
+
 .featured-hero{
   max-width: 1100px;
   margin: 0 auto;
-  padding: 10px 0 0;
+  padding-top: 10px;
 }
 
 .featured-hero-link{
@@ -299,25 +274,12 @@ a{ color: inherit; text-decoration: none; }
   overflow: hidden;
   position: relative;
   box-shadow: var(--shadow);
-  border: 1px solid rgba(255,255,255,0.14);
 }
 
 .featured-hero-media{
   height: clamp(340px, 52vw, 520px);
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
-  transform: scale(1.01);
-}
-
-.featured-hero-link::after{
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.20) 55%, rgba(0,0,0,0) 75%),
-    linear-gradient(0deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.05) 55%, rgba(0,0,0,0) 100%);
-  pointer-events: none;
 }
 
 .featured-hero-overlay{
@@ -327,72 +289,22 @@ a{ color: inherit; text-decoration: none; }
   display: grid;
   align-content: end;
   gap: 10px;
-  z-index: 1;
-  max-width: 720px;
-}
-
-.featured-hero-badge{
-  display: inline-flex;
-  width: fit-content;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.14);
-  border: 1px solid rgba(255,255,255,0.20);
-  backdrop-filter: blur(6px);
-  font-weight: 800;
-}
-
-.featured-hero-title{
-  margin: 0;
-  font-size: clamp(28px, 4.5vw, 52px);
-  line-height: 1.04;
-  text-shadow: 0 12px 26px rgba(0,0,0,0.45);
-}
-
-.featured-hero-desc{
-  margin: 0;
-  color: rgba(255,255,255,0.90);
-  font-size: clamp(14px, 1.8vw, 18px);
-  max-width: 65ch;
-}
-
-.featured-hero-cta{
-  margin-top: 6px;
-  width: fit-content;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: rgba(181,140,255,0.22);
-  border: 1px solid rgba(181,140,255,0.30);
-  font-weight: 800;
-}
-
-.featured-hero-link:hover .featured-hero-media{
-  transform: scale(1.03);
-  transition: transform 180ms ease;
 }
 
 /* ===== Mobile ===== */
+
 @media (max-width: 720px){
-  .nav-logo-img{
-    height: 110px;
-    padding: 0;
-    border-radius: 0;
-    box-shadow: none;
-    background: transparent;
+
+  .nav-icon{
+    width: 36px;
+    height: 34px;
   }
 
-  .logo-icon{
-    height: 110px;
+  .nav-inner{
+    padding-left: 190px;
   }
 
   .logo-text{
     height: 44px;
-    margin-bottom: 5px;
   }
-
-  .nav-inner{ padding-left: 190px; }
-  .nav-link{ min-width: 92px; font-size: 12px; }
-  .nav-icon{ width: 34px; height: 34px; }
-  .topbar{ padding: 12px 14px; }
-  .featured-hero-overlay{ max-width: 100%; }
 }
