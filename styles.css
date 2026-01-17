@@ -1,310 +1,140 @@
-/* ===== Base ===== */
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Middle School History with Mr. Sovocool</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-@font-face{
-  font-family: "Tommy Soft";
-  src: url("/assets/fonts/tommysoft-bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+<body>
+  <header class="site-header">
+    <!-- TOP BAR (Search/Shop only, right aligned) -->
+    <div class="topbar">
+      <div class="top-actions">
+        <a class="top-link" href="/search/">Search 🔎</a>
+        <a class="top-link" href="/shop/">Shop 🛒</a>
+      </div>
+    </div>
 
-:root{
-  --bg-1: #2a1746;
-  --bg-2: #3a1f63;
-  --bg-3: #1f0f33;
+    <!-- BOTTOM BAR (Logo flush-left, menu centered) -->
+    <nav class="main-nav" aria-label="Primary">
+      <!-- LOGO -->
+      <a class="nav-logo" href="/" aria-label="Home">
+        <img
+          class="nav-logo-img logo-icon"
+          src="/assets/images/logo/MSHistory_Logo_Basic_Web.png"
+          alt="Middle School History with Mr. Sovocool"
+        />
+        <img
+          class="nav-logo-img logo-text"
+          src="/assets/images/logo/MSHistory_Logo_Text_Basic.png"
+          alt=""
+          aria-hidden="true"
+        />
+      </a>
 
-  --ink: #1c1a1f;
-  --text: #f7f3ff;
-  --muted: rgba(247,243,255,0.82);
+      <!-- CENTERED NAV ITEMS -->
+      <div class="nav-inner">
+        <ul class="nav-list">
 
-  --accent: #c9a8ff;
-  --radius: 18px;
-  --shadow: 0 12px 26px rgba(0,0,0,0.28);
-}
+          <!-- HOME -->
+          <li class="nav-item" data-menu="home">
+            <a class="nav-link" href="/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/Home_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Home</span>
+            </a>
+          </li>
 
-*{ box-sizing: border-box; }
-html, body { height: 100%; }
+          <!-- GRADE 6 -->
+          <li class="nav-item has-dropdown" data-menu="g6">
+            <a class="nav-link" href="/6/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/6_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Grade 6</span>
+            </a>
+          </li>
 
-body{
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: var(--text);
+          <!-- GRADE 7 -->
+          <li class="nav-item has-dropdown" data-menu="g7">
+            <a class="nav-link" href="/7/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/7_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Grade 7</span>
+            </a>
+          </li>
 
-  background:
-    radial-gradient(1200px 600px at 20% 0%, rgba(181,140,255,0.20), transparent 55%),
-    radial-gradient(900px 500px at 80% 20%, rgba(255,255,255,0.08), transparent 55%),
-    linear-gradient(180deg, var(--bg-2), var(--bg-1) 45%, var(--bg-3));
-  background-attachment: fixed;
-}
+          <!-- GRADE 8 -->
+          <li class="nav-item has-dropdown" data-menu="g8">
+            <a class="nav-link" href="/8/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/8_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Grade 8</span>
+            </a>
+          </li>
 
-a{ color: inherit; text-decoration: none; }
+          <!-- TEACHER RESOURCES -->
+          <li class="nav-item" data-menu="teacher">
+            <a class="nav-link" href="/teacher-resources/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/TeacherResources_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Teacher Resources</span>
+            </a>
+          </li>
 
-/* Typography */
-.top-link,
-.nav-link,
-.nav-text,
-.topic-link{
-  font-family: "Tommy Soft", system-ui, sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
+        </ul>
+      </div>
 
-/* ===== Header ===== */
+      <!-- DROPDOWN BAND -->
+      <div class="dropdown-band" id="dropdownBand" aria-hidden="true">
+        <div class="dropdown-inner">
+          <div class="dropdown-arrow" id="dropdownArrow" aria-hidden="true"></div>
 
-.site-header{
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  overflow: visible;
-}
+          <div class="dropdown-panel" data-panel="g6">
+            <a class="topic-link" href="/6/GreekMythology/">Greek Mythology</a>
+            <a class="topic-link" href="/6/RomanEmperors/">Roman Emperors</a>
+            <span class="topic-link is-muted" aria-disabled="true">More coming soon…</span>
+          </div>
 
-/* ===== Top Bar ===== */
+          <div class="dropdown-panel" data-panel="g7">
+            <span class="topic-link is-muted" aria-disabled="true">
+              Grade 7 topics coming soon…
+            </span>
+          </div>
 
-.topbar{
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 14px 20px;
-  gap: 16px;
+          <div class="dropdown-panel" data-panel="g8">
+            <span class="topic-link is-muted" aria-disabled="true">
+              Grade 8 topics coming soon…
+            </span>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
 
-  background: linear-gradient(
-    180deg,
-    #5a3a23 0%,
-    #3f2817 70%,
-    #2f1e12 100%
-  );
-}
+  <main class="page">
+    <!-- FEATURED HERO -->
+    <section class="featured-hero" aria-label="Featured Content">
+      <a class="featured-hero-link" id="featuredLink" href="#">
+        <div class="featured-hero-media" id="featuredMedia"></div>
 
-.top-actions{
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
+        <div class="featured-hero-overlay">
+          <div class="featured-hero-badge" id="featuredBadge">Featured Content</div>
+          <h1 class="featured-hero-title" id="featuredTitle">Loading…</h1>
+          <p class="featured-hero-desc" id="featuredDesc"></p>
+          <div class="featured-hero-cta">Open Topic →</div>
+        </div>
+      </a>
+    </section>
+  </main>
 
-.top-link{
-  color: rgba(255,255,255,0.92);
-  padding: 8px 10px;
-  border-radius: 10px;
-}
-
-.top-link:hover{
-  background: rgba(255,255,255,0.10);
-}
-
-/* ===== Bottom Nav ===== */
-
-.main-nav{
-  position: relative;
-  background: linear-gradient(
-    180deg,
-    #9b6e4a 0%,
-    #7f573b 55%,
-    #64402a 100%
-  );
-  border-top: 1px solid rgba(255,255,255,0.14);
-}
-
-/* Logo */
-
-.nav-logo{
-  position: absolute;
-  left: 12px;
-  top: -52px;
-  z-index: 999;
-
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-}
-
-.nav-logo-img{
-  height: 140px;
-  width: auto;
-  display: block;
-  background: transparent;
-}
-
-.logo-text{
-  height: 56px;
-  margin-bottom: 6px;
-}
-
-/* ===== Navigation Layout ===== */
-
-.nav-inner{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 14px 0 230px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.nav-list{
-  margin: 0;
-  padding: 10px 0;
-  list-style: none;
-
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* ===== Nav Items ===== */
-
-.nav-item{
-  position: relative;
-  border-radius: 16px;
-}
-
-.nav-link{
-  display: grid;
-  grid-template-rows: auto auto;
-  justify-items: center;
-  gap: 6px;
-
-  min-width: 120px;
-  padding: 10px 14px;
-  border-radius: 16px;
-
-  color: rgba(255,255,255,0.92);
-  font-size: 13px;
-}
-
-/* ===== ICON SYSTEM (UPDATED) ===== */
-
-.nav-icon{
-  width: 42px;
-  height: 40px;
-
-  display: grid;
-  place-items: center;
-
-  background: none;
-  box-shadow: none;
-}
-
-.nav-icon img{
-  height: 100%;
-  width: auto;
-  max-width: 100%;
-  display: block;
-}
-
-/* Hover state */
-
-.nav-item:hover .nav-link,
-.nav-item.is-active .nav-link{
-  background: rgba(255,255,255,0.08);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14);
-}
-
-/* ===== Dropdown Band ===== */
-
-.dropdown-band{
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-
-  background: rgba(255,255,255,0.97);
-  color: var(--ink);
-
-  transform-origin: top;
-  transform: scaleY(0);
-  opacity: 0;
-  pointer-events: none;
-
-  transition: transform 140ms ease, opacity 140ms ease;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
-}
-
-.dropdown-band.is-open{
-  transform: scaleY(1);
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.dropdown-inner{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 18px 18px 22px;
-  position: relative;
-}
-
-.dropdown-arrow{
-  position: absolute;
-  top: -10px;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid rgba(255,255,255,0.97);
-}
-
-.dropdown-panel{
-  display: none;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.dropdown-panel.is-visible{
-  display: flex;
-}
-
-/* ===== Page ===== */
-
-.page{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 26px 18px 70px;
-}
-
-/* ===== Featured Hero ===== */
-
-.featured-hero{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding-top: 10px;
-}
-
-.featured-hero-link{
-  display: block;
-  border-radius: 22px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: var(--shadow);
-}
-
-.featured-hero-media{
-  height: clamp(340px, 52vw, 520px);
-  background-size: cover;
-  background-position: center;
-}
-
-.featured-hero-overlay{
-  position: absolute;
-  inset: 0;
-  padding: clamp(18px, 3.5vw, 36px);
-  display: grid;
-  align-content: end;
-  gap: 10px;
-}
-
-/* ===== Mobile ===== */
-
-@media (max-width: 720px){
-
-  .nav-icon{
-    width: 36px;
-    height: 34px;
-  }
-
-  .nav-inner{
-    padding-left: 190px;
-  }
-
-  .logo-text{
-    height: 44px;
-  }
-}
+  <script src="nav.js"></script>
+  <script src="featured.js"></script>
+</body>
+</html>
