@@ -254,20 +254,21 @@ a{ color: inherit; text-decoration: none; }
 .dropdown-arrow{
   position: absolute;
 
-  /* put it straddling the seam between brown nav and white dropdown */
-  top: -12px;
+  /* move it DOWN so it doesn't touch the icon */
+  top: -6px;
 
   width: 0;
   height: 0;
 
-  /* flipped + bigger: down-pointing triangle */
-  border-left: 14px solid transparent;
-  border-right: 14px solid transparent;
-  border-top: 14px solid rgba(181,140,255,0.95);
+  /* BIGGER, down-pointing triangle */
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #3a1f63; /* deep midnight purple */
 
-  /* remove old white triangle + drop shadow */
   border-bottom: 0;
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.18));
+
+  /* subtle depth so it sits between layers */
+  filter: drop-shadow(0 3px 3px rgba(0,0,0,0.25));
 }
 
 .dropdown-panel{
