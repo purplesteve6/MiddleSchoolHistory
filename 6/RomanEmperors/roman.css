@@ -369,13 +369,15 @@
     /* Timeline iframe embed */
     .timeline-embed{margin-top:1rem}
     .timeline-frame{
-      width:100%;
-      border:0;
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      background: rgba(255,255,255,.03);
-      min-height: 640px;
-    }
+  width:100%;
+  border:0;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  background: rgba(255,255,255,.03);
+  height: 820px;        /* ← THIS fixes the cutoff */
+  display:block;
+}
+
 
     /* Footer */
     .site-footer{

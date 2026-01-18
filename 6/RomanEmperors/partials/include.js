@@ -1,48 +1,98 @@
-async function loadInto(id, url){
-  const el = document.getElementById(id);
-  if(!el) return;
-
-  try{
-    const res = await fetch(url, { cache: "no-store" });
-    if(!res.ok){
-      console.warn(`[include.js] Could not load ${url} (HTTP ${res.status})`);
-      return;
-    }
-    el.innerHTML = await res.text();
-  }catch(err){
-    console.warn(`[include.js] Fetch failed for ${url}. If you are opening the HTML as file:// this will not work. Use a local server or GitHub Pages.`, err);
-  }
-}
-
-function applyConfig(){
+function applyConfig(root = document) {
   const cfg = window.TOPIC_CONFIG || {};
 
-  document.querySelectorAll("[data-bind]").forEach(el=>{
+  root.querySelectorAll("[data-bind]").forEach(el => {
     const key = el.getAttribute("data-bind");
-    if(cfg[key]) el.setAttribute("src", cfg[key]);
+    if (cfg[key]) el.setAttribute("src", cfg[key]);
   });
 
-  document.querySelectorAll("[data-bind-text]").forEach(el=>{
+  root.querySelectorAll("[data-bind-text]").forEach(el => {
     const key = el.getAttribute("data-bind-text");
-    if(cfg[key]) el.textContent = cfg[key];
+    if (cfg[key]) el.textContent = cfg[key];
   });
 
-  document.querySelectorAll("[data-bind-href]").forEach(el=>{
+  root.querySelectorAll("[data-bind-href]").forEach(el => {
     const key = el.getAttribute("data-bind-href");
-    if(cfg[key]) el.setAttribute("href", cfg[key]);
+    if (cfg[key]) el.setAttribute("href", cfg[key]);
   });
 
   const y = document.getElementById("copyright-year");
-  if(y) y.textContent = new Date().getFullYear();
+  if (y) y.textContent = new Date().getFullYear();
 }
 
-(async function(){
-  // Works for both spellings: /emperors/ and /empeors/
-  const inEmperorSubfolder = /\/empe?rors\//i.test(location.pathname);
-  const base = inEmperorSubfolder ? ".." : ".";
+function injectHeaderFooter() {
+  const headerHTML = `
+<header class="topic-header">
+  <a class="nav-logo" href="/">
+    <img class="nav-logo-img" data-bind="mainLogo" alt="Middle School History">
+  </a>
 
-  await loadInto("siteHeader", `${base}/partials/header.html`);
-  await loadInto("siteFooter", `${base}/partials/footer.html`);
+  <div class="nav">
+    <div class="brand">
+      <div class="columnIcon gradeBadge" aria-hidden="true">
+        <img data-bind="badgeIcon" alt="">
+      </div>
 
-  applyConfig();
+      <div class="brandText">
+        <div class="brandKicker" data-bind-text="gradeKicker"></div>
+        <div class="brandTitle" data-bind-text="title"></div>
+        <div class="brandSub" data-bind-text="subtitle"></div>
+      </div>
+    </div>
+
+    <nav aria-label="Page navigation">
+      <a class="btn" data-bind-href="homeHref">
+        🏛️ <span data-bind-text="homeLabel"></span>
+      </a>
+    </nav>
+  </div>
+</header>
+`;
+
+  const footerHTML = `
+<footer class="site-footer" role="contentinfo">
+  <hr class="footer-rule" />
+
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img
+        src="/assets/images/logo/MSHistory_Logo_Basic_Web.png"
+        alt="Middle School History"
+        class="footer-logo-icon"
+      />
+      <img
+        src="/assets/images/logo/MSHistory_Logo_Text_Basic.png"
+        alt=""
+        aria-hidden="true"
+        class="footer-logo-text"
+      />
+    </div>
+
+    <div class="footer-copy">
+      © <span id="copyright-year"></span>
+      Stephen Sovocool ·
+      <span class="footer-site">MiddleSchoolHistory.com</span>
+      <br />
+      All rights reserved.
+    </div>
+  </div>
+</footer>
+`;
+
+  const h = document.getElementById("siteHeader");
+  const f = document.getElementById("siteFooter");
+
+  if (h) h.innerHTML = headerHTML;
+  if (f) f.innerHTML = footerHTML;
+
+  applyConfig(document);
+}
+
+(function () {
+  // Make sure DOM exists before we inject
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", injectHeaderFooter);
+  } else {
+    injectHeaderFooter();
+  }
 })();
