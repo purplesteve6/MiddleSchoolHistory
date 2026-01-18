@@ -113,6 +113,14 @@
       box-shadow: 0 10px 22px rgba(0,0,0,.45);
       flex:0 0 auto;
     }
+
+.columnIcon img{
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  display: block;
+}
+
     .columnIcon svg{width:22px; height:22px; display:block}
     .columnIcon .g{fill: rgba(255,216,74,.95)}
     .columnIcon .r{fill: rgba(179,18,42,.85)}
