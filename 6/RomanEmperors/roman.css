@@ -113,6 +113,9 @@
       box-shadow: 0 10px 22px rgba(0,0,0,.45);
       flex:0 0 auto;
     }
+    .columnIcon svg{width:22px; height:22px; display:block}
+    .columnIcon .g{fill: rgba(255,216,74,.95)}
+    .columnIcon .r{fill: rgba(179,18,42,.85)}
 
 .columnIcon img{
   width: 70%;
@@ -120,10 +123,6 @@
   object-fit: contain;
   display: block;
 }
-
-    .columnIcon svg{width:22px; height:22px; display:block}
-    .columnIcon .g{fill: rgba(255,216,74,.95)}
-    .columnIcon .r{fill: rgba(179,18,42,.85)}
 
     .nav a.btn{
       text-decoration:none;
@@ -187,72 +186,137 @@
     .callout .label{font-weight:1000}
     .callout .value{font-weight:700}
 
-    /* Big Idea */
-    .bigIdeaWrap{
-      display:grid;
-      grid-template-columns: 150px 1fr;
-      gap: .9rem;
-      margin: .95rem 0 .65rem;
-      align-items:center;
-    }
-    @media (max-width: 560px){ .bigIdeaWrap{grid-template-columns: 1fr} }
-    .bigIdeaGraphic{
-      border-radius: 14px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.10);
-      display:grid;
-      place-items:center;
-      padding:.45rem;
-      min-height: 92px;
-    }
-    .bigIdeaGraphic img{max-width: 100%; height:auto; display:block}
-    .bigIdeaText{
-      font-size:1.03rem;
-      font-weight:800;
-      color: rgba(255,246,229,.92);
-      background: rgba(179,18,42,.16);
-      border: 1px solid rgba(179,18,42,.25);
-      padding:.85rem .9rem;
-      border-radius: 14px;
-    }
+    /* Big Idea (match Tiberius) */
+.bigIdeaWrap{margin-top:.8rem}
 
-    /* Right card */
-    .hero-right{padding:1rem}
-    .portraitWrap{display:grid; gap:.85rem}
-    .portrait{
-      border-radius: 16px;
-      overflow:hidden;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
-      display:block;
-    }
-    .portrait img{display:block; width:100%; height:auto}
+.bigIdeaGraphic{
+  width:150px;
+  height:92px;
+  margin: .2rem auto .35rem;
+  background: none;
+  border: none;
+  padding: 0;
+  min-height: 0;
+  display:block;
+}
 
-    /* Prev / Next buttons */
-    .portraitButtons{
-      display:grid;
-      grid-template-columns: 1fr .35fr 1fr;
-      gap:.55rem;
-      align-items:stretch;
-    }
-    .pbtn{
-      text-decoration:none;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      padding:.65rem .7rem;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      min-height: 62px;
-    }
-    .pbtn:hover{transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,216,74,.26)}
-    .pbtn:focus{outline:none; box-shadow:var(--focus)}
-    .pbtnTop{display:flex; align-items:center; justify-content:space-between; font-weight:1000}
-    .pbtnSub{font-size:.92rem; color: rgba(255,246,229,.75); font-weight:800}
-    .pbtn.spacer{opacity:0; pointer-events:none}
+.bigIdeaGraphic img{
+  width:150px;
+  height:92px;
+  display:block;
+  object-fit:contain;
+}
+
+.bigIdeaText{
+  margin-top:.1rem;
+  color: var(--brightYellow);
+  font-weight:1000;
+  background: none;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+
+    /* Right card (match Tiberius) */
+.hero-right{padding: 1rem; display:grid; gap:.55rem;}
+.portraitWrap{width:100%; display:grid; gap:.45rem;}
+
+.portrait{
+  aspect-ratio: 1 / 1;
+  width:100%;
+  border-radius: calc(var(--radius) - 4px);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(700px 320px at 18% 0%, rgba(179,18,42,.20), transparent 55%),
+    radial-gradient(700px 320px at 86% 20%, rgba(255,216,74,.16), transparent 55%),
+    linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  display:grid;
+  place-items:center;
+}
+
+.portrait img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+
+    /* Prev/Next (match Tiberius) */
+.portraitButtons{
+  display:flex;
+  justify-content:space-between;
+  align-items:stretch;
+  gap:.5rem;
+  margin-top:.45rem;
+}
+
+.pbtn{
+  width: calc((100% - 1rem) / 3);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:.22rem;
+  padding:.48rem .55rem .52rem;
+  border-radius: 12px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  font-size:.82rem;
+  font-weight:1000;
+  text-decoration:none;
+  line-height:1.15;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+  min-height: 0;
+}
+
+.pbtn:hover{
+  background: rgba(255,255,255,.09);
+  transform: translateY(-1px);
+  border-color: rgba(255,216,74,.28);
+}
+
+.pbtn:focus{outline:none; box-shadow: var(--focus)}
+
+.pbtnTop{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.4rem;
+  width:100%;
+  text-align:center;
+  font-weight:1000;
+}
+
+.pbtnTop .label{
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pbtnTop .emoji{ text-decoration:none; }
+
+.pbtnSub{
+  font-size:.78rem;
+  font-weight:900;
+  color: rgba(255,246,229,.55);
+  text-align:center;
+  margin-top:.05rem;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:100%;
+}
+
+.pbtn.spacer{
+  pointer-events:none;
+  opacity:0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow:none;
+}
+
 
     /* Tags row */
     .pillrow{display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.95rem}
@@ -268,6 +332,12 @@
       font-size:.92rem;
     }
 
+.jumpRow{
+  display:flex;
+  justify-content:center;
+  margin-top:.35rem;
+}
+
     /* Sections */
     .full{margin-top: 1rem}
     .section{padding:1.1rem 1.2rem}
@@ -281,33 +351,47 @@
     }
     @media (max-width: 860px){ .grid{grid-template-columns:1fr} }
 
-    /* Did You Know */
-    .didYouKnow{
-      margin-top:1rem;
-      display:grid;
-      grid-template-columns: 220px 1fr;
-      gap:1rem;
-      align-items:center;
-    }
-    @media (max-width: 680px){ .didYouKnow{grid-template-columns: 1fr} }
-    .dykImg{
-      border-radius: 16px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.10);
-      display:grid;
-      place-items:center;
-      padding:.6rem;
-      min-height: 92px;
-    }
-    .dykImg img{max-width:100%; height:auto; display:block}
-    .fact{
-      padding: .95rem 1rem;
-      border-radius: 16px;
-      background: rgba(255,216,74,.08);
-      border: 1px solid rgba(255,216,74,.25);
-      font-weight: 850;
-      color: rgba(255,246,229,.94);
-    }
+    /* Did you know feature (match Tiberius) */
+.didYouKnow{
+  margin-top: 1rem;
+  padding: 1.1rem 1.1rem 1.15rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,216,74,.22);
+  background: linear-gradient(135deg, rgba(123,11,29,.55), rgba(179,18,42,.26));
+  box-shadow: 0 16px 44px rgba(0,0,0,.48);
+  text-align:center;
+  display:block;
+}
+
+.didYouKnow .dykImg{
+  width: 200px;
+  height: 78px;
+  margin: 0 auto .45rem;
+  background:none;
+  border:none;
+  padding:0;
+  min-height:0;
+  display:block;
+}
+
+.didYouKnow .dykImg img{
+  width:200px;
+  height:78px;
+  display:block;
+  object-fit:contain;
+}
+
+.didYouKnow .fact{
+  color: rgba(255,216,74,.98);
+  font-weight:1000;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  line-height:1.25;
+  text-shadow: 0 2px 16px rgba(0,0,0,.55);
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
 
     /* Quick facts */
     .factsList{display:grid; gap:.55rem}
@@ -377,15 +461,14 @@
     /* Timeline iframe embed */
     .timeline-embed{margin-top:1rem}
     .timeline-frame{
-  width:100%;
-  border:0;
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-  background: rgba(255,255,255,.03);
-  height: 820px;        /* ← THIS fixes the cutoff */
-  display:block;
-}
-
+      width:100%;
+      border:0;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      background: rgba(255,255,255,.03);
+      height: 820px;        /* ← THIS fixes the cutoff */
+      display:block;
+    }
 
     /* Footer */
     .site-footer{
@@ -423,3 +506,7 @@
       .footer-logo-icon{height:36px}
       .footer-logo-text{height:20px}
     }
+
+#timeline{
+  scroll-margin-top: 140px;
+}
