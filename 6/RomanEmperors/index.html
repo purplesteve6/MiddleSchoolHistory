@@ -31,9 +31,7 @@
 
       --markerText: rgba(255,216,74,.95);
       --brightYellow: var(--gold);
-
-      
-}
+    }
 
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -65,6 +63,18 @@
     }
 
     .brand{display:flex; align-items:center; gap:.7rem;}
+
+    /* ✅ Added to support Grade 6 (kicker) + Title + Subline */
+    .brandText{display:flex; flex-direction:column; line-height:1.05;}
+    .brandKicker{
+      font-size:.68rem;
+      font-weight:1000;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color: rgba(255,246,229,.70);
+      margin-bottom:.12rem;
+    }
+
     .brandTitle{font-weight:1000}
     .brandSub{
       font-size:.9rem;
@@ -84,6 +94,13 @@
     .columnIcon svg{width:22px; height:22px; display:block}
     .columnIcon .g{fill: rgba(255,216,74,.95)}
     .columnIcon .r{fill: rgba(179,18,42,.85)}
+
+    .columnIcon img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
 
     .nav a.btn{
       text-decoration:none;
@@ -393,23 +410,19 @@
   <header>
     <div class="nav">
       <div class="brand">
-        <div class="columnIcon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path class="g" d="M6 3h12v3H6z"/>
-            <path class="g" d="M7 6h10v2H7z"/>
-            <path class="g" d="M8 8h8v10H8z"/>
-            <path class="g" d="M6 18h12v3H6z"/>
-            <path class="r" d="M9 10h1v6H9zM11.5 10h1v6h-1zM14 10h1v6h-1z"/>
-          </svg>
+        <div class="columnIcon gradeBadge" aria-hidden="true">
+          <img src="/assets/branding/grade-6.png" alt="" />
         </div>
-        <div>
+
+        <div class="brandText">
+          <div class="brandKicker">Grade 6</div>
           <div class="brandTitle">Roman Emperors</div>
-          <div class="brandSub">Social Studies with Mr. Sovocool</div>
+          <div class="brandSub">Middle School History</div>
         </div>
       </div>
 
       <nav aria-label="Page navigation">
-        <a class="btn" href="index.html">🏛️ Home</a>
+        <a class="btn" href="index.html">🏛️ Roman Emperors Home</a>
       </nav>
     </div>
   </header>
@@ -528,7 +541,7 @@
           <span class="vocabWord" data-def="A dictator in Rome was an emergency leader with special powers. Over time, Caesar held this power longer and longer.">dictator</span>
           for life. Some Romans believed he was turning Rome into a monarchy (a king-like system).
         </p>
-<br><hr><br>
+        <br><hr><br>
         <h2><center>Beware the <i>Ides of March!</i></center></h2>
         <p>
           A group of senators formed a
@@ -547,7 +560,7 @@
           <span class="vocabWord" data-def="An heir is the person expected to take over power or a position after someone dies.">Octavian</span>,
           and others competed to control Rome.
         </p>
-<br><hr><br>
+        <br><hr><br>
         <h2><center>Republic vs. Empire: What Changed?</center></h2>
         <p>
           In a <b>republic</b>, power is supposed to be shared: laws are debated, leaders are chosen, and no one person should control everything.
@@ -667,6 +680,6 @@
         frameborder="0"
       ></iframe>
     </section>
-</main>
+  </main>
 </body>
 </html>
