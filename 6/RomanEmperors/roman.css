@@ -488,6 +488,24 @@
       padding:18px 1rem 40px;
       color: rgba(255,246,229,.78);
     }
+
+.footer-centered{
+  text-align:center;
+}
+
+.footer-brand-link{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.6rem;
+  text-decoration:none;
+  color:inherit;
+}
+
+.footer-brand-link:hover{
+  text-decoration:none;
+}
+
     .footer-rule{
       border:none;
       height:1px;
