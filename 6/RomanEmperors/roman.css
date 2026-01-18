@@ -314,6 +314,11 @@
   pointer-events: none;
 }
 
+.pbtn.is-hidden{
+  visibility: hidden;
+  pointer-events: none;
+}
+
 
     /* Tags row */
     .pillrow{display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.95rem}
