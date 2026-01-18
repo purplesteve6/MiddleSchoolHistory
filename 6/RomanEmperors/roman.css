@@ -219,8 +219,17 @@
 
 
     /* Right card (match Tiberius) */
-.hero-right{padding: 1rem; display:grid; gap:.55rem;}
-.portraitWrap{width:100%; display:grid; gap:.45rem;}
+.hero-right{
+  padding: 1rem;
+  display: grid;
+  gap: .55rem;
+}
+
+.portraitWrap{
+  display: grid;
+  gap: .55rem;
+}
+
 
 .portrait{
   aspect-ratio: 1 / 1;
