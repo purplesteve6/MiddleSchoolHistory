@@ -1,686 +1,171 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Julius Caesar (100–44 BCE) | Rise & Assassination</title>
-  <meta name="description" content="A kid-friendly page about Julius Caesar’s rise to power, the assassination on the Ides of March, and how Rome moved from republic to empire." />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roman Emperors | Middle School History</title>
 
-  <style>
+<style>
+:root{
+  --bg:#12060a;
+  --bg2:#0b0507;
+  --text:#fff6e5;
+  --subtle: rgba(255,246,229,.78);
+  --gold:#FFD84A;
+  --red:#b3122a;
+  --radius:18px;
+  --shadow:0 14px 40px rgba(0,0,0,.45);
+  --focus:0 0 0 4px rgba(255,216,74,.40);
+}
 
-    :root{
-      /* ===== RED + GOLD THEME (matches site) ===== */
-      --bg:#12060a;
-      --bg2:#0b0507;
-      --text:#fff6e5;
-      --muted:#ffdca6;
-      --subtle: rgba(255,246,229,.78);
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(900px 700px at 0% 50%, rgba(179,18,42,.32), transparent 60%),
+    radial-gradient(900px 700px at 100% 50%, rgba(255,216,74,.18), transparent 60%),
+    linear-gradient(90deg, var(--bg2), var(--bg), var(--bg2));
+  color:var(--text);
+  line-height:1.5;
+}
 
-      --gold:#FFD84A;
-      --gold2:#f2c94c;
-      --red:#b3122a;
-      --red2:#7b0b1d;
+/* ================= HEADER (NON-SCROLLING) ================= */
+header{
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:999;
+  overflow:visible;           /* allow logo overlap */
+  backdrop-filter:blur(12px);
+  background:rgba(14,6,8,.68);
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
 
-      --panel: rgba(255, 255, 255, .055);
-      --panel2: rgba(255, 255, 255, .032);
-      --shadow: 0 14px 40px rgba(0,0,0,.45);
-      --radius: 18px;
-      --max: 980px;
+/* Main landing-page style logo patch */
+.nav-logo{
+  position:absolute;
+  left:12px;
+  top:-52px;
+  z-index:1000;
+}
+.nav-logo-img{
+  height:140px;
+  width:auto;
+  display:block;
+  background:transparent;
+}
 
-      --focus: 0 0 0 4px rgba(255,216,74,.40);
+/* Header bar content */
+.nav{
+  max-width:980px;
+  margin:0 auto;
+  padding:.8rem 1rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+}
 
-      --markerText: rgba(255,216,74,.95);
-      --brightYellow: var(--gold);
-    }
+.brand{
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+}
+.columnIcon{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  border:1px solid rgba(255,216,74,.28);
+  background:linear-gradient(135deg, rgba(179,18,42,.3), rgba(255,216,74,.16));
+  box-shadow:0 10px 22px rgba(0,0,0,.45);
+}
+.columnIcon img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background:
-        radial-gradient(900px 700px at 0% 50%, rgba(179,18,42,.32), transparent 60%),
-        radial-gradient(900px 700px at 100% 50%, rgba(255,216,74,.18), transparent 60%),
-        linear-gradient(90deg, var(--bg2) 0%, var(--bg) 50%, var(--bg2) 100%);
-      background-attachment: fixed;
-      color:var(--text);
-      line-height:1.5;
-    }
-    a{color:inherit}
-    code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+.brandText{
+  display:flex;
+  flex-direction:column;
+  line-height:1.05;
+}
+.brandKicker{
+  font-size:.68rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(255,246,229,.7);
+}
+.brandTitle{font-weight:1000}
+.brandSub{
+  font-size:.9rem;
+  color:rgba(255,246,229,.72);
+}
 
-    header{
-      position:sticky; top:0; z-index:10;
-      backdrop-filter: blur(12px);
-      background: rgba(14,6,8,.68);
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .nav{
-      max-width: var(--max);
-      margin:0 auto;
-      padding: .8rem 1rem;
-      display:flex; align-items:center; justify-content:space-between; gap:.8rem;
-    }
+.btn{
+  text-decoration:none;
+  padding:.55rem .85rem;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.06);
+}
+.btn:hover{background:rgba(255,255,255,.09)}
 
-    .brand{display:flex; align-items:center; gap:.7rem;}
+/* Push content below fixed header */
+main{padding:110px 1rem 4rem; max-width:980px; margin:0 auto}
 
-    /* ✅ Added to support Grade 6 (kicker) + Title + Subline */
-    .brandText{display:flex; flex-direction:column; line-height:1.05;}
-    .brandKicker{
-      font-size:.68rem;
-      font-weight:1000;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color: rgba(255,246,229,.70);
-      margin-bottom:.12rem;
-    }
+/* ================= PAGE CONTENT ================= */
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:1.2rem;
+}
 
-    .brandTitle{font-weight:1000}
-    .brandSub{
-      font-size:.9rem;
-      font-weight:500;
-      color: rgba(255,246,229,.72);
-      margin-top:.08rem;
-    }
-    .columnIcon{
-      width:34px; height:34px;
-      display:grid; place-items:center;
-      border-radius:12px;
-      border:1px solid rgba(255,216,74,.28);
-      background: linear-gradient(135deg, rgba(179,18,42,.30), rgba(255,216,74,.16));
-      box-shadow: 0 10px 22px rgba(0,0,0,.45);
-      flex:0 0 auto;
-    }
-    .columnIcon svg{width:22px; height:22px; display:block}
-    .columnIcon .g{fill: rgba(255,216,74,.95)}
-    .columnIcon .r{fill: rgba(179,18,42,.85)}
-
-    .columnIcon img{
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-
-    .nav a.btn{
-      text-decoration:none;
-      display:inline-flex; align-items:center; gap:.5rem;
-      padding:.55rem .85rem;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      white-space:nowrap;
-    }
-    .nav a.btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.09); border-color: rgba(255,216,74,.35)}
-    .nav a.btn:focus{outline:none; box-shadow:var(--focus)}
-
-    main{max-width: var(--max); margin:0 auto; padding: 1.2rem 1rem 4rem;}
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.032));
-      border:1px solid rgba(255,255,255,.12);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-    .tiny{font-size:.92rem; color: rgba(255,246,229,.72)}
-    h2{margin:.15rem 0 .6rem; font-size:1.25rem; letter-spacing:-.2px}
-
-    /* Hero */
-    .hero{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:1.1rem;
-      align-items:stretch;
-      margin-top:1rem;
-    }
-    @media (max-width: 860px){ .hero{grid-template-columns:1fr} }
-    .hero-left{padding:1.2rem 1.2rem 1.1rem}
-    .kicker{
-      display:inline-flex; gap:.5rem; align-items:center;
-      padding:.25rem .6rem;
-      border-radius: 999px;
-      background: rgba(179,18,42,.22);
-      border: 1px solid rgba(255,216,74,.25);
-      color: rgba(255,216,74,.92);
-      font-weight:1000;
-      font-size:.92rem;
-    }
-    h1{
-      margin:.65rem 0 .35rem;
-      font-size: clamp(1.8rem, 3.4vw, 2.6rem);
-      line-height:1.1;
-      letter-spacing:-.5px;
-    }
-    .sub{margin:0 0 .9rem; color: var(--subtle); font-size:1.04rem; max-width: 60ch;}
-
-    .callout{
-      padding:.75rem .85rem;
-      border-radius: 14px;
-      background: rgba(255,216,74,.10);
-      border: 1px solid rgba(255,216,74,.26);
-      color: rgba(255,246,229,.94);
-      font-weight:750;
-    }
-    .callout .label{font-weight:1000}
-    .callout .value{font-weight:700}
-
-    /* Big Idea */
-    .bigIdeaWrap{margin-top:.8rem}
-    .bigIdeaGraphic{
-      width:150px;
-      height:92px;
-      margin: .2rem auto .35rem;
-    }
-    .bigIdeaGraphic img{
-      width:150px;
-      height:92px;
-      display:block;
-      object-fit:contain;
-    }
-    .bigIdeaText{
-      margin-top:.1rem;
-      color: var(--brightYellow);
-      font-weight:1000;
-    }
-
-    .pillrow{display:flex; flex-wrap:wrap; gap:.5rem; margin:.9rem 0 0}
-    .pill{
-      padding:.35rem .65rem;
-      border-radius: 999px;
-      background: rgba(255,255,255,.055);
-      border:1px solid rgba(255,255,255,.14);
-      color: rgba(255,246,229,.92);
-      font-weight:900;
-      font-size:.92rem;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      gap:.4rem;
-    }
-    .pill:hover{border-color: rgba(255,216,74,.26)}
-
-    .hero-right{padding: 1rem; display:grid; gap:.55rem;}
-    .portraitWrap{width: 100%;}
-
-    .portrait{
-      aspect-ratio: 1 / 1;
-      width:100%;
-      border-radius: calc(var(--radius) - 4px);
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(700px 320px at 18% 0%, rgba(179,18,42,.20), transparent 55%),
-        radial-gradient(700px 320px at 86% 20%, rgba(255,216,74,.16), transparent 55%),
-        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-      display:grid; place-items:center;
-    }
-    .portrait img{width:100%; height:100%; object-fit:cover; display:block}
-
-    /* Prev/Next */
-    .portraitButtons{
-      display:flex;
-      justify-content:space-between;
-      align-items:stretch;
-      gap:.5rem;
-      margin-top:.45rem;
-    }
-    .pbtn{
-      width: calc((100% - 1rem) / 3);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:.22rem;
-      padding:.48rem .55rem .52rem;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      font-size:.82rem;
-      font-weight:1000;
-      text-decoration:none;
-      line-height:1.15;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-    }
-    .pbtn:hover{background: rgba(255,255,255,.09); transform: translateY(-1px); border-color: rgba(255,216,74,.28)}
-    .pbtn:focus{outline:none; box-shadow: var(--focus)}
-    .pbtnTop{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:.4rem;
-      width:100%;
-      text-align:center;
-    }
-    .pbtnTop .label{
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .pbtnTop .emoji{ text-decoration:none; }
-    .pbtnSub{
-      font-size:.78rem;
-      font-weight:900;
-      color: rgba(255,246,229,.55);
-      text-align:center;
-      margin-top:.05rem;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width:100%;
-    }
-    .pbtn.spacer{
-      pointer-events:none;
-      opacity:0;
-      border-color: transparent;
-      background: transparent;
-      box-shadow:none;
-    }
-
-    .jumpRow{
-      display:flex;
-      justify-content:center;
-      margin-top:.35rem;
-    }
-
-    /* Layout sections */
-    .grid{margin-top: 1.1rem; display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;}
-    @media (max-width: 860px){ .grid{grid-template-columns:1fr} }
-    .section{padding:1rem 1.1rem}
-    h3{margin:.85rem 0 .4rem; font-size:1.05rem}
-    p{margin:.25rem 0 .65rem; color: rgba(255,246,229,.86)}
-    ul{margin:.35rem 0 .8rem; padding-left: 1.1rem}
-    li{margin:.28rem 0; color: rgba(255,246,229,.86)}
-
-    /* Full-width reading block */
-    .full{margin-top:1.1rem}
-    .full .section{padding:1.05rem 1.15rem}
-
-    /* Did you know feature */
-    .didYouKnow{
-      margin-top: 1rem;
-      padding: 1.1rem 1.1rem 1.15rem;
-      border-radius: var(--radius);
-      border: 1px solid rgba(255,216,74,.22);
-      background: linear-gradient(135deg, rgba(123,11,29,.55), rgba(179,18,42,.26));
-      box-shadow: 0 16px 44px rgba(0,0,0,.48);
-      text-align:center;
-    }
-    .didYouKnow .dykImg{
-      width: 200px;
-      height: 78px;
-      margin: 0 auto .45rem;
-    }
-    .didYouKnow .dykImg img{
-      width:200px;
-      height:78px;
-      display:block;
-      object-fit:contain;
-    }
-    .didYouKnow .fact{
-      color: rgba(255,216,74,.98);
-      font-weight:1000;
-      font-size: clamp(1.05rem, 2vw, 1.35rem);
-      line-height:1.25;
-      text-shadow: 0 2px 16px rgba(0,0,0,.55);
-    }
-
-    /* Quick facts list */
-    .factsList{display:grid; gap:.6rem; margin-top:.6rem}
-    .factItem{
-      padding:.75rem .85rem;
-      border-radius: 16px;
-      background: rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.10);
-      color: rgba(255,246,229,.90);
-    }
-    .factItem b{color: rgba(255,216,74,.95)}
-
-    /* Vocabulary (right column) */
-    .vocab{display:grid; gap:.6rem}
-    .term{
-      padding:.75rem .85rem;
-      border-radius: 16px;
-      background: rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.10);
-    }
-
-    /* Hover definitions */
-    .vocabWord{
-      font-weight:1000;
-      color: rgba(255,216,74,.95);
-      position:relative;
-      cursor: help;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: rgba(255,216,74,.45);
-    }
-    .vocabWord::after{
-      content: attr(data-def);
-      position:absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 120%;
-      width: min(320px, 70vw);
-      padding: .55rem .65rem;
-      border-radius: 12px;
-      background: rgba(14,6,8,.92);
-      border: 1px solid rgba(255,216,74,.30);
-      color: rgba(255,246,229,.92);
-      font-weight:800;
-      font-size: .9rem;
-      line-height:1.25;
-      box-shadow: 0 14px 40px rgba(0,0,0,.55);
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .12s ease;
-      white-space: normal;
-      z-index: 50;
-    }
-    .vocabWord::before{
-      content:"";
-      position:absolute;
-      left:50%;
-      transform: translateX(-50%);
-      bottom: 108%;
-      border: 7px solid transparent;
-      border-top-color: rgba(255,216,74,.30);
-      opacity:0;
-      transition: opacity .12s ease;
-      z-index: 49;
-    }
-    .vocabWord:hover::after,
-    .vocabWord:hover::before{ opacity:1; }
-
-    /* Timeline is loaded via iframe: .../reference_files/timeline.html */
-
-    /* Prevent any accidental page-wide horizontal overflow */
-    html, body{ overflow-x: hidden; }
-
-    .timeline-embed{ margin-top: 1.25rem; }
-    .timeline-frame{
-      width: 100%;
-      height: 820px; /* tall enough to avoid iframe-level vertical scrollbars */
-      border: 0;
-      display: block;
-      background: transparent;
-    }
-  </style>
+h1{margin:.4rem 0;font-size:2.2rem}
+p{color:rgba(255,246,229,.86)}
+</style>
 </head>
 
 <body>
-  <header>
-    <div class="nav">
-      <div class="brand">
-        <div class="columnIcon gradeBadge" aria-hidden="true">
-          <img src="/assets/images/icons/6_icon.png" alt="Grade 6 icon">
 
-        </div>
+<header>
+  <!-- MAIN LOGO (same behavior as landing page) -->
+  <a class="nav-logo" href="/">
+    <img class="nav-logo-img"
+         src="/assets/images/MSHistory_Logo_Basic_Web.png"
+         alt="Middle School History">
+  </a>
 
-        <div class="brandText">
-          <div class="brandKicker">Grade 6</div>
-          <div class="brandTitle">Roman Emperors</div>
-          <div class="brandSub">Middle School History</div>
-        </div>
+  <div class="nav">
+    <div class="brand">
+      <div class="columnIcon">
+        <img src="/assets/images/icons/6_icon.png" alt="Grade 6">
       </div>
-
-      <nav aria-label="Page navigation">
-        <a class="btn" href="index.html">🏛️ Roman Emperors Home</a>
-      </nav>
+      <div class="brandText">
+        <div class="brandKicker">Grade 6</div>
+        <div class="brandTitle">Roman Emperors</div>
+        <div class="brandSub">Middle School History</div>
+      </div>
     </div>
-  </header>
 
-  <main id="content">
-    <section class="hero">
-      <div class="card hero-left">
-        <span class="kicker">Rise & Assassination</span>
-        <h1>Julius Caesar: <br>From Republic to Empire</h1>
-        <p class="sub">
-          Julius Caesar was a brilliant general and politician. His rise to power shook the Roman
-          <span class="vocabWord" data-def="A republic is a government where people choose leaders and power is shared (at least in theory).">republic</span>,
-          and his assassination helped lead to the Roman <span class="vocabWord" data-def="An empire is many lands ruled by one central government, usually led by a single ruler.">empire</span>.
-        </p>
+    <a class="btn" href="index.html">🏛️ Roman Emperors Home</a>
+  </div>
+</header>
 
-        <div class="callout">
-          <span class="label">Lived:</span> <span class="value">100–44 BCE</span> •
-          <span class="label">Assassinated:</span> <span class="value">Ides of March (March 15), 44 BCE</span>
-        </div>
+<main>
+  <section class="card">
+    <h1>Roman Emperors</h1>
+    <p>
+      This section explores the rulers of the Roman Empire, how they gained power,
+      and how their decisions shaped Roman history.
+    </p>
+  </section>
+</main>
 
-        <div class="bigIdeaWrap" aria-label="Big Idea">
-          <div class="bigIdeaGraphic">
-            <img
-              src="images/bigidea.png"
-              alt="Big Idea graphic"
-              width="150"
-              height="92"
-              onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','<div style=&quot;color:rgba(255,246,229,.75);font-weight:1000;text-align:center&quot;>Missing: /images/bigidea.png</div>');"
-            />
-          </div>
-          <div class="bigIdeaText">
-            Caesar’s death did not “save” the republic — it sped up Rome’s change into an empire.
-          </div>
-        </div>
-
-        <div class="pillrow" aria-label="Topic tags">
-          <span class="pill">⚔️ Civil war</span>
-          <span class="pill">🏛️ Republic vs. Empire</span>
-          <span class="pill">🗡️ Assassination</span>
-          <span class="pill">👑 Power & leadership</span>
-        </div>
-      </div>
-
-      <aside class="card hero-right" aria-label="Portrait and navigation">
-        <div class="portraitWrap">
-          <div class="portrait" role="img" aria-label="Portrait of Julius Caesar">
-            <img
-              src="images/juliuscaesar.jpg"
-              alt="Portrait of Julius Caesar"
-              onerror="this.style.display='none'; this.parentElement.style.display='grid'; this.parentElement.innerHTML='<div style=&quot;text-align:center;padding:1rem;color:rgba(255,246,229,.85);font-weight:1000&quot;>Portrait Missing<span style=&quot;display:block;margin-top:.25rem;font-weight:750;color:rgba(255,246,229,.65);font-size:.92rem&quot;>Expected: images/juliuscaesar.jpg</span></div>';"
-            />
-          </div>
-
-          <!-- No Previous button (per request). Keep layout with spacers. -->
-          <div class="portraitButtons" aria-label="Next navigation">
-            <div class="pbtn spacer" aria-hidden="true"></div>
-            <div class="pbtn spacer" aria-hidden="true"></div>
-
-            <a class="pbtn next" href="emperors/augustus.html" title="Next: Augustus">
-              <div class="pbtnTop">
-                <span class="label">Next</span>
-                <span class="emoji" aria-hidden="true">➡️</span>
-              </div>
-              <div class="pbtnSub">Augustus</div>
-            </a>
-          </div>
-        </div>
-
-        <div class="jumpRow">
-          <a class="pill" href="#timeline" title="Jump to the timeline below">
-            🗓️ <span style="text-decoration: underline; text-underline-offset: 3px;">Jump to Timeline</span>
-          </a>
-        </div>
-      </aside>
-    </section>
-
-    <section class="card full" aria-label="Julius Caesar reading">
-      <div class="section">
-        <h2><center>How Did Caesar Rise?</center></h2>
-        <p>
-          Rome was a <span class="vocabWord" data-def="A republic is a government where citizens (or representatives) choose leaders and power is shared among different groups.">republic</span>,
-          which meant leaders were supposed to share power. The
-          <span class="vocabWord" data-def="The Senate was a powerful council of Roman leaders and lawmakers.">Senate</span>
-          debated laws, and elected officials (like <span class="vocabWord" data-def="The two highest elected officials in the Roman Republic, who served together as head-of-state.">consuls</span>) served short terms.
-          But by Caesar’s time, Rome had huge territory, lots of money, and big problems—especially
-          inequality and conflict between powerful families.
-        </p>
-
-        <!-- ✅ ADDED: TRIUMVIRATE INFO (placed where it naturally fits) -->
-        <h3>The Triumvirate: Power Shared (and Controlled)</h3>
-        <p>
-          One reason the republic struggled was that powerful men sometimes formed alliances to “share” influence behind the scenes.
-          Caesar became part of a
-          <span class="vocabWord" data-def="A triumvirate is an alliance of three powerful leaders who work together (often to control politics).">triumvirate</span>
-          with Pompey and Crassus. Even though Rome still had elections and the Senate, this partnership helped them
-          push decisions through, gain important jobs, and reward supporters.
-        </p>
-        <p>
-          The triumvirate did not last. When Crassus died and Caesar’s relationship with Pompey collapsed,
-          rivalry turned into open conflict—one more step toward civil war and one-man rule.
-        </p>
-
-        <h3>Military Success = Political Power</h3>
-        <p>
-          Caesar became famous by winning battles in <span class="vocabWord" data-def="Modern day France and other nearby areas.">Gaul</span>. His army became loyal to <i>him</i>,
-          not just to Rome. In a republic, this was dangerous—because a leader with loyal soldiers could pressure the government.
-          When the Senate ordered Caesar to give up his command, Caesar chose war instead.
-        </p>
-
-        <h3>The Civil War and One-Man Rule</h3>
-        <p>
-          Caesar crossed the Rubicon River and started a
-          <span class="vocabWord" data-def="A civil war is a war between groups inside the same country.">civil war</span>.
-          After defeating rivals like Pompey, he returned to Rome and took more and more power.
-          Eventually he was named
-          <span class="vocabWord" data-def="A dictator in Rome was an emergency leader with special powers. Over time, Caesar held this power longer and longer.">dictator</span>
-          for life. Some Romans believed he was turning Rome into a monarchy (a king-like system).
-        </p>
-        <br><hr><br>
-        <h2><center>Beware the <i>Ides of March!</i></center></h2>
-        <p>
-          A group of senators formed a
-          <span class="vocabWord" data-def="A conspiracy is a secret plan made by a group to do something (often illegal or harmful).">conspiracy</span>
-          to kill Caesar. On the
-          <span class="vocabWord" data-def="The Ides of March is March 15 on the Roman calendar.">Ides of March</span>
-          (March 15), 44 BCE, they attacked him in the Senate meeting place.
-          This is called an
-          <span class="vocabWord" data-def="An assassination is the murder of an important person for political reasons.">assassination</span>.
-        </p>
-
-        <h3>Did the Assassins Save the Republic?</h3>
-        <p>
-          The conspirators said they were protecting the republic, but Caesar’s death created a power vacuum.
-          More fighting followed, including new civil wars. Caesar’s adopted heir,
-          <span class="vocabWord" data-def="An heir is the person expected to take over power or a position after someone dies.">Octavian</span>,
-          and others competed to control Rome.
-        </p>
-        <br><hr><br>
-        <h2><center>Republic vs. Empire: What Changed?</center></h2>
-        <p>
-          In a <b>republic</b>, power is supposed to be shared: laws are debated, leaders are chosen, and no one person should control everything.
-          After Caesar’s death, Rome gradually became an <b>empire</b>, where one ruler (the emperor) held the most power—especially control of the army.
-          Augustus (Octavian) kept some republic “rules” on paper, but in real life the emperor was the key decision-maker.
-        </p>
-
-        <h3>Think About It</h3>
-        <ul>
-          <li>Why would soldiers be more loyal to a general than to the government?</li>
-          <li>How can a republic become unstable when one person gains too much power?</li>
-          <li>Did Caesar’s assassination make Rome freer—or lead to more war?</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="didYouKnow" aria-label="Did you know feature">
-      <div class="dykImg" aria-label="Did you know banner">
-        <img
-          src="images/didyouknow.png"
-          alt="Did you know"
-          width="200"
-          height="78"
-          onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','<div style=&quot;color:rgba(255,246,229,.75);font-weight:1000;text-align:center&quot;>Missing: images/didyouknow.png</div>');"
-        />
-      </div>
-      <div class="fact">
-        Many assassins claimed they were defending the republic—but Caesar’s death led to even more civil war, not peace.
-      </div>
-    </section>
-
-    <section class="grid" aria-label="Quick facts and vocabulary">
-      <article class="card section">
-        <h2>Quick Facts</h2>
-        <div class="factsList">
-          <div class="factItem">🧠 Caesar was a famous <b>general</b> and <b>politician</b>.</div>
-          <div class="factItem">⚔️ His victories helped him gain loyal <b>soldiers</b> and influence.</div>
-          <div class="factItem">🌊 Crossing the <b>Rubicon</b> helped start a <b>civil war</b>.</div>
-          <div class="factItem">🏛️ He was named <b>dictator for life</b>, alarming many senators.</div>
-          <div class="factItem">🗡️ He was assassinated on <b>March 15, 44 BCE</b> (the Ides of March).</div>
-          <div class="factItem">👑 After his death, <b>Augustus</b> rose and Rome moved toward an <b>empire</b>.</div>
-        </div>
-      </article>
-
-      <article class="card section">
-        <h2>Vocabulary</h2>
-        <div class="vocab">
-          <div class="term"><b>Republic</b> — a government where power is shared and leaders are chosen.</div>
-          <div class="term"><b>Senate</b> — a council of leaders who debated laws and advised Rome.</div>
-
-          <!-- ✅ UPDATED VOCAB LIST -->
-          <div class="term"><b>Consul</b> — one of two top elected leaders in the Roman republic, chosen for short terms.</div>
-          <div class="term"><b>Triumvirate</b> — an alliance of three powerful leaders who work together (often to control politics).</div>
-          <div class="term"><b>Emperor</b> — Rome’s top ruler in the empire; held the greatest power, especially over the army.</div>
-
-          <div class="term"><b>Dictator</b> — an emergency ruler with special powers (in Rome, originally temporary).</div>
-          <div class="term"><b>Civil war</b> — a war fought within one country.</div>
-          <div class="term"><b>Conspiracy</b> — a secret plan by a group to do something harmful or illegal.</div>
-          <div class="term"><b>Ides of March</b> — March 15 on the Roman calendar.</div>
-          <div class="term"><b>Assassination</b> — the political killing of an important person.</div>
-          <div class="term"><b>Empire</b> — many lands ruled by one central government, usually led by one ruler.</div>
-          <div class="term"><b>Heir</b> — the person expected to inherit power or a position.</div>
-        </div>
-      </article>
-    </section>
-
-    <!-- ✅ NEW: EMPEROR EXPLAINER + KEY EMPERORS SECTION (placed before timeline) -->
-    <section class="card full" aria-label="What is an emperor and key Roman emperors">
-      <div class="section">
-        <h2>What Is an Emperor?</h2>
-        <p>
-          An <b>emperor</b> is the main ruler of an <b>empire</b>. Roman emperors held more power than republic leaders because they controlled
-          the army, made major decisions, and could shape laws and leadership. Rome still kept some old republican offices and traditions,
-          but the emperor was usually the person who mattered most.
-        </p>
-
-        <h3>Roman Emperors: The Good and the Bad</h3>
-        <p>
-          Some emperors helped stabilize Rome, improved roads and cities, supported trade, or reformed government.
-          Others abused power, punished enemies, spent money recklessly, or created fear through violence and unfair trials.
-          Because emperors held so much control, their choices could improve life across the empire—or cause chaos very quickly.
-        </p>
-
-        <h3>Key Roman Emperors</h3>
-        <p>
-          Not every emperor is remembered equally. Some stand out because they <b>founded</b> a new system, expanded Rome,
-          brought long periods of peace, faced major crises, or ruled during turning points (like the empire splitting or the West falling).
-          Below are the emperors included in the timeline—each links to their page.
-        </p>
-
-        <ul>
-          <li><a href="emperors/augustus.html"><b>Augustus</b></a> — the first emperor; created the “new” Roman system after the republic’s collapse.</li>
-          <li><a href="emperors/tiberius.html"><b>Tiberius</b></a> — a capable but suspicious ruler; shows how fear could grow under emperors.</li>
-          <li><a href="emperors/caligula.html"><b>Caligula</b></a> — remembered for cruelty and instability; a warning about unchecked power.</li>
-          <li><a href="emperors/claudius.html"><b>Claudius</b></a> — improved government and expanded Rome; often underestimated by enemies.</li>
-          <li><a href="emperors/nero.html"><b>Nero</b></a> — famous for scandal and harsh rule; remembered as a symbol of decline and chaos.</li>
-          <li><a href="emperors/trajan.html"><b>Trajan</b></a> — led Rome to its greatest territorial size; often viewed as a strong military emperor.</li>
-          <li><a href="emperors/hadrian.html"><b>Hadrian</b></a> — focused on defending borders and strengthening the empire (more “builder” than conqueror).</li>
-          <li><a href="emperors/marcus-aurelius.html"><b>Marcus Aurelius</b></a> — philosopher-emperor; known for duty during difficult wars and crises.</li>
-          <li><a href="emperors/commodus.html"><b>Commodus</b></a> — his rule is often seen as a turning point toward instability after stronger leadership.</li>
-          <li><a href="emperors/diocletian.html"><b>Diocletian</b></a> — reorganized and strengthened the empire during crisis; changed how Rome was governed.</li>
-          <li><a href="emperors/constantine.html"><b>Constantine</b></a> — major reforms and big changes for religion and government; linked to a “new Rome.”</li>
-          <li><a href="emperors/theodosius.html"><b>Theodosius I</b></a> — ruled during key religious and political shifts; tied to the empire’s later divisions.</li>
-          <li><a href="emperors/romulus-augustulus.html"><b>Romulus Augustulus</b></a> — the last Western Roman emperor; his fall represents the end of the Western Empire.</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- TIMELINE (shared via iframe) -->
-    <section id="timeline" aria-label="Roman emperors timeline" class="timeline-embed">
-      <iframe
-        src="reference_files/timeline.html"
-        class="timeline-frame"
-        loading="lazy"
-        title="Roman Emperors Timeline"
-        scrolling="no"
-        frameborder="0"
-      ></iframe>
-    </section>
-  </main>
 </body>
 </html>
