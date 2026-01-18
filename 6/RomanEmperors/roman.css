@@ -310,11 +310,8 @@
 }
 
 .pbtn.spacer{
-  pointer-events:none;
-  opacity:0;
-  border-color: transparent;
-  background: transparent;
-  box-shadow:none;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 
