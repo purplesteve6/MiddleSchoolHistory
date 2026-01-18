@@ -1,8 +1,17 @@
 async function loadInto(id, url){
   const el = document.getElementById(id);
   if(!el) return;
-  const res = await fetch(url, { cache: "no-store" });
-  el.innerHTML = await res.text();
+
+  try{
+    const res = await fetch(url, { cache: "no-store" });
+    if(!res.ok){
+      console.warn(`[include.js] Could not load ${url} (HTTP ${res.status})`);
+      return;
+    }
+    el.innerHTML = await res.text();
+  }catch(err){
+    console.warn(`[include.js] Fetch failed for ${url}. If you are opening the HTML as file:// this will not work. Use a local server or GitHub Pages.`, err);
+  }
 }
 
 function applyConfig(){
@@ -27,10 +36,10 @@ function applyConfig(){
   if(y) y.textContent = new Date().getFullYear();
 }
 
-// Handles both: /RomanEmperors/index.html and /RomanEmperors/emperors/*.html
 (async function(){
-  const inEmperorsFolder = location.pathname.includes("/RomanEmperors/emperors/");
-  const base = inEmperorsFolder ? ".." : ".";
+  // Works for both spellings: /emperors/ and /empeors/
+  const inEmperorSubfolder = /\/empe?rors\//i.test(location.pathname);
+  const base = inEmperorSubfolder ? ".." : ".";
 
   await loadInto("siteHeader", `${base}/partials/header.html`);
   await loadInto("siteFooter", `${base}/partials/footer.html`);
