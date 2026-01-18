@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Augustus | Roman Emperors</title>
+  <meta name="description" content="A student-friendly page about Augustus, the first Roman emperor, with quick facts, vocabulary, and a timeline." />
 
   <link rel="stylesheet" href="../roman.css" />
 </head>
@@ -11,8 +12,7 @@
 <body>
   <div id="siteHeader"></div>
 
-  <!-- KEEP YOUR EXISTING AUGUSTUS PAGE CONTENT BELOW (unchanged layout) -->
-  <main>
+  <main id="content">
     <section class="hero">
       <div class="card hero-left">
         <span class="kicker">First Roman Emperor</span>
@@ -29,7 +29,12 @@
 
         <div class="bigIdeaWrap" aria-label="Big Idea">
           <div class="bigIdeaGraphic">
-            <img src="../images/bigidea.png" alt="Big Idea graphic" width="150" height="92">
+            <img
+              src="../images/bigidea.png"
+              alt="Big Idea graphic"
+              width="150"
+              height="92"
+            />
           </div>
           <div class="bigIdeaText">
             Rome looked like a republic, but one person held the most power.
@@ -47,7 +52,7 @@
       <aside class="card hero-right" aria-label="Portrait and navigation">
         <div class="portraitWrap">
           <div class="portrait" role="img" aria-label="Portrait of Augustus">
-            <img src="../images/augustus.jpg" alt="Portrait of Augustus">
+            <img src="../images/augustus.jpg" alt="Portrait of Augustus" />
           </div>
 
           <div class="portraitButtons" aria-label="Previous and next navigation">
@@ -79,7 +84,93 @@
       </aside>
     </section>
 
-    <!-- (rest of your Augustus content stays exactly as you already had it) -->
+    <section class="card full" aria-label="Who is Augustus reading">
+      <div class="section">
+        <h2>Who is Augustus?</h2>
+
+        <p>
+          Augustus was the first
+          <span class="vocabWord" data-def="An emperor is the top ruler of an empire.">emperor</span>
+          of Rome. He was born <b>Octavian</b> and became the adopted son of Julius Caesar.
+          After Caesar’s assassination, Rome fell into
+          <span class="vocabWord" data-def="A civil war is a war between groups inside the same country.">civil wars</span>
+          because powerful leaders fought for control.
+        </p>
+
+        <h3>How He Gained Power</h3>
+        <p>
+          Octavian teamed up with Mark Antony and Lepidus in the
+          <span class="vocabWord" data-def="A triumvirate is a group of three leaders who share power.">Second Triumvirate</span>.
+          Over time, Octavian defeated his rivals and became the most powerful leader in Rome.
+          In <b>27 BCE</b>, the
+          <span class="vocabWord" data-def="The Senate was a powerful council of Roman leaders and lawmakers.">Senate</span>
+          gave him the title <b>Augustus</b>, which means “the honored one.”
+        </p>
+
+        <h3>A New Kind of Government</h3>
+        <p>
+          Romans hated kings, so Augustus avoided calling himself one. Instead, he kept the old
+          <span class="vocabWord" data-def="A republic is a government where leaders are chosen and power is shared (at least in theory).">republic</span>
+          looking “alive” by letting the Senate meet and vote. But he made sure he controlled the
+          <span class="vocabWord" data-def="Legions were Rome’s professional soldiers, organized into large units.">legions</span>
+          (the army), and that gave him the biggest power.
+        </p>
+
+        <h3>Peace and Prosperity</h3>
+        <p>
+          Augustus helped bring stability after years of fighting. This began the
+          <span class="vocabWord" data-def="The Pax Romana was a long period of relative peace and stability across the Roman world.">Pax Romana</span>
+          (“Roman Peace”). During this time, trade improved and travel became safer.
+        </p>
+
+        <h3>Building Rome</h3>
+        <p>
+          Augustus supported building projects to make Rome look strong and organized. These projects also created jobs and made the city more impressive.
+        </p>
+
+        <h3>Why He Matters</h3>
+        <p>
+          Augustus mattered because he helped change Rome from a republic into an
+          <span class="vocabWord" data-def="An empire is many lands ruled by one central government.">empire</span>
+          led by one main ruler. The system he created lasted for a long time—even after he died.
+        </p>
+      </div>
+    </section>
+
+    <section class="didYouKnow" aria-label="Did you know feature">
+      <div class="dykImg" aria-label="Did you know banner">
+        <img src="../images/didyouknow.png" alt="Did you know" width="200" height="78" />
+      </div>
+      <div class="fact">
+        Augustus avoided wearing a crown. He wanted Romans to think he was protecting the republic—even while he held the most power.
+      </div>
+    </section>
+
+    <section class="grid" aria-label="Quick facts and vocabulary">
+      <article class="card section">
+        <h2>Quick Facts</h2>
+        <div class="factsList">
+          <div class="factItem">👑 Augustus ruled about <b>41 years</b> (27 BCE–14 CE).</div>
+          <div class="factItem">🕊️ His reign helped start the <b>Pax Romana</b>.</div>
+          <div class="factItem">🏛️ The Senate still existed, but Augustus controlled the <b>army</b>.</div>
+          <div class="factItem">🏗️ He supported <b>building projects</b> across Rome.</div>
+        </div>
+      </article>
+
+      <article class="card section">
+        <h2>Vocabulary</h2>
+        <div class="vocab">
+          <div class="term"><b>Emperor</b> — the top ruler with the most power.</div>
+          <div class="term"><b>Republic</b> — a government where power is shared and leaders are chosen (at least in theory).</div>
+          <div class="term"><b>Empire</b> — many lands ruled by one central authority.</div>
+          <div class="term"><b>Senate</b> — a council of Roman leaders and lawmakers.</div>
+          <div class="term"><b>Legion</b> — a large unit of Roman soldiers.</div>
+          <div class="term"><b>Pax Romana</b> — a long period of peace in Roman history.</div>
+          <div class="term"><b>Triumvirate</b> — a group of three leaders who share power.</div>
+          <div class="term"><b>Civil war</b> — a war between groups inside the same country.</div>
+        </div>
+      </article>
+    </section>
 
     <section id="timeline" aria-label="Roman emperors timeline" class="timeline-embed">
       <iframe
@@ -87,7 +178,6 @@
         class="timeline-frame"
         loading="lazy"
         title="Roman Emperors Timeline"
-        scrolling="no"
         frameborder="0"
       ></iframe>
     </section>
