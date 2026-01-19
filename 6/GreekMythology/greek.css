@@ -365,9 +365,10 @@ p{color: rgba(246,243,230,.90)}
   display:grid;
   grid-template-columns: 250px 1fr;
   gap: 18px;
-  align-items:start;
+  align-items: stretch;          /* CHANGED: make both columns share row height */
   margin: .6rem 0 1.0rem;
 }
+
 .mediaRow.reverse{
   grid-template-columns: 1fr 250px;
 }
@@ -380,11 +381,39 @@ p{color: rgba(246,243,230,.90)}
   .mediaRow.reverse .mediaText{order:unset}
 }
 
+/* CHANGED/ADDED: keep image top-aligned */
+.mediaImg{
+  align-self: start;
+}
+
+/* CHANGED: portrait-friendly sizing without forcing equal heights */
 .mediaImg img{
-  width:100%;
+  width: 100%;
+  max-width: 250px;             /* matches the image column width */
+  height: auto;
+  display:block;
   border-radius: 14px;
   border:1px solid rgba(255,255,255,.12);
   box-shadow: 0 14px 30px rgba(0,0,0,.35);
+}
+
+/* ADDED: make text fill the row height and align to top */
+.mediaText{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  height:100%;
+}
+
+/* ADDED: remove “text starts lower” caused by default margins */
+.mediaText p{
+  margin: .5rem 0;
+}
+.mediaText p:first-child{
+  margin-top: 0;                /* aligns with top of image */
+}
+.mediaText p:last-child{
+  margin-bottom: 0;
 }
 
 /* Two-column panel row */
