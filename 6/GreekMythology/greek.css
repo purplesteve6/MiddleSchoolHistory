@@ -356,7 +356,8 @@ p{color: rgba(246,243,230,.90)}
 .mediaRow.reverse .mediaImg{order:2}
 .mediaRow.reverse .mediaText{order:1}
 
-@media (max-width: 860px){
+/* ✅ THIS is the breakpoint you care about (was 860px). Now 700px. */
+@media (max-width: 700px){
   .mediaRow, .mediaRow.reverse{grid-template-columns:1fr}
   .mediaRow.reverse .mediaImg,
   .mediaRow.reverse .mediaText{order:unset}
@@ -365,7 +366,7 @@ p{color: rgba(246,243,230,.90)}
 /* Keep images top-aligned inside grid rows */
 .mediaImg{ align-self: start; }
 
-/* Default image sizing for ALL non-wrapped sections (prevents “Gaia got huge”) */
+/* Default image sizing for ALL non-wrapped sections */
 .mediaImg img{
   width: 100%;
   max-width: 250px;
@@ -396,30 +397,27 @@ p{color: rgba(246,243,230,.90)}
   float: left;
   margin: 0 20px 12px 0;
 }
-
-/* Titanomachy image sizing (override the default) */
 .mediaWrap .mediaImg img{
   width: 240px;
   max-width: 40vw;
   height: auto;
 }
 
-/* This is what makes wrapping work (neutralize flex only here) */
+/* Neutralize flex only here so floats wrap correctly */
 .mediaWrap .mediaText{
   display: block;
   height: auto;
 }
 .mediaWrap .mediaText p:first-child{ margin-top: 0; }
 
-/* Clear float after wrap section */
 .mediaWrap::after{
   content:"";
   display:block;
   clear: both;
 }
 
-/* Mobile: stacked */
-@media (max-width: 860px){
+/* ✅ Match the same breakpoint for wrapped sections */
+@media (max-width: 700px){
   .mediaWrap .mediaImg{
     float: none;
     margin: 0 0 12px 0;
@@ -437,7 +435,7 @@ p{color: rgba(246,243,230,.90)}
   grid-template-columns: 1fr 1fr;
   gap:1rem;
 }
-@media (max-width: 860px){
+@media (max-width: 700px){
   .grid2{grid-template-columns:1fr}
 }
 
@@ -450,7 +448,6 @@ p{color: rgba(246,243,230,.90)}
   color: rgba(246,243,230,.92);
 }
 
-/* Vocabulary panel */
 .vocab{display:grid; gap:.55rem}
 .term{
   background: rgba(27,79,163,.14);
@@ -575,7 +572,7 @@ p{color: rgba(246,243,230,.90)}
   border: 1px solid rgba(255,255,255,.18);
 }
 
-/* ===== Footer (shared partial) ===== */
+/* ===== Footer ===== */
 .site-footer{
   margin-top:0;
   padding:18px 1rem 40px;
