@@ -29,6 +29,7 @@
 
 *{box-sizing:border-box}
 html,body{height:100%}
+
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -47,21 +48,19 @@ body{
 
 a{color:inherit}
 img{max-width:100%; display:block}
-
 .u{ text-decoration: underline; text-underline-offset: 3px; }
 
-/* ===== HEADER (match RomanEmperors behavior: patch logo + small grade icon + left-aligned text) ===== */
+/* ===== HEADER ===== */
 header{
   position:fixed;
   top:0; left:0; right:0;
   z-index:10;
-  overflow:visible;               /* critical so logo patch can overlap */
+  overflow:visible;
   backdrop-filter: blur(12px);
   background: rgba(6,10,16,.68);
   border-bottom: 1px solid rgba(255,255,255,.10);
 }
 
-/* Patch logo */
 .nav-logo{
   position:absolute;
   left:12px;
@@ -82,7 +81,6 @@ header{
   height:140px;
 }
 
-/* ✅ This was the missing piece: header inner layout */
 .nav{
   max-width: var(--max);
   margin:0 auto;
@@ -99,7 +97,6 @@ header{
   gap:.7rem;
 }
 
-/* Small contained "6" icon */
 .columnIcon{
   width:34px; height:34px;
   display:grid; place-items:center;
@@ -116,7 +113,6 @@ header{
   display: block;
 }
 
-/* Text stack next to the icon (left-ish like Roman) */
 .brandText{
   display:flex;
   flex-direction:column;
@@ -156,13 +152,12 @@ header{
 }
 .nav a.btn:focus{outline:none; box-shadow: var(--focus)}
 
-/* If the patch overlaps the brand on small screens, reserve space */
 @media (max-width: 720px){
   .nav{ padding-left: 190px; }
   .nav-logo-img{ height:110px; }
 }
 
-/* ===== Main ===== */
+/* ===== MAIN ===== */
 main{max-width: var(--max); margin:0 auto; padding: 110px 1rem 4rem;}
 
 .card{
@@ -177,7 +172,7 @@ h1{
   margin:.65rem 0 .35rem;
   font-size: clamp(2.45rem, 5.0vw, 3.9rem);
   line-height:1.1;
-  letter-spacing:1px;
+  letter-spacing: 1px;
 }
 
 h2{margin:.15rem 0 .6rem; font-size:1.25rem; letter-spacing:-.2px}
@@ -186,7 +181,7 @@ p{color: rgba(246,243,230,.90)}
 .center{text-align:center}
 .strong{font-weight:1000}
 
-/* ===== Hero ===== */
+/* ===== HERO ===== */
 .hero{
   display:grid;
   grid-template-columns: 1.15fr .85fr;
@@ -218,18 +213,6 @@ p{color: rgba(246,243,230,.90)}
   max-width: 65ch;
 }
 
-.callout{
-  padding:.75rem .85rem;
-  border-radius: 14px;
-  background: rgba(255,216,74,.10);
-  border: 1px solid rgba(255,216,74,.26);
-  color: rgba(246,243,230,.95);
-  font-weight:750;
-}
-.callout .label{font-weight:1000}
-.callout .value{font-weight:700}
-
-/* Big Idea */
 .bigIdeaWrap{margin-top:.8rem}
 .bigIdeaGraphic{
   width:150px;
@@ -269,7 +252,6 @@ p{color: rgba(246,243,230,.90)}
   font-size:.92rem;
 }
 
-/* Right card */
 .hero-right{
   padding: 1rem;
   display: grid;
@@ -360,15 +342,14 @@ p{color: rgba(246,243,230,.90)}
 .full{margin-top: 1rem}
 .section{padding:1.1rem 1.2rem}
 
-/* Image/text rows */
+/* ===== IMAGE/TEXT SECTIONS (GRID) ===== */
 .mediaRow{
   display:grid;
   grid-template-columns: 250px 1fr;
   gap: 18px;
-  align-items: stretch;          /* CHANGED: make both columns share row height */
+  align-items: stretch;
   margin: .6rem 0 1.0rem;
 }
-
 .mediaRow.reverse{
   grid-template-columns: 1fr 250px;
 }
@@ -381,65 +362,11 @@ p{color: rgba(246,243,230,.90)}
   .mediaRow.reverse .mediaText{order:unset}
 }
 
-/* ===== Text-wrapped image section (Titanomachy only) ===== */
-.mediaWrap{
-  position: relative;
-  margin: .6rem 0 1.0rem;
-}
+/* Keep images top-aligned inside grid rows */
+.mediaImg{ align-self: start; }
 
-.mediaWrap .mediaImg{
-  float: left;
-  margin: 0 20px 12px 0;   /* space between image and text */
-}
-
-.mediaWrap .mediaImg img{
-  width: 240px;
-  max-width: 40vw;
-  height: auto;
-  border-radius: 14px;
-  border:1px solid rgba(255,255,255,.12);
-  box-shadow: 0 14px 30px rgba(0,0,0,.35);
-}
-
-/* Ensure text starts flush with top of image */
-.mediaWrap .mediaText p:first-child{
-  margin-top: 0;
-}
-
-/* Clear float after section so layout doesn’t break */
-.mediaWrap::after{
-  content:"";
-  display:block;
-  clear: both;
-}
-
-/* Mobile: revert to stacked layout */
-@media (max-width: 860px){
-  .mediaWrap .mediaImg{
-    float: none;
-    margin: 0 0 12px 0;
-  }
-
-  .mediaWrap .mediaImg img{
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-/* FIX: allow text wrapping in Titanomachy */
-.mediaWrap .mediaText{
-  display: block;
-  height: auto;
-}
-
-
-/* CHANGED/ADDED: keep image top-aligned */
-.mediaImg{
-  align-self: start;
-}
-
-/* CHANGED: portrait-friendly sizing without forcing equal heights */
-.mediaRow .mediaImg img{
+/* Default image sizing for ALL non-wrapped sections (prevents “Gaia got huge”) */
+.mediaImg img{
   width: 100%;
   max-width: 250px;
   height: auto;
@@ -449,26 +376,61 @@ p{color: rgba(246,243,230,.90)}
   box-shadow: 0 14px 30px rgba(0,0,0,.35);
 }
 
-/* ADDED: make text fill the row height and align to top */
+/* Make grid text align cleanly with image top */
 .mediaText{
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
   height:100%;
 }
+.mediaText p{ margin: .5rem 0; }
+.mediaText p:first-child{ margin-top: 0; }
+.mediaText p:last-child{ margin-bottom: 0; }
 
-/* ADDED: remove “text starts lower” caused by default margins */
-.mediaText p{
-  margin: .5rem 0;
+/* ===== TITANOMACHY (TEXT WRAPS AROUND IMAGE) ===== */
+.mediaWrap{
+  position: relative;
+  margin: .6rem 0 1.0rem;
 }
-.mediaText p:first-child{
-  margin-top: 0;                /* aligns with top of image */
-}
-.mediaText p:last-child{
-  margin-bottom: 0;
+.mediaWrap .mediaImg{
+  float: left;
+  margin: 0 20px 12px 0;
 }
 
-/* Two-column panel row */
+/* Titanomachy image sizing (override the default) */
+.mediaWrap .mediaImg img{
+  width: 240px;
+  max-width: 40vw;
+  height: auto;
+}
+
+/* This is what makes wrapping work (neutralize flex only here) */
+.mediaWrap .mediaText{
+  display: block;
+  height: auto;
+}
+.mediaWrap .mediaText p:first-child{ margin-top: 0; }
+
+/* Clear float after wrap section */
+.mediaWrap::after{
+  content:"";
+  display:block;
+  clear: both;
+}
+
+/* Mobile: stacked */
+@media (max-width: 860px){
+  .mediaWrap .mediaImg{
+    float: none;
+    margin: 0 0 12px 0;
+  }
+  .mediaWrap .mediaImg img{
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* ===== TWO-COLUMN PANELS ===== */
 .grid2{
   margin-top:1rem;
   display:grid;
@@ -479,7 +441,6 @@ p{color: rgba(246,243,230,.90)}
   .grid2{grid-template-columns:1fr}
 }
 
-/* Quick facts */
 .factsList{display:grid; gap:.55rem}
 .factItem{
   background: rgba(255,255,255,.03);
@@ -572,7 +533,7 @@ p{color: rgba(246,243,230,.90)}
   text-shadow: 0 2px 16px rgba(0,0,0,.55);
 }
 
-/* ===== Olympians grid (kept) ===== */
+/* ===== Olympians grid ===== */
 .godGrid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -614,7 +575,7 @@ p{color: rgba(246,243,230,.90)}
   border: 1px solid rgba(255,255,255,.18);
 }
 
-/* ===== Footer (from shared partial) ===== */
+/* ===== Footer (shared partial) ===== */
 .site-footer{
   margin-top:0;
   padding:18px 1rem 40px;
