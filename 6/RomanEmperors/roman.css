@@ -255,22 +255,23 @@
 
     /* Prev/Next (match Tiberius) */
 .portraitButtons{
-  display:grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display:flex;
+  justify-content:space-between;
+  align-items:stretch;
   gap:.5rem;
   margin-top:.45rem;
-  align-items:stretch;
 }
 
 .pbtn{
-  width:auto;
+  width: calc((100% - 1rem) / 3);
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   gap:.22rem;
   padding:.48rem .55rem .52rem;
-  height: 56px;
+height: 56px;
+
   border-radius: 12px;
   border:1px solid rgba(255,255,255,.14);
   background: rgba(255,255,255,.06);
