@@ -429,22 +429,6 @@ a{ color: inherit; text-decoration: none; }
   padding: 18px 18px 40px;      /* slightly tighter top padding */
   color: rgba(247, 243, 255, 0.78);
 }
-.footer-centered{
-  text-align:center;
-}
-
-.footer-brand-link{
-  display:inline-flex;
-  flex-direction:column;
-  align-items:center;
-  gap:.6rem;
-  text-decoration:none;
-  color:inherit;
-}
-
-.footer-brand-link:hover{
-  text-decoration:none;
-}
 
 
 
