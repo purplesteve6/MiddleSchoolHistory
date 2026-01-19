@@ -41,18 +41,19 @@ img{max-width:100%; display:block}
 .u{ text-decoration: underline; text-underline-offset: 3px; }
 
 /* ===== Shared header overlay ===== */
-header{
+/* IMPORTANT: target the actual shared header class, not every <header> on the page */
+.topic-header{
   position:fixed;
   top:0; left:0; right:0;
-  z-index:10;
+  z-index:50;
   overflow:visible;
   backdrop-filter: blur(12px);
   background: rgba(6,10,16,.68);
   border-bottom: 1px solid rgba(255,255,255,.10);
 }
 
-/* Logo patch positioning (same idea as RomanEmperors) */
-.nav-logo{
+/* Logo patch positioning */
+.topic-header .nav-logo{
   position:absolute;
   left:12px;
   top:15px;
@@ -61,7 +62,7 @@ header{
   align-items:flex-end;
   gap:10px;
 }
-.nav-logo-img{
+.topic-header .nav-logo-img{
   width:auto;
   max-width:none;
   display:block;
@@ -72,8 +73,66 @@ header{
   height:140px;
 }
 
+/* ✅ Missing layout rules that prevent “bunched left” */
+.topic-header .nav{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: .8rem 1rem .8rem 230px; /* reserve space for the big logo on the left */
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+}
+
+.topic-header .brand{
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+}
+
+.topic-header .brandText{
+  display:flex;
+  flex-direction:column;
+  line-height:1.05;
+}
+
+.topic-header .brandKicker{
+  font-size:.68rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color: rgba(246,243,230,.72);
+}
+
+.topic-header .brandTitle{
+  font-weight:1000;
+}
+
+.topic-header .brandSub{
+  font-size:.9rem;
+  font-weight:500;
+  color: rgba(246,243,230,.72);
+  margin-top:.08rem;
+}
+
+.topic-header nav{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* Mobile tune: keep the header from cramping */
+@media (max-width: 720px){
+  .topic-header .nav{
+    padding-left: 190px;
+  }
+  .topic-header .nav-logo-img{
+    height: 110px;
+  }
+}
+
 /* ===== Main ===== */
-main{max-width: var(--max); margin:0 auto; padding: 110px 1rem 4rem;}
+main{max-width: var(--max); margin:0 auto; padding: 140px 1rem 4rem;}
 
 .card{
   background: linear-gradient(180deg, var(--panel), var(--panel2));
