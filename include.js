@@ -37,8 +37,9 @@ function applyConfig(){
   const inEmperorSubfolder = /\/empe?rors\//i.test(location.pathname);
   const base = inEmperorSubfolder ? ".." : ".";
 
-  await loadInto("siteHeader", `${base}/partials/header.html`);
-  await loadInto("siteFooter", `${base}/partials/footer.html`);
+  await loadInto("siteHeader", "/partials/header.html");
+  await loadInto("siteFooter", "/partials/footer.html");
+
 
   applyConfig();
 })();
