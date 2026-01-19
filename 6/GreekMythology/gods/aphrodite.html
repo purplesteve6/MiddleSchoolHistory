@@ -1,173 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aphrodite - Greek Mythology with Mr. Sovocool</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('background.webp');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: white;
-        }
-        .header-banner {
-            background-color: rgba(0, 0, 139, 0.8);
-            width: 100%;
-            text-align: center;
-            padding: 20px 0;
-            position: relative;
-        }
-        .header-banner img {
-            max-width: 60%;
-            height: auto;
-        }
-        .container {
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.75);
-            margin: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .container h1 {
-            color: yellow;
-            font-size: 40px;
-        }
-        .container h3 {
-            font-size: 22px;
-            font-style: italic;
-            font-weight: normal;
-            color: white;
-        }
-        .container p {
-            text-align: left;
-            font-size: 20px;
-            margin: 10px 0;
-        }
-        .container p strong {
-            color: yellow;
-        }
-        .container p em {
-            font-style: italic;
-            color: white;
-        }
-        .god-image {
-            width: 50%;
-            max-width: 400px;
-            border-radius: 10px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .grid a {
-            text-decoration: none;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .grid img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-        .grid span {
-            position: absolute;
-            bottom: 10px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aphrodite - Greek Mythology with Mr. Sovocool</title>
+
+  <!-- Shared + Topic styling -->
+  <link rel="stylesheet" href="greek.css" />
+
+  <!-- Shared include + topic config for dynamic header/footer -->
+  <script defer src="../../include.js"></script>
+  <script defer src="config.js"></script>
 </head>
+
 <body>
-    <div class="header-banner">
-        <img src="header.png" alt="Greek Mythology">
-    </div>
-    <div class="container">
+  <!-- Shared header -->
+  <div data-include="../../partials/header.html"></div>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" aria-label="Aphrodite hero">
+      <article class="card hero-left">
+        <div class="kicker">Olympian Profile</div>
         <h1>Aphrodite</h1>
-        <h3>Goddess of Love, Beauty, Desire, and Fertility</h3>
-        <img src="aphrodite.webp" alt="aphrodite" class="god-image">
-        
-	<p><strong>Roman Name:</strong> <em>Venus</em></p>        
-	<p><strong>Parents:</strong> <em>Uranus (in some myths) or Zeus and Dione</em></p>
-        <p><strong>Spouse(s):</strong> <em>Hephaestus</em></p>
-        <p><strong>Siblings:</strong> <em>None (if born from Uranus), or various half-siblings fathered by Zeus</em></p>
-        <p><strong>Children:</strong> <em>Eros (Cupid), Harmonia, Aeneas, Phobos, Deimos, and others</em></p>
-        <br>
-        <p>Aphrodite is the Greek goddess of love, beauty, desire, and fertility. She is often described as the most beautiful of all the gods, with an enchanting presence that could inspire love and admiration. In some myths, she was born from the sea foam near the island of Cyprus, while others say she was the daughter of Zeus and the Titaness Dione. Regardless of her origins, she was worshiped as a powerful and influential goddess whose presence could shape the emotions of both mortals and deities.</p> <p>Aphrodite is closely associated with symbols of romance and attraction. The dove, swan, and sparrow are sacred to her, representing love, grace, and passion. She is also linked to the rose, a flower that signifies beauty and desire, and the myrtle, a plant often used in wedding ceremonies. The seashell is another well-known symbol, reflecting her connection to the ocean and her legendary birth from the sea.</p> <p>Despite her gentle and alluring nature, Aphrodite was also a goddess of great influence. She had the power to stir deep emotions in gods and mortals alike, bringing both joy and turmoil. Many sought her favor in matters of love, marriage, and fertility, and temples dedicated to her were found throughout Greece, particularly in Cyprus, Corinth, and Cythera. Worshipers would offer perfumes, flowers, and beautiful objects in her honor.</p> <p>Aphrodite’s influence extended beyond personal relationships. She was often associated with harmony, prosperity, and the creative power of attraction. Whether depicted in art or honored in temples, she remained a beloved and revered figure in Greek mythology, embodying the timeless power of love and beauty.</p>
-        <br>
-      <p><strong style="color: yellow;">Notable Stories About Aphrodite:</strong></p>
-        <ul style="text-align: left; font-size: 20px; list-style-type: none; padding-left: 40px;">
-            <li><a href="#story1" style="color: white; text-decoration: underline; font-weight: normal;">The Birth of Aphrodite</a></li>
-            <li><a href="#story2" style="color: white; text-decoration: underline; font-weight: normal;">Ares' and Aphrodite’s Affair</a></li>
-            <li><a href="#story3" style="color: white; text-decoration: underline; font-weight: normal;">The Judgement of Paris</a></li>
-            <li><a href="#story4" style="color: white; text-decoration: underline; font-weight: normal;">Aphrodite and Adonis</a></li>
-            <li><a href="#story5" style="color: white; text-decoration: underline; font-weight: normal;">Pygmalion and Galatea</a></li>    
-        </ul>
-      <br>  
-      
-          <h2 id="story1" style="color: yellow; font-weight: bold; text-align: center;">The Birth of Aphrodite</h2>
-        <p>Ares, the mighty god of war, was known for his strength and love of battle. However, there was a time when even he was powerless. This happened when he was captured by the Aloadae, two giant brothers named Otus and Ephialtes. These giants were the sons of Poseidon and were incredibly strong. They wanted to prove they were more powerful than the gods, so they came up with a bold plan—to storm Mount Olympus and take control.</p> <p>Before attacking Olympus, Otus and Ephialtes decided to capture Ares. They knew that if they could imprison the god of war, it would weaken the Olympians. Using their great strength and teamwork, the two giants managed to overpower Ares in battle. Once they had him, they locked him inside a large bronze jar, trapping him completely. No matter how hard he struggled, Ares could not escape.</p> <p>Ares remained trapped in the jar for thirteen long months. He grew weaker and angrier with each passing day. The other gods did not know where he was, and Ares feared he might never be freed. Luckily, the goddess Eriboea, the stepmother of the giants, saw what they had done. She secretly told Hermes, the messenger of the gods, about Ares' imprisonment.</p> <p>Hermes, who was clever and quick, immediately set out to rescue Ares. With the help of Artemis, the goddess of the hunt, he tricked the giants. Artemis appeared before Otus and Ephialtes, making them believe she wanted to marry one of them. The brothers, who both desired her, began fighting over who should have her. As part of the trick, she led them into a trap, and they ended up killing each other by accident.</p> <p>With the giants dead, Hermes rushed to the bronze jar and freed Ares. Although he was embarrassed by his capture, he was grateful to be rescued. From then on, Ares never underestimated the power of trickery and teamwork, even in the face of brute strength.</p>
-      <br>  
+        <p class="sub"><em>Goddess of Love, Beauty, Desire, and Fertility</em></p>
 
-<h2 id="story2" style="color: yellow; font-weight: bold; text-align: center;">Ares' and Aphrodite’s Affair</h2>
-        
-<p>Ares, the god of war, was known for his strength and passion, but he had a special love for Aphrodite, the goddess of beauty and love. However, there was one big problem—Aphrodite was married to Hephaestus, the god of blacksmiths. Hephaestus was clever and skilled, but he was not as handsome or powerful as Ares. Despite her marriage, Aphrodite and Ares often met in secret, hoping to keep their love hidden.</p> <p>One day, Helios, the sun god, saw Ares and Aphrodite together. He watched everything that happened in the heavens and the earth, so he could not be fooled. Wanting to expose them, Helios went straight to Hephaestus and told him about their affair. Furious and humiliated, Hephaestus came up with a plan to catch them.</p> <p>Hephaestus spent hours in his forge, crafting a special net made of fine golden chains. Though the chains were thin, they were unbreakable. He set the trap over his own bed and waited. Soon, Ares and Aphrodite met in secret once again. As they lay together, the golden net dropped from above, trapping them both. No matter how hard Ares struggled, he could not break free.</p> <p>Hephaestus called the other gods to come and see the trapped lovers. Many of them laughed at the sight, especially Apollo and Hermes, who joked about wanting to trade places with Ares. However, some goddesses refused to come, feeling it was improper to mock Aphrodite. Even though Ares was humiliated, he remained proud and defiant.</p> <p>After a while, Poseidon, the god of the sea, convinced Hephaestus to release them. Hephaestus agreed, but only after making Ares and Aphrodite promise to never meet like this again. Once freed, Ares fled to Thrace, his homeland, while Aphrodite returned to Cyprus. Despite the embarrassment, their love was not truly over, and they would continue to have children together, including Phobos (fear) and Deimos (terror), who later accompanied Ares into battle.</p>
-
-      
-        <br>
-<h2 id="story3" style="color: yellow; font-weight: bold; text-align: center;">The Judgment of Paris</h2>
-        <p>One of the most famous stories involving Hera is the Judgment of Paris. It all began when Eris, the goddess of discord, was not invited to a grand wedding on Mount Olympus. In revenge, she threw a golden apple into the gathering, inscribed with the words “For the Fairest.” Instantly, Hera, Athena, and Aphrodite claimed the prize, each believing herself to be the most beautiful.</p>
-        <p>To settle the dispute, Zeus refused to choose between them, fearing their anger. Instead, he appointed Paris, a Trojan prince known for his fairness, to decide. The goddesses each tried to persuade Paris by offering him a reward. Hera promised to make him the ruler of the greatest empire in the world, giving him power and wealth beyond imagination. Athena, the goddess of wisdom and war, offered him unmatched intelligence and success in battle. Aphrodite, the goddess of love, promised him the love of the most beautiful woman in the world—Helen of Sparta.</p>
-        <p>Paris, enchanted by Aphrodite’s offer, awarded her the golden apple. This decision enraged both Hera and Athena, who vowed revenge against him and his people. Paris soon learned the consequences of his choice when he took Helen away from her husband, King Menelaus of Sparta. This act led to the outbreak of the Trojan War, a conflict that would last for ten years and end in the destruction of Troy.</p>
-        <p>Throughout the war, Hera remained a fierce enemy of the Trojans, using her influence to aid the Greek forces. She worked alongside Athena to sabotage the Trojans, supporting Greek heroes like Achilles and Odysseus. Even when the war seemed to favor Troy, Hera ensured that fate would bring about their downfall, proving that her wrath was not easily forgotten.</p>
-        <p>The Judgment of Paris was one of the most pivotal moments in Greek mythology, as it set the stage for one of the greatest wars ever told. It also showed how Hera, despite being a goddess of marriage and family, could be ruthless when slighted. Her power and influence over mortal affairs made her one of the most formidable deities of Mount Olympus.</p>
-
-<br>
-      <h2 id="story4" style="color: yellow; font-weight: bold; text-align: center;">Aphrodite and Adonis</h2>
-        <p>Aphrodite, the goddess of love and beauty, once saw a baby boy named Adonis. He was so beautiful that she knew he would grow up to be the most handsome mortal in the world. Wanting to protect him, she placed him in the care of Persephone, the queen of the underworld. But when Adonis grew into a strong and handsome young man, Persephone refused to give him back. The two goddesses argued until Zeus decided that Adonis would spend part of the year with Persephone and part with Aphrodite.</p> <p>During his time with Aphrodite, the two became very close. She loved him deeply and warned him to be careful when hunting, telling him not to chase dangerous animals. However, Adonis was young and fearless, and he did not always listen to her warnings. He loved hunting more than anything and spent most of his time in the forests and fields.</p> <p>One day, Adonis came across a massive wild boar while hunting. Not realizing the danger, he shot at it, but the boar charged at him with incredible speed. Before he could escape, the beast gored him with its sharp tusks. Adonis fell to the ground, wounded and bleeding. Aphrodite, sensing that something was wrong, rushed to his side, but she was too late. He died in her arms, and she wept in sorrow.</p> <p>Heartbroken, Aphrodite mourned Adonis and begged the gods to honor his memory. From his spilled blood, a beautiful flower, the anemone, bloomed. Zeus, moved by her grief, decided that Adonis would not be lost forever. Instead, he allowed Adonis to return from the underworld for part of the year, spending spring and summer with Aphrodite before returning to Persephone in the fall and winter.</p> <p>In this way, Adonis became a symbol of the changing seasons, with his time on Earth representing the warmth and beauty of spring and summer. Though Aphrodite lost him every year, she always looked forward to the time when he would return, and their love became eternal in the cycle of nature.</p>
-      <br>  
-      <h2 id="story5" style="color: yellow; font-weight: bold; text-align: center;">Pygmalion and Galatea</h2>
-        <p>Pygmalion was a talented sculptor who lived on the island of Cyprus. He was known for creating beautiful statues, but he had no interest in love. He believed that no woman was perfect enough for him, so he devoted all his time to his art. One day, he decided to carve a statue of a woman from ivory. As he worked, he put all his skill and passion into the sculpture, making her more beautiful than any woman he had ever seen.</p> <p>When the statue was finished, Pygmalion admired his creation and found himself falling in love with it. He dressed the statue in fine clothing, placed jewelry on her, and even spoke to her as if she were real. He named her Galatea and wished that she could come to life. Still, he knew she was only stone and that his love was hopeless.</p> <p>During a festival honoring Aphrodite, Pygmalion went to the goddess’s temple and made a heartfelt prayer. He asked for a wife as beautiful and perfect as his statue, though he did not dare to ask for Galatea herself to come to life. Aphrodite, moved by his love and devotion, decided to grant his wish in a way he did not expect.</p> <p>When Pygmalion returned home, he touched the statue’s hand and felt warmth instead of cold ivory. Surprised, he touched her again and saw her skin soften. Suddenly, Galatea’s eyes opened, and she smiled at him. Aphrodite had brought her to life. Overjoyed, Pygmalion embraced her, thanking the goddess for her kindness.</p> <p>Pygmalion and Galatea were married and lived happily together. They honored Aphrodite for granting their love, and some stories say they had children who carried on their legacy. The tale of Pygmalion and Galatea became a symbol of love, devotion, and the power of art to bring beauty to life.</p>
-        <br>
-    </div>
-<br>
-        <p style="text-align: center; font-weight: bold;">Click on an image below to learn more about the Olympians:</p>
-        <div class="grid">
-            <a href="index.html"><img src="olympus.webp" alt="Home"><span>Home</span></a>
-	    <a href="zeus.html"><img src="zeus.webp" alt="Zeus"><span>Zeus</span></a>
-            <a href="hera.html"><img src="hera.webp" alt="Hera"><span>Hera</span></a>
-            <a href="poseidon.html"><img src="poseidon.webp" alt="Poseidon"><span>Poseidon</span></a>
-            <a href="demeter.html"><img src="demeter.webp" alt="Demeter"><span>Demeter</span></a>
-            <a href="athena.html"><img src="athena.webp" alt="Athena"><span>Athena</span></a>
-            <a href="apollo.html"><img src="apollo.webp" alt="Apollo"><span>Apollo</span></a>
-            <a href="artemis.html"><img src="artemis.webp" alt="Artemis"><span>Artemis</span></a>
-            <a href="ares.html"><img src="ares.webp" alt="Aphrodite"><span>Ares</span></a>
-            <a href="hephaestus.html"><img src="hephaestus.webp" alt="Hephaestus"><span>Hephaestus</span></a>
-            <a href="hermes.html"><img src="hermes.webp" alt="Hermes"><span>Hermes</span></a>
-            <a href="dionysus.html"><img src="dionysus.webp" alt="Dionysus"><span>Dionysus</span></a>
-            <a href="hades.html"><img src="hades.webp" alt="Hades"><span>Hades</span></a>
-            <a href="hestia.html"><img src="hestia.webp" alt="Hestia"><span>Hestia</span></a>
+        <div class="pillrow" aria-label="Quick facts">
+          <span class="pill"><span class="strong">Roman Name:</span> Venus</span>
+          <span class="pill"><span class="strong">Spouse:</span> Hephaestus</span>
+          <span class="pill"><span class="strong">Children:</span> Eros, Harmonia, Aeneas…</span>
         </div>
-		<br><br>
-    <p class="copyright" style="text-align: center;">&copy; 2025 Stephen Sovocool</p>
-    </div>
+
+        <div class="callout" style="margin-top: .9rem;">
+          <span class="label">Key Theme:</span>
+          <span class="value">Love can inspire greatness… and cause huge problems.</span>
+        </div>
+      </article>
+
+      <aside class="card hero-right" aria-label="Portrait and navigation">
+        <div class="portraitWrap">
+          <div class="portrait">
+            <img src="images/aphrodite.webp" alt="Aphrodite" />
+          </div>
+
+          <!-- Optional: quick jump buttons -->
+          <div class="portraitButtons" aria-label="Jump buttons">
+            <a class="pbtn" href="index.html">
+              <div class="pbtnTop"><span class="label">Back</span></div>
+              <div class="pbtnSub">Greek Mythology</div>
+            </a>
+
+            <a class="pbtn" href="#stories">
+              <div class="pbtnTop"><span class="label">Jump</span></div>
+              <div class="pbtnSub">Stories</div>
+            </a>
+
+            <a class="pbtn" href="#olympians">
+              <div class="pbtnTop"><span class="label">Explore</span></div>
+              <div class="pbtnSub">Olympians</div>
+            </a>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section class="card full section" aria-label="Aphrodite overview">
+      <h2>Who is Aphrodite?</h2>
+
+      <div class="factsList" style="margin-bottom: 1rem;">
+        <div class="factItem"><b>Parents:</b> <em>Uranus (in some myths) or Zeus and Dione</em></div>
+        <div class="factItem"><b>Siblings:</b> <em>None (if born from Uranus), or various half-siblings fathered by Zeus</em></div>
+        <div class="factItem"><b>Symbols:</b> <em>dove, swan, sparrow, rose, myrtle, seashell</em></div>
+      </div>
+
+      <!-- Original overview text preserved -->
+      <p>
+        Aphrodite is the Greek goddess of love, beauty, desire, and fertility. She is often described as the most beautiful of all the gods, with an enchanting presence that could inspire love and admiration. In some myths, she was born from the sea foam near the island of Cyprus, while others say she was the daughter of Zeus and the Titaness Dione. Regardless of her origins, she was worshiped as a powerful and influential goddess whose presence could shape the emotions of both mortals and deities.
+      </p>
+      <p>
+        Aphrodite is closely associated with symbols of romance and attraction. The dove, swan, and sparrow are sacred to her, representing love, grace, and passion. She is also linked to the rose, a flower that signifies beauty and desire, and the myrtle, a plant often used in wedding ceremonies. The seashell is another well-known symbol, reflecting her connection to the ocean and her legendary birth from the sea.
+      </p>
+      <p>
+        Despite her gentle and alluring nature, Aphrodite was also a goddess of great influence. She had the power to stir deep emotions in gods and mortals alike, bringing both joy and turmoil. Many sought her favor in matters of love, marriage, and fertility, and temples dedicated to her were found throughout Greece, particularly in Cyprus, Corinth, and Cythera. Worshipers would offer perfumes, flowers, and beautiful objects in her honor.
+      </p>
+      <p>
+        Aphrodite’s influence extended beyond personal relationships. She was often associated with harmony, prosperity, and the creative power of attraction. Whether depicted in art or honored in temples, she remained a beloved and revered figure in Greek mythology, embodying the timeless power of love and beauty.
+      </p>
+    </section>
+
+    <!-- DID YOU KNOW + BIG IDEA -->
+    <section class="grid2" aria-label="Did You Know and Big Idea">
+      <article class="didYouKnow">
+        <div class="dykImg">
+          <img src="../../assets/images/ui/didyouknow.png" alt="Did You Know?" />
+        </div>
+        <div class="fact">
+          Aphrodite wasn’t only about “crushes” — Greeks believed love could shape politics, wars, and even the fate of cities.
+        </div>
+      </article>
+
+      <article class="card section">
+        <h2>Big Idea</h2>
+        <div class="bigIdeaWrap center">
+          <div class="bigIdeaGraphic">
+            <img src="../../assets/images/ui/bigidea.png" alt="Big Idea" />
+          </div>
+          <div class="bigIdeaText">
+            Love is powerful — and power always has consequences.
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:.8rem;">
+          <span class="label">Think about it:</span>
+          <span class="value">In myths, emotions aren’t “small” — they can change history.</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- STORIES LIST -->
+    <section class="card full section" id="stories" aria-label="Stories list">
+      <h2>Notable Stories About Aphrodite</h2>
+      <p class="sub" style="margin-top:0;">
+        Click a story to jump down the page.
+      </p>
+
+      <div class="factsList">
+        <div class="factItem"><a class="u" href="#story1">The Birth of Aphrodite</a></div>
+        <div class="factItem"><a class="u" href="#story2">Ares' and Aphrodite’s Affair</a></div>
+        <div class="factItem"><a class="u" href="#story3">The Judgment of Paris</a></div>
+        <div class="factItem"><a class="u" href="#story4">Aphrodite and Adonis</a></div>
+        <div class="factItem"><a class="u" href="#story5">Pygmalion and Galatea</a></div>
+      </div>
+    </section>
+
+    <!-- STORY 1 -->
+    <section class="card full section" id="story1" aria-label="Story 1">
+      <h2>The Birth of Aphrodite</h2>
+
+      <!-- Original story text preserved (as provided) -->
+      <p>Ares, the mighty god of war, was known for his strength and love of battle. However, there was a time when even he was powerless. This happened when he was captured by the Aloadae, two giant brothers named Otus and Ephialtes. These giants were the sons of Poseidon and were incredibly strong. They wanted to prove they were more powerful than the gods, so they came up with a bold plan—to storm Mount Olympus and take control.</p>
+      <p>Before attacking Olympus, Otus and Ephialtes decided to capture Ares. They knew that if they could imprison the god of war, it would weaken the Olympians. Using their great strength and teamwork, the two giants managed to overpower Ares in battle. Once they had him, they locked him inside a large bronze jar, trapping him completely. No matter how hard he struggled, Ares could not escape.</p>
+      <p>Ares remained trapped in the jar for thirteen long months. He grew weaker and angrier with each passing day. The other gods did not know where he was, and Ares feared he might never be freed. Luckily, the goddess Eriboea, the stepmother of the giants, saw what they had done. She secretly told Hermes, the messenger of the gods, about Ares' imprisonment.</p>
+      <p>Hermes, who was clever and quick, immediately set out to rescue Ares. With the help of Artemis, the goddess of the hunt, he tricked the giants. Artemis appeared before Otus and Ephialtes, making them believe she wanted to marry one of them. The brothers, who both desired her, began fighting over who should have her. As part of the trick, she led them into a trap, and they ended up killing each other by accident.</p>
+      <p>With the giants dead, Hermes rushed to the bronze jar and freed Ares. Although he was embarrassed by his capture, he was grateful to be rescued. From then on, Ares never underestimated the power of trickery and teamwork, even in the face of brute strength.</p>
+
+      <div class="jumpRow" style="margin-top:.8rem;">
+        <a class="btn" href="#stories">Back to story list</a>
+      </div>
+    </section>
+
+    <!-- STORY 2 -->
+    <section class="card full section" id="story2" aria-label="Story 2">
+      <h2>Ares' and Aphrodite’s Affair</h2>
+
+      <p>Ares, the god of war, was known for his strength and passion, but he had a special love for Aphrodite, the goddess of beauty and love. However, there was one big problem—Aphrodite was married to Hephaestus, the god of blacksmiths. Hephaestus was clever and skilled, but he was not as handsome or powerful as Ares. Despite her marriage, Aphrodite and Ares often met in secret, hoping to keep their love hidden.</p>
+      <p>One day, Helios, the sun god, saw Ares and Aphrodite together. He watched everything that happened in the heavens and the earth, so he could not be fooled. Wanting to expose them, Helios went straight to Hephaestus and told him about their affair. Furious and humiliated, Hephaestus came up with a plan to catch them.</p>
+      <p>Hephaestus spent hours in his forge, crafting a special net made of fine golden chains. Though the chains were thin, they were unbreakable. He set the trap over his own bed and waited. Soon, Ares and Aphrodite met in secret once again. As they lay together, the golden net dropped from above, trapping them both. No matter how hard Ares struggled, he could not break free.</p>
+      <p>Hephaestus called the other gods to come and see the trapped lovers. Many of them laughed at the sight, especially Apollo and Hermes, who joked about wanting to trade places with Ares. However, some goddesses refused to come, feeling it was improper to mock Aphrodite. Even though Ares was humiliated, he remained proud and defiant.</p>
+      <p>After a while, Poseidon, the god of the sea, convinced Hephaestus to release them. Hephaestus agreed, but only after making Ares and Aphrodite promise to never meet like this again. Once freed, Ares fled to Thrace, his homeland, while Aphrodite returned to Cyprus. Despite the embarrassment, their love was not truly over, and they would continue to have children together, including Phobos (fear) and Deimos (terror), who later accompanied Ares into battle.</p>
+
+      <div class="jumpRow" style="margin-top:.8rem;">
+        <a class="btn" href="#stories">Back to story list</a>
+      </div>
+    </section>
+
+    <!-- STORY 3 -->
+    <section class="card full section" id="story3" aria-label="Story 3">
+      <h2>The Judgment of Paris</h2>
+
+      <p>One of the most famous stories involving Hera is the Judgment of Paris. It all began when Eris, the goddess of discord, was not invited to a grand wedding on Mount Olympus. In revenge, she threw a golden apple into the gathering, inscribed with the words “For the Fairest.” Instantly, Hera, Athena, and Aphrodite claimed the prize, each believing herself to be the most beautiful.</p>
+      <p>To settle the dispute, Zeus refused to choose between them, fearing their anger. Instead, he appointed Paris, a Trojan prince known for his fairness, to decide. The goddesses each tried to persuade Paris by offering him a reward. Hera promised to make him the ruler of the greatest empire in the world, giving him power and wealth beyond imagination. Athena, the goddess of wisdom and war, offered him unmatched intelligence and success in battle. Aphrodite, the goddess of love, promised him the love of the most beautiful woman in the world—Helen of Sparta.</p>
+      <p>Paris, enchanted by Aphrodite’s offer, awarded her the golden apple. This decision enraged both Hera and Athena, who vowed revenge against him and his people. Paris soon learned the consequences of his choice when he took Helen away from her husband, King Menelaus of Sparta. This act led to the outbreak of the Trojan War, a conflict that would last for ten years and end in the destruction of Troy.</p>
+      <p>Throughout the war, Hera remained a fierce enemy of the Trojans, using her influence to aid the Greek forces. She worked alongside Athena to sabotage the Trojans, supporting Greek heroes like Achilles and Odysseus. Even when the war seemed to favor Troy, Hera ensured that fate would bring about their downfall, proving that her wrath was not easily forgotten.</p>
+      <p>The Judgment of Paris was one of the most pivotal moments in Greek mythology, as it set the stage for one of the greatest wars ever told. It also showed how Hera, despite being a goddess of marriage and family, could be ruthless when slighted. Her power and influence over mortal affairs made her one of the most formidable deities of Mount Olympus.</p>
+
+      <div class="jumpRow" style="margin-top:.8rem;">
+        <a class="btn" href="#stories">Back to story list</a>
+      </div>
+    </section>
+
+    <!-- STORY 4 -->
+    <section class="card full section" id="story4" aria-label="Story 4">
+      <h2>Aphrodite and Adonis</h2>
+
+      <p>Aphrodite, the goddess of love and beauty, once saw a baby boy named Adonis. He was so beautiful that she knew he would grow up to be the most handsome mortal in the world. Wanting to protect him, she placed him in the care of Persephone, the queen of the underworld. But when Adonis grew into a strong and handsome young man, Persephone refused to give him back. The two goddesses argued until Zeus decided that Adonis would spend part of the year with Persephone and part with Aphrodite.</p>
+      <p>During his time with Aphrodite, the two became very close. She loved him deeply and warned him to be careful when hunting, telling him not to chase dangerous animals. However, Adonis was young and fearless, and he did not always listen to her warnings. He loved hunting more than anything and spent most of his time in the forests and fields.</p>
+      <p>One day, Adonis came across a massive wild boar while hunting. Not realizing the danger, he shot at it, but the boar charged at him with incredible speed. Before he could escape, the beast gored him with its sharp tusks. Adonis fell to the ground, wounded and bleeding. Aphrodite, sensing that something was wrong, rushed to his side, but she was too late. He died in her arms, and she wept in sorrow.</p>
+      <p>Heartbroken, Aphrodite mourned Adonis and begged the gods to honor his memory. From his spilled blood, a beautiful flower, the anemone, bloomed. Zeus, moved by her grief, decided that Adonis would not be lost forever. Instead, he allowed Adonis to return from the underworld for part of the year, spending spring and summer with Aphrodite before returning to Persephone in the fall and winter.</p>
+      <p>In this way, Adonis became a symbol of the changing seasons, with his time on Earth representing the warmth and beauty of spring and summer. Though Aphrodite lost him every year, she always looked forward to the time when he would return, and their love became eternal in the cycle of nature.</p>
+
+      <div class="jumpRow" style="margin-top:.8rem;">
+        <a class="btn" href="#stories">Back to story list</a>
+      </div>
+    </section>
+
+    <!-- STORY 5 -->
+    <section class="card full section" id="story5" aria-label="Story 5">
+      <h2>Pygmalion and Galatea</h2>
+
+      <p>Pygmalion was a talented sculptor who lived on the island of Cyprus. He was known for creating beautiful statues, but he had no interest in love. He believed that no woman was perfect enough for him, so he devoted all his time to his art. One day, he decided to carve a statue of a woman from ivory. As he worked, he put all his skill and passion into the sculpture, making her more beautiful than any woman he had ever seen.</p>
+      <p>When the statue was finished, Pygmalion admired his creation and found himself falling in love with it. He dressed the statue in fine clothing, placed jewelry on her, and even spoke to her as if she were real. He named her Galatea and wished that she could come to life. Still, he knew she was only stone and that his love was hopeless.</p>
+      <p>During a festival honoring Aphrodite, Pygmalion went to the goddess’s temple and made a heartfelt prayer. He asked for a wife as beautiful and perfect as his statue, though he did not dare to ask for Galatea herself to come to life. Aphrodite, moved by his love and devotion, decided to grant his wish in a way he did not expect.</p>
+      <p>When Pygmalion returned home, he touched the statue’s hand and felt warmth instead of cold ivory. Surprised, he touched her again and saw her skin soften. Suddenly, Galatea’s eyes opened, and she smiled at him. Aphrodite had brought her to life. Overjoyed, Pygmalion embraced her, thanking the goddess for her kindness.</p>
+      <p>Pygmalion and Galatea were married and lived happily together. They honored Aphrodite for granting their love, and some stories say they had children who carried on their legacy. The tale of Pygmalion and Galatea became a symbol of love, devotion, and the power of art to bring beauty to life.</p>
+
+      <div class="jumpRow" style="margin-top:.8rem;">
+        <a class="btn" href="#stories">Back to story list</a>
+      </div>
+    </section>
+
+    <!-- OLYMPIANS GRID -->
+    <section class="card full section" id="olympians" aria-label="Olympians grid">
+      <h2 class="center">Explore the Olympians</h2>
+      <p class="center" style="margin-top:0;">
+        Click a card below to learn more.
+      </p>
+
+      <div class="godGrid">
+        <a href="index.html"><img src="images/olympus.webp" alt="Home"><span>Home</span></a>
+        <a href="zeus.html"><img src="images/zeus.webp" alt="Zeus"><span>Zeus</span></a>
+        <a href="hera.html"><img src="images/hera.webp" alt="Hera"><span>Hera</span></a>
+        <a href="poseidon.html"><img src="images/poseidon.webp" alt="Poseidon"><span>Poseidon</span></a>
+        <a href="demeter.html"><img src="images/demeter.webp" alt="Demeter"><span>Demeter</span></a>
+        <a href="athena.html"><img src="images/athena.webp" alt="Athena"><span>Athena</span></a>
+        <a href="apollo.html"><img src="images/apollo.webp" alt="Apollo"><span>Apollo</span></a>
+        <a href="artemis.html"><img src="images/artemis.webp" alt="Artemis"><span>Artemis</span></a>
+        <a href="ares.html"><img src="images/ares.webp" alt="Ares"><span>Ares</span></a>
+        <a href="hephaestus.html"><img src="images/hephaestus.webp" alt="Hephaestus"><span>Hephaestus</span></a>
+        <a href="hermes.html"><img src="images/hermes.webp" alt="Hermes"><span>Hermes</span></a>
+        <a href="dionysus.html"><img src="images/dionysus.webp" alt="Dionysus"><span>Dionysus</span></a>
+        <a href="hades.html"><img src="images/hades.webp" alt="Hades"><span>Hades</span></a>
+        <a href="hestia.html"><img src="images/hestia.webp" alt="Hestia"><span>Hestia</span></a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared footer -->
+  <div data-include="../../partials/footer.html"></div>
 </body>
 </html>
