@@ -426,6 +426,12 @@ p{color: rgba(246,243,230,.90)}
   }
 }
 
+/* FIX: allow text wrapping in Titanomachy */
+.mediaWrap .mediaText{
+  display: block;
+  height: auto;
+}
+
 
 /* CHANGED/ADDED: keep image top-aligned */
 .mediaImg{
@@ -433,9 +439,9 @@ p{color: rgba(246,243,230,.90)}
 }
 
 /* CHANGED: portrait-friendly sizing without forcing equal heights */
-.mediaImg img{
+.mediaRow .mediaImg img{
   width: 100%;
-  max-width: 250px;             /* matches the image column width */
+  max-width: 250px;
   height: auto;
   display:block;
   border-radius: 14px;
