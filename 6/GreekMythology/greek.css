@@ -381,6 +381,52 @@ p{color: rgba(246,243,230,.90)}
   .mediaRow.reverse .mediaText{order:unset}
 }
 
+/* ===== Text-wrapped image section (Titanomachy only) ===== */
+.mediaWrap{
+  position: relative;
+  margin: .6rem 0 1.0rem;
+}
+
+.mediaWrap .mediaImg{
+  float: left;
+  margin: 0 20px 12px 0;   /* space between image and text */
+}
+
+.mediaWrap .mediaImg img{
+  width: 240px;
+  max-width: 40vw;
+  height: auto;
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow: 0 14px 30px rgba(0,0,0,.35);
+}
+
+/* Ensure text starts flush with top of image */
+.mediaWrap .mediaText p:first-child{
+  margin-top: 0;
+}
+
+/* Clear float after section so layout doesn’t break */
+.mediaWrap::after{
+  content:"";
+  display:block;
+  clear: both;
+}
+
+/* Mobile: revert to stacked layout */
+@media (max-width: 860px){
+  .mediaWrap .mediaImg{
+    float: none;
+    margin: 0 0 12px 0;
+  }
+
+  .mediaWrap .mediaImg img{
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+
 /* CHANGED/ADDED: keep image top-aligned */
 .mediaImg{
   align-self: start;
