@@ -17,7 +17,7 @@
     <!-- HERO -->
     <section class="hero" aria-label="Aphrodite hero">
       <div class="card hero-left">
-        <span class="kicker">Love • Beauty • Desire</span>
+        <span class="kicker">Goddess of Love • Beauty • Desire • Fertility</span>
         <h1>Aphrodite</h1>
 
         <p class="sub">
@@ -37,13 +37,18 @@
           <div class="bigIdeaText">
             Love is a force that can create harmony—or spark conflict—depending on how people use it.
           </div>
+
+          <!-- Moved family facts here (under Big Idea) -->
+          <div class="factsList" style="margin-top: .9rem;">
+            <div class="factItem"><b>Roman Name:</b> <em>Venus</em></div>
+            <div class="factItem"><b>Parents:</b> <em>Uranus (in some myths) or Zeus and Dione</em></div>
+            <div class="factItem"><b>Spouse(s):</b> <em>Hephaestus</em></div>
+            <div class="factItem"><b>Siblings:</b> <em>None (if born from Uranus), or various half-siblings fathered by Zeus</em></div>
+            <div class="factItem"><b>Children:</b> <em>Eros (Cupid), Harmonia, Aeneas, Phobos, Deimos, and others</em></div>
+          </div>
         </div>
 
-        <div class="pillrow" aria-label="Quick facts">
-          <span class="pill">🏛️ Roman: <b>Venus</b></span>
-          <span class="pill">🛠️ Spouse: <b>Hephaestus</b></span>
-          <span class="pill">💘 Child: <b>Eros (Cupid)</b></span>
-        </div>
+        <!-- Removed the three "pills" (Roman/Spouse/Child) -->
       </div>
 
       <aside class="card hero-right" aria-label="Portrait and navigation">
@@ -63,12 +68,13 @@
 
             <div class="pbtn spacer" aria-hidden="true"></div>
 
-            <a class="pbtn next" href="#stories" title="Jump to stories">
+            <!-- Changed Stories -> Next and linked to Apollo -->
+            <a class="pbtn next" href="apollo.html" title="Next: Apollo">
               <div class="pbtnTop">
-                <span class="label">Stories</span>
+                <span class="label">Next</span>
                 <span class="emoji" aria-hidden="true">➡️</span>
               </div>
-              <div class="pbtnSub">Myths & Legends</div>
+              <div class="pbtnSub">Apollo</div>
             </a>
           </div>
         </div>
@@ -81,20 +87,13 @@
       </aside>
     </section>
 
-    <!-- OVERVIEW / FACTS -->
-    <section class="card full" aria-label="Overview">
+    <!-- BACKGROUND -->
+    <section class="card full" aria-label="Background">
       <div class="section">
-        <h2>Overview</h2>
+        <h2>Background</h2>
 
-        <div class="factsList" style="margin-bottom: 1rem;">
-          <div class="factItem"><b>Roman Name:</b> <em>Venus</em></div>
-          <div class="factItem"><b>Parents:</b> <em>Uranus (in some myths) or Zeus and Dione</em></div>
-          <div class="factItem"><b>Spouse(s):</b> <em>Hephaestus</em></div>
-          <div class="factItem"><b>Siblings:</b> <em>None (if born from Uranus), or various half-siblings fathered by Zeus</em></div>
-          <div class="factItem"><b>Children:</b> <em>Eros (Cupid), Harmonia, Aeneas, Phobos, Deimos, and others</em></div>
-        </div>
+        <!-- Removed the family facts list from here (moved to Big Idea area) -->
 
-        <!-- Original overview text (kept) -->
         <p>
           Aphrodite is the Greek goddess of love, beauty, desire, and fertility. She is often described as the most beautiful of all the gods, with an enchanting presence that could inspire love and admiration. In some myths, she was born from the sea foam near the island of Cyprus, while others say she was the daughter of Zeus and the Titaness Dione. Regardless of her origins, she was worshiped as a powerful and influential goddess whose presence could shape the emotions of both mortals and deities.
         </p>
@@ -110,16 +109,29 @@
       </div>
     </section>
 
-    <!-- DID YOU KNOW + VOCAB (new style panels) -->
-    <section class="grid2" aria-label="Did you know and vocabulary">
-      <section class="didYouKnow" aria-label="Did you know feature">
-        <div class="dykImg" aria-label="Did you know banner">
-          <img src="/assets/images/ui/didyouknow.png" alt="Did you know" width="200" height="78" />
+    <!-- DID YOU KNOW (full width) -->
+    <section class="didYouKnow" aria-label="Did you know feature">
+      <div class="dykImg" aria-label="Did you know banner">
+        <img src="/assets/images/ui/didyouknow.png" alt="Did you know" width="200" height="78" />
+      </div>
+      <div class="fact">
+        Aphrodite’s “power” wasn’t just romance—Greek myths treat love as something that can start feuds, shape alliances, and even launch wars.
+      </div>
+    </section>
+
+    <!-- QUICK FACTS + VOCAB -->
+    <section class="grid2" aria-label="Quick facts and vocabulary">
+      <article class="card section" aria-label="Quick Facts">
+        <h2>Quick Facts</h2>
+        <div class="factsList">
+          <div class="factItem">🏛️ Her Roman name is <b>Venus</b>.</div>
+          <div class="factItem">🌊 In one famous myth, she is born from <b>sea foam</b> near Cyprus.</div>
+          <div class="factItem">🕊️ Sacred symbols include the <b>dove</b> and the <b>rose</b>.</div>
+          <div class="factItem">💘 She can influence <b>gods and mortals</b> by stirring love and desire.</div>
+          <div class="factItem">⚔️ Her stories often connect love with <b>conflict</b> (like the Trojan War).</div>
+          <div class="factItem">➡️ Next god page: <b>Apollo</b>.</div>
         </div>
-        <div class="fact">
-          Aphrodite’s “power” wasn’t just romance—Greek myths treat love as something that can start feuds, shape alliances, and even launch wars.
-        </div>
-      </section>
+      </article>
 
       <article class="card section" aria-label="Vocabulary">
         <h2>Vocabulary</h2>
@@ -153,11 +165,10 @@
       <div class="section">
         <h2>The Birth of Aphrodite</h2>
 
-        <p>Ares, the mighty god of war, was known for his strength and love of battle. However, there was a time when even he was powerless. This happened when he was captured by the Aloadae, two giant brothers named Otus and Ephialtes. These giants were the sons of Poseidon and were incredibly strong. They wanted to prove they were more powerful than the gods, so they came up with a bold plan—to storm Mount Olympus and take control.</p>
-        <p>Before attacking Olympus, Otus and Ephialtes decided to capture Ares. They knew that if they could imprison the god of war, it would weaken the Olympians. Using their great strength and teamwork, the two giants managed to overpower Ares in battle. Once they had him, they locked him inside a large bronze jar, trapping him completely. No matter how hard he struggled, Ares could not escape.</p>
-        <p>Ares remained trapped in the jar for thirteen long months. He grew weaker and angrier with each passing day. The other gods did not know where he was, and Ares feared he might never be freed. Luckily, the goddess Eriboea, the stepmother of the giants, saw what they had done. She secretly told Hermes, the messenger of the gods, about Ares' imprisonment.</p>
-        <p>Hermes, who was clever and quick, immediately set out to rescue Ares. With the help of Artemis, the goddess of the hunt, he tricked the giants. Artemis appeared before Otus and Ephialtes, making them believe she wanted to marry one of them. The brothers, who both desired her, began fighting over who should have her. As part of the trick, she led them into a trap, and they ended up killing each other by accident.</p>
-        <p>With the giants dead, Hermes rushed to the bronze jar and freed Ares. Although he was embarrassed by his capture, he was grateful to be rescued. From then on, Ares never underestimated the power of trickery and teamwork, even in the face of brute strength.</p>
+        <p>Long before Aphrodite became the goddess of love and beauty, the universe was ruled by the Titans. One of the earliest gods was Uranus, the sky, who ruled over the heavens. He was cruel to his children, and his son Cronus eventually overthrew him. When Uranus was defeated, his power was cast away into the sea, where it began to mix with the ocean waters.</p>
+        <p>As the sea churned and foamed, something miraculous happened. From the white foam rose Aphrodite, fully grown and glowing with beauty. The winds gently carried her across the waves until she reached the shores of Cyprus. Wherever she stepped, flowers bloomed, and the world seemed brighter just from her presence.</p>
+        <p>When the gods saw Aphrodite, they were amazed. Even the Olympians were affected by her beauty and charm. Though she was newly born, Aphrodite already held great power. She did not rule through strength or force, but through love, attraction, and desire—forces that could influence gods and mortals alike.</p>
+        <p>From the moment of her birth, Aphrodite became a symbol of love and beauty in all its forms. She reminded the gods that emotions could be just as powerful as weapons, and that love could bring both joy and conflict. Her arrival marked the beginning of a new force in the world—one that would shape countless myths, relationships, and even wars.</p>
 
         <div class="jumpRow" style="margin-top:.8rem;">
           <a class="pill" href="#stories">⬆️ <span class="u">Back to story list</span></a>
