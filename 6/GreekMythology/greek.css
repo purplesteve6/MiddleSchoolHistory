@@ -260,7 +260,8 @@ p{color: rgba(246,243,230,.90)}
 .portraitWrap{display:grid; gap:.55rem}
 
 .portrait{
-  aspect-ratio: 1 / 1;
+  /* UPDATED: portrait orientation (800x1200 = 2:3) */
+  aspect-ratio: 2 / 3;
   width:100%;
   border-radius: calc(var(--radius) - 4px);
   overflow:hidden;
