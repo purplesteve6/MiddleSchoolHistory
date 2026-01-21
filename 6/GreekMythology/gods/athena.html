@@ -1,180 +1,406 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Athena - Greek Mythology with Mr. Sovocool</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('background.webp');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: white;
-        }
-        .header-banner {
-            background-color: rgba(0, 0, 139, 0.8);
-            width: 100%;
-            text-align: center;
-            padding: 20px 0;
-            position: relative;
-        }
-        .header-banner img {
-            max-width: 60%;
-            height: auto;
-        }
-        .container {
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.75);
-            margin: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .container h1 {
-            color: yellow;
-            font-size: 40px;
-        }
-        .container h3 {
-            font-size: 22px;
-            font-style: italic;
-            font-weight: normal;
-            color: white;
-        }
-        .container p {
-            text-align: left;
-            font-size: 20px;
-            margin: 10px 0;
-        }
-        .container p strong {
-            color: yellow;
-        }
-        .container p em {
-            font-style: italic;
-            color: white;
-        }
-        .god-image {
-            width: 50%;
-            max-width: 400px;
-            border-radius: 10px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .grid a {
-            text-decoration: none;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .grid img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-        .grid span {
-            position: absolute;
-            bottom: 10px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Athena | Greek Mythology</title>
+  <meta name="description" content="Athena: goddess of wisdom, war strategy, craftsmanship, and civilization—plus myths, stories, and key facts." />
+
+  <link rel="stylesheet" href="../greek.css" />
 </head>
-<body>
-    <div class="header-banner">
-        <img src="header.png" alt="Greek Mythology">
-    </div>
-    <div class="container">
-        <h1>Athena</h1>
-        <h3>Goddess of Wisdom, War Strategy, Craftmanship, Civilization</h3>
-        <img src="athena.webp" alt="Athena" class="god-image">
-        
-<p><strong>Roman Name:</strong> <em>Minerva</em></p>        
-<p><strong>Parents:</strong> <em>Zeus and Metis</em></p>
-        <p><strong>Spouse(s):</strong> <em>None</em></p>
-        <p><strong>Siblings:</strong> <em>Half-Sibling to all of Zeus' Children</em></p>
-        <p><strong>Children:</strong> <em>None</em></p>
-        <br>
-        <p>Athena is one of the most important deities in Greek mythology. She is the goddess of wisdom, strategic warfare, and craftsmanship. Unlike Ares, who represents chaotic war and bloodshed, Athena embodies discipline, planning, and justice in battle. She is also a protector of heroes, often guiding them with her intelligence.</p>
-        <p>Athena was born uniquely—she sprang fully grown and armored from the head of Zeus after he swallowed her pregnant mother, Metis. This dramatic birth highlights her deep connection to wisdom and intelligence.</p>
-        <p>Athena was a beloved goddess in Greece, especially in Athens, the city named in her honor. She won control of the city by gifting the olive tree, which provided food, oil, and wood. The Parthenon, a great temple on the Acropolis, was built in her honor.</p>
-        <p>She is often depicted with her shield (Aegis), a helmet, and a spear, showing her role as a warrior. Her sacred animal, the owl, symbolizes knowledge. Unlike other gods, Athena remained a virgin goddess, focusing on her duties rather than romantic relationships.</p>
-        <br>
-      <p><strong style="color: yellow;">Notable Stories About Athena:</strong></p>
-        <ul style="text-align: left; font-size: 20px; list-style-type: none; padding-left: 40px;">
-            <li><a href="#birth-of-athena" style="color: white; text-decoration: underline; font-weight: normal;">The Birth of Athena</a></li>
-            <li><a href="#poseidon-vs-athena" style="color: white; text-decoration: underline; font-weight: normal;">Poseidon vs. Athena – The Contest for Athens</a></li>
-            <li><a href="#judgement-of-paris" style="color: white; text-decoration: underline; font-weight: normal;">The Judgment of Paris</a></li>
-            <li><a href="#arachne" style="color: white; text-decoration: underline; font-weight: normal;">Arachne and the Weaving Contest</a></li>
-            <li><a href="#odysseus" style="color: white; text-decoration: underline; font-weight: normal;">Athena and Odysseus</a></li>    
-        </ul>
-      <br>  
-      <h2 id="birth-of-athena" style="color: yellow; font-weight: bold; text-align: center;">The Birth of Athena</h2>
-        <p>Athena, the goddess of wisdom and war, had one of the strangest births in Greek mythology. Her father was Zeus, the king of the gods, and her mother was Metis, a wise Titaness.</p>
-        <p>One day, Zeus learned of a prophecy that said Metis would give birth to a child more powerful than him. Afraid that his own child might overthrow him, Zeus decided to stop the prophecy from coming true. When Metis was pregnant, Zeus swallowed her whole, believing this would prevent the child from ever being born.</p>
-        <p>For a while, everything seemed fine, but then Zeus started having terrible headaches. The pain was unbearable, and he could not find relief. He called for Hephaestus, the blacksmith god, to help him. Following Zeus’s orders, Hephaestus took a mighty axe and struck Zeus’s forehead with all his strength.</p>
-        <p>Suddenly, Athena burst out of Zeus’s head, fully grown and wearing shining armor. She held a spear in one hand and a shield in the other, letting out a powerful battle cry as she appeared. The other gods were amazed by her sudden and unusual birth.</p>
-        <p>Even though she came from Zeus alone, Athena was known for her wisdom, strategy, and fairness. She became one of his most trusted children and a powerful protector of heroes. She was also the patron goddess of Athens, the city named in her honor.</p>
-        <p>Athena is often seen with her shield, spear, and an owl, which symbolizes wisdom. Unlike Ares, the god of war, she valued strategy over violence, making her a respected and admired goddess among both gods and mortals.</p>
-        <p>This story shows that wisdom and strength can come from unexpected places, and it explains why Athena was seen as a unique and powerful goddess from the moment she was born.</p>
 
+<body class="topic greek">
+  <div id="siteHeader"></div>
 
-      <br>  
-      <h2 id="poseidon-vs-athena" style="color: yellow; font-weight: bold; text-align: center;">Poseidon vs. Athena – The Contest for Athens</h2>
-        <p>Long ago, a new city was rising in Greece, and the people wanted a powerful god to protect them. Two Olympian gods, Poseidon and Athena, both wanted to claim the city as their own. To settle the dispute, Zeus declared a contest: whoever gave the people the best gift would become the city's patron.</p>
-        <p>Proud and strong, Poseidon struck his trident into the rocky ground, and a great spring burst forth. But when the people tasted the water, they realized it was salty and undrinkable. Poseidon declared that with this gift, they would rule the seas, building powerful ships and exploring the world.</p>
-        <p>Athena then stepped forward. She knelt and planted a small seed in the earth. As the people watched, a sturdy olive tree grew. Athena explained that the tree would provide wood for building, olives for food, and oil for lamps. The people saw the many uses of her gift and chose Athena as their protector.</p>
-        <p>Enraged, Poseidon caused the ground to shake and the seas to rise. But Zeus commanded him to accept the decision. Though he lost the contest, Poseidon remained one of the most powerful gods, ruling the seas and shaping the fate of sailors and warriors for generations.</p>
-
-        <br>
-          <h2 id="judgement-of-paris" style="color: yellow; font-weight: bold; text-align: center;">The Judgment of Paris</h2>
-        <p>One of the most famous stories involving Hera is the Judgment of Paris. It all began when Eris, the goddess of discord, was not invited to a grand wedding on Mount Olympus. In revenge, she threw a golden apple into the gathering, inscribed with the words “For the Fairest.” Instantly, Hera, Athena, and Aphrodite claimed the prize, each believing herself to be the most beautiful.</p>
-        <p>To settle the dispute, Zeus refused to choose between them, fearing their anger. Instead, he appointed Paris, a Trojan prince known for his fairness, to decide. The goddesses each tried to persuade Paris by offering him a reward. Hera promised to make him the ruler of the greatest empire in the world, giving him power and wealth beyond imagination. Athena, the goddess of wisdom and war, offered him unmatched intelligence and success in battle. Aphrodite, the goddess of love, promised him the love of the most beautiful woman in the world—Helen of Sparta.</p>
-        <p>Paris, enchanted by Aphrodite’s offer, awarded her the golden apple. This decision enraged both Hera and Athena, who vowed revenge against him and his people. Paris soon learned the consequences of his choice when he took Helen away from her husband, King Menelaus of Sparta. This act led to the outbreak of the Trojan War, a conflict that would last for ten years and end in the destruction of Troy.</p>
-        <p>Throughout the war, Hera remained a fierce enemy of the Trojans, using her influence to aid the Greek forces. She worked alongside Athena to sabotage the Trojans, supporting Greek heroes like Achilles and Odysseus. Even when the war seemed to favor Troy, Hera ensured that fate would bring about their downfall, proving that her wrath was not easily forgotten.</p>
-        <p>The Judgment of Paris was one of the most pivotal moments in Greek mythology, as it set the stage for one of the greatest wars ever told. It also showed how Hera, despite being a goddess of marriage and family, could be ruthless when slighted. Her power and influence over mortal affairs made her one of the most formidable deities of Mount Olympus.</p>
-      <br>  
-      <h2 id="arachne" style="color: yellow; font-weight: bold; text-align: center;">Arachne and the Weaving Contest</h2>
-        <p>Arachne was a young woman in ancient Greece, known for her incredible skill in weaving. She could create the most beautiful fabrics, with patterns so detailed that people believed the gods themselves must have taught her. However, Arachne was proud and refused to give credit to Athena, the goddess of wisdom and crafts. Instead, she boasted that her weaving was even better than the goddess’s.</p> <p>One day, Athena heard Arachne’s claims and decided to test her. She disguised herself as an old woman and warned Arachne to be humble, telling her that no mortal should challenge the gods. But Arachne laughed and said she was not afraid. She even dared Athena to a weaving contest to prove who was truly the best.</p> <p>Athena revealed her true form and accepted the challenge. The two began to weave, each creating a magnificent tapestry. Athena wove a masterpiece showing the gods in all their glory, demonstrating their wisdom and power. Arachne, however, wove a tapestry that mocked the gods, showing their mistakes and misdeeds. Though the artwork was flawless, it was also insulting to the Olympians.</p> <p>When Athena saw Arachne’s work, she was furious—not because it was more beautiful than hers, but because of its disrespectful message. In her anger, she struck the tapestry and tore it apart. Overcome with shame and regret, Arachne tried to take her own life, but Athena took pity on her. Instead of letting her die, Athena transformed Arachne into a spider, allowing her to continue weaving forever.</p> <p>From that day forward, Arachne’s descendants, the spiders, have woven intricate webs as a reminder of her talent and her fate. This myth serves as a lesson about pride and respect for the gods.</p>
-      <br>  
-      <h2 id="odysseus" style="color: yellow; font-weight: bold; text-align: center;">Athena and Odysseus</h2>
-        <p>Odysseus, the clever king of Ithaca, was one of the greatest heroes of the Trojan War. After the war ended, he began his journey home, but angering the gods made his voyage long and dangerous. His return, which should have taken weeks, lasted ten years, filled with trials and challenges.</p> <p>Early in his journey, Odysseus and his men landed on an island where they encountered the Cyclops Polyphemus, the giant son of Poseidon. Trapped in the Cyclops’s cave, Odysseus tricked him by getting him drunk and blinding his single eye. He and his men then escaped by hiding under the bellies of sheep. As they sailed away, Odysseus taunted Polyphemus, revealing his true name. This angered Poseidon, who cursed him to wander the seas.</p> <p>Later, Odysseus faced many other dangers. He and his crew visited the island of Aeolus, the god of the winds, who gave them a bag of winds to guide them home. But his men, thinking it was treasure, opened the bag, sending them off course. On another island, the witch Circe turned his men into pigs, but with the help of the god Hermes, Odysseus forced her to turn them back. He stayed with Circe for a year before continuing his journey.</p> <p>To reach home, Odysseus had to sail past the deadly Sirens, whose enchanting songs lured sailors to their deaths. He plugged his men’s ears with wax and tied himself to the mast so he could hear their song without being drawn to them. He also passed through Scylla and Charybdis, a six-headed sea monster and a deadly whirlpool, losing several men in the process.</p> <p>After losing all his men in a final disaster, Odysseus washed ashore on the island of Calypso, a beautiful nymph who held him captive for seven years. At last, the gods ordered her to let him go, and Odysseus sailed to the land of the Phaeacians. They gave him a ship, and he finally returned to Ithaca after twenty years away.</p> <p>Disguised as a beggar, Odysseus found that his home was overrun with suitors trying to marry his wife, Penelope. With the help of his son, Telemachus, and the goddess Athena, he revealed himself, fought the suitors, and reclaimed his kingdom. Finally, after many trials, Odysseus was reunited with Penelope, proving that his wit and perseverance had brought him home.</p>
-        <br>
-    </div>
-<br>
-        <p style="text-align: center; font-weight: bold;">Click on an image below to learn more about the Olympians:</p>
-        <div class="grid">
-	<a href="index.html"><img src="olympus.webp" alt="Home"><span>Home</span></a>            
-	<a href="zeus.html"><img src="zeus.webp" alt="Zeus"><span>Zeus</span></a>
-            <a href="hera.html"><img src="hera.webp" alt="Hera"><span>Hera</span></a>
-            <a href="poseidon.html"><img src="poseidon.webp" alt="Poseidon"><span>Poseidon</span></a>
-            <a href="demeter.html"><img src="demeter.webp" alt="Demeter"><span>Demeter</span></a>
-            <a href="apollo.html"><img src="apollo.webp" alt="Apollo"><span>Apollo</span></a>
-            <a href="artemis.html"><img src="artemis.webp" alt="Artemis"><span>Artemis</span></a>
-            <a href="ares.html"><img src="ares.webp" alt="Ares"><span>Ares</span></a>
-            <a href="aphrodite.html"><img src="aphrodite.webp" alt="Aphrodite"><span>Aphrodite</span></a>
-            <a href="hephaestus.html"><img src="hephaestus.webp" alt="Hephaestus"><span>Hephaestus</span></a>
-            <a href="hermes.html"><img src="hermes.webp" alt="Hermes"><span>Hermes</span></a>
-            <a href="dionysus.html"><img src="dionysus.webp" alt="Dionysus"><span>Dionysus</span></a>
-            <a href="hades.html"><img src="hades.webp" alt="Hades"><span>Hades</span></a>
-            <a href="hestia.html"><img src="hestia.webp" alt="Hestia"><span>Hestia</span></a>
+  <main id="content">
+    <!-- HERO -->
+    <section class="hero" aria-label="Athena hero">
+      <div class="card hero-left">
+        <div class="center" style="display:flex; align-items:center; justify-content:center; gap:.6rem; flex-wrap:wrap;">
+          <span style="color: var(--gold); font-weight:1000;">Goddess of:</span>
+          <span class="kicker">Wisdom • War Strategy • Craftsmanship • Civilization</span>
         </div>
-<br><br>
-    <p class="copyright" style="text-align: center;">&copy; 2025 Stephen Sovocool</p></body>
+
+        <h1 class="center">Athena</h1>
+
+        <!-- No hover definitions in HERO -->
+        <p class="sub center" style="max-width:70ch; margin-left:auto; margin-right:auto;">
+          Athena was one of the most respected Olympian goddesses, known for intelligence, careful planning,
+          and fair leadership in both war and peace.
+        </p>
+
+        <div class="bigIdeaWrap" aria-label="Big Idea">
+          <div class="bigIdeaGraphic">
+            <img src="/assets/images/ui/bigidea.png" alt="Big Idea graphic" width="150" height="92" />
+          </div>
+          <div class="bigIdeaText">
+            True strength isn’t just power—it’s wisdom, self-control, and making smart choices.
+          </div>
+
+          <div class="factsList" style="margin-top:.9rem;">
+            <div class="factItem"><b>Roman Name:</b> <em>Minerva</em></div>
+            <div class="factItem"><b>Parents:</b> <em>Zeus and Metis</em></div>
+            <div class="factItem"><b>Spouse(s):</b> <em>None</em></div>
+            <div class="factItem"><b>Siblings:</b> <em>Half-sibling to Zeus’s other children</em></div>
+            <div class="factItem"><b>Children:</b> <em>None</em></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card hero-right" aria-label="Portrait and navigation">
+        <div class="portraitWrap">
+          <div class="portrait" role="img" aria-label="Athena portrait">
+            <img src="../images/athena.webp" alt="Athena" />
+          </div>
+
+          <div class="portraitButtons" aria-label="Navigation">
+            <a class="pbtn prev" href="artemis.html" title="Back: Artemis">
+              <div class="pbtnTop">
+                <span class="emoji" aria-hidden="true">⬅️</span>
+                <span class="label">Back</span>
+              </div>
+              <div class="pbtnSub">Artemis</div>
+            </a>
+
+            <div class="pbtn spacer" aria-hidden="true"></div>
+
+            <a class="pbtn next" href="demeter.html" title="Next: Demeter">
+              <div class="pbtnTop">
+                <span class="label">Next</span>
+                <span class="emoji" aria-hidden="true">➡️</span>
+              </div>
+              <div class="pbtnSub">Demeter</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="jumpRow">
+          <a class="pill" href="#olympians">
+            🧿 <span class="u">Jump to Olympians</span>
+          </a>
+        </div>
+      </aside>
+    </section>
+
+    <!-- BACKGROUND -->
+    <section class="card full" aria-label="Background">
+      <div class="section">
+        <h2>Background</h2>
+
+        <p>
+          Athena is one of the most important deities in Greek mythology. She is the goddess of wisdom,
+          strategic warfare, and craftsmanship. Unlike Ares, who represents chaotic war and bloodshed,
+          Athena embodies discipline, planning, and justice in battle. She is also a protector of heroes,
+          often guiding them with her intelligence.
+        </p>
+
+        <p>
+          Athena was born in a truly unique way—she sprang fully grown and armored from the head of Zeus after
+          he swallowed her pregnant mother, Metis, a wise
+          <span class="vocabWord" data-def="A powerful being from an older generation of gods.">Titaness</span>.
+          This dramatic birth highlights her connection to wisdom and intelligence.
+        </p>
+
+        <p>
+          Athena was a beloved goddess in Greece, especially in Athens, the city named in her honor.
+          She won control of the city by gifting the olive tree, which provided food, oil, and wood.
+          The Parthenon, a great temple on the
+          <span class="vocabWord" data-def="A fortified hilltop in Athens where major temples were built.">Acropolis</span>,
+          was built in her honor.
+        </p>
+
+        <p>
+          She is often depicted with her shield (the
+          <span class="vocabWord" data-def="Athena’s protective shield, often shown with Medusa’s head.">Aegis</span>),
+          a helmet, and a spear. Her sacred animal, the owl, symbolizes knowledge. Unlike many gods,
+          Athena remained a virgin goddess, focusing on duty rather than romantic relationships.
+        </p>
+      </div>
+    </section>
+
+    <!-- DID YOU KNOW (no hover vocab here) -->
+    <section class="didYouKnow" aria-label="Did you know feature">
+      <div class="dykImg" aria-label="Did you know banner">
+        <img src="/assets/images/ui/didyouknow.png" alt="Did you know" width="200" height="78" />
+      </div>
+      <div class="fact">
+        The famous Parthenon in Athens was built to honor Athena, and it became a symbol of the city’s pride,
+        power, and culture.
+      </div>
+    </section>
+
+    <!-- QUICK FACTS + VOCAB (no hover vocab required here) -->
+    <section class="grid2" aria-label="Quick facts and vocabulary">
+      <article class="card section" aria-label="Quick Facts">
+        <h2>Quick Facts</h2>
+        <div class="factsList">
+          <div class="factItem">🧠 Athena is the goddess of <b>wisdom</b> and smart decision-making.</div>
+          <div class="factItem">⚔️ She represents <b>strategy</b> and discipline in war (not chaos).</div>
+          <div class="factItem">🦉 Her sacred animal is the <b>owl</b>, a symbol of knowledge.</div>
+          <div class="factItem">🏛️ The city of <b>Athens</b> was named in her honor.</div>
+          <div class="factItem">🧵 She is also a goddess of <b>craftsmanship</b>, including weaving.</div>
+        </div>
+      </article>
+
+      <article class="card section" aria-label="Vocabulary">
+        <h2>Vocabulary</h2>
+        <div class="vocab">
+          <div class="term"><b>strategy</b> — careful planning to achieve a goal.</div>
+          <div class="term"><b>prophecy</b> — a prediction believed to come from a god.</div>
+          <div class="term"><b>hubris</b> — dangerous pride or arrogance.</div>
+          <div class="term"><b>patron</b> — a protector or supporter of a place or group.</div>
+          <div class="term"><b>tapestry</b> — a detailed woven fabric or artwork.</div>
+        </div>
+      </article>
+    </section>
+
+    <!-- STORIES LIST -->
+    <section class="card full" aria-label="Story list" id="stories">
+      <div class="section">
+        <h2>Notable Stories About Athena</h2>
+
+        <div class="factsList">
+          <div class="factItem"><a class="u" href="#story1">The Birth of Athena</a></div>
+          <div class="factItem"><a class="u" href="#story2">Poseidon vs. Athena: The Contest for Athens</a></div>
+          <div class="factItem"><a class="u" href="#story3">The Judgment of Paris</a></div>
+          <div class="factItem"><a class="u" href="#story4">Arachne and the Weaving Contest</a></div>
+          <div class="factItem"><a class="u" href="#story5">Athena and Odysseus</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STORY 1 -->
+    <section class="card full" aria-label="Story 1" id="story1">
+      <div class="section">
+        <h2><center>The Birth of Athena</center></h2>
+
+        <p>
+          Athena, the goddess of wisdom and war, had one of the strangest births in Greek mythology.
+          Her father was Zeus, the king of the gods, and her mother was Metis, a wise
+          <span class="vocabWord" data-def="A powerful being from an older generation of gods.">Titaness</span>.
+        </p>
+
+        <p>
+          One day, Zeus learned of a
+          <span class="vocabWord" data-def="A message about the future; a prediction said to come from a god.">prophecy</span>
+          that said Metis would give birth to a child who might be more powerful than him. Afraid of being overthrown,
+          Zeus decided to stop the prophecy. When Metis was pregnant, Zeus swallowed her whole, believing this would
+          prevent the child from being born.
+        </p>
+
+        <p>
+          For a while, everything seemed fine—until Zeus began having terrible headaches. The pain was unbearable,
+          and he could not find relief. He called for Hephaestus, the blacksmith god, to help him. Following Zeus’s
+          orders, Hephaestus took a mighty axe and struck Zeus’s forehead with all his strength.
+        </p>
+
+        <p>
+          Suddenly, Athena burst out of Zeus’s head, fully grown and wearing shining armor. She held a spear in one
+          hand and a shield in the other, and she let out a powerful battle cry. The other gods were amazed by her
+          sudden and unusual arrival.
+        </p>
+
+        <p>
+          Athena became one of Zeus’s most trusted children and a powerful protector of heroes. Her birth story
+          explains why she was seen as wise and strong from the moment she appeared: she literally came from the
+          mind of the king of the gods.
+        </p>
+
+        <div class="jumpRow" style="margin-top:.8rem;">
+          <a class="pill" href="#stories">⬆️ <span class="u">Back to story list</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- STORY 2 -->
+    <section class="card full" aria-label="Story 2" id="story2">
+      <div class="section">
+        <h2><center>Poseidon vs. Athena: The Contest for Athens</center></h2>
+
+        <p>
+          Long ago, a new city was rising in Greece, and the people wanted a powerful god to protect them.
+          Two Olympians—Poseidon and Athena—both wanted to claim the city as their own. To settle the dispute,
+          Zeus declared a contest: whoever gave the people the best gift would become the city’s
+          <span class="vocabWord" data-def="A protector or supporter of a place or group.">patron</span>.
+        </p>
+
+        <p>
+          Proud and strong, Poseidon struck his trident into the rocky ground, and a great spring burst forth.
+          But when the people tasted the water, they realized it was salty and undrinkable. Poseidon argued that
+          his gift would still make them powerful at sea, with ships and naval strength.
+        </p>
+
+        <p>
+          Then Athena stepped forward. She knelt and planted a small seed in the earth. As the people watched,
+          a sturdy olive tree grew. Athena explained that the tree would provide wood for building, olives for food,
+          and oil for lamps and cooking. The people saw the many uses of her gift and chose Athena as their protector.
+        </p>
+
+        <p>
+          Poseidon was enraged and caused the ground to shake and the seas to rise. But Zeus commanded him to accept
+          the decision. The city was named Athens, and Athena became its honored guardian—showing that a gift that
+          helps people every day can matter more than a gift of fear or force.
+        </p>
+
+        <div class="jumpRow" style="margin-top:.8rem;">
+          <a class="pill" href="#stories">⬆️ <span class="u">Back to story list</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- STORY 3 (Athena-centric reframing) -->
+    <section class="card full" aria-label="Story 3" id="story3">
+      <div class="section">
+        <h2><center>The Judgment of Paris</center></h2>
+
+        <p>
+          The Judgment of Paris is one of the most important myths connected to Athena because it helped spark the
+          Trojan War—where Athena would later fight fiercely against Troy. The trouble began when Eris, the goddess
+          of discord, was not invited to a grand wedding on Mount Olympus. In revenge, she threw a golden apple into
+          the feast with the words “For the Fairest.”
+        </p>
+
+        <p>
+          Three goddesses claimed the apple: Hera, Athena, and Aphrodite. Zeus refused to choose between them,
+          worried they would all become furious with him. Instead, he chose a mortal judge—Paris, a Trojan prince
+          known for his fairness.
+        </p>
+
+        <p>
+          Each goddess tried to persuade Paris with a reward. Hera promised him power and a great kingdom.
+          Athena offered something different: unmatched wisdom and success in battle—making him a brilliant leader.
+          Aphrodite offered him the love of the most beautiful woman in the world, Helen of Sparta.
+        </p>
+
+        <p>
+          Paris chose Aphrodite’s offer and gave her the apple. Athena was furious—not just because she lost,
+          but because the choice showed poor judgment. Athena believed Paris had traded true greatness for a
+          short-term prize.
+        </p>
+
+        <p>
+          When Paris later took Helen from Sparta, the Trojan War began. Athena supported the Greeks and used her
+          intelligence to guide heroes like Odysseus. The myth shows a key Athena lesson: choices made without wisdom
+          can lead to disaster, and even gods may respond when honor and fairness are ignored.
+        </p>
+
+        <div class="jumpRow" style="margin-top:.8rem;">
+          <a class="pill" href="#stories">⬆️ <span class="u">Back to story list</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- STORY 4 -->
+    <section class="card full" aria-label="Story 4" id="story4">
+      <div class="section">
+        <h2><center>Arachne and the Weaving Contest</center></h2>
+
+        <p>
+          Arachne was a young woman famous for incredible weaving. Her patterns were so detailed that people began
+          to believe the gods themselves must have taught her. But Arachne became proud and refused to give Athena,
+          the goddess of wisdom and crafts, any credit. Instead, she bragged that her weaving was better than Athena’s.
+        </p>
+
+        <p>
+          Athena heard Arachne’s boastful words and came to her disguised as an old woman. She warned Arachne to be
+          humble and respect the gods. But Arachne laughed and challenged Athena to a contest.
+        </p>
+
+        <p>
+          Athena revealed her true form and accepted. The two began to weave, creating magnificent
+          <span class="vocabWord" data-def="A detailed woven fabric or artwork.">tapestries</span>.
+          Athena wove a masterpiece showing the gods in glory and order. Arachne’s weaving was flawless too—but her
+          tapestry mocked the gods by showing their mistakes and misdeeds.
+        </p>
+
+        <p>
+          Athena was furious—not because Arachne was talented, but because Arachne used her talent to insult the gods.
+          In anger, Athena tore the tapestry. Arachne, overwhelmed with shame, tried to take her own life.
+        </p>
+
+        <p>
+          Athena stopped her and transformed Arachne into a spider so she could keep weaving forever. The myth became
+          a warning about
+          <span class="vocabWord" data-def="Dangerous pride or arrogance.">hubris</span>:
+          talent is impressive, but respect and humility matter too.
+        </p>
+
+        <div class="jumpRow" style="margin-top:.8rem;">
+          <a class="pill" href="#stories">⬆️ <span class="u">Back to story list</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- STORY 5 -->
+    <section class="card full" aria-label="Story 5" id="story5">
+      <div class="section">
+        <h2><center>Athena and Odysseus</center></h2>
+
+        <p>
+          Odysseus, the clever king of Ithaca, was one of the greatest heroes of the Trojan War. After the war ended,
+          his journey home should have taken weeks, but it lasted ten years. Many dangers stood in his way, and he
+          needed more than strength to survive—he needed wisdom. That’s why Athena supported him.
+        </p>
+
+        <p>
+          Odysseus faced terrifying challenges: the Cyclops Polyphemus, the witch Circe, the deadly Sirens, and the
+          sea dangers Scylla and Charybdis. Again and again, Odysseus survived by thinking carefully and making
+          clever plans—qualities Athena admired.
+        </p>
+
+        <p>
+          After many losses, Odysseus was trapped for years on the island of Calypso. Athena argued on his behalf
+          among the gods, pushing for him to be released. Eventually, Odysseus returned to Ithaca—twenty years after
+          he had left.
+        </p>
+
+        <p>
+          When he arrived, Odysseus found his home filled with suitors trying to marry his wife, Penelope. Athena
+          helped him by disguising him as a beggar so he could gather information safely. Then, at the right moment,
+          Athena supported Odysseus and his son Telemachus as they defeated the suitors and reclaimed the kingdom.
+        </p>
+
+        <p>
+          This story shows what Athena stands for: smart planning, patience, and self-control. With Athena’s guidance,
+          Odysseus proved that a clever mind can be as powerful as any weapon.
+        </p>
+
+        <div class="jumpRow" style="margin-top:.8rem;">
+          <a class="pill" href="#stories">⬆️ <span class="u">Back to story list</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- OLYMPIANS GRID -->
+    <section class="card full" aria-label="Olympians" id="olympians">
+      <div class="section">
+        <h2 class="center">Explore the Olympians</h2>
+        <p class="center" style="margin-top:0;">Click on an image below to learn more about the Olympians:</p>
+
+        <div class="godGrid" aria-label="Olympian gods grid">
+          <a href="../index.html"><img src="../images/olympus.png" alt="Home"><span>Home</span></a>
+          <a href="zeus.html"><img src="../images/zeus_icon.webp" alt="Zeus"><span>Zeus</span></a>
+          <a href="hera.html"><img src="../images/hera_icon.webp" alt="Hera"><span>Hera</span></a>
+          <a href="poseidon.html"><img src="../images/poseidon_icon.webp" alt="Poseidon"><span>Poseidon</span></a>
+          <a href="demeter.html"><img src="../images/demeter_icon.webp" alt="Demeter"><span>Demeter</span></a>
+          <a href="athena.html"><img src="../images/athena_icon.webp" alt="Athena"><span>Athena</span></a>
+          <a href="apollo.html"><img src="../images/apollo_icon.webp" alt="Apollo"><span>Apollo</span></a>
+          <a href="artemis.html"><img src="../images/artemis_icon.webp" alt="Artemis"><span>Artemis</span></a>
+          <a href="ares.html"><img src="../images/ares_icon.webp" alt="Ares"><span>Ares</span></a>
+          <a href="aphrodite.html"><img src="../images/aphrodite_icon.webp" alt="Aphrodite"><span>Aphrodite</span></a>
+          <a href="hephaestus.html"><img src="../images/hephaestus_icon.webp" alt="Hephaestus"><span>Hephaestus</span></a>
+          <a href="hermes.html"><img src="../images/hermes_icon.webp" alt="Hermes"><span>Hermes</span></a>
+          <a href="dionysus.html"><img src="../images/dionysus_icon.webp" alt="Dionysus"><span>Dionysus</span></a>
+          <a href="hades.html"><img src="../images/hades_icon.webp" alt="Hades"><span>Hades</span></a>
+          <a href="hestia.html"><img src="../images/hestia_icon.webp" alt="Hestia"><span>Hestia</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="siteFooter"></div>
+
+  <script src="../config.js"></script>
+  <script src="/include.js"></script>
+</body>
 </html>
