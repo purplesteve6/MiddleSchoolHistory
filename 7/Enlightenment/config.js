@@ -4,6 +4,6 @@ window.TOPIC_CONFIG = {
   subtitle: "Middle School History",
   homeLabel: "The Enlightenment Home",
   homeHref: "/7/Enlightenment/",
-  badgeIcon: "/assets/images/icons/7_icon.png",
+  badgeIcon: "/assets/images/icons/7_iconbk.png",
   mainLogo: "/assets/images/logo/MSHistory_Logo_Basic_Web.png"
 };
