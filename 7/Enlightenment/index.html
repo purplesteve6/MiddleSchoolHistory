@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -74,19 +75,21 @@
 
             <div class="pbtn spacer" aria-hidden="true"></div>
 
-            <a class="pbtn next" href="#thinkers" title="Jump to Thinkers Gallery">
+            <!-- Explore now links to the first thinker (chronological order) -->
+            <a class="pbtn next" href="thinkers/hobbes.html" title="Start with Thomas Hobbes">
               <div class="pbtnTop">
                 <span class="label">Explore</span>
                 <span class="emoji" aria-hidden="true">➡️</span>
               </div>
-              <div class="pbtnSub">Thinkers</div>
+              <div class="pbtnSub">Thomas Hobbes</div>
             </a>
           </div>
         </div>
 
         <div class="jumpRow">
-          <a class="pill" href="#connections">
-            🔗 <span class="u">Jump to Constitution Connections</span>
+          <!-- Updated label + updated target -->
+          <a class="pill" href="#thinkers">
+            🖼️ <span class="u">Jump to the Thinker Gallery</span>
           </a>
         </div>
       </aside>
@@ -179,13 +182,19 @@
 
             <ul class="bullets">
               <li>
-                <b>Locke:</b> People have <span class="vocabWord" data-def="Basic freedoms people are born with, like life and liberty.">natural rights</span>, and government must protect them.
+                <b>Locke:</b> People have
+                <span class="vocabWord" data-def="Basic freedoms people are born with, like life and liberty.">natural rights</span>,
+                and government must protect them.
               </li>
               <li>
-                <b>Montesquieu:</b> Use <span class="vocabWord" data-def="Dividing power among branches (like legislative, executive, and judicial).">separation of powers</span> so no one group controls everything.
+                <b>Montesquieu:</b> Use
+                <span class="vocabWord" data-def="Dividing power among branches (like legislative, executive, and judicial).">separation of powers</span>
+                so no one group controls everything.
               </li>
               <li>
-                <b>Rousseau:</b> Legitimate governments should reflect the <span class="vocabWord" data-def="The shared interests and goals of the people.">general will</span> of the people.
+                <b>Rousseau:</b> Legitimate governments should reflect the
+                <span class="vocabWord" data-def="The shared interests and goals of the people.">general will</span>
+                of the people.
               </li>
               <li>
                 <b>Wollstonecraft:</b> Rights and education should include women, not just men.
@@ -208,7 +217,16 @@
           Scroll through the “art gallery” and click a portrait to learn more.
         </p>
 
+        <!-- Reordered into chronological order -->
         <div class="gallery" aria-label="Scrollable thinkers gallery">
+          <a class="galleryCard" href="thinkers/hobbes.html" aria-label="Thomas Hobbes">
+            <img src="images/hobbes.webp" alt="Thomas Hobbes" />
+            <div class="cap">
+              <div class="name">Thomas Hobbes</div>
+              <div class="tag">Order &amp; security</div>
+            </div>
+          </a>
+
           <a class="galleryCard" href="thinkers/locke.html" aria-label="John Locke">
             <img src="images/locke.webp" alt="John Locke" />
             <div class="cap">
@@ -225,14 +243,6 @@
             </div>
           </a>
 
-          <a class="galleryCard" href="thinkers/rousseau.html" aria-label="Jean-Jacques Rousseau">
-            <img src="images/rousseau.webp" alt="Jean-Jacques Rousseau" />
-            <div class="cap">
-              <div class="name">Rousseau</div>
-              <div class="tag">Social contract</div>
-            </div>
-          </a>
-
           <a class="galleryCard" href="thinkers/voltaire.html" aria-label="Voltaire">
             <img src="images/voltaire.webp" alt="Voltaire" />
             <div class="cap">
@@ -241,28 +251,24 @@
             </div>
           </a>
 
-          <a class="galleryCard" href="thinkers/hobbes.html" aria-label="Thomas Hobbes">
-            <img src="images/hobbes.webp" alt="Thomas Hobbes" />
+          <a class="galleryCard" href="thinkers/rousseau.html" aria-label="Jean-Jacques Rousseau">
+            <img src="images/rousseau.webp" alt="Jean-Jacques Rousseau" />
             <div class="cap">
-              <div class="name">Hobbes</div>
-              <div class="tag">Order &amp; security</div>
+              <div class="name">Jean-Jacques Rousseau</div>
+              <div class="tag">Social contract</div>
             </div>
           </a>
 
           <a class="galleryCard" href="thinkers/wollstonecraft.html" aria-label="Mary Wollstonecraft">
             <img src="images/wollstonecraft.webp" alt="Mary Wollstonecraft" />
             <div class="cap">
-              <div class="name">Wollstonecraft</div>
+              <div class="name">Mary Wollstonecraft</div>
               <div class="tag">Women’s rights</div>
             </div>
           </a>
         </div>
 
-        <div class="jumpRow" style="margin-top:.9rem;">
-          <a class="pill" href="/7/" title="Return to Grade 7 Home">
-            ↩️ <span class="u">Return to Grade 7 Home</span>
-          </a>
-        </div>
+        <!-- Removed the “Return to Grade 7 Home” label/link -->
       </div>
     </section>
 
@@ -286,5 +292,26 @@
 
   <script src="./config.js"></script>
   <script src="/include.js"></script>
+
+  <!-- Mouse-wheel scroll on the gallery moves horizontally -->
+  <script>
+    (function () {
+      const gallery = document.querySelector(".gallery");
+      if (!gallery) return;
+
+      gallery.addEventListener(
+        "wheel",
+        (e) => {
+          // If the user is primarily wheel-scrolling vertically, convert to horizontal.
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            gallery.scrollLeft += e.deltaY;
+          }
+        },
+        { passive: false }
+      );
+    })();
+  </script>
 </body>
 </html>
+```
