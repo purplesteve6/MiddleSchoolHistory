@@ -508,3 +508,57 @@ h1{
 
 /* Anchor offset for fixed header */
 #connections, #thinkers{ scroll-margin-top: 140px; }
+
+
+/* =========================================
+   Header color overrides (layout from /styles.css)
+   ========================================= */
+
+.site-header{
+  box-shadow: 0 10px 30px rgba(31,26,18,0.14);
+}
+
+/* Top bar: make it white + subtle gold */
+.topbar{
+  background: linear-gradient(180deg, #ffffff 0%, #fff8e1 100%);
+  border-bottom: 1px solid rgba(212,175,55,.25);
+}
+
+.top-link{
+  color: rgba(31,26,18,.88);
+}
+.top-link:hover{
+  background: rgba(212,175,55,.12);
+}
+
+/* Main nav band: white with gold accent */
+.main-nav{
+  background: linear-gradient(180deg, #ffffff 0%, #fff6da 100%);
+  border-top: 1px solid rgba(212,175,55,.22);
+}
+
+/* Nav buttons/text colors */
+.nav-link{
+  color: rgba(31,26,18,.92);
+}
+.nav-item:hover .nav-link,
+.nav-item.is-active .nav-link{
+  background: rgba(212,175,55,.14);
+  box-shadow: inset 0 0 0 1px rgba(212,175,55,.25);
+}
+
+/* Dropdown band should match theme */
+.dropdown-band{
+  background: rgba(255,255,255,.98);
+  color: rgba(31,26,18,.92);
+  border-top: 1px solid rgba(212,175,55,.20);
+}
+
+/* Dropdown links */
+.topic-link{
+  color: rgba(31,26,18,.92);
+}
+.topic-link:hover{
+  background: rgba(212,175,55,.12);
+}
+
