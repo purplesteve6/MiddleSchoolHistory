@@ -1,3 +1,10 @@
+/* =========================================================
+   The Enlightenment (Grade 7) — White + Gold Theme
+   Landing Page Stylesheet
+   IMPORTANT: Header styles below match the SITEWIDE header.html
+   selectors exactly (header, .nav, .nav-logo, .brandText, .btn).
+   ========================================================= */
+
 :root{
   /* ===== WHITE + GOLD THEME ===== */
   --bg: #ffffff;
@@ -38,19 +45,24 @@ a{color:inherit}
 img{max-width:100%; display:block}
 .u{ text-decoration: underline; text-underline-offset: 3px; }
 
-/* ===== Header (injected via /include.js partials) =====
-   Topic pages use their own CSS for spacing beneath the fixed header. */
+/* =========================================================
+   HEADER — EXACT SAME SELECTORS AS SITEWIDE header.html
+   (Repo controls look via this CSS.)
+   ========================================================= */
+
 header{
   position:fixed;
   top:0; left:0; right:0;
   z-index:10;
-  overflow:visible;
+  overflow:visible;                 /* critical so logo can overlap */
   backdrop-filter: blur(12px);
-  background: rgba(255,255,255,.78);
-  border-bottom: 1px solid rgba(31,26,18,.10);
+
+  /* White + gold */
+  background: rgba(255,255,255,.86);
+  border-bottom: 1px solid rgba(212,175,55,.35);
 }
 
-/* allow site logo patch overlap (matches other topics) */
+/* Logo patch overlap (matches topic templates) */
 .nav-logo{
   position:absolute;
   left:12px;
@@ -60,6 +72,7 @@ header{
   align-items:flex-end;
   gap:10px;
 }
+
 .nav-logo-img{
   width:auto;
   max-width:none;
@@ -71,7 +84,71 @@ header{
   height:140px;
 }
 
-/* If header buttons exist inside partial */
+/* Centered header content */
+.nav{
+  max-width: var(--max);
+  margin:0 auto;
+  padding: .8rem 1rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+}
+
+.brandText{
+  display:flex;
+  flex-direction:column;
+  line-height:1.05;
+}
+
+.brandKicker{
+  font-size:.68rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color: rgba(31,26,18,.72);
+}
+
+.brandTitle{
+  font-weight:1000;
+  color: rgba(31,26,18,.95);
+}
+
+.brandSub{
+  font-size:.9rem;
+  font-weight:600;
+  color: rgba(31,26,18,.70);
+  margin-top:.08rem;
+}
+
+/* Grade badge tile */
+.columnIcon{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+
+  border:1px solid rgba(212,175,55,.38);
+  background: linear-gradient(135deg, rgba(212,175,55,.30), rgba(255,255,255,.55));
+  box-shadow: 0 10px 22px rgba(31,26,18,.14);
+  flex:0 0 auto;
+}
+
+.columnIcon img{
+  width:70%;
+  height:70%;
+  object-fit:contain;
+  display:block;
+}
+
+/* Header button */
 .nav a.btn{
   text-decoration:none;
   display:inline-flex;
@@ -79,24 +156,39 @@ header{
   gap:.5rem;
   padding:.55rem .85rem;
   border-radius: 999px;
+
   border:1px solid rgba(31,26,18,.14);
-  background: rgba(255,255,255,.70);
+  background: rgba(255,255,255,.75);
+  color: rgba(31,26,18,.92);
+
   transition: transform .12s ease, background .12s ease, border-color .12s ease;
   white-space:nowrap;
 }
+
 .nav a.btn:hover{
   transform: translateY(-1px);
-  background: rgba(255,255,255,.92);
-  border-color: rgba(212,175,55,.55);
+  background: rgba(255,255,255,.95);
+  border-color: rgba(212,175,55,.60);
 }
-.nav a.btn:focus{outline:none; box-shadow: var(--focus)}
+
+.nav a.btn:focus{
+  outline:none;
+  box-shadow: var(--focus);
+}
 
 @media (max-width: 720px){
   .nav-logo-img{ height:110px; }
 }
 
-/* ===== MAIN ===== */
-main{max-width: var(--max); margin:0 auto; padding: 110px 1rem 4rem;}
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
+main{
+  max-width: var(--max);
+  margin:0 auto;
+  padding: 110px 1rem 4rem; /* matches the topic template pattern */
+}
 
 .card{
   background: linear-gradient(180deg, var(--panel), var(--panel2));
@@ -108,7 +200,10 @@ main{max-width: var(--max); margin:0 auto; padding: 110px 1rem 4rem;}
 .tiny{font-size:.92rem; color: rgba(31,26,18,.68)}
 h2{margin:.15rem 0 .6rem; font-size:1.25rem; letter-spacing:-.2px}
 
-/* ===== HERO ===== */
+/* =========================================================
+   HERO
+   ========================================================= */
+
 .hero{
   display:grid;
   grid-template-columns: 1.15fr .85fr;
@@ -287,7 +382,10 @@ h1{
   margin-top:.35rem;
 }
 
-/* Sections */
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+
 .full{margin-top: 1rem}
 .section{padding:1.1rem 1.2rem}
 .section h3{margin: .95rem 0 .4rem}
@@ -421,7 +519,10 @@ h1{
 .mediaText .bullets{ margin:.6rem 0 0; padding-left: 1.1rem; }
 .mediaText .bullets li{ margin:.35rem 0; }
 
-/* ===== Scrollable “Art Gallery” ===== */
+/* =========================================================
+   Scrollable “Art Gallery”
+   ========================================================= */
+
 .gallery{
   margin-top: .85rem;
   display:flex;
@@ -474,7 +575,13 @@ h1{
   font-size: .9rem;
 }
 
-/* Footer (partial footer uses these classes) */
+/* Anchor offset for fixed header */
+#connections, #thinkers{ scroll-margin-top: 140px; }
+
+/* =========================================================
+   Footer (if your footer partial uses these classes)
+   ========================================================= */
+
 .site-footer{
   margin-top:0;
   padding:18px 1rem 40px;
@@ -505,60 +612,3 @@ h1{
   .footer-logo-icon{height:36px}
   .footer-logo-text{height:20px}
 }
-
-/* Anchor offset for fixed header */
-#connections, #thinkers{ scroll-margin-top: 140px; }
-
-
-/* =========================================
-   Header color overrides (layout from /styles.css)
-   ========================================= */
-
-.site-header{
-  box-shadow: 0 10px 30px rgba(31,26,18,0.14);
-}
-
-/* Top bar: make it white + subtle gold */
-.topbar{
-  background: linear-gradient(180deg, #ffffff 0%, #fff8e1 100%);
-  border-bottom: 1px solid rgba(212,175,55,.25);
-}
-
-.top-link{
-  color: rgba(31,26,18,.88);
-}
-.top-link:hover{
-  background: rgba(212,175,55,.12);
-}
-
-/* Main nav band: white with gold accent */
-.main-nav{
-  background: linear-gradient(180deg, #ffffff 0%, #fff6da 100%);
-  border-top: 1px solid rgba(212,175,55,.22);
-}
-
-/* Nav buttons/text colors */
-.nav-link{
-  color: rgba(31,26,18,.92);
-}
-.nav-item:hover .nav-link,
-.nav-item.is-active .nav-link{
-  background: rgba(212,175,55,.14);
-  box-shadow: inset 0 0 0 1px rgba(212,175,55,.25);
-}
-
-/* Dropdown band should match theme */
-.dropdown-band{
-  background: rgba(255,255,255,.98);
-  color: rgba(31,26,18,.92);
-  border-top: 1px solid rgba(212,175,55,.20);
-}
-
-/* Dropdown links */
-.topic-link{
-  color: rgba(31,26,18,.92);
-}
-.topic-link:hover{
-  background: rgba(212,175,55,.12);
-}
-
