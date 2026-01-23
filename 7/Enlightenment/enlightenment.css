@@ -612,3 +612,19 @@ h1{
   .footer-logo-icon{height:36px}
   .footer-logo-text{height:20px}
 }
+
+/* === Enlightenment Thinker Gallery: image-only portraits === */
+#thinkers .galleryCard {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+#thinkers .galleryCard img {
+  display: block;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
