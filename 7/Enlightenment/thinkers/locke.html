@@ -54,18 +54,17 @@
       color: rgba(242,215,122,.98);
     }
 
-    /* ✅ FIXED: logo is HALF the chalkboard width, centered, proportional */
+    /* ✅ FIX: logo is HALF of the chalkboard section width */
     .rememberChalk .dykImg{
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: .75rem;
+      margin-bottom: .9rem;
     }
     .rememberChalk .dykImg img{
-      width: 50%;
-      max-width: 700px;   /* keeps it from getting ridiculous on huge monitors */
-      min-width: 260px;   /* keeps it readable on small screens */
-      height: auto;
+      width: 50%;         /* half the chalkboard */
+      height: auto;       /* keep proportions */
       display: block;
     }
 
@@ -86,9 +85,7 @@
       .thinkerGrid{ grid-template-columns: repeat(2, 1fr); }
     }
 
-    .thinkerGrid a{
-      display: block;
-    }
+    .thinkerGrid a{ display:block; }
 
     .thinkerGrid img{
       width: 100%;
@@ -137,14 +134,15 @@
     <section class="card full" id="thinkers">
       <div class="section">
         <h2>
-          Meet the Other Thinkers!
+          Meet the Thinkers!
           <span style="font-size:.75em; font-weight:400; opacity:.75;">
             – click on a portrait below to learn more.
           </span>
         </h2>
 
         <div class="thinkerGrid">
-                    <a href="montesquieu.html"><img src="../images/montesquieu_framed.webp" alt="Montesquieu"></a>
+          <a href="locke.html"><img src="../images/locke_framed.webp" alt="John Locke"></a>
+          <a href="montesquieu.html"><img src="../images/montesquieu_framed.webp" alt="Montesquieu"></a>
           <a href="rousseau.html"><img src="../images/rousseau_framed.webp" alt="Rousseau"></a>
           <a href="voltaire.html"><img src="../images/voltaire_framed.webp" alt="Voltaire"></a>
           <a href="hobbes.html"><img src="../images/hobbes_framed.webp" alt="Hobbes"></a>
