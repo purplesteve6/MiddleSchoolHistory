@@ -12,13 +12,13 @@
     "url": "/6/RomanEmperors/",
     "description": "Power, propaganda, and the rulers who shaped Rome’s empire.",
     "image": "/assets/images/featured/roman-emperors.jpg"
+  },
+  {
+    "title": "The Enlightenment",
+    "grade": 7,
+    "url": "/7/Enlightenment/",
+    "image": "/assets/images/featured/enlightenment.jpg",
+    "description": "Explore how new ideas about reason, rights, and government changed Europe—and helped spark revolutions."
   }
-
-{
-  "title": "The Enlightenment",
-  "grade": 7,
-  "url": "/7/Enlightenment/",
-  "image": "/assets/images/featured/enlightenment.jpg",
-  "description": "Explore how new ideas about reason, rights, and government changed Europe—and helped spark revolutions."
-}
 ]
+
