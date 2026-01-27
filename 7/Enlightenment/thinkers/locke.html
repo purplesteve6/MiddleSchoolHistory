@@ -29,24 +29,63 @@
       border: 1px solid rgba(212,175,55,.35);
     }
 
+    /* Chalkboard text base */
     .rememberChalk .fact{
       font-family: "ChalkFont", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      font-size: clamp(1.35rem, 2.6vw, 1.9rem);
-      line-height: 1.35;
+      line-height: 1.25;
       text-align: center;
-      color: rgba(255,255,255,.92);
+      color: rgba(255,255,255,.95); /* default white */
       letter-spacing: .4px;
     }
 
-    .rememberChalk .big{
-      font-size: 1.1em;
+    /* Only the underlined Ls are gold */
+    .rememberChalk .gold{
+      color: rgba(242,215,122,.98);
       font-weight: 700;
-      margin-bottom: .45rem;
     }
 
-    .rememberChalk .gold{
-      color: rgba(242,215,122,.95);
+    /* Line sizing */
+    .rememberChalk .lineTop{
+      font-size: clamp(1.45rem, 2.8vw, 2.05rem);
       font-weight: 700;
+      margin-bottom: .35rem;
+    }
+
+    .rememberChalk .lineSmall{
+      font-size: clamp(1.05rem, 2.0vw, 1.35rem);
+      font-weight: 700;
+      margin-bottom: .35rem;
+    }
+
+    .rememberChalk .lineBig{
+      font-size: clamp(1.85rem, 3.8vw, 2.6rem); /* significantly bigger */
+      font-weight: 800;
+      margin-bottom: .35rem;
+    }
+
+    .rememberChalk .yellowLine{
+      color: rgba(242,215,122,.98); /* all yellow */
+      font-weight: 800;
+    }
+
+    /* Bigger header graphic on chalkboard */
+    .rememberChalk .dykImg img{
+      width: 600px;
+      height: auto;
+      max-width: 100%;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* --- Gallery fix: prevent portrait crops (top/bottom cut off) --- */
+    /* The site CSS may set a fixed height + overflow. Force portraits to fit cleanly. */
+    .galleryCard img{
+      display: block;
+      height: 380px;       /* matches the portrait look used on other pages */
+      width: auto;
+      aspect-ratio: 13 / 24;
+      object-fit: contain; /* key: no cropping */
+      margin: 0 auto;
     }
   </style>
 </head>
@@ -217,24 +256,25 @@
     <!-- TO HELP YOU REMEMBER -->
     <section class="didYouKnow rememberChalk" aria-label="To Help You Remember feature">
       <div class="dykImg">
-        <img src="/assets/images/ui/helpremember.png" alt="To Help You Remember" width="400" height="108" />
+        <!-- bigger: 600px wide via CSS above -->
+        <img src="/assets/images/ui/helpremember.png" alt="To Help You Remember" />
       </div>
 
       <div class="fact">
-        <div class="big">
-          <span class="gold"><u>L</u></span> is for <span class="gold"><u>L</u>ocke</span>
+        <div class="lineTop">
+          <span class="gold"><u>L</u></span> is for <u>L</u>ocke
         </div>
 
-        <div class="big">
-          <span class="gold"><u>L</u></span> is also for…
+        <div class="lineSmall yellowLine">
+          <u>L</u> is also for…
         </div>
 
-        <div class="big">
-          <span class="gold"><u>L</u>ife</span>, <span class="gold"><u>L</u>iberty</span>, and <span class="gold"><u>L</u>and</span>!
+        <div class="lineBig">
+          <span class="gold"><u>L</u></span>ife, <span class="gold"><u>L</u></span>iberty, and <span class="gold"><u>L</u></span>and!
         </div>
 
-        <div class="big">
-          His <span class="gold">Natural Rights!</span>
+        <div class="lineTop yellowLine" style="margin-bottom:0;">
+          His Natural Rights!
         </div>
       </div>
     </section>
@@ -246,12 +286,24 @@
         <p class="tiny">Scroll through the gallery and click a portrait to learn more.</p>
 
         <div class="gallery">
-          <a class="galleryCard" href="locke.html"><img src="../images/locke_framed.webp" alt="John Locke" /></a>
-          <a class="galleryCard" href="montesquieu.html"><img src="../images/montesquieu_framed.webp" alt="Montesquieu" /></a>
-          <a class="galleryCard" href="rousseau.html"><img src="../images/rousseau_framed.webp" alt="Rousseau" /></a>
-          <a class="galleryCard" href="voltaire.html"><img src="../images/voltaire_framed.webp" alt="Voltaire" /></a>
-          <a class="galleryCard" href="hobbes.html"><img src="../images/hobbes_framed.webp" alt="Hobbes" /></a>
-          <a class="galleryCard" href="wollstonecraft.html"><img src="../images/wollstonecraft_framed.webp" alt="Wollstonecraft" /></a>
+          <a class="galleryCard" href="locke.html" aria-label="John Locke">
+            <img src="../images/locke_framed.webp" alt="John Locke" />
+          </a>
+          <a class="galleryCard" href="montesquieu.html" aria-label="Montesquieu">
+            <img src="../images/montesquieu_framed.webp" alt="Montesquieu" />
+          </a>
+          <a class="galleryCard" href="rousseau.html" aria-label="Rousseau">
+            <img src="../images/rousseau_framed.webp" alt="Rousseau" />
+          </a>
+          <a class="galleryCard" href="voltaire.html" aria-label="Voltaire">
+            <img src="../images/voltaire_framed.webp" alt="Voltaire" />
+          </a>
+          <a class="galleryCard" href="hobbes.html" aria-label="Hobbes">
+            <img src="../images/hobbes_framed.webp" alt="Hobbes" />
+          </a>
+          <a class="galleryCard" href="wollstonecraft.html" aria-label="Wollstonecraft">
+            <img src="../images/wollstonecraft_framed.webp" alt="Wollstonecraft" />
+          </a>
         </div>
       </div>
     </section>
