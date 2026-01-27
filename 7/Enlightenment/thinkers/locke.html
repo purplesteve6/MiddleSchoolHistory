@@ -10,7 +10,7 @@
   <!-- IMPORTANT: this page is inside /thinkers/, so CSS must be ../enlightenment.css -->
   <link rel="stylesheet" href="../enlightenment.css" />
 
-  <!-- Page-only styling for the chalkboard "To Help You Remember" feature -->
+  <!-- Page-only styling for the chalkboard "To Help You Remember" feature + grid gallery -->
   <style>
     @font-face{
       font-family: "ChalkFont";
@@ -20,6 +20,7 @@
       font-display: swap;
     }
 
+    /* Chalkboard variant of the didYouKnow component */
     .rememberChalk{
       background:
         linear-gradient(0deg, rgba(0,0,0,.40), rgba(0,0,0,.40)),
@@ -32,7 +33,7 @@
     /* Chalkboard text base */
     .rememberChalk .fact{
       font-family: "ChalkFont", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      line-height: 1.25;
+      line-height: 1.18;
       text-align: center;
       color: rgba(255,255,255,.95); /* default white */
       letter-spacing: .4px;
@@ -41,51 +42,82 @@
     /* Only the underlined Ls are gold */
     .rememberChalk .gold{
       color: rgba(242,215,122,.98);
-      font-weight: 700;
+      font-weight: 800;
     }
 
     /* Line sizing */
-    .rememberChalk .lineTop{
-      font-size: clamp(1.45rem, 2.8vw, 2.05rem);
-      font-weight: 700;
-      margin-bottom: .35rem;
+    /* Make "L is for Locke" SAME size as "Life, Liberty, and Land!" */
+    .rememberChalk .lineBig{
+      font-size: clamp(1.95rem, 4.2vw, 2.8rem);
+      font-weight: 900;
+      margin-bottom: .45rem;
     }
 
     .rememberChalk .lineSmall{
       font-size: clamp(1.05rem, 2.0vw, 1.35rem);
-      font-weight: 700;
-      margin-bottom: .35rem;
-    }
-
-    .rememberChalk .lineBig{
-      font-size: clamp(1.85rem, 3.8vw, 2.6rem); /* significantly bigger */
       font-weight: 800;
-      margin-bottom: .35rem;
+      margin-bottom: .45rem;
     }
 
     .rememberChalk .yellowLine{
       color: rgba(242,215,122,.98); /* all yellow */
-      font-weight: 800;
+      font-weight: 900;
     }
 
-    /* Bigger header graphic on chalkboard */
+    /* MUCH bigger header graphic on chalkboard (about 2x) */
     .rememberChalk .dykImg img{
-      width: 600px;
+      width: min(1200px, 100%);
       height: auto;
-      max-width: 100%;
       display: block;
       margin: 0 auto;
     }
 
-    /* --- Gallery fix: prevent portrait crops (top/bottom cut off) --- */
-    /* The site CSS may set a fixed height + overflow. Force portraits to fit cleanly. */
-    .galleryCard img{
+    /* --- Thinkers gallery: NO SCROLL, responsive grid --- */
+    .thinkerGrid{
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      align-items: stretch;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 980px){
+      .thinkerGrid{ grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 560px){
+      .thinkerGrid{ grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .thinkerTile{
+      display: grid;
+      gap: 8px;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .thinkerTile .imgWrap{
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+      display: grid;
+      place-items: center;
+      padding: 10px;
+    }
+
+    /* Prevent top/bottom cropping */
+    .thinkerTile img{
+      width: 100%;
+      height: 260px;
+      object-fit: contain;
       display: block;
-      height: 380px;       /* matches the portrait look used on other pages */
-      width: auto;
-      aspect-ratio: 13 / 24;
-      object-fit: contain; /* key: no cropping */
-      margin: 0 auto;
+    }
+
+    .thinkerTile span{
+      font-weight: 900;
+      font-size: .95rem;
+      opacity: .95;
     }
   </style>
 </head>
@@ -256,12 +288,11 @@
     <!-- TO HELP YOU REMEMBER -->
     <section class="didYouKnow rememberChalk" aria-label="To Help You Remember feature">
       <div class="dykImg">
-        <!-- bigger: 600px wide via CSS above -->
-        <img src="/assets/images/ui/helpremember.png" alt="To Help You Remember" />
+        <img src="/assets/images/ui/helpremember.webp" alt="To Help You Remember" />
       </div>
 
       <div class="fact">
-        <div class="lineTop">
+        <div class="lineBig">
           <span class="gold"><u>L</u></span> is for <u>L</u>ocke
         </div>
 
@@ -273,36 +304,59 @@
           <span class="gold"><u>L</u></span>ife, <span class="gold"><u>L</u></span>iberty, and <span class="gold"><u>L</u></span>and!
         </div>
 
-        <div class="lineTop yellowLine" style="margin-bottom:0;">
+        <div class="lineBig yellowLine" style="margin-bottom:0;">
           His Natural Rights!
         </div>
       </div>
     </section>
 
-    <!-- THINKERS GALLERY -->
+    <!-- THINKERS GRID (no scroll) -->
     <section class="card full" aria-label="Thinkers gallery" id="thinkers">
       <div class="section">
         <h2>Meet the Thinkers</h2>
-        <p class="tiny">Scroll through the gallery and click a portrait to learn more.</p>
+        <p class="tiny">Click a thinker to learn more.</p>
 
-        <div class="gallery">
-          <a class="galleryCard" href="locke.html" aria-label="John Locke">
-            <img src="../images/locke_framed.webp" alt="John Locke" />
+        <div class="thinkerGrid" aria-label="Thinkers grid">
+          <a class="thinkerTile" href="locke.html" aria-label="John Locke">
+            <div class="imgWrap">
+              <img src="../images/locke_framed.webp" alt="John Locke" />
+            </div>
+            <span>John Locke</span>
           </a>
-          <a class="galleryCard" href="montesquieu.html" aria-label="Montesquieu">
-            <img src="../images/montesquieu_framed.webp" alt="Montesquieu" />
+
+          <a class="thinkerTile" href="montesquieu.html" aria-label="Montesquieu">
+            <div class="imgWrap">
+              <img src="../images/montesquieu_framed.webp" alt="Montesquieu" />
+            </div>
+            <span>Montesquieu</span>
           </a>
-          <a class="galleryCard" href="rousseau.html" aria-label="Rousseau">
-            <img src="../images/rousseau_framed.webp" alt="Rousseau" />
+
+          <a class="thinkerTile" href="rousseau.html" aria-label="Rousseau">
+            <div class="imgWrap">
+              <img src="../images/rousseau_framed.webp" alt="Rousseau" />
+            </div>
+            <span>Rousseau</span>
           </a>
-          <a class="galleryCard" href="voltaire.html" aria-label="Voltaire">
-            <img src="../images/voltaire_framed.webp" alt="Voltaire" />
+
+          <a class="thinkerTile" href="voltaire.html" aria-label="Voltaire">
+            <div class="imgWrap">
+              <img src="../images/voltaire_framed.webp" alt="Voltaire" />
+            </div>
+            <span>Voltaire</span>
           </a>
-          <a class="galleryCard" href="hobbes.html" aria-label="Hobbes">
-            <img src="../images/hobbes_framed.webp" alt="Hobbes" />
+
+          <a class="thinkerTile" href="hobbes.html" aria-label="Thomas Hobbes">
+            <div class="imgWrap">
+              <img src="../images/hobbes_framed.webp" alt="Thomas Hobbes" />
+            </div>
+            <span>Hobbes</span>
           </a>
-          <a class="galleryCard" href="wollstonecraft.html" aria-label="Wollstonecraft">
-            <img src="../images/wollstonecraft_framed.webp" alt="Wollstonecraft" />
+
+          <a class="thinkerTile" href="wollstonecraft.html" aria-label="Mary Wollstonecraft">
+            <div class="imgWrap">
+              <img src="../images/wollstonecraft_framed.webp" alt="Mary Wollstonecraft" />
+            </div>
+            <span>Wollstonecraft</span>
           </a>
         </div>
       </div>
