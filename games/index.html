@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Games | Middle School History</title>
+
+  <!-- Global site styles (same as homepage) -->
+  <link rel="stylesheet" href="/styles.css" />
+
+  <!-- Page-specific styles for the Games menu -->
+  <link rel="stylesheet" href="/games/games.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <!-- TOP BAR (Search/Shop only, right aligned) -->
+    <div class="topbar">
+      <div class="top-actions">
+        <a class="top-link" href="/search/">Search 🔎</a>
+        <a class="top-link" href="/shop/">Shop 🛒</a>
+      </div>
+    </div>
+
+    <!-- BOTTOM BAR (Logo flush-left, menu centered) -->
+    <nav class="main-nav" aria-label="Primary">
+      <!-- LOGO -->
+      <a class="nav-logo" href="/" aria-label="Home">
+        <img
+          class="nav-logo-img logo-icon"
+          src="/assets/images/logo/MSHistory_Logo_Basic_Web.png"
+          alt="Middle School History with Mr. Sovocool"
+        />
+        <img
+          class="nav-logo-img logo-text"
+          src="/assets/images/logo/MSHistory_Logo_Text_Basic.png"
+          alt=""
+          aria-hidden="true"
+        />
+      </a>
+
+      <!-- CENTERED NAV ITEMS -->
+      <div class="nav-inner">
+        <ul class="nav-list">
+
+          <!-- HOME -->
+          <li class="nav-item" data-menu="home">
+            <a class="nav-link" href="/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/home_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Home</span>
+            </a>
+          </li>
+
+          <!-- GRADE 6 -->
+          <li class="nav-item has-dropdown" data-menu="g6">
+            <a class="nav-link" href="/6/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/6_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Grade 6</span>
+            </a>
+          </li>
+
+          <!-- GRADE 7 -->
+          <li class="nav-item has-dropdown" data-menu="g7">
+            <a class="nav-link" href="/7/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/7_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Grade 7</span>
+            </a>
+          </li>
+
+          <!-- GRADE 8 -->
+          <li class="nav-item has-dropdown" data-menu="g8">
+            <a class="nav-link" href="/8/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/8_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Grade 8</span>
+            </a>
+          </li>
+
+          <!-- GAMES (no dropdown) -->
+          <li class="nav-item" data-menu="games">
+            <a class="nav-link" href="/games/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/games_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Games</span>
+            </a>
+          </li>
+
+          <!-- TEACHER RESOURCES -->
+          <li class="nav-item" data-menu="teacher">
+            <a class="nav-link" href="/teacher-resources/">
+              <span class="nav-icon">
+                <img src="/assets/images/icons/TeacherResources_icon.png" alt="" aria-hidden="true">
+              </span>
+              <span class="nav-text">Teacher Resources</span>
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- DROPDOWN BAND (same structure as homepage; only g6/g7/g8 panels exist) -->
+      <div class="dropdown-band" id="dropdownBand" aria-hidden="true">
+        <div class="dropdown-inner">
+          <div class="dropdown-arrow" id="dropdownArrow" aria-hidden="true"></div>
+
+          <div class="dropdown-panel" data-panel="g6">
+            <a class="topic-link" href="/6/GreekMythology/">Greek Mythology</a>
+            <a class="topic-link" href="/6/RomanEmperors/">Roman Emperors</a>
+            <span class="topic-link is-muted" aria-disabled="true">More coming soon…</span>
+          </div>
+
+          <div class="dropdown-panel" data-panel="g7">
+            <a class="topic-link" href="/7/Enlightenment/">The Enlightenment</a>
+            <span class="topic-link is-muted" aria-disabled="true">More coming soon…</span>
+          </div>
+
+          <div class="dropdown-panel" data-panel="g8">
+            <span class="topic-link is-muted" aria-disabled="true">Grade 8 topics coming soon…</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page">
+    <!-- Page header -->
+    <section class="games-header" aria-label="Games heading">
+      <h1 class="games-title">Games</h1>
+      <p class="games-subtitle">Choose a game type, then pick a challenge.</p>
+    </section>
+
+    <!-- Hierarchical menu -->
+    <section class="games-menu" aria-label="Games menu">
+      <details class="game-topic" open>
+        <summary class="game-topic__summary">
+          <span class="game-topic__label">Map Challenges</span>
+          <span class="game-topic__hint" aria-hidden="true">Click to expand/collapse</span>
+        </summary>
+
+        <ul class="game-list" role="list">
+          <li class="game-item">
+            <a class="game-link" href="/games/map-challenges/united-states/">
+              <img class="game-icon" src="/games/images/map-us.png" alt="" aria-hidden="true" />
+              <span class="game-name">United States</span>
+            </a>
+          </li>
+
+          <li class="game-item">
+            <a class="game-link" href="/games/map-challenges/13-colonies/">
+              <img class="game-icon" src="/games/images/map-13-colonies.png" alt="" aria-hidden="true" />
+              <span class="game-name">13 Colonies</span>
+            </a>
+          </li>
+
+          <li class="game-item">
+            <a class="game-link" href="/games/map-challenges/europe/">
+              <img class="game-icon" src="/games/images/map-europe.png" alt="" aria-hidden="true" />
+              <span class="game-name">Europe</span>
+            </a>
+          </li>
+
+          <li class="game-item">
+            <a class="game-link" href="/games/map-challenges/middle-east/">
+              <img class="game-icon" src="/games/images/map-middle-east.png" alt="" aria-hidden="true" />
+              <span class="game-name">Middle East</span>
+            </a>
+          </li>
+        </ul>
+      </details>
+    </section>
+  </main>
+
+  <!-- FOOTER (matches homepage structure) -->
+  <footer class="site-footer" role="contentinfo">
+    <hr class="footer-rule" />
+
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img
+          src="/assets/images/logo/MSHistory_Logo_Basic_Web.png"
+          alt="Middle School History"
+          class="footer-logo-icon"
+        />
+        <img
+          src="/assets/images/logo/MSHistory_Logo_Text_Basic.png"
+          alt=""
+          aria-hidden="true"
+          class="footer-logo-text"
+        />
+      </div>
+
+      <div class="footer-copy">
+        © <span id="copyright-year"></span>
+        Stephen Sovocool ·
+        <span class="footer-site">MiddleSchoolHistory.com</span>
+        <br />
+        All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Keep nav behavior consistent with the main site -->
+  <script src="/nav.js"></script>
+
+  <!-- Footer year (simple, local) -->
+  <script>
+    const y = document.getElementById("copyright-year");
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+/* Games page-specific styles */
+
+.games-header{
+  margin: 14px 0 18px;
+  padding: 18px 18px 12px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+}
+
+.games-title{
+  margin: 0;
+  font-size: clamp(26px, 3.4vw, 44px);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.games-subtitle{
+  margin: 8px 0 0;
+  color: rgba(255,255,255,0.86);
+  max-width: 70ch;
+}
+
+.games-menu{
+  margin-top: 18px;
+}
+
+.game-topic{
+  border-radius: 22px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+}
+
+.game-topic__summary{
+  cursor: pointer;
+  list-style: none;
+  padding: 16px 18px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+
+  /* Make it feel like a “header row” */
+  background: rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.game-topic__summary::-webkit-details-marker{ display: none; }
+
+.game-topic__label{
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  color: rgba(255,255,255,0.95);
+}
+
+.game-topic__hint{
+  font-size: 12px;
+  color: rgba(255,255,255,0.72);
+}
+
+.game-list{
+  margin: 0;
+  padding: 12px;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.game-item{
+  border-radius: 16px;
+}
+
+.game-link{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 12px;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+
+  color: rgba(255,255,255,0.92);
+  text-decoration: none;
+
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.game-link:hover{
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(181,140,255,0.30);
+}
+
+.game-icon{
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+.game-name{
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+/* Mobile */
+@media (max-width: 640px){
+  .games-header{ padding: 16px 14px 10px; }
+  .game-topic__summary{ padding: 14px 14px; }
+  .game-list{ padding: 10px; }
+  .game-link{ padding: 11px; }
+  .game-icon{ width: 32px; height: 32px; flex-basis: 32px; }
+}
