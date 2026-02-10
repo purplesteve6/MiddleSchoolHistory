@@ -97,11 +97,13 @@
 }
 
 .game-icon{
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  border-radius: 10px;
+  width: 100px;
+  height: 75px;
+  flex: 0 0 100px;
+
+  border-radius: 12px;
   object-fit: cover;
+
   background: rgba(0,0,0,0.18);
   border: 1px solid rgba(255,255,255,0.14);
 }
