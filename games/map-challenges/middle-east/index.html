@@ -166,6 +166,8 @@
         mapBox.innerHTML = svgText;
         svgRoot = mapBox.querySelector("svg");
 
+        // IMPORTANT: do NOT rewrite viewBox here.
+        // We want to display the full SVG exactly as authored.
         if (svgRoot){
           svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
           svgRoot.removeAttribute("width");
@@ -173,64 +175,6 @@
           svgRoot.style.width = "100%";
           svgRoot.style.height = "100%";
           svgRoot.style.display = "block";
-
-          // Auto-fit to artwork (transforms-aware), normalize to 4:3 (1600x1200)
-          const fitTarget =
-            svgRoot.querySelector("#context_land") ||
-            svgRoot.querySelector("#borders") ||
-            svgRoot;
-
-          function transformedBounds(el){
-            const bb = el.getBBox();
-            const m = el.getCTM();
-            if (!m) return bb;
-
-            const tp = (x, y) => ({
-              x: m.a * x + m.c * y + m.e,
-              y: m.b * x + m.d * y + m.f
-            });
-
-            const p1 = tp(bb.x, bb.y);
-            const p2 = tp(bb.x + bb.width, bb.y);
-            const p3 = tp(bb.x, bb.y + bb.height);
-            const p4 = tp(bb.x + bb.width, bb.y + bb.height);
-
-            const xs = [p1.x, p2.x, p3.x, p4.x];
-            const ys = [p1.y, p2.y, p3.y, p4.y];
-
-            const minX = Math.min(...xs);
-            const maxX = Math.max(...xs);
-            const minY = Math.min(...ys);
-            const maxY = Math.max(...ys);
-
-            return { x: minX, y: minY, width: (maxX - minX), height: (maxY - minY) };
-          }
-
-          requestAnimationFrame(() => {
-            try {
-              const bb = transformedBounds(fitTarget);
-
-              const targetRatio = 1600 / 1200; // 4:3
-              let x = bb.x, y = bb.y, w = bb.width, h = bb.height;
-
-              const bbRatio = w / h;
-
-              // Expand (not crop) to match 4:3, centered on artwork
-              if (bbRatio > targetRatio) {
-                const newH = w / targetRatio;
-                y -= (newH - h) / 2;
-                h = newH;
-              } else if (bbRatio < targetRatio) {
-                const newW = h * targetRatio;
-                x -= (newW - w) / 2;
-                w = newW;
-              }
-
-              svgRoot.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
-            } catch (e) {
-              console.warn("viewBox auto-fit failed:", e);
-            }
-          });
         }
 
         // Attach click handler once (replaces any previous handler)
@@ -288,5 +232,3 @@
   </script>
 </body>
 </html>
-
-
