@@ -1,7 +1,15 @@
-/* ===== Games Page Custom Font ===== */
+/* ===== Games Page Custom Fonts ===== */
 @font-face{
   font-family: "GameFont";
   src: url("/assets/fonts/GameFont-regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face{
+  font-family: "Lemon Milk";
+  src: url("/assets/fonts/lemonmilk-regular.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -24,29 +32,67 @@
 
 
 
-/* Games page-specific styles */
+/* ===== Full-width black banner under header ===== */
 
-.games-header{
-  margin: 14px 0 18px;
-  padding: 18px 18px 12px;
-  border-radius: 22px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+/* Measure the actual dropdown band height */
+:root{
+  --dropdown-menu-h: 84px; /* adjust once after measuring */
 }
 
-.games-title{
+/* Black band = exactly 2× dropdown */
+.games-band{
+  height: calc(var(--dropdown-menu-h) * 2);
+}
+
+/* Full-bleed black band that sits directly under the sticky header */
+.games-band{
+  width: 100%;
+  height: var(--games-band-h);
+  background: #000;
+
+  margin: 0;          /* pinned up against the header */
+  padding: 0;
+  position: relative;
+  z-index: 0;         /* dropdown will naturally overlay above */
+}
+
+/* Bottom half of the band = visible area when dropdown covers the top half */
+.games-band__bottom{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 50%;
+  display: flex;
+  align-items: center;     /* center text within what remains visible */
+  justify-content: center;
+
+  padding: 0 18px;
+}
+
+.games-band__title{
   margin: 0;
-  font-size: clamp(26px, 3.4vw, 44px);
-  line-height: 1.05;
-  letter-spacing: 0.01em;
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  color: #fff;
+
+  /* shorter than half the dropdown height */
+  font-size: clamp(20px, 2.8vw, 32px);
+  line-height: 1;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
 }
 
-.games-subtitle{
-  margin: 8px 0 0;
+/* Subtitle moved below the band */
+.games-intro{
+  margin: 14px 0 6px;
   color: rgba(255,255,255,0.86);
   max-width: 70ch;
 }
+
+
+
+/* ===== Games page-specific styles ===== */
 
 .games-menu{
   margin-top: 18px;
@@ -141,7 +187,18 @@
 
 /* Mobile */
 @media (max-width: 640px){
-  .games-header{ padding: 16px 14px 10px; }
+  .games-band{
+    --dropdown-menu-h: 70px; /* slightly smaller on mobile */
+  }
+
+  .games-band__bottom{
+    padding: 0 14px;
+  }
+
+  .games-intro{
+    margin: 12px 0 4px;
+  }
+
   .game-topic__summary{ padding: 14px 14px; }
   .game-list{ padding: 10px; }
   .game-link{ padding: 14px; }
