@@ -67,9 +67,13 @@
   height: 50%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+}
 
-  /* Match .page horizontal padding for perfect alignment */
+/* Constrain banner text to match .page width */
+.games-band__inner{
+  width: 100%;
+  max-width: 1100px; /* match your .page max-width */
+  margin: 0 auto;
   padding: 0 clamp(16px, 4vw, 28px);
 }
 
