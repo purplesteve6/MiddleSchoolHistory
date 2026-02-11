@@ -39,22 +39,36 @@
   --dropdown-menu-h: 84px;
 }
 
-/* Full-bleed black band that sits directly under the sticky header */
+/* Base banner (always same height) */
 .games-band{
   width: 100%;
   height: calc(var(--dropdown-menu-h) * 2);
-  background: #000;
 
-  /* flush to header */
+  position: relative;
   margin: 0;
   padding: 0;
 
-  /* make sure it paints as a real full-width band */
   display: block;
-  position: relative;
-
-  /* visible above page background, but below header/logo */
   z-index: 1;
+
+  /* Default background */
+  background-color: #000;
+}
+
+/* Optional background image version */
+.games-band--image{
+  background-color: #000; /* fallback */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.games-band--image::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  pointer-events: none; /* FIX: prevents overlay from blocking interaction */
 }
 
 /* Bottom half of the band = visible area when dropdown covers the top half */
@@ -67,6 +81,8 @@
   height: 50%;
   display: flex;
   align-items: center;
+
+  z-index: 2; /* ensures text sits above overlay */
 }
 
 /* Constrain banner text to match .page width */
@@ -82,7 +98,6 @@
   font-family: "Lemon Milk", system-ui, sans-serif;
   color: #fff;
 
-  /* shorter than half the dropdown height */
   font-size: clamp(28px, 4vw, 48px);
   line-height: 1;
   letter-spacing: 0.10em;
@@ -121,7 +136,6 @@
   justify-content: space-between;
   gap: 14px;
 
-  /* Make it feel like a “header row” */
   background: rgba(255,255,255,0.06);
   border-bottom: 1px solid rgba(255,255,255,0.12);
 }
@@ -194,10 +208,11 @@
 /* Mobile */
 @media (max-width: 640px){
   .games-band{
-    --dropdown-menu-h: 70px; /* slightly smaller on mobile */
+    --dropdown-menu-h: 70px;
   }
 
-  .games-band__bottom{
+  /* FIX: padding belongs on inner container */
+  .games-band__inner{
     padding: 0 14px;
   }
 
@@ -209,7 +224,6 @@
   .game-list{ padding: 10px; }
   .game-link{ padding: 14px; }
 
-  /* keep 4:3 ratio on mobile */
   .game-icon{
     width: 88px;
     height: 66px;
