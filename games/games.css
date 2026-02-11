@@ -66,10 +66,11 @@
 
   height: 50%;
   display: flex;
-  align-items: center;     /* center text within what remains visible */
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
 
-  padding: 0 18px;
+  /* Match .page horizontal padding for perfect alignment */
+  padding: 0 clamp(16px, 4vw, 28px);
 }
 
 .games-band__title{
@@ -78,7 +79,7 @@
   color: #fff;
 
   /* shorter than half the dropdown height */
-  font-size: clamp(20px, 2.8vw, 32px);
+  font-size: clamp(28px, 4vw, 48px);
   line-height: 1;
   letter-spacing: 0.10em;
   text-transform: uppercase;
