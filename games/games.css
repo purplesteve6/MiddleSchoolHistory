@@ -34,26 +34,27 @@
 
 /* ===== Full-width black banner under header ===== */
 
-/* Measure the actual dropdown band height */
+/* Approximate dropdown height (adjust later if you want it exact) */
 :root{
-  --dropdown-menu-h: 84px; /* adjust once after measuring */
-}
-
-/* Black band = exactly 2× dropdown */
-.games-band{
-  height: calc(var(--dropdown-menu-h) * 2);
+  --dropdown-menu-h: 84px;
 }
 
 /* Full-bleed black band that sits directly under the sticky header */
 .games-band{
   width: 100%;
-  height: var(--games-band-h);
+  height: calc(var(--dropdown-menu-h) * 2);
   background: #000;
 
-  margin: 0;          /* pinned up against the header */
+  /* flush to header */
+  margin: 0;
   padding: 0;
+
+  /* make sure it paints as a real full-width band */
+  display: block;
   position: relative;
-  z-index: 0;         /* dropdown will naturally overlay above */
+
+  /* visible above page background, but below header/logo */
+  z-index: 1;
 }
 
 /* Bottom half of the band = visible area when dropdown covers the top half */
