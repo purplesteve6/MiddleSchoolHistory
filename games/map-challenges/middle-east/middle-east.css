@@ -135,7 +135,7 @@ body.is-playing{
 
 .map-box svg{
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
 }
 
