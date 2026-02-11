@@ -5,23 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Middle East Map Challenge | Middle School History</title>
 
-  <!-- Global site styles -->
   <link rel="stylesheet" href="/styles.css" />
-
-  <!-- Page-specific styles -->
   <link rel="stylesheet" href="/games/map-challenges/middle-east/middle-east.css" />
 </head>
 
 <body class="map-challenge-page">
 
-  <!-- MAIN SITE HEADER (injected) -->
   <div id="siteHeader" data-include="/partials/main-header.html"></div>
 
-  <!-- Full-width band under header -->
   <section class="challenge-band challenge-band--image"
-         style="background-image: url('/assets/images/banners/map-challenges-banner.jpg');"
-         aria-label="Middle East Map Challenge banner">
-
+           style="background-image: url('/assets/images/banners/map-challenges-banner.jpg');"
+           aria-label="Middle East Map Challenge banner">
     <div class="challenge-band__bottom">
       <div class="challenge-band__inner">
         <h1 class="challenge-band__title">MIDDLE EAST MAP CHALLENGE</h1>
@@ -33,7 +27,7 @@
     <section class="map-stage" aria-label="Map stage">
 
       <!-- HUD -->
-      <div class="hud" aria-label="Game HUD">
+      <div class="hud">
         <div class="hud__prompt">
           Click: <span id="targetName">—</span>
         </div>
@@ -44,226 +38,188 @@
         </div>
       </div>
 
-      <!-- SVG gets injected here -->
-      <div class="map-box" id="mapBox" aria-label="Middle East map"></div>
+      <!-- SVG container -->
+      <div class="map-box" id="mapBox"></div>
 
-      <!-- Dark overlay shown on load -->
-      <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
+      <!-- Overlay -->
+      <div class="start-overlay" id="startOverlay">
         <div class="start-overlay__card">
           <div class="start-overlay__kicker">Map Challenge</div>
           <div class="start-overlay__title">Middle East Map Challenge</div>
           <div class="start-overlay__sub">
-            Press Begin to start. (Mechanics coming next!)
+            Press Begin to start.
           </div>
-
-          <button class="begin-btn" id="beginBtn" type="button">
-            Begin
-          </button>
+          <button class="begin-btn" id="beginBtn" type="button">Begin</button>
         </div>
       </div>
+
     </section>
   </main>
 
-  <!-- FOOTER (injected) -->
   <div id="siteFooter" data-include="/partials/footer.html"></div>
 
-  <!-- Inject header/footer -->
   <script src="/include.js"></script>
 
-  <!-- SVG loader + click normalizer + minimal game shell -->
   <script>
-    (function () {
-      const SVG_PATH = "/games/map-challenges/middle-east/middle_east_clickable.svg";
+  (function () {
 
-      const COUNTRIES = [
-        "bahrain","cyprus","egypt","iran","iraq","israel","jordan","kuwait",
-        "lebanon","oman","qatar","saudi_arabia","syria","turkey","uae","yemen"
-      ];
+    const SVG_PATH = "/games/map-challenges/middle-east/middle_east_clickable.svg";
 
-      const IGNORE = new Set(["water","borders","context_land"]);
+    const COUNTRIES = [
+      "bahrain","cyprus","egypt","iran","iraq","israel","jordan","kuwait",
+      "lebanon","oman","qatar","saudi_arabia","syria","turkey","uae","yemen"
+    ];
 
-      const ALIAS = {
-        palestine: "israel",
-        gaza: "israel",
-        israel: "israel"
-      };
+    const IGNORE = new Set(["water","borders","context_land"]);
 
-      const mapBox = document.getElementById("mapBox");
-      const overlay = document.getElementById("startOverlay");
-      const beginBtn = document.getElementById("beginBtn");
-      const resetBtn = document.getElementById("resetBtn");
-      const targetNameEl = document.getElementById("targetName");
-      const timerEl = document.getElementById("timer");
+    const ALIAS = {
+      palestine: "israel",
+      gaza: "israel",
+      israel: "israel"
+    };
 
-      let svgRoot = null;
+    const mapBox = document.getElementById("mapBox");
+    const overlay = document.getElementById("startOverlay");
+    const beginBtn = document.getElementById("beginBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const targetNameEl = document.getElementById("targetName");
+    const timerEl = document.getElementById("timer");
 
-      // Minimal state (we’ll expand next)
-      let remaining = [];
-      let currentTarget = null;
-      let tries = 0;
+    let svgRoot = null;
+    let remaining = [];
+    let currentTarget = null;
+    let tries = 0;
+    let timerStart = 0;
+    let timerInt = null;
 
-      let timerStart = 0;
-      let timerInt = null;
-
-      function shuffle(arr){
-        const a = arr.slice();
-        for (let i = a.length - 1; i > 0; i--){
-          const j = Math.floor(Math.random() * (i + 1));
-          [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
+    function shuffle(arr){
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
       }
-
-      function fmtTime(ms){
-        const total = Math.floor(ms / 1000);
-        const m = Math.floor(total / 60);
-        const s = total % 60;
-        return `${m}:${String(s).padStart(2, "0")}`;
-      }
-
-      function startTimer(){
-        stopTimer();
-        timerStart = Date.now();
-        timerEl.textContent = "0:00";
-        timerInt = setInterval(() => {
-          timerEl.textContent = fmtTime(Date.now() - timerStart);
-        }, 250);
-      }
-
-      function stopTimer(){
-        if (timerInt) clearInterval(timerInt);
-        timerInt = null;
-      }
-
-      function pickNext(){
-        currentTarget = remaining.shift() || null;
-        tries = 0;
-        targetNameEl.textContent = currentTarget ? currentTarget.replaceAll("_", " ") : "Done!";
-      }
-
-      function resetGame(){
-        stopTimer();
-        document.body.classList.remove("is-playing");
-
-        remaining = [];
-        currentTarget = null;
-        tries = 0;
-
-        targetNameEl.textContent = "—";
-        timerEl.textContent = "0:00";
-
-        if (overlay) overlay.classList.remove("is-hidden");
-
-        // NOTE: later we'll also clear SVG colors/classes here
-      }
-
-      async function loadSvg(){
-        const res = await fetch(SVG_PATH, { cache: "no-store" });
-        if (!res.ok) throw new Error(`Failed to load SVG: ${res.status}`);
-        const svgText = await res.text();
-
-        mapBox.innerHTML = svgText;
-        svgRoot = mapBox.querySelector("svg");
-
-        // Make sure SVG scales to container + auto-fit viewBox to actual artwork
-if (svgRoot){
-  svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
-
-  // Ensure it fills the .map-box exactly
-  svgRoot.removeAttribute("width");
-  svgRoot.removeAttribute("height");
-  svgRoot.style.width = "100%";
-  svgRoot.style.height = "100%";
-  svgRoot.style.display = "block";
-
-  // Auto-fit viewBox to the visible artwork, then normalize to 4:3 (1600x1200)
-  const fitTarget =
-    svgRoot.querySelector("#context_land") ||
-    svgRoot.querySelector("#borders") ||
-    svgRoot;
-
-  requestAnimationFrame(() => {
-    try {
-      const bb = fitTarget.getBBox();
-
-      const targetRatio = 1600 / 1200; // 4:3
-      let x = bb.x, y = bb.y, w = bb.width, h = bb.height;
-
-      const bbRatio = w / h;
-
-      // Expand (not crop) to match 4:3, centered on the artwork
-      if (bbRatio > targetRatio) {
-        const newH = w / targetRatio;
-        const pad = (newH - h) / 2;
-        y -= pad;
-        h = newH;
-      } else if (bbRatio < targetRatio) {
-        const newW = h * targetRatio;
-        const pad = (newW - w) / 2;
-        x -= pad;
-        w = newW;
-      }
-
-      svgRoot.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
-    } catch (e) {
-      console.warn("viewBox auto-fit failed:", e);
+      return a;
     }
-  });
-}
 
+    function fmtTime(ms){
+      const total = Math.floor(ms / 1000);
+      const m = Math.floor(total / 60);
+      const s = total % 60;
+      return `${m}:${String(s).padStart(2, "0")}`;
+    }
 
-        // One click handler for all layers
-        mapBox.addEventListener("click", (e) => {
-          const el = e.target;
-          if (!el || !el.id) return;
+    function startTimer(){
+      stopTimer();
+      timerStart = Date.now();
+      timerEl.textContent = "0:00";
+      timerInt = setInterval(() => {
+        timerEl.textContent = fmtTime(Date.now() - timerStart);
+      }, 250);
+    }
 
-          const raw = String(el.id).toLowerCase();
-          if (IGNORE.has(raw)) return;
+    function stopTimer(){
+      if (timerInt) clearInterval(timerInt);
+      timerInt = null;
+    }
 
-          const normalized = ALIAS[raw] ?? raw;
+    function pickNext(){
+      currentTarget = remaining.shift() || null;
+      tries = 0;
+      targetNameEl.textContent = currentTarget
+        ? currentTarget.replaceAll("_", " ")
+        : "Done!";
+    }
 
-          // Ignore clicks on anything that isn't a country layer we care about
-          if (!COUNTRIES.includes(normalized)) return;
+    function resetGame(){
+      stopTimer();
+      document.body.classList.remove("is-playing");
+      remaining = [];
+      currentTarget = null;
+      tries = 0;
+      targetNameEl.textContent = "—";
+      timerEl.textContent = "0:00";
+      overlay.classList.remove("is-hidden");
+    }
 
-          // For now: confirm click normalization works
-          console.log("clicked:", raw, "=>", normalized);
+    async function loadSvg(){
+      const res = await fetch(SVG_PATH, { cache: "no-store" });
+      const svgText = await res.text();
 
-          // Minimal gameplay placeholder (we’ll build full rules next)
-          if (!currentTarget) return;
+      mapBox.innerHTML = svgText;
+      svgRoot = mapBox.querySelector("svg");
 
-          if (normalized === currentTarget){
-            console.log("correct!");
-            pickNext();
-          } else {
-            console.log("wrong!");
-            tries++;
+      if (svgRoot){
+        svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        svgRoot.removeAttribute("width");
+        svgRoot.removeAttribute("height");
+        svgRoot.style.width = "100%";
+        svgRoot.style.height = "100%";
+        svgRoot.style.display = "block";
+
+        // Auto-fit to artwork, normalize to 4:3
+        const fitTarget =
+          svgRoot.querySelector("#context_land") ||
+          svgRoot.querySelector("#borders") ||
+          svgRoot;
+
+        requestAnimationFrame(() => {
+          try {
+            const bb = fitTarget.getBBox();
+            const targetRatio = 1600 / 1200;
+            let { x, y, width, height } = bb;
+            const bbRatio = width / height;
+
+            if (bbRatio > targetRatio) {
+              const newH = width / targetRatio;
+              y -= (newH - height) / 2;
+              height = newH;
+            } else if (bbRatio < targetRatio) {
+              const newW = height * targetRatio;
+              x -= (newW - width) / 2;
+              width = newW;
+            }
+
+            svgRoot.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
+          } catch (e) {
+            console.warn("viewBox auto-fit failed:", e);
           }
         });
       }
 
-      // Begin
-      if (beginBtn){
-        beginBtn.addEventListener("click", () => {
-          if (overlay) overlay.classList.add("is-hidden");
-          document.body.classList.add("is-playing");
+      mapBox.addEventListener("click", (e) => {
+        const el = e.target;
+        if (!el || !el.id) return;
 
-          remaining = shuffle(COUNTRIES);
+        const raw = el.id.toLowerCase();
+        if (IGNORE.has(raw)) return;
+
+        const normalized = ALIAS[raw] ?? raw;
+        if (!COUNTRIES.includes(normalized)) return;
+
+        if (!currentTarget) return;
+
+        if (normalized === currentTarget){
           pickNext();
-          startTimer();
-        });
-      }
-
-      // Reset
-      if (resetBtn){
-        resetBtn.addEventListener("click", resetGame);
-      }
-
-      // Boot
-      loadSvg().catch(err => {
-        console.error(err);
-        mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";
+        } else {
+          tries++;
+        }
       });
-    })();
+    }
+
+    beginBtn.addEventListener("click", () => {
+      overlay.classList.add("is-hidden");
+      document.body.classList.add("is-playing");
+      remaining = shuffle(COUNTRIES);
+      pickNext();
+      startTimer();
+    });
+
+    resetBtn.addEventListener("click", resetGame);
+
+    loadSvg();
+
+  })();
   </script>
+
 </body>
 </html>
