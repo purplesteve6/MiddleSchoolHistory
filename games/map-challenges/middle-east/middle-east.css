@@ -28,7 +28,7 @@
   --focus: 0 0 0 4px rgba(201,168,255,0.35);
 }
 
-/* Make the remaining page area fill the viewport (no scrolling for the map) */
+/* Base page layout */
 html, body{
   height: 100%;
 }
@@ -40,6 +40,11 @@ body.map-challenge-page{
   /* Let header + band + main form a vertical layout */
   display: flex;
   flex-direction: column;
+}
+
+/* When playing: lock scrolling so the map stays in view */
+body.is-playing{
+  overflow: hidden;
 }
 
 /* ===== Band under header (like Games) ===== */
@@ -67,7 +72,6 @@ body.map-challenge-page{
   background: rgba(0,0,0,0.45);
   pointer-events: none;
 }
-
 
 .challenge-band__bottom{
   position: absolute;
@@ -99,21 +103,16 @@ body.map-challenge-page{
   text-transform: uppercase;
 }
 
-/* ===== Main fills remaining space ===== */
+/* ===== Main ===== */
 .challenge-main{
-  /* This is the key: use remaining height in the flex column */
-  flex: 1;
-  min-height: 0; /* critical so children can size to available height */
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
   padding: clamp(12px, 2.2vw, 20px) clamp(16px, 4vw, 28px);
 }
 
-/* Map stage should fill all available main area */
+/* Map stage: allow scrolling to get the full map into view before playing */
 .map-stage{
-  height: 100%;
-  min-height: 0;
   position: relative;
 
   border-radius: 22px;
@@ -122,15 +121,31 @@ body.map-challenge-page{
   box-shadow: var(--shadow);
 
   background: rgba(255,255,255,0.03);
+
+  /* Center the map box */
+  display: grid;
+  place-items: center;
+
+  /* Breathing room around the map */
+  padding: 14px;
 }
 
-/* Placeholder “map” box that will later become the real map */
+/* Placeholder “map” box that behaves like a real 1600x1200 map */
 .map-placeholder{
-  position: absolute;
-  inset: 0;
+  width: 1600px;
+  height: 1200px;
+
+  /* Shrink-to-fit smaller screens while preserving aspect ratio */
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - (var(--dropdown-menu-h) * 2) - 80px);
+
+  aspect-ratio: 4 / 3;
 
   display: grid;
   place-items: center;
+
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.16);
 
   /* A visible placeholder treatment */
   background:
@@ -154,6 +169,7 @@ body.map-challenge-page{
   background: rgba(0,0,0,0.32);
   border: 1px solid rgba(255,255,255,0.16);
 }
+
 .map-placeholder__label span{
   display: inline-block;
   margin-top: 6px;
@@ -250,12 +266,13 @@ body.map-challenge-page{
   box-shadow: var(--focus);
 }
 
-/* Mobile: ensure main padding doesn’t force scroll */
+/* Mobile */
 @media (max-width: 640px){
   .challenge-main{
     padding: 12px 14px 14px;
   }
   .map-stage{
     border-radius: 18px;
+    padding: 10px;
   }
 }
