@@ -29,17 +29,9 @@
 }
 
 /* Base page layout */
-html, body{
-  height: 100%;
-}
-
 body.map-challenge-page{
   margin: 0;
   min-height: 100vh;
-
-  /* Let header + band + main form a vertical layout */
-  display: flex;
-  flex-direction: column;
 }
 
 /* When playing: lock scrolling so the map stays in view */
