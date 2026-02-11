@@ -3,61 +3,53 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Template | Middle School History</title>
+  <title>Middle East Map Challenge | Middle School History</title>
 
   <!-- Global site styles -->
   <link rel="stylesheet" href="/styles.css" />
 
-  <!-- Template page styles -->
-  <link rel="stylesheet" href="/games/template/template.css" />
+  <!-- Page-specific styles -->
+  <link rel="stylesheet" href="/games/map-challenges/middle-east/middle-east.css" />
 </head>
 
-<body>
+<body class="map-challenge-page">
 
   <!-- MAIN SITE HEADER (injected) -->
   <div id="siteHeader" data-include="/partials/main-header.html"></div>
 
-  <!-- Full-width banner -->
-  <section class="games-band games-band--image"
-           style="background-image: url('/assets/images/banners/games-banner.jpg');"
-           aria-label="Template banner">
-    <div class="games-band__bottom">
-      <div class="games-band__inner">
-        <h1 class="games-band__title">TEMPLATE</h1>
+  <!-- Full-width band under header -->
+  <section class="challenge-band" aria-label="Middle East Map Challenge banner">
+    <div class="challenge-band__bottom">
+      <div class="challenge-band__inner">
+        <h1 class="challenge-band__title">MIDDLE EAST MAP CHALLENGE</h1>
       </div>
     </div>
   </section>
 
-  <main class="page">
-    <p class="games-intro">
-      This is a template page. Replace this text with a short introduction to the section.
-    </p>
+  <!-- MAIN: fills remaining viewport so the map area fits without scrolling -->
+  <main class="challenge-main" aria-label="Middle East map challenge">
+    <section class="map-stage" aria-label="Map stage">
+      <!-- Placeholder map area (swap this to your real map later) -->
+      <div class="map-placeholder" role="img" aria-label="Map placeholder">
+        <div class="map-placeholder__label">
+          Map Placeholder<br />
+          <span>(Your Middle East map will go here)</span>
+        </div>
+      </div>
 
-    <!-- Tile grid -->
-    <section class="modes" aria-label="Template options">
-      <div class="modes__grid">
+      <!-- Dark overlay shown on load -->
+      <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
+        <div class="start-overlay__card">
+          <div class="start-overlay__kicker">Map Challenge</div>
+          <div class="start-overlay__title">Middle East Map Challenge</div>
+          <div class="start-overlay__sub">
+            Press Begin to start. (Mechanics coming next!)
+          </div>
 
-        <!-- Future tile -->
-        <a class="mode" href="#">
-          <div class="mode__thumb"></div>
-          <div class="mode__label">Item One</div>
-        </a>
-
-        <a class="mode" href="#">
-          <div class="mode__thumb"></div>
-          <div class="mode__label">Item Two</div>
-        </a>
-
-        <a class="mode" href="#">
-          <div class="mode__thumb"></div>
-          <div class="mode__label">Item Three</div>
-        </a>
-
-        <a class="mode" href="#">
-          <div class="mode__thumb"></div>
-          <div class="mode__label">Item Four</div>
-        </a>
-
+          <button class="begin-btn" id="beginBtn" type="button">
+            Begin
+          </button>
+        </div>
       </div>
     </section>
   </main>
@@ -65,6 +57,20 @@
   <!-- FOOTER (injected) -->
   <div id="siteFooter" data-include="/partials/footer.html"></div>
 
+  <!-- Inject header/footer -->
   <script src="/include.js"></script>
+
+  <!-- Minimal overlay toggle (safe placeholder behavior) -->
+  <script>
+    (function () {
+      const overlay = document.getElementById("startOverlay");
+      const btn = document.getElementById("beginBtn");
+      if (!overlay || !btn) return;
+
+      btn.addEventListener("click", () => {
+        overlay.classList.add("is-hidden");
+      });
+    })();
+  </script>
 </body>
 </html>
