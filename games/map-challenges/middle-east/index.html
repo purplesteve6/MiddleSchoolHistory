@@ -156,35 +156,67 @@
         svgRoot.style.height = "100%";
         svgRoot.style.display = "block";
 
-        // Auto-fit to artwork, normalize to 4:3
-        const fitTarget =
-          svgRoot.querySelector("#context_land") ||
-          svgRoot.querySelector("#borders") ||
-          svgRoot;
+        
+// Auto-fit to artwork (transforms-aware), normalize to 4:3
+const fitTarget =
+  svgRoot.querySelector("#context_land") ||
+  svgRoot.querySelector("#borders") ||
+  svgRoot;
 
-        requestAnimationFrame(() => {
-          try {
-            const bb = fitTarget.getBBox();
-            const targetRatio = 1600 / 1200;
-            let { x, y, width, height } = bb;
-            const bbRatio = width / height;
+// Convert an element's bbox into root SVG user units using CTM
+function transformedBounds(el){
+  const bb = el.getBBox();
+  const m = el.getCTM();
+  if (!m) return bb; // fallback
 
-            if (bbRatio > targetRatio) {
-              const newH = width / targetRatio;
-              y -= (newH - height) / 2;
-              height = newH;
-            } else if (bbRatio < targetRatio) {
-              const newW = height * targetRatio;
-              x -= (newW - width) / 2;
-              width = newW;
-            }
+  // Apply matrix to a point
+  const tp = (x, y) => ({
+    x: m.a * x + m.c * y + m.e,
+    y: m.b * x + m.d * y + m.f
+  });
 
-            svgRoot.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
-          } catch (e) {
-            console.warn("viewBox auto-fit failed:", e);
-          }
-        });
-      }
+  const p1 = tp(bb.x, bb.y);
+  const p2 = tp(bb.x + bb.width, bb.y);
+  const p3 = tp(bb.x, bb.y + bb.height);
+  const p4 = tp(bb.x + bb.width, bb.y + bb.height);
+
+  const xs = [p1.x, p2.x, p3.x, p4.x];
+  const ys = [p1.y, p2.y, p3.y, p4.y];
+
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+
+  return { x: minX, y: minY, width: (maxX - minX), height: (maxY - minY) };
+}
+
+requestAnimationFrame(() => {
+  try {
+    const bb = transformedBounds(fitTarget);
+
+    const targetRatio = 1600 / 1200; // 4:3
+    let x = bb.x, y = bb.y, w = bb.width, h = bb.height;
+
+    const bbRatio = w / h;
+
+    // Expand (not crop) to match 4:3, centered on the artwork
+    if (bbRatio > targetRatio) {
+      const newH = w / targetRatio;
+      y -= (newH - h) / 2;
+      h = newH;
+    } else if (bbRatio < targetRatio) {
+      const newW = h * targetRatio;
+      x -= (newW - w) / 2;
+      w = newW;
+    }
+
+    svgRoot.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
+  } catch (e) {
+    console.warn("viewBox auto-fit failed:", e);
+  }
+});
+
 
       mapBox.addEventListener("click", (e) => {
         const el = e.target;
