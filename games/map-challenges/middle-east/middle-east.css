@@ -103,7 +103,7 @@ body.is-playing{
 
 .challenge-main{
   width: 100%;
-  max-width: 1100px;
+  max-width: 1700px; /* match banner inner */
   margin: 0 auto;
   padding: clamp(12px, 2.2vw, 20px) clamp(16px, 4vw, 28px);
 }
@@ -126,13 +126,9 @@ body.is-playing{
 /* ============================= */
 
 .map-box{
-  /* never exceed 1600px wide, but shrink to fit the content column */
   width: min(1600px, 100%);
-  aspect-ratio: 4 / 3;
-
-  /* cap the height so it doesn't force internal scrollbars */
-  max-height: calc(100vh - (var(--dropdown-menu-h) * 2) - 80px);
-
+  height: auto;                 /* let aspect-ratio control height */
+  aspect-ratio: var(--map-ar, 4 / 3);  /* default 4:3, JS can override */
   border-radius: 18px;
   overflow: hidden;
 }

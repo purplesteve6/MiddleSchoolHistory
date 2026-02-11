@@ -175,35 +175,50 @@
           svgRoot.style.width = "100%";
           svgRoot.style.height = "100%";
           svgRoot.style.display = "block";
+// Make the container match the SVG’s actual viewBox aspect ratio
+const vb = svgRoot.getAttribute("viewBox");
+if (vb) {
+  const parts = vb.trim().split(/\s+/).map(Number);
+  if (parts.length === 4 && parts.every(n => Number.isFinite(n))) {
+    const w = parts[2], h = parts[3];
+    if (w > 0 && h > 0) {
+      mapBox.style.setProperty("--map-ar", `${w} / ${h}`);
+    }
+  }
+}
+
         }
 
         // Attach click handler once (replaces any previous handler)
         mapBox.onclick = (e) => {
-          const el = e.target;
-          if (!el || !el.id) return;
+  // If you click a <path> inside <g id="country">, grab the nearest ancestor with an id
+  const targetEl = (e.target && e.target.closest)
+  ? e.target.closest("#bahrain,#cyprus,#egypt,#iran,#iraq,#israel,#jordan,#kuwait,#lebanon,#oman,#qatar,#saudi_arabia,#syria,#turkey,#uae,#yemen,#palestine,#gaza,#water,#borders,#context_land")
+  : null;
 
-          const raw = String(el.id).toLowerCase();
-          if (IGNORE.has(raw)) return;
+  if (!targetEl) return;
 
-          const normalized = ALIAS[raw] ?? raw;
+  const raw = String(targetEl.id).toLowerCase();
+  if (IGNORE.has(raw)) return;
 
-          // Ignore clicks on anything that isn't a country layer we care about
-          if (!COUNTRIES.includes(normalized)) return;
+  const normalized = ALIAS[raw] ?? raw;
+  if (!COUNTRIES.includes(normalized)) return;
 
-          // For now: confirm click normalization works
-          console.log("clicked:", raw, "=>", normalized);
+  // Always log so you can confirm clicks work even before Begin
+  console.log("clicked:", raw, "=>", normalized);
 
-          // Minimal gameplay placeholder (we’ll build full rules next)
-          if (!currentTarget) return;
+  // Only run gameplay once the game has started
+  if (!currentTarget) return;
 
-          if (normalized === currentTarget){
-            console.log("correct!");
-            pickNext();
-          } else {
-            console.log("wrong!");
-            tries++;
-          }
-        };
+  if (normalized === currentTarget){
+    console.log("correct!");
+    pickNext();
+  } else {
+    console.log("wrong!");
+    tries++;
+  }
+};
+
       }
 
       // Begin
