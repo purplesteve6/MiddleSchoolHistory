@@ -7,12 +7,6 @@
   font-display: swap;
 }
 
-/* Apply GameFont to main header navigation ONLY on Games page */
-body .nav-link,
-body .nav-text{
-  font-family: "GameFont", system-ui, sans-serif;
-}
-
 /* Games page heading */
 .games-title{
   font-family: "GameFont", system-ui, sans-serif;
