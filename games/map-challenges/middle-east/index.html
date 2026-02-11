@@ -167,7 +167,8 @@
 
         // Make sure SVG scales to container
         if (svgRoot){
-          svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
+         svgRoot.setAttribute("preserveAspectRatio", "xMinYMid meet");
+
           svgRoot.style.width = "100%";
           svgRoot.style.height = "100%";
           svgRoot.style.display = "block";
