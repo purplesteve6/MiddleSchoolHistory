@@ -1,49 +1,57 @@
+/* Middle East Map Challenge */
+
+@font-face{
+  font-family: "Lemon Milk";
+  src: url("/assets/fonts/lemonmilk-regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root{
-  --bg:#07101d;
-  --bg2:#050b14;
-
-  --text:#f6f3e6;
-  --muted: rgba(246,243,230,0.78);
-
-  --stroke: rgba(255,255,255,0.14);
-  --shadow: 0 16px 46px rgba(0,0,0,0.55);
+  --dropdown-menu-h: 84px;
 
   --radius: 18px;
-  --focus: 0 0 0 4px rgba(201,168,255,0.35);
+  --shadow: 0 18px 44px rgba(0,0,0,0.45);
 
-  --overlay: rgba(0,0,0,0.72);
-  --overlay-2: rgba(0,0,0,0.58);
+  --overlay: rgba(0,0,0,0.62);
+  --overlay-2: rgba(0,0,0,0.78);
 
-  /* If your site sets this elsewhere, this is just a safe fallback */
-  --dropdown-menu-h: 72px;
+  --stroke: rgba(255,255,255,0.14);
+  --text: rgba(255,255,255,0.92);
+  --muted: rgba(255,255,255,0.74);
+
+  --green: #32c26a;
+  --yellow: #f2c94c;
+  --red: #eb5757;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
+/* ============================= */
+/* Base Layout */
+/* ============================= */
 
-body{
-  margin:0;
-  color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-  background:
-    radial-gradient(900px 700px at 0% 50%, rgba(27,79,163,0.30), transparent 60%),
-    radial-gradient(900px 700px at 100% 50%, rgba(201,168,255,0.18), transparent 60%),
-    linear-gradient(90deg, var(--bg2) 0%, var(--bg) 50%, var(--bg2) 100%);
+body.map-challenge-page{
+  margin: 0;
+  min-height: 100vh;
 }
 
-img{max-width:100%; display:block}
-a{color:inherit}
+body.is-playing{
+  overflow: hidden;
+}
 
-/* ===== Banner ===== */
+/* ============================= */
+/* Banner */
+/* ============================= */
+
 .challenge-band{
-  position: relative;
   width: 100%;
-  height: 260px;
+  height: calc(var(--dropdown-menu-h) * 2);
+  position: relative;
   margin: 0;
   padding: 0;
   display: block;
   z-index: 1;
-  background-color: #000; /* fallback */
+  background-color: #000;
 }
 
 .challenge-band--image{
@@ -65,7 +73,6 @@ a{color:inherit}
   left: 0;
   right: 0;
   bottom: 0;
-
   height: 50%;
   display: flex;
   align-items: center;
@@ -83,14 +90,16 @@ a{color:inherit}
   margin: 0;
   font-family: "Lemon Milk", system-ui, sans-serif;
   color: #fff;
-
   font-size: clamp(22px, 3.6vw, 44px);
   line-height: 1.05;
   letter-spacing: 0.10em;
   text-transform: uppercase;
 }
 
-/* ===== Main ===== */
+/* ============================= */
+/* Main */
+/* ============================= */
+
 .challenge-main{
   width: 100%;
   max-width: 1100px;
@@ -98,73 +107,88 @@ a{color:inherit}
   padding: clamp(12px, 2.2vw, 20px) clamp(16px, 4vw, 28px);
 }
 
-/* Map stage: contains map + overlay + HUD */
 .map-stage{
   position: relative;
-
   border-radius: 22px;
+  overflow: hidden;
   border: 1px solid var(--stroke);
   box-shadow: var(--shadow);
   background: rgba(255,255,255,0.03);
 
-  /* IMPORTANT: allow scroll if viewport is smaller than 1600x1200 */
-  overflow: auto;
-
-  /* give the map some breathing room */
+  display: grid;
+  place-items: center;
   padding: 14px;
 }
 
-/* The real map container (SVG gets injected here) */
+/* ============================= */
+/* SVG Map */
+/* ============================= */
+
 .map-box{
   width: 1600px;
   height: 1200px;
 
-  /* This keeps the box sized to the map canvas you described */
-  background: rgba(0,0,0,0.25);
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - (var(--dropdown-menu-h) * 2) - 80px);
+
+  aspect-ratio: 4 / 3;
+
   border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.16);
-
-  /* Prevent weird inline gaps / centering issues */
-  display: block;
+  overflow: hidden;
 }
 
-/* Make the injected SVG fill the box perfectly */
-.map-box svg{
-  width: 100%;
-  height: 100%;
-  display: block;
+/* Make SVG countries feel interactive */
+.map-box svg [id]{
+  cursor: pointer;
+  transition: fill 0.2s ease, opacity 0.2s ease;
 }
 
-/* ===== HUD (top-right) ===== */
+/* ============================= */
+/* HUD */
+/* ============================= */
+
 .hud{
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 12px;
+  left: 12px;
+  right: 12px;
   z-index: 6;
 
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  pointer-events: none;
+}
+
+.hud__prompt{
+  pointer-events: none;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--text);
+  font-weight: 900;
+  text-transform: capitalize;
+}
+
+.hud__right{
+  pointer-events: auto;
+  display: flex;
   align-items: center;
   gap: 10px;
-
-  pointer-events: auto;
 }
 
-.hud__target,
 .hud__timer{
-  padding: 8px 10px;
+  padding: 10px 14px;
   border-radius: 999px;
-  background: rgba(0,0,0,0.38);
+  background: rgba(0,0,0,0.45);
   border: 1px solid rgba(255,255,255,0.14);
-  backdrop-filter: blur(6px);
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
-.hud__target{
-  max-width: min(44vw, 380px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text);
+  font-weight: 900;
+  min-width: 70px;
+  text-align: center;
 }
 
 .hud__reset{
@@ -172,105 +196,97 @@ a{color:inherit}
   border: 1px solid rgba(255,255,255,0.18);
   background: rgba(255,255,255,0.10);
   color: var(--text);
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-radius: 999px;
   font-weight: 900;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
-.hud__reset:hover{ background: rgba(255,255,255,0.14); }
-.hud__reset:focus{ outline: none; box-shadow: var(--focus); }
 
-/* ===== Dark overlay on load ===== */
+.hud__reset:hover{
+  background: rgba(255,255,255,0.18);
+}
+
+/* ============================= */
+/* Answer Feedback Colors */
+/* ============================= */
+
+.correct1{
+  fill: var(--green) !important;
+}
+
+.correct2{
+  fill: var(--yellow) !important;
+}
+
+.wrongFinal{
+  fill: var(--red) !important;
+}
+
+/* Rapid blink before turning red */
+@keyframes blink{
+  0% { opacity: 1; }
+  50% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+.blink{
+  animation: blink 0.08s linear 6;
+}
+
+/* ============================= */
+/* Overlay */
+/* ============================= */
+
 .start-overlay{
   position: absolute;
   inset: 0;
   z-index: 5;
-
   display: grid;
   place-items: center;
-
   background: linear-gradient(180deg, var(--overlay), var(--overlay-2));
   backdrop-filter: blur(2px);
 }
 
-.start-overlay.is-hidden{ display: none; }
+.start-overlay.is-hidden{
+  display: none;
+}
 
 .start-overlay__card{
   width: min(520px, calc(100% - 32px));
   border-radius: 22px;
-
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.16);
   box-shadow: 0 22px 60px rgba(0,0,0,0.55);
-
-  padding: 22px 22px 20px;
+  padding: 22px;
   text-align: center;
 }
 
-.start-overlay__kicker{
-  display: inline-block;
-  padding: 6px 10px;
-  border-radius: 999px;
-
-  background: rgba(201,168,255,0.18);
-  border: 1px solid rgba(201,168,255,0.35);
-  color: rgba(255,255,255,0.88);
-
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-}
-
-.start-overlay__title{
-  margin: 14px 0 6px;
-  color: #fff;
-  font-family: "Lemon Milk", system-ui, sans-serif;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: clamp(20px, 2.6vw, 28px);
-  line-height: 1.15;
-}
-
-.start-overlay__sub{
-  margin: 0 0 16px;
-  color: var(--muted);
-  font-size: 1.02rem;
-}
-
-/* Begin button */
 .begin-btn{
   appearance: none;
   border: 1px solid rgba(255,255,255,0.18);
   background: rgba(255,255,255,0.10);
   color: var(--text);
-
   padding: 12px 16px;
   border-radius: 999px;
-
   font-weight: 900;
-  letter-spacing: 0.03em;
   cursor: pointer;
-
-  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+  transition: background 0.2s ease;
 }
 
 .begin-btn:hover{
-  transform: translateY(-1px);
-  background: rgba(255,255,255,0.14);
-  border-color: rgba(201,168,255,0.40);
+  background: rgba(255,255,255,0.18);
 }
 
-.begin-btn:focus{
-  outline: none;
-  box-shadow: var(--focus);
-}
-
+/* ============================= */
 /* Mobile */
+/* ============================= */
+
 @media (max-width: 640px){
   .challenge-main{
     padding: 12px 14px 14px;
   }
+
   .map-stage{
     border-radius: 18px;
     padding: 10px;
