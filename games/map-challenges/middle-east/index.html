@@ -167,12 +167,18 @@
 
         // Make sure SVG scales to container
         if (svgRoot){
-         svgRoot.setAttribute("preserveAspectRatio", "xMinYMid meet");
+  // Force the coordinate system to match your intended 1600x1200 map canvas
+  svgRoot.setAttribute("viewBox", "0 0 1600 1200");
+  svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
-          svgRoot.style.width = "100%";
-          svgRoot.style.height = "100%";
-          svgRoot.style.display = "block";
-        }
+  // Ensure it fills the .map-box exactly
+  svgRoot.removeAttribute("width");
+  svgRoot.removeAttribute("height");
+  svgRoot.style.width = "100%";
+  svgRoot.style.height = "100%";
+  svgRoot.style.display = "block";
+}
+
 
         // One click handler for all layers
         mapBox.addEventListener("click", (e) => {
