@@ -8,7 +8,7 @@
   <!-- Global site styles (same as homepage) -->
   <link rel="stylesheet" href="/styles.css" />
 
-  <!-- Page-specific styles for the Games menu -->
+  <!-- Page-specific styles for the Games page -->
   <link rel="stylesheet" href="/games/games.css" />
 </head>
 
@@ -19,58 +19,62 @@
 
   <!-- Full-width Games band (sits right under the sticky header) -->
   <section class="games-band games-band--image"
-         style="background-image: url('/assets/images/banners/games-banner.jpg');"
-         aria-label="Games banner">
-
-  <div class="games-band__bottom">
-    <div class="games-band__inner">
-      <h1 class="games-band__title">GAMES</h1>
+           style="background-image: url('/assets/images/banners/games-banner.jpg');"
+           aria-label="Games banner">
+    <div class="games-band__bottom">
+      <div class="games-band__inner">
+        <h1 class="games-band__title">GAMES</h1>
+      </div>
     </div>
-  </div>
-</section>
-
+  </section>
 
   <main class="page">
     <p class="games-intro">Choose a game type, then pick a challenge.</p>
 
-    <!-- Hierarchical menu -->
-    <section class="games-menu" aria-label="Games menu">
-      <details class="game-topic" open>
-        <summary class="game-topic__summary">
-          <span class="game-topic__label">Map Challenges</span>
-          <span class="game-topic__hint" aria-hidden="true">Click to expand/collapse</span>
-        </summary>
+    <!-- Game mode tiles -->
+    <section class="games-modes" aria-label="Game modes">
+      <div class="games-modes__grid">
 
-        <ul class="game-list" role="list">
-          <li class="game-item">
-            <a class="game-link" href="/games/map-challenges/united-states/">
-              <img class="game-icon" src="/games/images/map-us.png" alt="" aria-hidden="true" />
-              <span class="game-name">United States</span>
-            </a>
-          </li>
+        <!-- Map Challenges -->
+        <a class="games-mode" href="/games/map-challenges/" aria-label="Map Challenges">
+          <div class="games-mode__thumb">
+            <img
+              src="/games/images/thumbs/map-challenges.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
+          </div>
+          <div class="games-mode__label">Map Challenges</div>
+        </a>
 
-          <li class="game-item">
-            <a class="game-link" href="/games/map-challenges/13-colonies/">
-              <img class="game-icon" src="/games/images/map-13-colonies.png" alt="" aria-hidden="true" />
-              <span class="game-name">13 Colonies</span>
-            </a>
-          </li>
+        <!-- Puzzles -->
+        <a class="games-mode" href="/games/puzzles/" aria-label="Puzzles">
+          <div class="games-mode__thumb">
+            <img
+              src="/games/images/thumbs/puzzles.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
+          </div>
+          <div class="games-mode__label">Puzzles</div>
+        </a>
 
-          <li class="game-item">
-            <a class="game-link" href="/games/map-challenges/europe/">
-              <img class="game-icon" src="/games/images/map-europe.png" alt="" aria-hidden="true" />
-              <span class="game-name">Europe</span>
-            </a>
-          </li>
+        <!-- Quizzes -->
+        <a class="games-mode" href="/games/quizzes/" aria-label="Quizzes">
+          <div class="games-mode__thumb">
+            <img
+              src="/games/images/thumbs/quizzes.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
+          </div>
+          <div class="games-mode__label">Quizzes</div>
+        </a>
 
-          <li class="game-item">
-            <a class="game-link" href="/games/map-challenges/middle-east/">
-              <img class="game-icon" src="/games/images/map-middle-east.png" alt="" aria-hidden="true" />
-              <span class="game-name">Middle East</span>
-            </a>
-          </li>
-        </ul>
-      </details>
+      </div>
     </section>
   </main>
 
