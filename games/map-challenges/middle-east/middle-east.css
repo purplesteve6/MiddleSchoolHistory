@@ -82,7 +82,7 @@ body.is-playing{
 
 .challenge-band__inner{
   width: 100%;
-  max-width: 1100px;
+  max-width: 1700px;
   margin: 0 auto;
   padding: 0 clamp(16px, 4vw, 28px);
 }
