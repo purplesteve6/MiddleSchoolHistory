@@ -37,8 +37,15 @@ function applyConfig(){
   const inEmperorSubfolder = /\/empe?rors\//i.test(location.pathname);
   const base = inEmperorSubfolder ? ".." : ".";
 
-  await loadInto("siteHeader", "/partials/header.html");
-  await loadInto("siteFooter", "/partials/footer.html");
+  const headerEl = document.getElementById("siteHeader");
+const footerEl = document.getElementById("siteFooter");
+
+const headerUrl = headerEl?.getAttribute("data-include") || "/partials/header.html";
+const footerUrl = footerEl?.getAttribute("data-include") || "/partials/footer.html";
+
+await loadInto("siteHeader", headerUrl);
+await loadInto("siteFooter", footerUrl);
+
 
 
   applyConfig();

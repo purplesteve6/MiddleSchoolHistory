@@ -118,6 +118,12 @@
   .games-header{ padding: 16px 14px 10px; }
   .game-topic__summary{ padding: 14px 14px; }
   .game-list{ padding: 10px; }
-  .game-link{ padding: 11px; }
-  .game-icon{ width: 32px; height: 32px; flex-basis: 32px; }
+  .game-link{ padding: 14px; }
+
+  /* keep 4:3 ratio on mobile */
+  .game-icon{
+    width: 88px;
+    height: 66px;
+    flex-basis: 88px;
+  }
 }
