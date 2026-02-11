@@ -1,3 +1,35 @@
+/* ===== Games Page Custom Font ===== */
+@font-face{
+  font-family: "GameFont";
+  src: url("/assets/fonts/GameFont.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apply GameFont to main header navigation ONLY on Games page */
+body .nav-link,
+body .nav-text{
+  font-family: "GameFont", system-ui, sans-serif;
+}
+
+/* Games page heading */
+.games-title{
+  font-family: "GameFont", system-ui, sans-serif;
+}
+
+/* Topic label (Map Challenges) */
+.game-topic__label{
+  font-family: "GameFont", system-ui, sans-serif;
+}
+
+/* Individual game names */
+.game-name{
+  font-family: "GameFont", system-ui, sans-serif;
+}
+
+
+
 /* Games page-specific styles */
 
 .games-header{
