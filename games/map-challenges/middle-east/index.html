@@ -29,16 +29,23 @@
     </div>
   </section>
 
-  <!-- MAIN: fills remaining viewport so the map area fits without scrolling -->
   <main class="challenge-main" aria-label="Middle East map challenge">
     <section class="map-stage" aria-label="Map stage">
-      <!-- Placeholder map area (swap this to your real map later) -->
-      <div class="map-placeholder" role="img" aria-label="Map placeholder">
-        <div class="map-placeholder__label">
-          Map Placeholder<br />
-          <span>(Your Middle East map will go here)</span>
+
+      <!-- HUD -->
+      <div class="hud" aria-label="Game HUD">
+        <div class="hud__prompt">
+          Click: <span id="targetName">—</span>
+        </div>
+
+        <div class="hud__right">
+          <div class="hud__timer" id="timer">0:00</div>
+          <button class="hud__reset" id="resetBtn" type="button">Reset</button>
         </div>
       </div>
+
+      <!-- SVG gets injected here -->
+      <div class="map-box" id="mapBox" aria-label="Middle East map"></div>
 
       <!-- Dark overlay shown on load -->
       <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
@@ -63,15 +70,159 @@
   <!-- Inject header/footer -->
   <script src="/include.js"></script>
 
-  <!-- Minimal overlay toggle (safe placeholder behavior) -->
+  <!-- SVG loader + click normalizer + minimal game shell -->
   <script>
     (function () {
-      const overlay = document.getElementById("startOverlay");
-      const btn = document.getElementById("beginBtn");
-      if (!overlay || !btn) return;
+      const SVG_PATH = "/games/map-challenges/middle-east/middle_east_clickable.svg";
 
-      btn.addEventListener("click", () => {
-        overlay.classList.add("is-hidden");
+      const COUNTRIES = [
+        "bahrain","cyprus","egypt","iran","iraq","israel","jordan","kuwait",
+        "lebanon","oman","qatar","saudi_arabia","syria","turkey","uae","yemen"
+      ];
+
+      const IGNORE = new Set(["water","borders","context_land"]);
+
+      const ALIAS = {
+        palestine: "israel",
+        gaza: "israel",
+        israel: "israel"
+      };
+
+      const mapBox = document.getElementById("mapBox");
+      const overlay = document.getElementById("startOverlay");
+      const beginBtn = document.getElementById("beginBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const targetNameEl = document.getElementById("targetName");
+      const timerEl = document.getElementById("timer");
+
+      let svgRoot = null;
+
+      // Minimal state (we’ll expand next)
+      let remaining = [];
+      let currentTarget = null;
+      let tries = 0;
+
+      let timerStart = 0;
+      let timerInt = null;
+
+      function shuffle(arr){
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function fmtTime(ms){
+        const total = Math.floor(ms / 1000);
+        const m = Math.floor(total / 60);
+        const s = total % 60;
+        return `${m}:${String(s).padStart(2, "0")}`;
+      }
+
+      function startTimer(){
+        stopTimer();
+        timerStart = Date.now();
+        timerEl.textContent = "0:00";
+        timerInt = setInterval(() => {
+          timerEl.textContent = fmtTime(Date.now() - timerStart);
+        }, 250);
+      }
+
+      function stopTimer(){
+        if (timerInt) clearInterval(timerInt);
+        timerInt = null;
+      }
+
+      function pickNext(){
+        currentTarget = remaining.shift() || null;
+        tries = 0;
+        targetNameEl.textContent = currentTarget ? currentTarget.replaceAll("_", " ") : "Done!";
+      }
+
+      function resetGame(){
+        stopTimer();
+        document.body.classList.remove("is-playing");
+
+        remaining = [];
+        currentTarget = null;
+        tries = 0;
+
+        targetNameEl.textContent = "—";
+        timerEl.textContent = "0:00";
+
+        if (overlay) overlay.classList.remove("is-hidden");
+
+        // NOTE: later we'll also clear SVG colors/classes here
+      }
+
+      async function loadSvg(){
+        const res = await fetch(SVG_PATH, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Failed to load SVG: ${res.status}`);
+        const svgText = await res.text();
+
+        mapBox.innerHTML = svgText;
+        svgRoot = mapBox.querySelector("svg");
+
+        // Make sure SVG scales to container
+        if (svgRoot){
+          svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
+          svgRoot.style.width = "100%";
+          svgRoot.style.height = "100%";
+          svgRoot.style.display = "block";
+        }
+
+        // One click handler for all layers
+        mapBox.addEventListener("click", (e) => {
+          const el = e.target;
+          if (!el || !el.id) return;
+
+          const raw = String(el.id).toLowerCase();
+          if (IGNORE.has(raw)) return;
+
+          const normalized = ALIAS[raw] ?? raw;
+
+          // Ignore clicks on anything that isn't a country layer we care about
+          if (!COUNTRIES.includes(normalized)) return;
+
+          // For now: confirm click normalization works
+          console.log("clicked:", raw, "=>", normalized);
+
+          // Minimal gameplay placeholder (we’ll build full rules next)
+          if (!currentTarget) return;
+
+          if (normalized === currentTarget){
+            console.log("correct!");
+            pickNext();
+          } else {
+            console.log("wrong!");
+            tries++;
+          }
+        });
+      }
+
+      // Begin
+      if (beginBtn){
+        beginBtn.addEventListener("click", () => {
+          if (overlay) overlay.classList.add("is-hidden");
+          document.body.classList.add("is-playing");
+
+          remaining = shuffle(COUNTRIES);
+          pickNext();
+          startTimer();
+        });
+      }
+
+      // Reset
+      if (resetBtn){
+        resetBtn.addEventListener("click", resetGame);
+      }
+
+      // Boot
+      loadSvg().catch(err => {
+        console.error(err);
+        mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";
       });
     })();
   </script>
