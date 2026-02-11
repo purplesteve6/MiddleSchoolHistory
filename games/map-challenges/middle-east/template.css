@@ -1,0 +1,143 @@
+/* ===== Lemon Milk Font ===== */
+@font-face{
+  font-family: "Lemon Milk";
+  src: url("/assets/fonts/lemonmilk-regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== Banner ===== */
+:root{
+  --dropdown-menu-h: 84px;
+}
+
+.games-band{
+  width: 100%;
+  height: calc(var(--dropdown-menu-h) * 2);
+  position: relative;
+  margin: 0;
+  padding: 0;
+  display: block;
+  z-index: 1;
+  background-color: #000;
+}
+
+.games-band--image{
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.games-band--image::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  pointer-events: none;
+}
+
+.games-band__bottom{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+
+.games-band__inner{
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 28px);
+}
+
+.games-band__title{
+  margin: 0;
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  color: #fff;
+  font-size: clamp(26px, 3.4vw, 44px);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.games-intro{
+  margin: 14px 0 6px;
+  color: rgba(255,255,255,0.86);
+  max-width: 70ch;
+}
+
+/* ===== Tile Grid ===== */
+
+.modes{
+  margin-top: 22px;
+}
+
+.modes__grid{
+  display: grid;
+  gap: clamp(16px, 2.2vw, 26px);
+}
+
+/* 4 across desktop */
+@media (min-width: 1100px){
+  .modes__grid{
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 2 across tablet */
+@media (min-width: 640px) and (max-width: 1099px){
+  .modes__grid{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 1 across mobile */
+@media (max-width: 639px){
+  .modes__grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+.mode{
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 160ms ease;
+}
+
+.mode:hover{
+  transform: translateY(-4px);
+}
+
+.mode__thumb{
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.26);
+}
+
+.mode__label{
+  margin-top: 12px;
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  font-size: clamp(16px, 1.35vw, 20px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.96);
+}
+
+/* Mobile banner tweak */
+@media (max-width: 640px){
+  .games-band{
+    --dropdown-menu-h: 70px;
+  }
+
+  .games-band__inner{
+    padding: 0 14px;
+  }
+}
