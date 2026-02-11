@@ -165,10 +165,8 @@
         mapBox.innerHTML = svgText;
         svgRoot = mapBox.querySelector("svg");
 
-        // Make sure SVG scales to container
-        if (svgRoot){
-  // Force the coordinate system to match your intended 1600x1200 map canvas
-  svgRoot.setAttribute("viewBox", "0 0 1600 1200");
+        // Make sure SVG scales to container + auto-fit viewBox to actual artwork
+if (svgRoot){
   svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
   // Ensure it fills the .map-box exactly
@@ -177,6 +175,40 @@
   svgRoot.style.width = "100%";
   svgRoot.style.height = "100%";
   svgRoot.style.display = "block";
+
+  // Auto-fit viewBox to the visible artwork, then normalize to 4:3 (1600x1200)
+  const fitTarget =
+    svgRoot.querySelector("#context_land") ||
+    svgRoot.querySelector("#borders") ||
+    svgRoot;
+
+  requestAnimationFrame(() => {
+    try {
+      const bb = fitTarget.getBBox();
+
+      const targetRatio = 1600 / 1200; // 4:3
+      let x = bb.x, y = bb.y, w = bb.width, h = bb.height;
+
+      const bbRatio = w / h;
+
+      // Expand (not crop) to match 4:3, centered on the artwork
+      if (bbRatio > targetRatio) {
+        const newH = w / targetRatio;
+        const pad = (newH - h) / 2;
+        y -= pad;
+        h = newH;
+      } else if (bbRatio < targetRatio) {
+        const newW = h * targetRatio;
+        const pad = (newW - w) / 2;
+        x -= pad;
+        w = newW;
+      }
+
+      svgRoot.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
+    } catch (e) {
+      console.warn("viewBox auto-fit failed:", e);
+    }
+  });
 }
 
 
