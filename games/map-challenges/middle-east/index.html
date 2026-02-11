@@ -5,14 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Middle East Map Challenge | Middle School History</title>
 
+  <!-- Global site styles -->
   <link rel="stylesheet" href="/styles.css" />
+
+  <!-- Page-specific styles -->
   <link rel="stylesheet" href="/games/map-challenges/middle-east/middle-east.css" />
 </head>
 
 <body class="map-challenge-page">
 
+  <!-- MAIN SITE HEADER (injected) -->
   <div id="siteHeader" data-include="/partials/main-header.html"></div>
 
+  <!-- Full-width band under header -->
   <section class="challenge-band challenge-band--image"
            style="background-image: url('/assets/images/banners/map-challenges-banner.jpg');"
            aria-label="Middle East Map Challenge banner">
@@ -27,7 +32,7 @@
     <section class="map-stage" aria-label="Map stage">
 
       <!-- HUD -->
-      <div class="hud">
+      <div class="hud" aria-label="Game HUD">
         <div class="hud__prompt">
           Click: <span id="targetName">—</span>
         </div>
@@ -38,220 +43,248 @@
         </div>
       </div>
 
-      <!-- SVG container -->
-      <div class="map-box" id="mapBox"></div>
+      <!-- SVG gets injected here -->
+      <div class="map-box" id="mapBox" aria-label="Middle East map"></div>
 
-      <!-- Overlay -->
-      <div class="start-overlay" id="startOverlay">
+      <!-- Dark overlay shown on load -->
+      <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
         <div class="start-overlay__card">
           <div class="start-overlay__kicker">Map Challenge</div>
           <div class="start-overlay__title">Middle East Map Challenge</div>
           <div class="start-overlay__sub">
-            Press Begin to start.
+            Press Begin to start. (Mechanics coming next!)
           </div>
-          <button class="begin-btn" id="beginBtn" type="button">Begin</button>
+
+          <button class="begin-btn" id="beginBtn" type="button">
+            Begin
+          </button>
         </div>
       </div>
-
     </section>
   </main>
 
+  <!-- FOOTER (injected) -->
   <div id="siteFooter" data-include="/partials/footer.html"></div>
 
+  <!-- Inject header/footer -->
   <script src="/include.js"></script>
 
+  <!-- SVG loader + click normalizer + minimal game shell -->
   <script>
-  (function () {
+    (function () {
+      const SVG_PATH = "/games/map-challenges/middle-east/middle_east_clickable.svg";
 
-    const SVG_PATH = "/games/map-challenges/middle-east/middle_east_clickable.svg";
+      const COUNTRIES = [
+        "bahrain","cyprus","egypt","iran","iraq","israel","jordan","kuwait",
+        "lebanon","oman","qatar","saudi_arabia","syria","turkey","uae","yemen"
+      ];
 
-    const COUNTRIES = [
-      "bahrain","cyprus","egypt","iran","iraq","israel","jordan","kuwait",
-      "lebanon","oman","qatar","saudi_arabia","syria","turkey","uae","yemen"
-    ];
+      // Not clickable + should NOT count as wrong
+      const IGNORE = new Set(["water","borders","context_land"]);
 
-    const IGNORE = new Set(["water","borders","context_land"]);
+      // Alias clicks on palestine/gaza -> israel
+      const ALIAS = {
+        palestine: "israel",
+        gaza: "israel",
+        israel: "israel"
+      };
 
-    const ALIAS = {
-      palestine: "israel",
-      gaza: "israel",
-      israel: "israel"
-    };
+      const mapBox = document.getElementById("mapBox");
+      const overlay = document.getElementById("startOverlay");
+      const beginBtn = document.getElementById("beginBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const targetNameEl = document.getElementById("targetName");
+      const timerEl = document.getElementById("timer");
 
-    const mapBox = document.getElementById("mapBox");
-    const overlay = document.getElementById("startOverlay");
-    const beginBtn = document.getElementById("beginBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const targetNameEl = document.getElementById("targetName");
-    const timerEl = document.getElementById("timer");
+      let svgRoot = null;
 
-    let svgRoot = null;
-    let remaining = [];
-    let currentTarget = null;
-    let tries = 0;
-    let timerStart = 0;
-    let timerInt = null;
+      // Minimal state (we’ll expand next)
+      let remaining = [];
+      let currentTarget = null;
+      let tries = 0;
 
-    function shuffle(arr){
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
+      let timerStart = 0;
+      let timerInt = null;
 
-    function fmtTime(ms){
-      const total = Math.floor(ms / 1000);
-      const m = Math.floor(total / 60);
-      const s = total % 60;
-      return `${m}:${String(s).padStart(2, "0")}`;
-    }
-
-    function startTimer(){
-      stopTimer();
-      timerStart = Date.now();
-      timerEl.textContent = "0:00";
-      timerInt = setInterval(() => {
-        timerEl.textContent = fmtTime(Date.now() - timerStart);
-      }, 250);
-    }
-
-    function stopTimer(){
-      if (timerInt) clearInterval(timerInt);
-      timerInt = null;
-    }
-
-    function pickNext(){
-      currentTarget = remaining.shift() || null;
-      tries = 0;
-      targetNameEl.textContent = currentTarget
-        ? currentTarget.replaceAll("_", " ")
-        : "Done!";
-    }
-
-    function resetGame(){
-      stopTimer();
-      document.body.classList.remove("is-playing");
-      remaining = [];
-      currentTarget = null;
-      tries = 0;
-      targetNameEl.textContent = "—";
-      timerEl.textContent = "0:00";
-      overlay.classList.remove("is-hidden");
-    }
-
-    async function loadSvg(){
-      const res = await fetch(SVG_PATH, { cache: "no-store" });
-      const svgText = await res.text();
-
-      mapBox.innerHTML = svgText;
-      svgRoot = mapBox.querySelector("svg");
-
-      if (svgRoot){
-        svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
-        svgRoot.removeAttribute("width");
-        svgRoot.removeAttribute("height");
-        svgRoot.style.width = "100%";
-        svgRoot.style.height = "100%";
-        svgRoot.style.display = "block";
-
-        
-// Auto-fit to artwork (transforms-aware), normalize to 4:3
-const fitTarget =
-  svgRoot.querySelector("#context_land") ||
-  svgRoot.querySelector("#borders") ||
-  svgRoot;
-
-// Convert an element's bbox into root SVG user units using CTM
-function transformedBounds(el){
-  const bb = el.getBBox();
-  const m = el.getCTM();
-  if (!m) return bb; // fallback
-
-  // Apply matrix to a point
-  const tp = (x, y) => ({
-    x: m.a * x + m.c * y + m.e,
-    y: m.b * x + m.d * y + m.f
-  });
-
-  const p1 = tp(bb.x, bb.y);
-  const p2 = tp(bb.x + bb.width, bb.y);
-  const p3 = tp(bb.x, bb.y + bb.height);
-  const p4 = tp(bb.x + bb.width, bb.y + bb.height);
-
-  const xs = [p1.x, p2.x, p3.x, p4.x];
-  const ys = [p1.y, p2.y, p3.y, p4.y];
-
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-
-  return { x: minX, y: minY, width: (maxX - minX), height: (maxY - minY) };
-}
-
-requestAnimationFrame(() => {
-  try {
-    const bb = transformedBounds(fitTarget);
-
-    const targetRatio = 1600 / 1200; // 4:3
-    let x = bb.x, y = bb.y, w = bb.width, h = bb.height;
-
-    const bbRatio = w / h;
-
-    // Expand (not crop) to match 4:3, centered on the artwork
-    if (bbRatio > targetRatio) {
-      const newH = w / targetRatio;
-      y -= (newH - h) / 2;
-      h = newH;
-    } else if (bbRatio < targetRatio) {
-      const newW = h * targetRatio;
-      x -= (newW - w) / 2;
-      w = newW;
-    }
-
-    svgRoot.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
-  } catch (e) {
-    console.warn("viewBox auto-fit failed:", e);
-  }
-});
-
-
-      mapBox.addEventListener("click", (e) => {
-        const el = e.target;
-        if (!el || !el.id) return;
-
-        const raw = el.id.toLowerCase();
-        if (IGNORE.has(raw)) return;
-
-        const normalized = ALIAS[raw] ?? raw;
-        if (!COUNTRIES.includes(normalized)) return;
-
-        if (!currentTarget) return;
-
-        if (normalized === currentTarget){
-          pickNext();
-        } else {
-          tries++;
+      function shuffle(arr){
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
         }
+        return a;
+      }
+
+      function fmtTime(ms){
+        const total = Math.floor(ms / 1000);
+        const m = Math.floor(total / 60);
+        const s = total % 60;
+        return `${m}:${String(s).padStart(2, "0")}`;
+      }
+
+      function startTimer(){
+        stopTimer();
+        timerStart = Date.now();
+        timerEl.textContent = "0:00";
+        timerInt = setInterval(() => {
+          timerEl.textContent = fmtTime(Date.now() - timerStart);
+        }, 250);
+      }
+
+      function stopTimer(){
+        if (timerInt) clearInterval(timerInt);
+        timerInt = null;
+      }
+
+      function pickNext(){
+        currentTarget = remaining.shift() || null;
+        tries = 0;
+        targetNameEl.textContent = currentTarget ? currentTarget.replaceAll("_", " ") : "Done!";
+      }
+
+      function resetGame(){
+        stopTimer();
+        document.body.classList.remove("is-playing");
+
+        remaining = [];
+        currentTarget = null;
+        tries = 0;
+
+        targetNameEl.textContent = "—";
+        timerEl.textContent = "0:00";
+
+        if (overlay) overlay.classList.remove("is-hidden");
+
+        // Later: clear SVG colors/classes here
+      }
+
+      async function loadSvg(){
+        const res = await fetch(SVG_PATH, { cache: "no-store" });
+        if (!res.ok) throw new Error(`SVG fetch failed: ${res.status}`);
+        const svgText = await res.text();
+
+        mapBox.innerHTML = svgText;
+        svgRoot = mapBox.querySelector("svg");
+
+        if (svgRoot){
+          svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
+          svgRoot.removeAttribute("width");
+          svgRoot.removeAttribute("height");
+          svgRoot.style.width = "100%";
+          svgRoot.style.height = "100%";
+          svgRoot.style.display = "block";
+
+          // Auto-fit to artwork (transforms-aware), normalize to 4:3 (1600x1200)
+          const fitTarget =
+            svgRoot.querySelector("#context_land") ||
+            svgRoot.querySelector("#borders") ||
+            svgRoot;
+
+          function transformedBounds(el){
+            const bb = el.getBBox();
+            const m = el.getCTM();
+            if (!m) return bb;
+
+            const tp = (x, y) => ({
+              x: m.a * x + m.c * y + m.e,
+              y: m.b * x + m.d * y + m.f
+            });
+
+            const p1 = tp(bb.x, bb.y);
+            const p2 = tp(bb.x + bb.width, bb.y);
+            const p3 = tp(bb.x, bb.y + bb.height);
+            const p4 = tp(bb.x + bb.width, bb.y + bb.height);
+
+            const xs = [p1.x, p2.x, p3.x, p4.x];
+            const ys = [p1.y, p2.y, p3.y, p4.y];
+
+            const minX = Math.min(...xs);
+            const maxX = Math.max(...xs);
+            const minY = Math.min(...ys);
+            const maxY = Math.max(...ys);
+
+            return { x: minX, y: minY, width: (maxX - minX), height: (maxY - minY) };
+          }
+
+          requestAnimationFrame(() => {
+            try {
+              const bb = transformedBounds(fitTarget);
+
+              const targetRatio = 1600 / 1200; // 4:3
+              let x = bb.x, y = bb.y, w = bb.width, h = bb.height;
+
+              const bbRatio = w / h;
+
+              // Expand (not crop) to match 4:3, centered on artwork
+              if (bbRatio > targetRatio) {
+                const newH = w / targetRatio;
+                y -= (newH - h) / 2;
+                h = newH;
+              } else if (bbRatio < targetRatio) {
+                const newW = h * targetRatio;
+                x -= (newW - w) / 2;
+                w = newW;
+              }
+
+              svgRoot.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
+            } catch (e) {
+              console.warn("viewBox auto-fit failed:", e);
+            }
+          });
+        }
+
+        // Attach click handler once (replaces any previous handler)
+        mapBox.onclick = (e) => {
+          const el = e.target;
+          if (!el || !el.id) return;
+
+          const raw = String(el.id).toLowerCase();
+          if (IGNORE.has(raw)) return;
+
+          const normalized = ALIAS[raw] ?? raw;
+
+          // Ignore clicks on anything that isn't a country layer we care about
+          if (!COUNTRIES.includes(normalized)) return;
+
+          // For now: confirm click normalization works
+          console.log("clicked:", raw, "=>", normalized);
+
+          // Minimal gameplay placeholder (we’ll build full rules next)
+          if (!currentTarget) return;
+
+          if (normalized === currentTarget){
+            console.log("correct!");
+            pickNext();
+          } else {
+            console.log("wrong!");
+            tries++;
+          }
+        };
+      }
+
+      // Begin
+      if (beginBtn){
+        beginBtn.addEventListener("click", () => {
+          if (overlay) overlay.classList.add("is-hidden");
+          document.body.classList.add("is-playing");
+
+          remaining = shuffle(COUNTRIES);
+          pickNext();
+          startTimer();
+        });
+      }
+
+      // Reset
+      if (resetBtn){
+        resetBtn.addEventListener("click", resetGame);
+      }
+
+      // Boot
+      loadSvg().catch(err => {
+        console.error(err);
+        mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";
       });
-    }
-
-    beginBtn.addEventListener("click", () => {
-      overlay.classList.add("is-hidden");
-      document.body.classList.add("is-playing");
-      remaining = shuffle(COUNTRIES);
-      pickNext();
-      startTimer();
-    });
-
-    resetBtn.addEventListener("click", resetGame);
-
-    loadSvg();
-
-  })();
+    })();
   </script>
-
 </body>
 </html>
