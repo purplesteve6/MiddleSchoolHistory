@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Map Challenges | Middle School History</title>
+
+  <!-- Global site styles -->
+  <link rel="stylesheet" href="/styles.css" />
+
+  <!-- Page styles -->
+  <link rel="stylesheet" href="/games/map-challenges/map-challenges.css" />
+</head>
+
+<body>
+
+  <!-- MAIN SITE HEADER (injected) -->
+  <div id="siteHeader" data-include="/partials/main-header.html"></div>
+
+  <!-- Full-width banner (same look as Games page) -->
+  <section class="games-band games-band--image"
+           style="background-image: url('/assets/images/banners/games-banner.jpg');"
+           aria-label="Map Challenges banner">
+    <div class="games-band__bottom">
+      <div class="games-band__inner">
+        <h1 class="games-band__title">MAP CHALLENGES</h1>
+      </div>
+    </div>
+  </section>
+
+  <main class="page">
+    <p class="games-intro">Pick a map, then race the clock to place every location correctly.</p>
+
+    <!-- Map challenge tiles -->
+    <section class="modes" aria-label="Map challenge options">
+      <div class="modes__grid">
+
+        <a class="mode" href="/games/map-challenges/united-states/">
+          <div class="mode__thumb">
+            <img src="/games/images/thumbs/map-challenges/united-states.jpg" alt="" aria-hidden="true" loading="lazy">
+          </div>
+          <div class="mode__label">United States</div>
+        </a>
+
+        <a class="mode" href="/games/map-challenges/13-colonies/">
+          <div class="mode__thumb">
+            <img src="/games/images/thumbs/map-challenges/13-colonies.jpg" alt="" aria-hidden="true" loading="lazy">
+          </div>
+          <div class="mode__label">United States: 13 Colonies</div>
+        </a>
+
+        <a class="mode" href="/games/map-challenges/europe/">
+          <div class="mode__thumb">
+            <img src="/games/images/thumbs/map-challenges/europe.jpg" alt="" aria-hidden="true" loading="lazy">
+          </div>
+          <div class="mode__label">Europe</div>
+        </a>
+
+        <a class="mode" href="/games/map-challenges/middle-east/">
+          <div class="mode__thumb">
+            <img src="/games/images/thumbs/map-challenges/middle-east.jpg" alt="" aria-hidden="true" loading="lazy">
+          </div>
+          <div class="mode__label">Middle East</div>
+        </a>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER (injected) -->
+  <div id="siteFooter" data-include="/partials/footer.html"></div>
+
+  <script src="/include.js"></script>
+</body>
+</html>
