@@ -100,6 +100,9 @@
     let tries = 0; // 0 = first attempt, 1 = second attempt
     let totalPoints = 0;
 
+    // NEW: countries already completed (green/yellow/red) should ignore clicks
+    let locked = new Set();
+
     let timerStart = 0;
     let timerInt = null;
 
@@ -216,6 +219,9 @@
       tries = 0;
       totalPoints = 0;
 
+      // NEW: clear locked list on reset
+      locked = new Set();
+
       clearAllCountryClasses();
 
       targetNameEl.textContent = "—";
@@ -226,6 +232,10 @@
       if (startImmediately) {
         if (overlay) overlay.classList.add("is-hidden");
         document.body.classList.add("is-playing");
+
+        // NEW: clear locked list on restart
+        locked = new Set();
+
         remaining = shuffle(COUNTRIES);
         pickNext();
         startTimer();
@@ -260,6 +270,10 @@
       setTimeout(() => {
         correctEl.classList.remove("blink");
         correctEl.classList.add("wrongFinal");
+
+        // NEW: lock the target so future clicks don't register
+        locked.add(currentTarget);
+
         pickNext();
       }, 520);
     }
@@ -289,6 +303,12 @@
       // Don’t allow interactions before game starts / after it ends
       if (!currentTarget) return;
 
+      // NEW: if they click a country already completed, ignore it completely
+      // (no penalty, no temporary red, no tries change)
+      if (locked.has(hit.normalized) && hit.normalized !== currentTarget){
+        return;
+      }
+
       // Correct click
       if (hit.normalized === currentTarget){
         const correctEl = getCountryEl(currentTarget);
@@ -297,10 +317,18 @@
         if (tries === 0){
           totalPoints += 100;
           correctEl.classList.add("correct1");
+
+          // NEW: lock the target so future clicks don't register
+          locked.add(currentTarget);
+
           pickNext();
         } else {
           totalPoints += 50;
           correctEl.classList.add("correct2");
+
+          // NEW: lock the target so future clicks don't register
+          locked.add(currentTarget);
+
           pickNext();
         }
         return;
@@ -346,6 +374,9 @@
         clearAllCountryClasses();
         totalPoints = 0;
 
+        // NEW: clear locked list on new run
+        locked = new Set();
+
         remaining = shuffle(COUNTRIES);
         pickNext();
         startTimer();
@@ -366,4 +397,3 @@
   </script>
 </body>
 </html>
-

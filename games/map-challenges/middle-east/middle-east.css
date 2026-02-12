@@ -250,27 +250,34 @@ body.is-playing{
 /* Answer Feedback Colors */
 /* ============================= */
 
-.correct1{
+/* Apply to country + descendants (paths/polygons often hold the fill) */
+.correct1, .correct1 *{
   fill: var(--green) !important;
 }
 
-.correct2{
+.correct2, .correct2 *{
   fill: var(--yellow) !important;
 }
 
-.wrongFinal{
+.wrongFinal, .wrongFinal *{
   fill: var(--red) !important;
 }
 
-/* Rapid blink before turning red */
-@keyframes blink{
+/* Wrong-on-hold (temporary red while mouse is down) */
+.tempWrong, .tempWrong *{
+  fill: var(--red) !important;
+}
+
+/* Blink should look RED, not “black” — keep fill red, blink opacity */
+@keyframes blinkOpacity{
   0% { opacity: 1; }
-  50% { opacity: 0.2; }
+  50% { opacity: 0.25; }
   100% { opacity: 1; }
 }
 
-.blink{
-  animation: blink 0.08s linear 6;
+.blink, .blink *{
+  fill: var(--red) !important;
+  animation: blinkOpacity 0.08s linear 6;
 }
 
 /* ============================= */
