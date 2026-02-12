@@ -20,14 +20,15 @@
       gap: 10px;
     }
     .hud__flag{
-      width: 34px;
-      height: 22px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.22);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-      transform: translateY(1px);
-    }
+  width: 48px;
+  height: auto;          /* preserves your 163x100 ratio */
+  object-fit: contain;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+
 
     /* Tooltip that follows the cursor during play */
     .cursor-tip{
@@ -231,8 +232,12 @@
     }
 
     function displayNameFor(id){
-      return (DISPLAY_NAMES[id] ?? id.replaceAll("_"," "));
-    }
+  const base = DISPLAY_NAMES[id] ?? id.replaceAll("_"," ");
+
+  // Capitalize each word nicely
+  return base.replace(/\b\w/g, char => char.toUpperCase());
+}
+
 
     function flagSrcFor(id){
       return `${FLAGS_BASE}${id}.jpg`;
