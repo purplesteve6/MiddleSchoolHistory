@@ -82,16 +82,29 @@
     // Not clickable + should NOT count as wrong
     const IGNORE = new Set(["water","borders","context_land"]);
 
-    // Alias clicks on palestine/gaza -> israel
-    const ALIAS = { palestine: "israel", gaza: "israel", israel: "israel" };
+    // Alias clicks on palestine/gaza/internal borders -> israel
+    // NOTE: israel_internal_borders should behave like clicking Israel for correctness,
+    // but it should NOT be colored itself (it's a border layer).
+    const ALIAS = {
+      palestine: "israel",
+      gaza: "israel",
+      israel_internal_borders: "israel",
+      israel: "israel"
+    };
 
-    // NEW: Treat these SVG layers exactly like Israel for coloring/blinking
+    // Treat these SVG layers exactly like Israel for coloring/blinking
+    // (DO NOT include israel_internal_borders here — it's a border layer only)
     const GROUPS = {
       israel: ["israel", "gaza", "palestine"]
     };
 
-    // NEW: Clear classes from these extra IDs too (not in COUNTRIES list)
-    const EXTRA_IDS = ["gaza", "palestine"];
+    // Clear classes from these extra IDs too (not in COUNTRIES list)
+    const EXTRA_IDS = ["gaza", "palestine", "israel_internal_borders"];
+
+    // Display name overrides
+    const DISPLAY_NAMES = {
+      uae: "United Arab Emirates (UAE)"
+    };
 
     const mapBox = document.getElementById("mapBox");
     const overlay = document.getElementById("startOverlay");
@@ -152,19 +165,28 @@
       return svgRoot.querySelector(`#${CSS.escape(id)}`);
     }
 
-    // NEW: if a target has multiple SVG layers (Israel + Gaza + Palestine),
+    // If a target has multiple SVG layers (Israel + Gaza + Palestine),
     // return all IDs we should treat as the same target.
     function getGroupIds(canonicalId){
       return GROUPS[canonicalId] ? GROUPS[canonicalId].slice() : [canonicalId];
     }
 
-    // NEW: run an operation on every SVG element in the group
+    // Run an operation on every SVG element in the group
     function forEachGroupEl(canonicalId, fn){
       const ids = getGroupIds(canonicalId);
       for (const id of ids){
         const el = getElById(id);
         if (el) fn(el);
       }
+    }
+
+    // For a hit on israel_internal_borders, we want it to behave like Israel,
+    // but we should never apply tempWrong color to the border layer itself.
+    function getVisualElForHit(hit){
+      if (hit.raw === "israel_internal_borders"){
+        return getElById("israel") || hit.el;
+      }
+      return hit.el;
     }
 
     function clearAllCountryClasses(){
@@ -177,23 +199,18 @@
       }
     }
 
-    // Display name overrides
-const DISPLAY_NAMES = {
-  uae: "United Arab Emirates (UAE)"
-};
+    function setPrompt(){
+      if (!currentTarget){
+        targetNameEl.textContent = "Done!";
+        return;
+      }
 
-function setPrompt(){
-  if (!currentTarget){
-    targetNameEl.textContent = "Done!";
-    return;
-  }
+      const display =
+        DISPLAY_NAMES[currentTarget] ??
+        currentTarget.replaceAll("_"," ");
 
-  const display = DISPLAY_NAMES[currentTarget] 
-    ?? currentTarget.replaceAll("_"," ");
-
-  targetNameEl.textContent = display;
-}
-
+      targetNameEl.textContent = display;
+    }
 
     function pickNext(){
       currentTarget = remaining.shift() || null;
@@ -280,7 +297,7 @@ function setPrompt(){
     function normalizeClickedId(e){
       const targetEl = (e.target && e.target.closest)
         ? e.target.closest(
-            "#bahrain,#cyprus,#egypt,#iran,#iraq,#israel,#jordan,#kuwait,#lebanon,#oman,#qatar,#saudi_arabia,#syria,#turkey,#uae,#yemen,#palestine,#gaza,#water,#borders,#context_land"
+            "#bahrain,#cyprus,#egypt,#iran,#iraq,#israel,#jordan,#kuwait,#lebanon,#oman,#qatar,#saudi_arabia,#syria,#turkey,#uae,#yemen,#palestine,#gaza,#israel_internal_borders,#water,#borders,#context_land"
           )
         : null;
 
@@ -299,6 +316,7 @@ function setPrompt(){
       if (!currentTarget) return;
 
       // Apply to Israel group if applicable (Israel + Gaza + Palestine)
+      // (do NOT blink internal border layer)
       forEachGroupEl(currentTarget, (el) => {
         el.classList.remove("correct1","correct2");
         el.classList.add("blink");
@@ -348,7 +366,7 @@ function setPrompt(){
         return;
       }
 
-      // Correct click (includes Gaza/Palestine treated as Israel)
+      // Correct click (includes Gaza/Palestine/Internal Borders treated as Israel)
       if (hit.normalized === currentTarget){
         if (tries === 0){
           totalPoints += 100;
@@ -367,7 +385,9 @@ function setPrompt(){
       // Wrong click
       if (tries === 0){
         // First wrong: show clicked region red only while held down
-        tempWrongEl = hit.el;
+        // IMPORTANT: if they clicked the Israel internal border layer,
+        // apply tempWrong to Israel region (not the border layer).
+        tempWrongEl = getVisualElForHit(hit);
         tempWrongEl.classList.add("tempWrong");
         tries = 1;
         try { tempWrongEl.setPointerCapture(e.pointerId); } catch(_) {}
