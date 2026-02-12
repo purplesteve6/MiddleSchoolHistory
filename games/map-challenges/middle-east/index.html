@@ -57,9 +57,8 @@
           </div>
 
           <div class="overlay__actions">
-  <button class="begin-btn" id="beginBtn" type="button">Begin</button>
-</div>
-
+            <button class="begin-btn" id="beginBtn" type="button">Begin</button>
+          </div>
 
           <img class="overlay__logo"
                src="/assets/images/logo/MSHistory_Logo_Small.png"
@@ -116,6 +115,7 @@
     const GAME_KICKER = "MAP CHALLENGE";
     const GAME_TITLE = "MIDDLE EAST";
 
+    const stageEl = document.querySelector(".map-stage");
     const mapBox = document.getElementById("mapBox");
     const overlay = document.getElementById("startOverlay");
     const beginBtn = document.getElementById("beginBtn");
@@ -139,6 +139,62 @@
 
     // Track pointer-down temporary red
     let tempWrongEl = null;
+
+    /* =========================================================
+       Auto-fit scaling (NEW)
+       Scales the entire stage down if it won’t fit in viewport.
+       ========================================================= */
+    function fitStageToViewport(){
+      if (!stageEl) return;
+
+      // Don’t attempt until layout has happened
+      // Measure stage in its "natural" size by temporarily clearing transform
+      const prevTransform = stageEl.style.transform;
+      const prevOrigin = stageEl.style.transformOrigin;
+      const prevMB = stageEl.style.marginBottom;
+
+      stageEl.style.transform = "none";
+      stageEl.style.transformOrigin = "top center";
+      stageEl.style.marginBottom = "0px";
+
+      const rect = stageEl.getBoundingClientRect();
+      const naturalW = rect.width;
+      const naturalH = rect.height;
+
+      // Available space:
+      // - horizontally: viewport minus padding
+      // - vertically: from current stage top to bottom of viewport minus padding
+      const pad = 20;
+      const availableW = window.innerWidth - pad * 2;
+      const availableH = window.innerHeight - rect.top - pad;
+
+      // If numbers are weird (hidden/0), restore and bail
+      if (!naturalW || !naturalH || availableW <= 0 || availableH <= 0){
+        stageEl.style.transform = prevTransform;
+        stageEl.style.transformOrigin = prevOrigin;
+        stageEl.style.marginBottom = prevMB;
+        return;
+      }
+
+      const scale = Math.min(1, availableW / naturalW, availableH / naturalH);
+
+      stageEl.style.transformOrigin = "top center";
+      stageEl.style.transform = `scale(${scale})`;
+
+      // Reserve space so scaled-down stage doesn't overlap content below
+      // (Only matters if you have anything below; harmless otherwise.)
+      stageEl.style.marginBottom = `${Math.round((1 - scale) * naturalH)}px`;
+    }
+
+    // Debounced resize handler (prevents thrash while resizing)
+    let fitRAF = 0;
+    function requestFit(){
+      if (fitRAF) cancelAnimationFrame(fitRAF);
+      fitRAF = requestAnimationFrame(() => {
+        fitRAF = 0;
+        fitStageToViewport();
+      });
+    }
 
     function shuffle(arr){
       const a = arr.slice();
@@ -272,9 +328,8 @@
           </div>
 
           <div class="overlay__actions">
-  <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
-</div>
-
+            <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
+          </div>
 
           <img class="overlay__logo"
                src="${LOGO_SRC}"
@@ -289,10 +344,14 @@
       playAgainBtn.addEventListener("click", () => {
         wrap.remove();
         resetGame(true);
+        requestFit();
       });
 
       // Optional: focus the button for accessibility / spacebar behavior
       playAgainBtn.focus();
+
+      // Overlay can change layout slightly; refit after it appears
+      requestFit();
     }
 
     function resetGame(startImmediately=false){
@@ -321,6 +380,8 @@
         pickNext();
         startTimer();
       }
+
+      requestFit();
     }
 
     function normalizeClickedId(e){
@@ -376,6 +437,9 @@
         svgRoot.style.height = "100%";
         svgRoot.style.display = "block";
       }
+
+      // NEW: after SVG loads, fit stage
+      requestFit();
     }
 
     mapBox.addEventListener("pointerdown", (e) => {
@@ -442,6 +506,8 @@
         remaining = shuffle(COUNTRIES);
         pickNext();
         startTimer();
+
+        requestFit();
       });
     }
 
@@ -449,9 +515,8 @@
       resetBtn.addEventListener("click", () => resetGame(false));
     }
 
-    // NEW: Spacebar activates Begin / Play Again when an overlay is visible.
+    // Spacebar activates Begin / Play Again when an overlay is visible.
     document.addEventListener("keydown", (e) => {
-      // Space key
       if (e.code !== "Space" && e.key !== " ") return;
 
       // If start overlay is up, Space should click Begin
@@ -472,10 +537,20 @@
       }
     });
 
+    // NEW: refit on viewport changes
+    window.addEventListener("resize", requestFit, { passive: true });
+    window.addEventListener("orientationchange", requestFit);
+
+    // Boot
     loadSvg().catch(err => {
       console.error(err);
       mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";
     });
+
+    // One extra fit after first paint (header/footer includes can shift layout)
+    requestFit();
+    setTimeout(requestFit, 0);
+    setTimeout(requestFit, 250);
   })();
   </script>
 </body>
