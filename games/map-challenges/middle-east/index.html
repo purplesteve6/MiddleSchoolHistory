@@ -201,6 +201,9 @@
     // Track pointer-down temporary red
     let tempWrongEl = null;
 
+let lastMouseX = 0;
+let lastMouseY = 0;
+
     function shuffle(arr){
       const a = arr.slice();
       for (let i = a.length - 1; i > 0; i--){
@@ -318,14 +321,21 @@
     }
 
     function pickNext(){
-      currentTarget = remaining.shift() || null;
-      tries = 0;
-      setPrompt();
+  currentTarget = remaining.shift() || null;
+  tries = 0;
+  setPrompt();
 
-      if (!currentTarget){
-        endGame();
-      }
-    }
+  if (!currentTarget){
+    endGame();
+    return;
+  }
+
+  // 🔥 Immediately update tooltip if visible
+  if (canShowCursorTip()){
+    showCursorTip(lastMouseX, lastMouseY);
+  }
+}
+
 
     function showEndOverlay({ title, time, scorePercent, stamp }){
       const old = document.getElementById("endOverlay");
@@ -536,13 +546,17 @@
       cursorTipEl.style.top = "0px";
     }
 
-    mapBox.addEventListener("pointermove", (e) => {
-      if (!canShowCursorTip()){
-        hideCursorTip();
-        return;
-      }
-      showCursorTip(e.clientX, e.clientY);
-    });
+   mapBox.addEventListener("pointermove", (e) => {
+  lastMouseX = e.clientX;
+  lastMouseY = e.clientY;
+
+  if (!canShowCursorTip()){
+    hideCursorTip();
+    return;
+  }
+  showCursorTip(lastMouseX, lastMouseY);
+});
+
 
     mapBox.addEventListener("pointerleave", () => hideCursorTip());
     window.addEventListener("scroll", () => {
