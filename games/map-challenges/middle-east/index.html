@@ -85,6 +85,14 @@
     // Alias clicks on palestine/gaza -> israel
     const ALIAS = { palestine: "israel", gaza: "israel", israel: "israel" };
 
+    // NEW: Treat these SVG layers exactly like Israel for coloring/blinking
+    const GROUPS = {
+      israel: ["israel", "gaza", "palestine"]
+    };
+
+    // NEW: Clear classes from these extra IDs too (not in COUNTRIES list)
+    const EXTRA_IDS = ["gaza", "palestine"];
+
     const mapBox = document.getElementById("mapBox");
     const overlay = document.getElementById("startOverlay");
     const beginBtn = document.getElementById("beginBtn");
@@ -100,7 +108,7 @@
     let tries = 0; // 0 = first attempt, 1 = second attempt
     let totalPoints = 0;
 
-    // NEW: countries already completed (green/yellow/red) should ignore clicks
+    // countries already completed (green/yellow/red) should ignore clicks
     let locked = new Set();
 
     let timerStart = 0;
@@ -139,15 +147,32 @@
       timerInt = null;
     }
 
-    function getCountryEl(id){
+    function getElById(id){
       if (!svgRoot) return null;
       return svgRoot.querySelector(`#${CSS.escape(id)}`);
     }
 
+    // NEW: if a target has multiple SVG layers (Israel + Gaza + Palestine),
+    // return all IDs we should treat as the same target.
+    function getGroupIds(canonicalId){
+      return GROUPS[canonicalId] ? GROUPS[canonicalId].slice() : [canonicalId];
+    }
+
+    // NEW: run an operation on every SVG element in the group
+    function forEachGroupEl(canonicalId, fn){
+      const ids = getGroupIds(canonicalId);
+      for (const id of ids){
+        const el = getElById(id);
+        if (el) fn(el);
+      }
+    }
+
     function clearAllCountryClasses(){
       if (!svgRoot) return;
-      for (const id of COUNTRIES){
-        const el = getCountryEl(id);
+
+      const allIds = [...new Set([...COUNTRIES, ...EXTRA_IDS])];
+      for (const id of allIds){
+        const el = getElById(id);
         if (el) el.classList.remove("correct1","correct2","wrongFinal","blink","tempWrong");
       }
     }
@@ -219,9 +244,7 @@
       tries = 0;
       totalPoints = 0;
 
-      // NEW: clear locked list on reset
       locked = new Set();
-
       clearAllCountryClasses();
 
       targetNameEl.textContent = "—";
@@ -233,9 +256,7 @@
         if (overlay) overlay.classList.add("is-hidden");
         document.body.classList.add("is-playing");
 
-        // NEW: clear locked list on restart
         locked = new Set();
-
         remaining = shuffle(COUNTRIES);
         pickNext();
         startTimer();
@@ -261,17 +282,21 @@
     }
 
     function flashCorrectThenRed(){
-      const correctEl = getCountryEl(currentTarget);
-      if (!correctEl) return;
+      if (!currentTarget) return;
 
-      correctEl.classList.remove("correct1","correct2");
-      correctEl.classList.add("blink");
+      // Apply to Israel group if applicable (Israel + Gaza + Palestine)
+      forEachGroupEl(currentTarget, (el) => {
+        el.classList.remove("correct1","correct2");
+        el.classList.add("blink");
+      });
 
       setTimeout(() => {
-        correctEl.classList.remove("blink");
-        correctEl.classList.add("wrongFinal");
+        forEachGroupEl(currentTarget, (el) => {
+          el.classList.remove("blink");
+          el.classList.add("wrongFinal");
+        });
 
-        // NEW: lock the target so future clicks don't register
+        // lock the canonical target so future clicks don't register
         locked.add(currentTarget);
 
         pickNext();
@@ -303,32 +328,23 @@
       // Don’t allow interactions before game starts / after it ends
       if (!currentTarget) return;
 
-      // NEW: if they click a country already completed, ignore it completely
+      // If they click a country already completed, ignore it completely
       // (no penalty, no temporary red, no tries change)
       if (locked.has(hit.normalized) && hit.normalized !== currentTarget){
         return;
       }
 
-      // Correct click
+      // Correct click (includes Gaza/Palestine treated as Israel)
       if (hit.normalized === currentTarget){
-        const correctEl = getCountryEl(currentTarget);
-        if (!correctEl) return;
-
         if (tries === 0){
           totalPoints += 100;
-          correctEl.classList.add("correct1");
-
-          // NEW: lock the target so future clicks don't register
+          forEachGroupEl(currentTarget, (el) => el.classList.add("correct1"));
           locked.add(currentTarget);
-
           pickNext();
         } else {
           totalPoints += 50;
-          correctEl.classList.add("correct2");
-
-          // NEW: lock the target so future clicks don't register
+          forEachGroupEl(currentTarget, (el) => el.classList.add("correct2"));
           locked.add(currentTarget);
-
           pickNext();
         }
         return;
@@ -374,9 +390,7 @@
         clearAllCountryClasses();
         totalPoints = 0;
 
-        // NEW: clear locked list on new run
         locked = new Set();
-
         remaining = shuffle(COUNTRIES);
         pickNext();
         startTimer();
