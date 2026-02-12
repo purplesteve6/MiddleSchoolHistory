@@ -263,17 +263,16 @@ body.is-playing{
 }
 
 /* ============================= */
-/* Overlay (REDESIGNED) */
+/* Overlay */
 /* ============================= */
 
 .start-overlay{
   position: absolute;
   inset: 0;
-  z-index: 20; /* above HUD so Reset isn't clickable */
+  z-index: 20;
   display: grid;
   place-items: center;
 
-  /* NEW: translucent brown overlay (card stays white) */
   background: linear-gradient(180deg, var(--overlay-brown-1), var(--overlay-brown-2));
   backdrop-filter: blur(2px);
 }
@@ -283,14 +282,16 @@ body.is-playing{
 }
 
 .start-overlay__card{
-  width: min(560px, calc(100% - 32px));
+  width: min(600px, calc(100% - 32px));
   border-radius: 22px;
 
   background: linear-gradient(180deg, var(--overlay-bg-1), var(--overlay-bg-2));
   border: 3px solid var(--site-purple);
 
   box-shadow: 0 22px 60px rgba(0,0,0,0.25);
-  padding: 22px;
+
+  /* more breathing room + extra space for bottom elements */
+  padding: 26px 22px 92px;
 
   position: relative;
   overflow: hidden;
@@ -319,7 +320,6 @@ body.is-playing{
   margin-bottom: 12px;
 }
 
-/* Start overlay message text */
 .overlay__body{
   font-family: "Tommy Soft", system-ui, sans-serif;
   font-weight: 400;
@@ -329,7 +329,6 @@ body.is-playing{
   margin-bottom: 14px;
 }
 
-/* Results layout */
 .results-metrics{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -346,7 +345,7 @@ body.is-playing{
 
 .results-label{
   font-family: "Tommy Soft", system-ui, sans-serif;
-  font-weight: 600; /* slightly bold */
+  font-weight: 600;
   color: #111;
   letter-spacing: 0.06em;
   font-size: 14px;
@@ -373,19 +372,28 @@ body.is-playing{
   text-align: center;
 }
 
-/* Logo in lower-right corner */
+/* Bottom row: buttons centered, lower in the card */
+.overlay__actions{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  display: flex;
+  justify-content: center;
+  pointer-events: auto;
+}
+
 .overlay__logo{
   position: absolute;
-  right: 14px;
-  bottom: 14px;
-  width: 106px;
-  height: 120px;
+  right: 18px;
+  bottom: 18px;
+  width: 100px;
+  height: 114px;
   object-fit: contain;
   opacity: 0.95;
   pointer-events: none;
 }
 
-/* Buttons: green, white border, Tommy Soft, centered */
 .begin-btn{
   appearance: none;
   border: 2px solid #ffffff;
@@ -403,7 +411,7 @@ body.is-playing{
   transition: transform 0.08s ease, filter 0.2s ease;
 
   display: inline-block;
-  margin: 6px auto 0;
+  margin: 0;
 }
 
 .begin-btn:hover{
@@ -442,8 +450,8 @@ body.is-playing{
   .overlay__logo{
     width: 88px;
     height: 100px;
-    right: 10px;
-    bottom: 10px;
+    right: 12px;
+    bottom: 12px;
   }
 
   .overlay__title{
@@ -452,5 +460,13 @@ body.is-playing{
 
   .results-value{
     font-size: 24px;
+  }
+
+  .overlay__actions{
+    bottom: 18px;
+  }
+
+  .start-overlay__card{
+    padding-bottom: 84px;
   }
 }
