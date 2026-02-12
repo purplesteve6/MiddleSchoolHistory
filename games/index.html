@@ -3,62 +3,77 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Middle East Map Challenge | Middle School History</title>
+  <title>Games | Middle School History</title>
 
-  <!-- Global site styles -->
+  <!-- Global site styles (same as homepage) -->
   <link rel="stylesheet" href="/styles.css" />
 
-  <!-- Page-specific styles -->
-  <link rel="stylesheet" href="/games/map-challenges/middle-east/middle-east.css" />
+  <!-- Page-specific styles for the Games page -->
+  <link rel="stylesheet" href="/games/games.css" />
 </head>
 
-<body class="map-challenge-page">
+<body>
 
-  <!-- MAIN SITE HEADER (injected) -->
+  <!-- MAIN SITE HEADER (homepage-style, injected) -->
   <div id="siteHeader" data-include="/partials/main-header.html"></div>
 
-  <!-- Full-width band under header -->
-  <section class="challenge-band challenge-band--image"
-           style="background-image: url('/assets/images/banners/map-challenges-banner.jpg');"
-           aria-label="Middle East Map Challenge banner">
-    <div class="challenge-band__bottom">
-      <div class="challenge-band__inner">
-        <h1 class="challenge-band__title">MIDDLE EAST MAP CHALLENGE</h1>
+  <!-- Full-width Games band (sits right under the sticky header) -->
+  <section class="games-band games-band--image"
+           style="background-image: url('/assets/images/banners/games-banner.jpg');"
+           aria-label="Games banner">
+    <div class="games-band__bottom">
+      <div class="games-band__inner">
+        <h1 class="games-band__title">GAMES</h1>
       </div>
     </div>
   </section>
 
-  <main class="challenge-main" aria-label="Middle East map challenge">
-    <section class="map-stage" aria-label="Map stage">
+  <main class="page">
+    <p class="games-intro">Choose a game type, then pick a challenge.</p>
 
-      <!-- HUD -->
-      <div class="hud" aria-label="Game HUD">
-        <div class="hud__prompt">
-          Click: <span id="targetName">—</span>
-        </div>
+    <!-- Game mode tiles -->
+    <section class="games-modes" aria-label="Game modes">
+      <div class="games-modes__grid">
 
-        <div class="hud__right">
-          <div class="hud__timer" id="timer">00:00.000</div>
-          <button class="hud__reset" id="resetBtn" type="button">Reset</button>
-        </div>
-      </div>
-
-      <!-- SVG gets injected here -->
-      <div class="map-box" id="mapBox" aria-label="Middle East map"></div>
-
-      <!-- Dark overlay shown on load -->
-      <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
-        <div class="start-overlay__card">
-          <div class="start-overlay__kicker">Map Challenge</div>
-          <div class="start-overlay__title">Middle East Map Challenge</div>
-          <div class="start-overlay__sub">
-            Click the country name as fast as you can.
+        <!-- Map Challenges -->
+        <a class="games-mode" href="/games/map-challenges/" aria-label="Map Challenges">
+          <div class="games-mode__thumb">
+            <img
+              src="/games/images/thumbs/map-challenges.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
           </div>
+          <div class="games-mode__label">Map Challenges</div>
+        </a>
 
-          <button class="begin-btn" id="beginBtn" type="button">
-            Begin
-          </button>
-        </div>
+        <!-- Puzzles -->
+        <a class="games-mode" href="/games/puzzles/" aria-label="Puzzles">
+          <div class="games-mode__thumb">
+            <img
+              src="/games/images/thumbs/puzzles.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
+          </div>
+          <div class="games-mode__label">Puzzles</div>
+        </a>
+
+        <!-- Quizzes -->
+        <a class="games-mode" href="/games/quizzes/" aria-label="Quizzes">
+          <div class="games-mode__thumb">
+            <img
+              src="/games/images/thumbs/quizzes.jpg"
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
+          </div>
+          <div class="games-mode__label">Quizzes</div>
+        </a>
+
       </div>
     </section>
   </main>
@@ -68,301 +83,5 @@
 
   <!-- Inject header/footer -->
   <script src="/include.js"></script>
-
-  <!-- Game logic -->
-  <script>
-  (function () {
-    const SVG_PATH = "/games/map-challenges/middle-east/middle_east_clickable.svg";
-
-    const COUNTRIES = [
-      "bahrain","cyprus","egypt","iran","iraq","israel","jordan","kuwait",
-      "lebanon","oman","qatar","saudi_arabia","syria","turkey","uae","yemen"
-    ];
-
-    // Not clickable + should NOT count as wrong
-    const IGNORE = new Set(["water","borders","context_land"]);
-
-    // Alias clicks on palestine/gaza -> israel
-    const ALIAS = { palestine: "israel", gaza: "israel", israel: "israel" };
-
-    const mapBox = document.getElementById("mapBox");
-    const overlay = document.getElementById("startOverlay");
-    const beginBtn = document.getElementById("beginBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const targetNameEl = document.getElementById("targetName");
-    const timerEl = document.getElementById("timer");
-
-    let svgRoot = null;
-
-    // Game state
-    let remaining = [];
-    let currentTarget = null;
-    let tries = 0; // 0 = first attempt, 1 = second attempt
-    let totalPoints = 0;
-
-    let timerStart = 0;
-    let timerInt = null;
-
-    // Track pointer-down temporary red
-    let tempWrongEl = null;
-
-    function shuffle(arr){
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-
-    function fmtTime(ms){
-      const minutes = Math.floor(ms / 60000);
-      const seconds = Math.floor((ms % 60000) / 1000);
-      const millis  = ms % 1000;
-      return `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}.${String(millis).padStart(3,"0")}`;
-    }
-
-    function startTimer(){
-      stopTimer();
-      timerStart = Date.now();
-      timerEl.textContent = "00:00.000";
-      timerInt = setInterval(() => {
-        timerEl.textContent = fmtTime(Date.now() - timerStart);
-      }, 31);
-    }
-
-    function stopTimer(){
-      if (timerInt) clearInterval(timerInt);
-      timerInt = null;
-    }
-
-    function getCountryEl(id){
-      if (!svgRoot) return null;
-      return svgRoot.querySelector(`#${CSS.escape(id)}`);
-    }
-
-    function clearAllCountryClasses(){
-      if (!svgRoot) return;
-      for (const id of COUNTRIES){
-        const el = getCountryEl(id);
-        if (el) el.classList.remove("correct1","correct2","wrongFinal","blink","tempWrong");
-      }
-    }
-
-    function setPrompt(){
-      targetNameEl.textContent = currentTarget ? currentTarget.replaceAll("_"," ") : "Done!";
-    }
-
-    function pickNext(){
-      currentTarget = remaining.shift() || null;
-      tries = 0;
-      setPrompt();
-
-      if (!currentTarget){
-        endGame();
-      }
-    }
-
-    function endGame(){
-      stopTimer();
-      const elapsed = Date.now() - timerStart;
-      const avg = totalPoints / COUNTRIES.length;
-
-      showEndOverlay({
-        title: "Middle East Map Challenge",
-        time: fmtTime(elapsed),
-        score: `${totalPoints} points (avg ${avg.toFixed(1)} / 100)`,
-        stamp: new Date().toLocaleString()
-      });
-    }
-
-    function showEndOverlay({ title, time, score, stamp }){
-      const old = document.getElementById("endOverlay");
-      if (old) old.remove();
-
-      const wrap = document.createElement("div");
-      wrap.id = "endOverlay";
-      wrap.className = "start-overlay"; // reuse overlay styling
-      wrap.innerHTML = `
-        <div class="start-overlay__card">
-          <div class="start-overlay__kicker">Results</div>
-          <div class="start-overlay__title">${title}</div>
-          <div class="start-overlay__sub" style="margin-top:10px; line-height:1.4;">
-            <div><b>Time:</b> ${time}</div>
-            <div><b>Score:</b> ${score}</div>
-            <div style="opacity:.85; margin-top:8px;"><b>Completed:</b> ${stamp}</div>
-          </div>
-          <button class="begin-btn" id="playAgainBtn" type="button" style="margin-top:14px;">
-            Play Again
-          </button>
-        </div>
-      `;
-
-      const stage = mapBox.closest(".map-stage");
-      stage.appendChild(wrap);
-
-      wrap.querySelector("#playAgainBtn").addEventListener("click", () => {
-        wrap.remove();
-        resetGame(true);
-      });
-    }
-
-    function resetGame(startImmediately=false){
-      stopTimer();
-      document.body.classList.remove("is-playing");
-
-      remaining = [];
-      currentTarget = null;
-      tries = 0;
-      totalPoints = 0;
-
-      clearAllCountryClasses();
-
-      targetNameEl.textContent = "—";
-      timerEl.textContent = "00:00.000";
-
-      if (overlay && !startImmediately) overlay.classList.remove("is-hidden");
-
-      if (startImmediately) {
-        if (overlay) overlay.classList.add("is-hidden");
-        document.body.classList.add("is-playing");
-        remaining = shuffle(COUNTRIES);
-        pickNext();
-        startTimer();
-      }
-    }
-
-    function normalizeClickedId(e){
-      const targetEl = (e.target && e.target.closest)
-        ? e.target.closest(
-            "#bahrain,#cyprus,#egypt,#iran,#iraq,#israel,#jordan,#kuwait,#lebanon,#oman,#qatar,#saudi_arabia,#syria,#turkey,#uae,#yemen,#palestine,#gaza,#water,#borders,#context_land"
-          )
-        : null;
-
-      if (!targetEl) return null;
-
-      const raw = String(targetEl.id).toLowerCase();
-      if (IGNORE.has(raw)) return null;
-
-      const normalized = ALIAS[raw] ?? raw;
-      if (!COUNTRIES.includes(normalized)) return null;
-
-      return { raw, normalized, el: targetEl };
-    }
-
-    function flashCorrectThenRed(){
-      const correctEl = getCountryEl(currentTarget);
-      if (!correctEl) return;
-
-      correctEl.classList.remove("correct1","correct2");
-      correctEl.classList.add("blink");
-
-      setTimeout(() => {
-        correctEl.classList.remove("blink");
-        correctEl.classList.add("wrongFinal");
-        pickNext();
-      }, 520);
-    }
-
-    async function loadSvg(){
-      const res = await fetch(SVG_PATH, { cache: "no-store" });
-      if (!res.ok) throw new Error(`SVG fetch failed: ${res.status}`);
-      const svgText = await res.text();
-
-      mapBox.innerHTML = svgText;
-      svgRoot = mapBox.querySelector("svg");
-
-      if (svgRoot){
-        svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
-        svgRoot.removeAttribute("width");
-        svgRoot.removeAttribute("height");
-        svgRoot.style.width = "100%";
-        svgRoot.style.height = "100%";
-        svgRoot.style.display = "block";
-      }
-    }
-
-    mapBox.addEventListener("pointerdown", (e) => {
-      const hit = normalizeClickedId(e);
-      if (!hit) return;
-
-      // Don’t allow interactions before game starts / after it ends
-      if (!currentTarget) return;
-
-      // Correct click
-      if (hit.normalized === currentTarget){
-        const correctEl = getCountryEl(currentTarget);
-        if (!correctEl) return;
-
-        if (tries === 0){
-          totalPoints += 100;
-          correctEl.classList.add("correct1");
-          pickNext();
-        } else {
-          totalPoints += 50;
-          correctEl.classList.add("correct2");
-          pickNext();
-        }
-        return;
-      }
-
-      // Wrong click
-      if (tries === 0){
-        // First wrong: show clicked region red only while held down
-        tempWrongEl = hit.el;
-        tempWrongEl.classList.add("tempWrong");
-        tries = 1;
-        try { tempWrongEl.setPointerCapture(e.pointerId); } catch(_) {}
-      } else {
-        // Second wrong: 0 points; flash the CORRECT country then lock red
-        flashCorrectThenRed();
-        tries = 0;
-      }
-    });
-
-    mapBox.addEventListener("pointerup", () => {
-      if (tempWrongEl){
-        tempWrongEl.classList.remove("tempWrong");
-        tempWrongEl = null;
-      }
-    });
-
-    mapBox.addEventListener("pointercancel", () => {
-      if (tempWrongEl){
-        tempWrongEl.classList.remove("tempWrong");
-        tempWrongEl = null;
-      }
-    });
-
-    // Begin
-    if (beginBtn){
-      beginBtn.addEventListener("click", () => {
-        const endOverlay = document.getElementById("endOverlay");
-        if (endOverlay) endOverlay.remove();
-
-        if (overlay) overlay.classList.add("is-hidden");
-        document.body.classList.add("is-playing");
-
-        clearAllCountryClasses();
-        totalPoints = 0;
-
-        remaining = shuffle(COUNTRIES);
-        pickNext();
-        startTimer();
-      });
-    }
-
-    // Reset
-    if (resetBtn){
-      resetBtn.addEventListener("click", () => resetGame(false));
-    }
-
-    // Boot
-    loadSvg().catch(err => {
-      console.error(err);
-      mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";
-    });
-  })();
-  </script>
 </body>
 </html>

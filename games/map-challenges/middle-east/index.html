@@ -38,7 +38,7 @@
         </div>
 
         <div class="hud__right">
-          <div class="hud__timer" id="timer">0:00</div>
+          <div class="hud__timer" id="timer">00:00.000</div>
           <button class="hud__reset" id="resetBtn" type="button">Reset</button>
         </div>
       </div>
@@ -52,7 +52,7 @@
           <div class="start-overlay__kicker">Map Challenge</div>
           <div class="start-overlay__title">Middle East Map Challenge</div>
           <div class="start-overlay__sub">
-            Press Begin to start. (Mechanics coming next!)
+            Click the country name as fast as you can.
           </div>
 
           <button class="begin-btn" id="beginBtn" type="button">
@@ -69,181 +69,300 @@
   <!-- Inject header/footer -->
   <script src="/include.js"></script>
 
-  <!-- SVG loader + click normalizer + minimal game shell -->
+  <!-- Game logic -->
   <script>
-    (function () {
-      const SVG_PATH = "/games/map-challenges/middle-east/middle_east_clickable.svg";
+  (function () {
+    const SVG_PATH = "/games/map-challenges/middle-east/middle_east_clickable.svg";
 
-      const COUNTRIES = [
-        "bahrain","cyprus","egypt","iran","iraq","israel","jordan","kuwait",
-        "lebanon","oman","qatar","saudi_arabia","syria","turkey","uae","yemen"
-      ];
+    const COUNTRIES = [
+      "bahrain","cyprus","egypt","iran","iraq","israel","jordan","kuwait",
+      "lebanon","oman","qatar","saudi_arabia","syria","turkey","uae","yemen"
+    ];
 
-      // Not clickable + should NOT count as wrong
-      const IGNORE = new Set(["water","borders","context_land"]);
+    // Not clickable + should NOT count as wrong
+    const IGNORE = new Set(["water","borders","context_land"]);
 
-      // Alias clicks on palestine/gaza -> israel
-      const ALIAS = {
-        palestine: "israel",
-        gaza: "israel",
-        israel: "israel"
-      };
+    // Alias clicks on palestine/gaza -> israel
+    const ALIAS = { palestine: "israel", gaza: "israel", israel: "israel" };
 
-      const mapBox = document.getElementById("mapBox");
-      const overlay = document.getElementById("startOverlay");
-      const beginBtn = document.getElementById("beginBtn");
-      const resetBtn = document.getElementById("resetBtn");
-      const targetNameEl = document.getElementById("targetName");
-      const timerEl = document.getElementById("timer");
+    const mapBox = document.getElementById("mapBox");
+    const overlay = document.getElementById("startOverlay");
+    const beginBtn = document.getElementById("beginBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const targetNameEl = document.getElementById("targetName");
+    const timerEl = document.getElementById("timer");
 
-      let svgRoot = null;
+    let svgRoot = null;
 
-      // Minimal state (we’ll expand next)
-      let remaining = [];
-      let currentTarget = null;
-      let tries = 0;
+    // Game state
+    let remaining = [];
+    let currentTarget = null;
+    let tries = 0; // 0 = first attempt, 1 = second attempt
+    let totalPoints = 0;
 
-      let timerStart = 0;
-      let timerInt = null;
+    let timerStart = 0;
+    let timerInt = null;
 
-      function shuffle(arr){
-        const a = arr.slice();
-        for (let i = a.length - 1; i > 0; i--){
-          const j = Math.floor(Math.random() * (i + 1));
-          [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
+    // Track pointer-down temporary red
+    let tempWrongEl = null;
+
+    function shuffle(arr){
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
       }
-
-      function fmtTime(ms){
-        const total = Math.floor(ms / 1000);
-        const m = Math.floor(total / 60);
-        const s = total % 60;
-        return `${m}:${String(s).padStart(2, "0")}`;
-      }
-
-      function startTimer(){
-        stopTimer();
-        timerStart = Date.now();
-        timerEl.textContent = "0:00";
-        timerInt = setInterval(() => {
-          timerEl.textContent = fmtTime(Date.now() - timerStart);
-        }, 250);
-      }
-
-      function stopTimer(){
-        if (timerInt) clearInterval(timerInt);
-        timerInt = null;
-      }
-
-      function pickNext(){
-        currentTarget = remaining.shift() || null;
-        tries = 0;
-        targetNameEl.textContent = currentTarget ? currentTarget.replaceAll("_", " ") : "Done!";
-      }
-
-      function resetGame(){
-        stopTimer();
-        document.body.classList.remove("is-playing");
-
-        remaining = [];
-        currentTarget = null;
-        tries = 0;
-
-        targetNameEl.textContent = "—";
-        timerEl.textContent = "0:00";
-
-        if (overlay) overlay.classList.remove("is-hidden");
-
-        // Later: clear SVG colors/classes here
-      }
-
-      async function loadSvg(){
-        const res = await fetch(SVG_PATH, { cache: "no-store" });
-        if (!res.ok) throw new Error(`SVG fetch failed: ${res.status}`);
-        const svgText = await res.text();
-
-        mapBox.innerHTML = svgText;
-        svgRoot = mapBox.querySelector("svg");
-
-        // IMPORTANT: do NOT rewrite viewBox here.
-        // We want to display the full SVG exactly as authored.
-        if (svgRoot){
-          svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
-          svgRoot.removeAttribute("width");
-          svgRoot.removeAttribute("height");
-          svgRoot.style.width = "100%";
-          svgRoot.style.height = "100%";
-          svgRoot.style.display = "block";
-// Make the container match the SVG’s actual viewBox aspect ratio
-const vb = svgRoot.getAttribute("viewBox");
-if (vb) {
-  const parts = vb.trim().split(/\s+/).map(Number);
-  if (parts.length === 4 && parts.every(n => Number.isFinite(n))) {
-    const w = parts[2], h = parts[3];
-    if (w > 0 && h > 0) {
-      mapBox.style.setProperty("--map-ar", `${w} / ${h}`);
+      return a;
     }
-  }
-}
 
-        }
+    function fmtTime(ms){
+      const minutes = Math.floor(ms / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      const millis  = ms % 1000;
+      return `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}.${String(millis).padStart(3,"0")}`;
+    }
 
-        // Attach click handler once (replaces any previous handler)
-        mapBox.onclick = (e) => {
-  // If you click a <path> inside <g id="country">, grab the nearest ancestor with an id
-  const targetEl = (e.target && e.target.closest)
-  ? e.target.closest("#bahrain,#cyprus,#egypt,#iran,#iraq,#israel,#jordan,#kuwait,#lebanon,#oman,#qatar,#saudi_arabia,#syria,#turkey,#uae,#yemen,#palestine,#gaza,#water,#borders,#context_land")
-  : null;
+    function startTimer(){
+      stopTimer();
+      timerStart = Date.now();
+      timerEl.textContent = "00:00.000";
+      timerInt = setInterval(() => {
+        timerEl.textContent = fmtTime(Date.now() - timerStart);
+      }, 31);
+    }
 
-  if (!targetEl) return;
+    function stopTimer(){
+      if (timerInt) clearInterval(timerInt);
+      timerInt = null;
+    }
 
-  const raw = String(targetEl.id).toLowerCase();
-  if (IGNORE.has(raw)) return;
+    function getCountryEl(id){
+      if (!svgRoot) return null;
+      return svgRoot.querySelector(`#${CSS.escape(id)}`);
+    }
 
-  const normalized = ALIAS[raw] ?? raw;
-  if (!COUNTRIES.includes(normalized)) return;
-
-  // Always log so you can confirm clicks work even before Begin
-  console.log("clicked:", raw, "=>", normalized);
-
-  // Only run gameplay once the game has started
-  if (!currentTarget) return;
-
-  if (normalized === currentTarget){
-    console.log("correct!");
-    pickNext();
-  } else {
-    console.log("wrong!");
-    tries++;
-  }
-};
-
+    function clearAllCountryClasses(){
+      if (!svgRoot) return;
+      for (const id of COUNTRIES){
+        const el = getCountryEl(id);
+        if (el) el.classList.remove("correct1","correct2","wrongFinal","blink","tempWrong");
       }
+    }
 
-      // Begin
-      if (beginBtn){
-        beginBtn.addEventListener("click", () => {
-          if (overlay) overlay.classList.add("is-hidden");
-          document.body.classList.add("is-playing");
+    function setPrompt(){
+      targetNameEl.textContent = currentTarget ? currentTarget.replaceAll("_"," ") : "Done!";
+    }
 
-          remaining = shuffle(COUNTRIES);
-          pickNext();
-          startTimer();
-        });
+    function pickNext(){
+      currentTarget = remaining.shift() || null;
+      tries = 0;
+      setPrompt();
+
+      if (!currentTarget){
+        endGame();
       }
+    }
 
-      // Reset
-      if (resetBtn){
-        resetBtn.addEventListener("click", resetGame);
-      }
+    function endGame(){
+      stopTimer();
+      const elapsed = Date.now() - timerStart;
+      const avg = totalPoints / COUNTRIES.length;
 
-      // Boot
-      loadSvg().catch(err => {
-        console.error(err);
-        mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";
+      showEndOverlay({
+        title: "Middle East Map Challenge",
+        time: fmtTime(elapsed),
+        score: `${totalPoints} points (avg ${avg.toFixed(1)} / 100)`,
+        stamp: new Date().toLocaleString()
       });
-    })();
+    }
+
+    function showEndOverlay({ title, time, score, stamp }){
+      const old = document.getElementById("endOverlay");
+      if (old) old.remove();
+
+      const wrap = document.createElement("div");
+      wrap.id = "endOverlay";
+      wrap.className = "start-overlay"; // reuse overlay styling
+      wrap.innerHTML = `
+        <div class="start-overlay__card">
+          <div class="start-overlay__kicker">Results</div>
+          <div class="start-overlay__title">${title}</div>
+          <div class="start-overlay__sub" style="margin-top:10px; line-height:1.4;">
+            <div><b>Time:</b> ${time}</div>
+            <div><b>Score:</b> ${score}</div>
+            <div style="opacity:.85; margin-top:8px;"><b>Completed:</b> ${stamp}</div>
+          </div>
+          <button class="begin-btn" id="playAgainBtn" type="button" style="margin-top:14px;">
+            Play Again
+          </button>
+        </div>
+      `;
+
+      const stage = mapBox.closest(".map-stage");
+      stage.appendChild(wrap);
+
+      wrap.querySelector("#playAgainBtn").addEventListener("click", () => {
+        wrap.remove();
+        resetGame(true);
+      });
+    }
+
+    function resetGame(startImmediately=false){
+      stopTimer();
+      document.body.classList.remove("is-playing");
+
+      remaining = [];
+      currentTarget = null;
+      tries = 0;
+      totalPoints = 0;
+
+      clearAllCountryClasses();
+
+      targetNameEl.textContent = "—";
+      timerEl.textContent = "00:00.000";
+
+      if (overlay && !startImmediately) overlay.classList.remove("is-hidden");
+
+      if (startImmediately) {
+        if (overlay) overlay.classList.add("is-hidden");
+        document.body.classList.add("is-playing");
+        remaining = shuffle(COUNTRIES);
+        pickNext();
+        startTimer();
+      }
+    }
+
+    function normalizeClickedId(e){
+      const targetEl = (e.target && e.target.closest)
+        ? e.target.closest(
+            "#bahrain,#cyprus,#egypt,#iran,#iraq,#israel,#jordan,#kuwait,#lebanon,#oman,#qatar,#saudi_arabia,#syria,#turkey,#uae,#yemen,#palestine,#gaza,#water,#borders,#context_land"
+          )
+        : null;
+
+      if (!targetEl) return null;
+
+      const raw = String(targetEl.id).toLowerCase();
+      if (IGNORE.has(raw)) return null;
+
+      const normalized = ALIAS[raw] ?? raw;
+      if (!COUNTRIES.includes(normalized)) return null;
+
+      return { raw, normalized, el: targetEl };
+    }
+
+    function flashCorrectThenRed(){
+      const correctEl = getCountryEl(currentTarget);
+      if (!correctEl) return;
+
+      correctEl.classList.remove("correct1","correct2");
+      correctEl.classList.add("blink");
+
+      setTimeout(() => {
+        correctEl.classList.remove("blink");
+        correctEl.classList.add("wrongFinal");
+        pickNext();
+      }, 520);
+    }
+
+    async function loadSvg(){
+      const res = await fetch(SVG_PATH, { cache: "no-store" });
+      if (!res.ok) throw new Error(`SVG fetch failed: ${res.status}`);
+      const svgText = await res.text();
+
+      mapBox.innerHTML = svgText;
+      svgRoot = mapBox.querySelector("svg");
+
+      if (svgRoot){
+        svgRoot.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        svgRoot.removeAttribute("width");
+        svgRoot.removeAttribute("height");
+        svgRoot.style.width = "100%";
+        svgRoot.style.height = "100%";
+        svgRoot.style.display = "block";
+      }
+    }
+
+    mapBox.addEventListener("pointerdown", (e) => {
+      const hit = normalizeClickedId(e);
+      if (!hit) return;
+
+      // Don’t allow interactions before game starts / after it ends
+      if (!currentTarget) return;
+
+      // Correct click
+      if (hit.normalized === currentTarget){
+        const correctEl = getCountryEl(currentTarget);
+        if (!correctEl) return;
+
+        if (tries === 0){
+          totalPoints += 100;
+          correctEl.classList.add("correct1");
+          pickNext();
+        } else {
+          totalPoints += 50;
+          correctEl.classList.add("correct2");
+          pickNext();
+        }
+        return;
+      }
+
+      // Wrong click
+      if (tries === 0){
+        // First wrong: show clicked region red only while held down
+        tempWrongEl = hit.el;
+        tempWrongEl.classList.add("tempWrong");
+        tries = 1;
+        try { tempWrongEl.setPointerCapture(e.pointerId); } catch(_) {}
+      } else {
+        // Second wrong: 0 points; flash the CORRECT country then lock red
+        flashCorrectThenRed();
+        tries = 0;
+      }
+    });
+
+    mapBox.addEventListener("pointerup", () => {
+      if (tempWrongEl){
+        tempWrongEl.classList.remove("tempWrong");
+        tempWrongEl = null;
+      }
+    });
+
+    mapBox.addEventListener("pointercancel", () => {
+      if (tempWrongEl){
+        tempWrongEl.classList.remove("tempWrong");
+        tempWrongEl = null;
+      }
+    });
+
+    // Begin
+    if (beginBtn){
+      beginBtn.addEventListener("click", () => {
+        const endOverlay = document.getElementById("endOverlay");
+        if (endOverlay) endOverlay.remove();
+
+        if (overlay) overlay.classList.add("is-hidden");
+        document.body.classList.add("is-playing");
+
+        clearAllCountryClasses();
+        totalPoints = 0;
+
+        remaining = shuffle(COUNTRIES);
+        pickNext();
+        startTimer();
+      });
+    }
+
+    // Reset
+    if (resetBtn){
+      resetBtn.addEventListener("click", () => resetGame(false));
+    }
+
+    // Boot
+    loadSvg().catch(err => {
+      console.error(err);
+      mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";
+    });
+  })();
   </script>
 </body>
 </html>

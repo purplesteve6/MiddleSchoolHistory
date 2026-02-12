@@ -24,16 +24,28 @@
   --green: #32c26a;
   --yellow: #f2c94c;
   --red: #eb5757;
+
+  /* Requested fixed game sizing */
+  --map-w: 1600px;
+  --map-h: 1200px;
+  --stage-w: 1700px;
+  --stage-h: 1300px;
 }
 
 /* ============================= */
 /* Base Layout */
 /* ============================= */
 
+html, body{
+  height: 100%;
+}
+
 body.map-challenge-page{
   margin: 0;
   min-height: 100vh;
-  overflow-x: hidden;   /* ADD THIS LINE */
+
+  /* No scrollbars on this challenge page */
+  overflow: hidden;
 }
 
 body.is-playing{
@@ -106,6 +118,9 @@ body.is-playing{
   max-width: 1700px; /* match banner inner */
   margin: 0 auto;
   padding: clamp(12px, 2.2vw, 20px) clamp(16px, 4vw, 28px);
+
+  /* Make sure the main area never causes scrollbars */
+  overflow: hidden;
 }
 
 .map-stage{
@@ -115,6 +130,13 @@ body.is-playing{
   border: 1px solid var(--stroke);
   box-shadow: var(--shadow);
   background: rgba(255,255,255,0.03);
+
+  /* Fixed container requested */
+  width: var(--stage-w);
+  height: var(--stage-h);
+
+  /* Center the stage in the available space */
+  margin: 0 auto;
 
   display: grid;
   place-items: center;
@@ -126,9 +148,10 @@ body.is-playing{
 /* ============================= */
 
 .map-box{
-  width: min(1600px, 100%);
-  height: auto;                 /* let aspect-ratio control height */
-  aspect-ratio: var(--map-ar, 4 / 3);  /* default 4:3, JS can override */
+  /* Fixed map size requested (no resizing, no scrollbars) */
+  width: var(--map-w);
+  height: var(--map-h);
+
   border-radius: 18px;
   overflow: hidden;
 }
@@ -138,7 +161,6 @@ body.is-playing{
   height: 100%;
   display: block;
 }
-
 
 /* Make SVG countries feel interactive */
 .map-box svg [id]{
@@ -226,6 +248,11 @@ body.is-playing{
   fill: var(--red) !important;
 }
 
+/* WRONG-on-hold (temporary red while mouse is down) */
+.tempWrong{
+  fill: var(--red) !important;
+}
+
 /* Rapid blink before turning red */
 @keyframes blink{
   0% { opacity: 1; }
@@ -265,6 +292,29 @@ body.is-playing{
   text-align: center;
 }
 
+.start-overlay__kicker{
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.78);
+  margin-bottom: 6px;
+}
+
+.start-overlay__title{
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 22px;
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+
+.start-overlay__sub{
+  color: rgba(255,255,255,0.82);
+  margin-bottom: 14px;
+}
+
 .begin-btn{
   appearance: none;
   border: 1px solid rgba(255,255,255,0.18);
@@ -286,12 +336,31 @@ body.is-playing{
 /* ============================= */
 
 @media (max-width: 640px){
+  /* On small screens, allow the stage to fit the viewport width */
+  body.map-challenge-page{
+    overflow: auto;
+  }
+
   .challenge-main{
     padding: 12px 14px 14px;
+    overflow: visible;
   }
 
   .map-stage{
+    width: 100%;
+    height: auto;
     border-radius: 18px;
     padding: 10px;
+  }
+
+  .map-box{
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .map-box svg{
+    width: 100%;
+    height: 100%;
   }
 }
