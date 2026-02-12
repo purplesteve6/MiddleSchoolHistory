@@ -177,9 +177,23 @@
       }
     }
 
-    function setPrompt(){
-      targetNameEl.textContent = currentTarget ? currentTarget.replaceAll("_"," ") : "Done!";
-    }
+    // Display name overrides
+const DISPLAY_NAMES = {
+  uae: "United Arab Emirates (UAE)"
+};
+
+function setPrompt(){
+  if (!currentTarget){
+    targetNameEl.textContent = "Done!";
+    return;
+  }
+
+  const display = DISPLAY_NAMES[currentTarget] 
+    ?? currentTarget.replaceAll("_"," ");
+
+  targetNameEl.textContent = display;
+}
+
 
     function pickNext(){
       currentTarget = remaining.shift() || null;
