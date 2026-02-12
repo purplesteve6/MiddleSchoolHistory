@@ -53,7 +53,7 @@
           <div class="overlay__title">MIDDLE EAST</div>
 
           <div class="overlay__body">
-            Click the country name as fast as you can.
+            How fast can you identify the countries of the Middle East?
           </div>
 
           <button class="begin-btn" id="beginBtn" type="button">Begin</button>
@@ -87,7 +87,7 @@
 
     // Alias clicks on palestine/gaza/internal borders -> israel
     // israel_internal_borders should behave like clicking Israel for correctness,
-    // but it should NOT be colored itself (it's a border layer).
+    // but it should NOT be colored itself (it's a border layer only).
     const ALIAS = {
       palestine: "israel",
       gaza: "israel",
@@ -227,17 +227,20 @@
     function endGame(){
       stopTimer();
       const elapsed = Date.now() - timerStart;
+
+      // Average points out of 100 (same as percent)
       const avg = totalPoints / COUNTRIES.length;
+      const avgPercent = `${avg.toFixed(1)}%`;
 
       showEndOverlay({
         title: GAME_TITLE,
         time: fmtTime(elapsed),
-        score: `${totalPoints} points (avg ${avg.toFixed(1)} / 100)`,
+        scorePercent: avgPercent,
         stamp: new Date().toLocaleString()
       });
     }
 
-    function showEndOverlay({ title, time, score, stamp }){
+    function showEndOverlay({ title, time, scorePercent, stamp }){
       const old = document.getElementById("endOverlay");
       if (old) old.remove();
 
@@ -245,14 +248,24 @@
       wrap.id = "endOverlay";
       wrap.className = "start-overlay";
       wrap.innerHTML = `
-        <div class="start-overlay__card">
+        <div class="start-overlay__card" role="dialog" aria-modal="true" aria-label="Results">
           <div class="overlay__kicker">${GAME_KICKER}</div>
           <div class="overlay__title">${title}</div>
 
-          <div class="overlay__body" style="text-align:left; max-width: 420px; margin: 0 auto 14px;">
-            <div><b>Time:</b> ${time}</div>
-            <div><b>Score:</b> ${score}</div>
-            <div style="opacity:.85; margin-top:8px;"><b>Completed:</b> ${stamp}</div>
+          <div class="results-metrics">
+            <div class="results-metric">
+              <div class="results-label">SCORE</div>
+              <div class="results-value">${scorePercent}</div>
+            </div>
+
+            <div class="results-metric">
+              <div class="results-label">TIME</div>
+              <div class="results-value">${time}</div>
+            </div>
+          </div>
+
+          <div class="results-completed">
+            Completed: ${stamp}
           </div>
 
           <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
@@ -266,10 +279,14 @@
       const stage = mapBox.closest(".map-stage");
       stage.appendChild(wrap);
 
-      wrap.querySelector("#playAgainBtn").addEventListener("click", () => {
+      const playAgainBtn = wrap.querySelector("#playAgainBtn");
+      playAgainBtn.addEventListener("click", () => {
         wrap.remove();
         resetGame(true);
       });
+
+      // Optional: focus the button for accessibility / spacebar behavior
+      playAgainBtn.focus();
     }
 
     function resetGame(startImmediately=false){
@@ -358,7 +375,6 @@
     mapBox.addEventListener("pointerdown", (e) => {
       const hit = normalizeClickedId(e);
       if (!hit) return;
-
       if (!currentTarget) return;
 
       if (locked.has(hit.normalized) && hit.normalized !== currentTarget){
@@ -426,6 +442,29 @@
     if (resetBtn){
       resetBtn.addEventListener("click", () => resetGame(false));
     }
+
+    // NEW: Spacebar activates Begin / Play Again when an overlay is visible.
+    document.addEventListener("keydown", (e) => {
+      // Space key
+      if (e.code !== "Space" && e.key !== " ") return;
+
+      // If start overlay is up, Space should click Begin
+      if (overlay && !overlay.classList.contains("is-hidden")){
+        e.preventDefault();
+        beginBtn?.click();
+        return;
+      }
+
+      // If end overlay is up, Space should click Play Again
+      const endOverlay = document.getElementById("endOverlay");
+      if (endOverlay){
+        const playAgainBtn = endOverlay.querySelector("#playAgainBtn");
+        if (playAgainBtn){
+          e.preventDefault();
+          playAgainBtn.click();
+        }
+      }
+    });
 
     loadSvg().catch(err => {
       console.error(err);

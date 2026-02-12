@@ -14,9 +14,6 @@
   --radius: 18px;
   --shadow: 0 18px 44px rgba(0,0,0,0.45);
 
-  --overlay: rgba(0,0,0,0.62);
-  --overlay-2: rgba(0,0,0,0.78);
-
   --stroke: rgba(255,255,255,0.14);
   --text: rgba(255,255,255,0.92);
   --muted: rgba(255,255,255,0.74);
@@ -37,11 +34,16 @@
   --stage-w: calc(var(--map-w) + var(--stage-pad-2));
 
   /* ============================= */
-  /* Overlay theme (NEW) */
+  /* Overlay theme */
   /* ============================= */
-  --site-purple: var(--ms-purple, #2b1b4d); /* fallback if your global var isn't present */
+  --site-purple: var(--ms-purple, #2b1b4d);
   --overlay-bg-1: #ffffff;
-  --overlay-bg-2: #f2ecff; /* subtle purple tint */
+  --overlay-bg-2: #f2ecff;
+
+  /* Brown overlay tint */
+  --overlay-brown-1: rgba(122, 75, 31, 0.38);
+  --overlay-brown-2: rgba(60, 35, 14, 0.46);
+
   --kicker-brown: #7a4b1f;
 }
 
@@ -52,8 +54,6 @@
 body.map-challenge-page{
   margin: 0;
   min-height: 100vh;
-
-  /* keep page scrollbars working normally */
   overflow-x: hidden;
 }
 
@@ -124,7 +124,7 @@ body.is-playing{
 
 .challenge-main{
   width: 100%;
-  max-width: 1700px; /* match banner inner */
+  max-width: 1700px;
   margin: 0 auto;
   padding: clamp(12px, 2.2vw, 20px) clamp(16px, 4vw, 28px);
 }
@@ -132,8 +132,6 @@ body.is-playing{
 .map-stage{
   position: relative;
   border-radius: 22px;
-
-  /* stage should never show scrollbars either */
   overflow: hidden;
 
   border: 1px solid var(--stroke);
@@ -144,7 +142,6 @@ body.is-playing{
   place-items: center;
   padding: var(--stage-pad);
 
-  /* keep the stage proportional to the map size */
   width: min(var(--stage-w), 100%);
   margin: 0 auto;
 }
@@ -161,9 +158,7 @@ body.is-playing{
   aspect-ratio: var(--map-ar);
 
   border-radius: 18px;
-
-  /* NO SCROLLBARS INSIDE MAP BOX */
-  overflow: hidden;
+  overflow: hidden; /* no scrollbars inside map container */
 }
 
 .map-box svg{
@@ -172,7 +167,6 @@ body.is-playing{
   display: block;
 }
 
-/* Make SVG countries feel interactive */
 .map-box svg [id]{
   cursor: pointer;
   transition: fill 0.2s ease, opacity 0.2s ease;
@@ -187,8 +181,6 @@ body.is-playing{
   top: 12px;
   left: 12px;
   right: 12px;
-
-  /* stays below overlays now */
   z-index: 6;
 
   display: flex;
@@ -254,21 +246,10 @@ body.is-playing{
 /* Answer Feedback Colors */
 /* ============================= */
 
-.correct1, .correct1 *{
-  fill: var(--green) !important;
-}
-
-.correct2, .correct2 *{
-  fill: var(--yellow) !important;
-}
-
-.wrongFinal, .wrongFinal *{
-  fill: var(--red) !important;
-}
-
-.tempWrong, .tempWrong *{
-  fill: var(--red) !important;
-}
+.correct1, .correct1 *{ fill: var(--green) !important; }
+.correct2, .correct2 *{ fill: var(--yellow) !important; }
+.wrongFinal, .wrongFinal *{ fill: var(--red) !important; }
+.tempWrong, .tempWrong *{ fill: var(--red) !important; }
 
 @keyframes blinkOpacity{
   0% { opacity: 1; }
@@ -285,19 +266,15 @@ body.is-playing{
 /* Overlay (REDESIGNED) */
 /* ============================= */
 
-/* Put overlay above HUD so Reset can't be clicked when overlay is up */
 .start-overlay{
   position: absolute;
   inset: 0;
-
-  /* NEW: higher than HUD */
-  z-index: 20;
-
+  z-index: 20; /* above HUD so Reset isn't clickable */
   display: grid;
   place-items: center;
 
-  /* White subtle gradient */
-  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(242,236,255,0.92));
+  /* NEW: translucent brown overlay (card stays white) */
+  background: linear-gradient(180deg, var(--overlay-brown-1), var(--overlay-brown-2));
   backdrop-filter: blur(2px);
 }
 
@@ -309,18 +286,16 @@ body.is-playing{
   width: min(560px, calc(100% - 32px));
   border-radius: 22px;
 
-  /* White subtle gradient inside card */
   background: linear-gradient(180deg, var(--overlay-bg-1), var(--overlay-bg-2));
-
-  /* Purple border */
   border: 3px solid var(--site-purple);
 
   box-shadow: 0 22px 60px rgba(0,0,0,0.25);
   padding: 22px;
-  text-align: left;
 
   position: relative;
   overflow: hidden;
+
+  text-align: center;
 }
 
 .overlay__kicker{
@@ -344,11 +319,58 @@ body.is-playing{
   margin-bottom: 12px;
 }
 
+/* Start overlay message text */
 .overlay__body{
-  color: rgba(20,20,20,0.86);
+  font-family: "Tommy Soft", system-ui, sans-serif;
+  font-weight: 400;
+  color: #111;
   line-height: 1.45;
   text-align: center;
   margin-bottom: 14px;
+}
+
+/* Results layout */
+.results-metrics{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: start;
+  justify-items: center;
+  margin: 6px auto 10px;
+  max-width: 420px;
+}
+
+.results-metric{
+  text-align: center;
+}
+
+.results-label{
+  font-family: "Tommy Soft", system-ui, sans-serif;
+  font-weight: 600; /* slightly bold */
+  color: #111;
+  letter-spacing: 0.06em;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.results-value{
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--site-purple);
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.results-completed{
+  font-family: "Tommy Soft", system-ui, sans-serif;
+  font-weight: 400;
+  color: #111;
+  opacity: 0.85;
+  font-size: 13px;
+  margin-top: 10px;
+  text-align: center;
 }
 
 /* Logo in lower-right corner */
@@ -363,7 +385,7 @@ body.is-playing{
   pointer-events: none;
 }
 
-/* Buttons: green, white border, Tommy Soft, not bold */
+/* Buttons: green, white border, Tommy Soft, centered */
 .begin-btn{
   appearance: none;
   border: 2px solid #ffffff;
@@ -374,11 +396,14 @@ body.is-playing{
   border-radius: 999px;
 
   font-family: "Tommy Soft", system-ui, sans-serif;
-  font-weight: 400; /* not bold */
+  font-weight: 400;
   letter-spacing: 0.02em;
 
   cursor: pointer;
   transition: transform 0.08s ease, filter 0.2s ease;
+
+  display: inline-block;
+  margin: 6px auto 0;
 }
 
 .begin-btn:hover{
@@ -423,5 +448,9 @@ body.is-playing{
 
   .overlay__title{
     font-size: 28px;
+  }
+
+  .results-value{
+    font-size: 24px;
   }
 }
