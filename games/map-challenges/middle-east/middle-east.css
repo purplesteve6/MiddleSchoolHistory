@@ -25,11 +25,13 @@
   --yellow: #f2c94c;
   --red: #eb5757;
 
-  /* Requested fixed game sizing */
-  --map-w: 1600px;
-  --map-h: 1200px;
-  --stage-w: 1700px;
-  --stage-h: 1300px;
+  /* ✅ NEW 4:3 GAME SIZE */
+  --map-w: 960px;
+  --map-h: 720px;
+
+  /* Slightly larger stage container */
+  --stage-w: 1020px;
+  --stage-h: 780px;
 }
 
 /* ============================= */
@@ -43,9 +45,7 @@ html, body{
 body.map-challenge-page{
   margin: 0;
   min-height: 100vh;
-
-  /* No scrollbars on this challenge page */
-  overflow: hidden;
+  overflow: hidden; /* No scrollbars */
 }
 
 body.is-playing{
@@ -94,7 +94,7 @@ body.is-playing{
 
 .challenge-band__inner{
   width: 100%;
-  max-width: 1700px;
+  max-width: 1020px;
   margin: 0 auto;
   padding: 0 clamp(16px, 4vw, 28px);
 }
@@ -115,11 +115,9 @@ body.is-playing{
 
 .challenge-main{
   width: 100%;
-  max-width: 1700px; /* match banner inner */
+  max-width: 1020px;
   margin: 0 auto;
   padding: clamp(12px, 2.2vw, 20px) clamp(16px, 4vw, 28px);
-
-  /* Make sure the main area never causes scrollbars */
   overflow: hidden;
 }
 
@@ -131,11 +129,9 @@ body.is-playing{
   box-shadow: var(--shadow);
   background: rgba(255,255,255,0.03);
 
-  /* Fixed container requested */
   width: var(--stage-w);
   height: var(--stage-h);
 
-  /* Center the stage in the available space */
   margin: 0 auto;
 
   display: grid;
@@ -148,7 +144,6 @@ body.is-playing{
 /* ============================= */
 
 .map-box{
-  /* Fixed map size requested (no resizing, no scrollbars) */
   width: var(--map-w);
   height: var(--map-h);
 
@@ -162,74 +157,9 @@ body.is-playing{
   display: block;
 }
 
-/* Make SVG countries feel interactive */
 .map-box svg [id]{
   cursor: pointer;
   transition: fill 0.2s ease, opacity 0.2s ease;
-}
-
-/* ============================= */
-/* HUD */
-/* ============================= */
-
-.hud{
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  right: 12px;
-  z-index: 6;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-
-  pointer-events: none;
-}
-
-.hud__prompt{
-  pointer-events: none;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: rgba(0,0,0,0.45);
-  border: 1px solid rgba(255,255,255,0.14);
-  color: var(--text);
-  font-weight: 900;
-  text-transform: capitalize;
-}
-
-.hud__right{
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.hud__timer{
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: rgba(0,0,0,0.45);
-  border: 1px solid rgba(255,255,255,0.14);
-  color: var(--text);
-  font-weight: 900;
-  min-width: 70px;
-  text-align: center;
-}
-
-.hud__reset{
-  appearance: none;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.10);
-  color: var(--text);
-  padding: 10px 14px;
-  border-radius: 999px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.hud__reset:hover{
-  background: rgba(255,255,255,0.18);
 }
 
 /* ============================= */
@@ -248,12 +178,10 @@ body.is-playing{
   fill: var(--red) !important;
 }
 
-/* WRONG-on-hold (temporary red while mouse is down) */
 .tempWrong{
   fill: var(--red) !important;
 }
 
-/* Rapid blink before turning red */
 @keyframes blink{
   0% { opacity: 1; }
   50% { opacity: 0.2; }
@@ -292,29 +220,6 @@ body.is-playing{
   text-align: center;
 }
 
-.start-overlay__kicker{
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.78);
-  margin-bottom: 6px;
-}
-
-.start-overlay__title{
-  font-family: "Lemon Milk", system-ui, sans-serif;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #fff;
-  font-size: 22px;
-  line-height: 1.15;
-  margin-bottom: 10px;
-}
-
-.start-overlay__sub{
-  color: rgba(255,255,255,0.82);
-  margin-bottom: 14px;
-}
-
 .begin-btn{
   appearance: none;
   border: 1px solid rgba(255,255,255,0.18);
@@ -335,8 +240,8 @@ body.is-playing{
 /* Mobile */
 /* ============================= */
 
-@media (max-width: 640px){
-  /* On small screens, allow the stage to fit the viewport width */
+@media (max-width: 1000px){
+
   body.map-challenge-page{
     overflow: auto;
   }
@@ -364,4 +269,3 @@ body.is-playing{
     height: 100%;
   }
 }
-
