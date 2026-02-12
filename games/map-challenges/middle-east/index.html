@@ -46,18 +46,21 @@
       <!-- SVG gets injected here -->
       <div class="map-box" id="mapBox" aria-label="Middle East map"></div>
 
-      <!-- Dark overlay shown on load -->
+      <!-- Begin Overlay -->
       <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
         <div class="start-overlay__card">
-          <div class="start-overlay__kicker">Map Challenge</div>
-          <div class="start-overlay__title">Middle East Map Challenge</div>
-          <div class="start-overlay__sub">
+          <div class="overlay__kicker">MAP CHALLENGE</div>
+          <div class="overlay__title">MIDDLE EAST</div>
+
+          <div class="overlay__body">
             Click the country name as fast as you can.
           </div>
 
-          <button class="begin-btn" id="beginBtn" type="button">
-            Begin
-          </button>
+          <button class="begin-btn" id="beginBtn" type="button">Begin</button>
+
+          <img class="overlay__logo"
+               src="/assets/images/logo/MSHistory_Logo_Small.png"
+               alt="Middle School History logo" />
         </div>
       </div>
     </section>
@@ -83,7 +86,7 @@
     const IGNORE = new Set(["water","borders","context_land"]);
 
     // Alias clicks on palestine/gaza/internal borders -> israel
-    // NOTE: israel_internal_borders should behave like clicking Israel for correctness,
+    // israel_internal_borders should behave like clicking Israel for correctness,
     // but it should NOT be colored itself (it's a border layer).
     const ALIAS = {
       palestine: "israel",
@@ -105,6 +108,10 @@
     const DISPLAY_NAMES = {
       uae: "United Arab Emirates (UAE)"
     };
+
+    const LOGO_SRC = "/assets/images/logo/MSHistory_Logo_Small.png";
+    const GAME_KICKER = "MAP CHALLENGE";
+    const GAME_TITLE = "MIDDLE EAST";
 
     const mapBox = document.getElementById("mapBox");
     const overlay = document.getElementById("startOverlay");
@@ -165,13 +172,10 @@
       return svgRoot.querySelector(`#${CSS.escape(id)}`);
     }
 
-    // If a target has multiple SVG layers (Israel + Gaza + Palestine),
-    // return all IDs we should treat as the same target.
     function getGroupIds(canonicalId){
       return GROUPS[canonicalId] ? GROUPS[canonicalId].slice() : [canonicalId];
     }
 
-    // Run an operation on every SVG element in the group
     function forEachGroupEl(canonicalId, fn){
       const ids = getGroupIds(canonicalId);
       for (const id of ids){
@@ -180,8 +184,6 @@
       }
     }
 
-    // For a hit on israel_internal_borders, we want it to behave like Israel,
-    // but we should never apply tempWrong color to the border layer itself.
     function getVisualElForHit(hit){
       if (hit.raw === "israel_internal_borders"){
         return getElById("israel") || hit.el;
@@ -228,7 +230,7 @@
       const avg = totalPoints / COUNTRIES.length;
 
       showEndOverlay({
-        title: "Middle East Map Challenge",
+        title: GAME_TITLE,
         time: fmtTime(elapsed),
         score: `${totalPoints} points (avg ${avg.toFixed(1)} / 100)`,
         stamp: new Date().toLocaleString()
@@ -241,19 +243,23 @@
 
       const wrap = document.createElement("div");
       wrap.id = "endOverlay";
-      wrap.className = "start-overlay"; // reuse overlay styling
+      wrap.className = "start-overlay";
       wrap.innerHTML = `
         <div class="start-overlay__card">
-          <div class="start-overlay__kicker">Results</div>
-          <div class="start-overlay__title">${title}</div>
-          <div class="start-overlay__sub" style="margin-top:10px; line-height:1.4;">
+          <div class="overlay__kicker">${GAME_KICKER}</div>
+          <div class="overlay__title">${title}</div>
+
+          <div class="overlay__body" style="text-align:left; max-width: 420px; margin: 0 auto 14px;">
             <div><b>Time:</b> ${time}</div>
             <div><b>Score:</b> ${score}</div>
             <div style="opacity:.85; margin-top:8px;"><b>Completed:</b> ${stamp}</div>
           </div>
-          <button class="begin-btn" id="playAgainBtn" type="button" style="margin-top:14px;">
-            Play Again
-          </button>
+
+          <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
+
+          <img class="overlay__logo"
+               src="${LOGO_SRC}"
+               alt="Middle School History logo" />
         </div>
       `;
 
@@ -315,8 +321,6 @@
     function flashCorrectThenRed(){
       if (!currentTarget) return;
 
-      // Apply to Israel group if applicable (Israel + Gaza + Palestine)
-      // (do NOT blink internal border layer)
       forEachGroupEl(currentTarget, (el) => {
         el.classList.remove("correct1","correct2");
         el.classList.add("blink");
@@ -328,9 +332,7 @@
           el.classList.add("wrongFinal");
         });
 
-        // lock the canonical target so future clicks don't register
         locked.add(currentTarget);
-
         pickNext();
       }, 520);
     }
@@ -357,16 +359,12 @@
       const hit = normalizeClickedId(e);
       if (!hit) return;
 
-      // Don’t allow interactions before game starts / after it ends
       if (!currentTarget) return;
 
-      // If they click a country already completed, ignore it completely
-      // (no penalty, no temporary red, no tries change)
       if (locked.has(hit.normalized) && hit.normalized !== currentTarget){
         return;
       }
 
-      // Correct click (includes Gaza/Palestine/Internal Borders treated as Israel)
       if (hit.normalized === currentTarget){
         if (tries === 0){
           totalPoints += 100;
@@ -382,17 +380,12 @@
         return;
       }
 
-      // Wrong click
       if (tries === 0){
-        // First wrong: show clicked region red only while held down
-        // IMPORTANT: if they clicked the Israel internal border layer,
-        // apply tempWrong to Israel region (not the border layer).
         tempWrongEl = getVisualElForHit(hit);
         tempWrongEl.classList.add("tempWrong");
         tries = 1;
         try { tempWrongEl.setPointerCapture(e.pointerId); } catch(_) {}
       } else {
-        // Second wrong: 0 points; flash the CORRECT country then lock red
         flashCorrectThenRed();
         tries = 0;
       }
@@ -412,7 +405,6 @@
       }
     });
 
-    // Begin
     if (beginBtn){
       beginBtn.addEventListener("click", () => {
         const endOverlay = document.getElementById("endOverlay");
@@ -431,12 +423,10 @@
       });
     }
 
-    // Reset
     if (resetBtn){
       resetBtn.addEventListener("click", () => resetGame(false));
     }
 
-    // Boot
     loadSvg().catch(err => {
       console.error(err);
       mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";

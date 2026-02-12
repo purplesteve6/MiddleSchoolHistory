@@ -26,7 +26,7 @@
   --red: #eb5757;
 
   /* ============================= */
-  /* Map sizing (NEW) */
+  /* Map sizing */
   /* ============================= */
   --map-w: 960px;
   --map-h: 720px;
@@ -35,6 +35,14 @@
   --stage-pad: 14px;
   --stage-pad-2: 28px; /* 2 * 14px */
   --stage-w: calc(var(--map-w) + var(--stage-pad-2));
+
+  /* ============================= */
+  /* Overlay theme (NEW) */
+  /* ============================= */
+  --site-purple: var(--ms-purple, #2b1b4d); /* fallback if your global var isn't present */
+  --overlay-bg-1: #ffffff;
+  --overlay-bg-2: #f2ecff; /* subtle purple tint */
+  --kicker-brown: #7a4b1f;
 }
 
 /* ============================= */
@@ -49,7 +57,6 @@ body.map-challenge-page{
   overflow-x: hidden;
 }
 
-/* IMPORTANT: don't lock page scrolling during play */
 body.is-playing{
   overflow-x: hidden;
 }
@@ -137,7 +144,7 @@ body.is-playing{
   place-items: center;
   padding: var(--stage-pad);
 
-  /* NEW: keep the stage proportional to the map size */
+  /* keep the stage proportional to the map size */
   width: min(var(--stage-w), 100%);
   margin: 0 auto;
 }
@@ -147,11 +154,9 @@ body.is-playing{
 /* ============================= */
 
 .map-box{
-  /* NEW: true target size */
   width: var(--map-w);
   height: var(--map-h);
 
-  /* responsive fallback (if viewport is narrower than 960px) */
   max-width: 100%;
   aspect-ratio: var(--map-ar);
 
@@ -182,14 +187,14 @@ body.is-playing{
   top: 12px;
   left: 12px;
   right: 12px;
+
+  /* stays below overlays now */
   z-index: 6;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-
-  /* NEW: prevents HUD breaking when the stage shrinks */
   flex-wrap: wrap;
 
   pointer-events: none;
@@ -205,7 +210,6 @@ body.is-playing{
   font-weight: 900;
   text-transform: capitalize;
 
-  /* NEW: keep long target names from wrecking layout */
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -250,7 +254,6 @@ body.is-playing{
 /* Answer Feedback Colors */
 /* ============================= */
 
-/* Apply to country + descendants (paths/polygons often hold the fill) */
 .correct1, .correct1 *{
   fill: var(--green) !important;
 }
@@ -263,12 +266,10 @@ body.is-playing{
   fill: var(--red) !important;
 }
 
-/* Wrong-on-hold (temporary red while mouse is down) */
 .tempWrong, .tempWrong *{
   fill: var(--red) !important;
 }
 
-/* Blink should look RED, not “black” — keep fill red, blink opacity */
 @keyframes blinkOpacity{
   0% { opacity: 1; }
   50% { opacity: 0.25; }
@@ -281,16 +282,22 @@ body.is-playing{
 }
 
 /* ============================= */
-/* Overlay */
+/* Overlay (REDESIGNED) */
 /* ============================= */
 
+/* Put overlay above HUD so Reset can't be clicked when overlay is up */
 .start-overlay{
   position: absolute;
   inset: 0;
-  z-index: 5;
+
+  /* NEW: higher than HUD */
+  z-index: 20;
+
   display: grid;
   place-items: center;
-  background: linear-gradient(180deg, var(--overlay), var(--overlay-2));
+
+  /* White subtle gradient */
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(242,236,255,0.92));
   backdrop-filter: blur(2px);
 }
 
@@ -299,29 +306,87 @@ body.is-playing{
 }
 
 .start-overlay__card{
-  width: min(520px, calc(100% - 32px));
+  width: min(560px, calc(100% - 32px));
   border-radius: 22px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.16);
-  box-shadow: 0 22px 60px rgba(0,0,0,0.55);
+
+  /* White subtle gradient inside card */
+  background: linear-gradient(180deg, var(--overlay-bg-1), var(--overlay-bg-2));
+
+  /* Purple border */
+  border: 3px solid var(--site-purple);
+
+  box-shadow: 0 22px 60px rgba(0,0,0,0.25);
   padding: 22px;
-  text-align: center;
+  text-align: left;
+
+  position: relative;
+  overflow: hidden;
 }
 
+.overlay__kicker{
+  text-align: center;
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--kicker-brown);
+  margin-bottom: 6px;
+}
+
+.overlay__title{
+  text-align: center;
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-size: 32px;
+  line-height: 1.1;
+  color: var(--site-purple);
+  margin-bottom: 12px;
+}
+
+.overlay__body{
+  color: rgba(20,20,20,0.86);
+  line-height: 1.45;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+/* Logo in lower-right corner */
+.overlay__logo{
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 106px;
+  height: 120px;
+  object-fit: contain;
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+/* Buttons: green, white border, Tommy Soft, not bold */
 .begin-btn{
   appearance: none;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.10);
-  color: var(--text);
-  padding: 12px 16px;
+  border: 2px solid #ffffff;
+  background: var(--green);
+  color: #ffffff;
+
+  padding: 12px 18px;
   border-radius: 999px;
-  font-weight: 900;
+
+  font-family: "Tommy Soft", system-ui, sans-serif;
+  font-weight: 400; /* not bold */
+  letter-spacing: 0.02em;
+
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: transform 0.08s ease, filter 0.2s ease;
 }
 
 .begin-btn:hover{
-  background: rgba(255,255,255,0.18);
+  filter: brightness(1.06);
+}
+
+.begin-btn:active{
+  transform: translateY(1px);
 }
 
 /* ============================= */
@@ -347,5 +412,16 @@ body.is-playing{
 
   .hud__prompt{
     width: 100%;
+  }
+
+  .overlay__logo{
+    width: 88px;
+    height: 100px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .overlay__title{
+    font-size: 28px;
   }
 }
