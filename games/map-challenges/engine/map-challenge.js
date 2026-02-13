@@ -104,7 +104,7 @@
   let timerInt = null;
 
   // pointer-down temporary red
-  let tempWrongEl = null;
+  
 
   let lastMouseX = 0;
   let lastMouseY = 0;
@@ -304,6 +304,21 @@
     const el = getElById(key);
     if (el) fn(el, key);
   }
+
+ // Wrong-click feedback: quick red flash (Middle East style)
+function flashWrong(hit) {
+  const visualEl = getVisualElForHit(hit);
+  if (!visualEl) return;
+
+  // Clear any previous flash state
+  visualEl.classList.remove("tempWrong");
+ 
+
+  visualEl.classList.add("tempWrong");
+  setTimeout(() => {
+    visualEl.classList.remove("tempWrong");
+  }, 120);
+}
 
   // If you ever need “raw click counts as X but don’t color raw layer” logic
   // you can implement it by customizing groups/alias/extraIds in config.
@@ -549,36 +564,23 @@ svgRoot.setAttribute("focusable", "false");
       }
     }, { passive: true });
 
-    // Hover tooltip: show hovered region name while playing
-    svgRoot.addEventListener("pointerover", (e) => {
-      const hit = normalizeClickedId(e);
-      if (!hit) return;
-      if (!document.body.classList.contains("is-playing")) return;
-      if (locked.has(hit.normalized)) return;
+    // Hover tooltip: do NOT reveal hovered name (prevents giving answers)
+// If you want a tooltip, show the current target instead.
+svgRoot.addEventListener("pointerover", (e) => {
+  const hit = normalizeClickedId(e);
+  if (!hit) return;
+  if (!document.body.classList.contains("is-playing")) return;
+  if (locked.has(hit.normalized)) return;
 
-      showCursorTip(displayNameFor(hit.normalized));
-    });
+  // Show the prompt target, not the hovered region
+  if (currentTarget) showCursorTip(displayNameFor(currentTarget));
+});
 
     svgRoot.addEventListener("pointerout", () => {
       hideCursorTip();
     });
 
-    // Wrong-click feedback: quick red flash (Middle East style)
-function flashWrong(hit) {
-  const visualEl = getVisualElForHit(hit);
-  if (!visualEl) return;
-
-  // Clear any previous flash state
-  visualEl.classList.remove("tempWrong");
-  // Force reflow so the animation/class can re-trigger on rapid clicks
-  // eslint-disable-next-line no-unused-expressions
-  visualEl.getBBox?.(); // safe-ish for SVG; if missing, ignore
-
-  visualEl.classList.add("tempWrong");
-  setTimeout(() => {
-    visualEl.classList.remove("tempWrong");
-  }, 120);
-}
+   
 
 
     // click: main game logic

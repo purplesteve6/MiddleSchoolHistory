@@ -269,11 +269,16 @@ body.is-playing{
 .correct1, .correct1 *{ fill: var(--green) !important; }
 .correct2, .correct2 *{ fill: var(--yellow) !important; }
 .wrongFinal, .wrongFinal *{ fill: var(--red) !important; }
-.tempWrong, .tempWrong *{ fill: var(--red) !important; }
 
-.tempWrong{
+.tempWrong, .tempWrong *{
   fill: var(--red) !important;
-  opacity: 0.70;
+  animation: wrongFlash 0.12s linear 1;
+}
+
+@keyframes wrongFlash{
+  0%{ opacity: 1; }
+  50%{ opacity: 0.25; }
+  100%{ opacity: 1; }
 }
 
 .blink{
