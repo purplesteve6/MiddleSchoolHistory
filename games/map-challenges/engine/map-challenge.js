@@ -393,12 +393,10 @@ function flashWrong(hit) {
     end.innerHTML = `
       <div class="start-overlay__card">
         <div class="overlay__kicker">${escapeHtml(OVERLAY_KICKER)}</div>
-        <div class="overlay__title">RESULTS</div>
+        const OVERLAY_TITLE = UI.overlayTitle || "MAP CHALLENGE";
 
-        <div class="overlay__body">
-          Nice work!
-        </div>
 
+        
         <div class="results-metrics" aria-label="Results metrics">
   <div class="results-metric">
     <div class="results-label">SCORE</div>
@@ -410,7 +408,8 @@ function flashWrong(hit) {
   </div>
 </div>
 
-<div class="results-completed">Points: ${totalPoints}/${scoreMax()}</div>
+<div class="results-completed">Completed: ${new Date().toLocaleString()}</div>
+
 
 
         <div class="overlay__actions">
