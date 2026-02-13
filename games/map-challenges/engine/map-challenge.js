@@ -62,9 +62,9 @@
   const MAP_ARIA = UI.mapAria || "Map";
 
   const OVERLAY_KICKER = UI.overlayKicker || "MAP CHALLENGE";
-  <div class="overlay__title">${escapeHtml(OVERLAY_TITLE)}</div>
+const OVERLAY_TITLE = UI.overlayTitle || "MAP CHALLENGE";
+const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!";
 
-  const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!";
 
   // ----------------------------
   // DOM
@@ -405,6 +405,7 @@ function flashWrong(hit) {
       <div class="start-overlay__card">
         <div class="overlay__kicker">${escapeHtml(OVERLAY_KICKER)}</div>
         <div class="overlay__title">${escapeHtml(OVERLAY_TITLE)}</div>
+
 
         <div class="results-metrics" aria-label="Results metrics">
 
