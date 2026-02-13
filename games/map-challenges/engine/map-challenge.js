@@ -101,8 +101,13 @@ const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!"
   // completed targets should ignore clicks
   let locked = new Set();
 
-  let timerStart = 0;
-  let timerInt = null;
+ let timerStart = 0;
+let timerInt = null;
+
+// ✅ Auto-timeout (defaults to 60 minutes)
+let gameStartMs = 0;
+let timeoutInt = null;
+
 
   // pointer-down temporary red
   
@@ -230,10 +235,38 @@ const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!"
     }, 31);
   }
 
-  function stopTimer() {
-    if (timerInt) clearInterval(timerInt);
-    timerInt = null;
-  }
+function stopTimer() {
+  if (timerInt) clearInterval(timerInt);
+  timerInt = null;
+}
+
+  function stopTimeout() {
+  if (timeoutInt) clearInterval(timeoutInt);
+  timeoutInt = null;
+}
+
+function startTimeout() {
+  stopTimeout();
+
+  const TIMEOUT_MS =
+    typeof CFG.timeoutMs === "number" && CFG.timeoutMs > 0
+      ? CFG.timeoutMs
+      : 60 * 60 * 1000; // 60 minutes default
+
+  gameStartMs = Date.now();
+
+  timeoutInt = setInterval(() => {
+    if (!document.body.classList.contains("is-playing")) return;
+    if (Date.now() - gameStartMs < TIMEOUT_MS) return;
+
+    // Timeout hit: return to begin state
+   const endOverlay = document.getElementById("endOverlay");
+if (endOverlay) endOverlay.remove();
+resetGame(false);
+
+  }, 1000);
+}
+
 
   function displayNameFor(id) {
     const key = String(id).toLowerCase();
@@ -375,7 +408,9 @@ function flashWrong(hit) {
   }
 
   if (!currentTarget) {
-    stopTimer();
+   stopTimer();
+  stopTimeout();
+
     showEndOverlay();
   }
 }
@@ -389,7 +424,9 @@ function flashWrong(hit) {
 
   function showEndOverlay() {
     const elapsed = Date.now() - timerStart;
-    const percent = scoreMax() ? ((totalPoints / scoreMax()) * 100) : 0;
+const completedAt = new Date().toLocaleString();
+    
+const percent = scoreMax() ? ((totalPoints / scoreMax()) * 100) : 0;
 
 
     // Remove existing end overlay if present
@@ -419,7 +456,7 @@ function flashWrong(hit) {
   </div>
 </div>
 
-<div class="results-completed">Completed: ${new Date().toLocaleString()}</div>
+<div class="results-completed">Completed: ${completedAt}</div>
 
 
 
@@ -445,7 +482,9 @@ function flashWrong(hit) {
 
 function resetGame(startImmediately) {
   // ✅ Stop any running clock interval immediately
-  stopTimer();
+    stopTimer();
+  stopTimeout();
+
 
   locked = new Set();
   remaining = [];
@@ -485,7 +524,9 @@ setFlagForCurrent();
     document.body.classList.add("is-playing");
     remaining = shuffle(TARGETS);
     pickNext();
-    startTimer();
+startTimer();
+startTimeout();
+
   }
 
   requestFit();
@@ -665,8 +706,10 @@ pickNext();
 
       locked = new Set();
       remaining = shuffle(TARGETS);
-      pickNext();
-      startTimer();
+          pickNext();
+    startTimer();
+    startTimeout();
+
 
       requestFit();
     });
