@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wyoming County, NY Map Challenge | Middle School History</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/games/map-challenges/_engine/map-engine.css" />
+  <link rel="stylesheet" href="/games/map-challenges/wyoming-county-ny/wyoming-county-ny.css" />
+</head>
+
+<body class="map-challenge-page">
+
+  <!-- MAIN SITE HEADER (injected) -->
+  <div id="siteHeader" data-include="/partials/main-header.html"></div>
+
+  <!-- Banner (swap image later if you want) -->
+  <section class="challenge-band challenge-band--image"
+           style="background-image: url('/assets/images/banners/map-challenges-banner.jpg');"
+           aria-label="Wyoming County Map Challenge banner">
+    <div class="challenge-band__bottom">
+      <div class="challenge-band__inner">
+        <h1 class="challenge-band__title">WYOMING COUNTY, NY MAP CHALLENGE</h1>
+      </div>
+    </div>
+  </section>
+
+  <main class="challenge-main" aria-label="Wyoming County map challenge">
+    <section class="map-stage" aria-label="Map stage">
+
+      <!-- HUD -->
+      <div class="hud" aria-label="Game HUD">
+        <div class="hud__prompt">
+          Click:
+          <span id="targetName">—</span>
+          <!-- Flags optional; hidden by engine when showFlags=false -->
+          <img id="targetFlag" class="hud__flag" src="" alt="" style="display:none;" />
+        </div>
+
+        <div class="hud__right">
+          <div class="hud__timer" id="timer">00:00.000</div>
+          <button class="hud__reset" id="resetBtn" type="button">Reset</button>
+        </div>
+      </div>
+
+      <!-- SVG gets injected here -->
+      <div class="map-box" id="mapBox" aria-label="Wyoming County map"></div>
+
+      <!-- Start overlay -->
+      <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
+        <div class="start-overlay__card">
+          <div class="overlay__kicker">MAP CHALLENGE</div>
+          <div class="overlay__title">WYOMING COUNTY</div>
+
+          <div class="overlay__body">
+            How fast can you identify the towns of Wyoming County, New York?
+          </div>
+
+          <div class="overlay__actions">
+            <button class="begin-btn" id="beginBtn" type="button">Begin</button>
+          </div>
+
+          <img class="overlay__logo"
+               src="/assets/images/logo/MSHistory_Logo_Small.png"
+               alt="Middle School History logo" />
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Cursor tooltip MUST be outside the scaled .map-stage -->
+  <div class="cursor-tip" id="cursorTip" aria-hidden="true"></div>
+
+  <!-- FOOTER (injected) -->
+  <div id="siteFooter" data-include="/partials/footer.html"></div>
+
+  <script src="/include.js"></script>
+
+  <!-- Map config then engine -->
+  <script src="/games/map-challenges/wyoming-county-ny/config.js"></script>
+  <script src="/games/map-challenges/_engine/map-engine.js"></script>
+</body>
+</html>

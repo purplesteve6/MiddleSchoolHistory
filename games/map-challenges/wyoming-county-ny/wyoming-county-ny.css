@@ -1,0 +1,15 @@
+/* Wyoming County page tweaks (optional) */
+
+.challenge-main{
+  padding-bottom: 24px;
+}
+
+/* If your site background is dark, this keeps HUD readable */
+.map-stage{
+  padding: 18px 0 28px;
+}
+
+/* You can adjust max “visual size” of the map here without hardcoding SVG dims */
+.map-box{
+  width: min(96vw, 980px);
+}
