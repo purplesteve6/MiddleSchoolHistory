@@ -1,7 +1,10 @@
 window.MAP_CHALLENGE_CONFIG = {
   kicker: "MAP CHALLENGE",
   title: "WYOMING COUNTY, NY",
+  startMessage: "How fast can you identify the towns of Wyoming County, New York?",
   svgPath: "/games/map-challenges/wyoming-county-ny/wyoming-county-ny-clickable.svg",
+  ...
+};
 
   // Town IDs (must match your SVG layer IDs)
   items: [
