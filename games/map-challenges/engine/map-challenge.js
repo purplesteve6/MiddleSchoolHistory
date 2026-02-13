@@ -423,7 +423,8 @@ function flashWrong(hit) {
       </div>
     `;
 
-    document.body.appendChild(end);
+    (stageEl || document.body).appendChild(end);
+
 
     const playAgainBtn = end.querySelector("#playAgainBtn");
     playAgainBtn?.addEventListener("click", () => {
@@ -433,6 +434,9 @@ function flashWrong(hit) {
   }
 
 function resetGame(startImmediately) {
+  // ✅ Stop any running clock interval immediately
+  stopTimer();
+
   locked = new Set();
   remaining = [];
   currentTarget = null;
@@ -442,6 +446,7 @@ function resetGame(startImmediately) {
   clearAllTargetClasses();
 
   if (timerEl) timerEl.textContent = "00:00.000";
+
 
   if (targetFlagEl) {
     targetFlagEl.style.display = "none";
