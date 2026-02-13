@@ -62,7 +62,8 @@
   const MAP_ARIA = UI.mapAria || "Map";
 
   const OVERLAY_KICKER = UI.overlayKicker || "MAP CHALLENGE";
-  const OVERLAY_TITLE = UI.overlayTitle || "MAP CHALLENGE";
+  <div class="overlay__title">${escapeHtml(OVERLAY_TITLE)}</div>
+
   const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!";
 
   // ----------------------------
@@ -360,15 +361,25 @@ function flashWrong(hit) {
   // Game flow
   // ----------------------------
   function pickNext() {
-    tries = 0;
-    currentTarget = remaining.shift() || null;
-    setPrompt();
+  tries = 0;
+  currentTarget = remaining.shift() || null;
+  setPrompt();
 
-    if (!currentTarget) {
-      stopTimer();
-      showEndOverlay();
+  // ✅ If tooltip is currently visible, update it immediately
+  if (cursorTipEl && cursorTipEl.classList.contains("is-on")) {
+    if (currentTarget) {
+      showCursorTip(displayNameFor(currentTarget));
+    } else {
+      hideCursorTip();
     }
   }
+
+  if (!currentTarget) {
+    stopTimer();
+    showEndOverlay();
+  }
+}
+
 
   function scoreMax() {
   // 100 points each (perfect game = TARGETS.length * 100)
@@ -443,7 +454,14 @@ function resetGame(startImmediately) {
 
   clearAllTargetClasses();
 
-  if (timerEl) timerEl.textContent = "00:00.000";
+if (timerEl) timerEl.textContent = "00:00.000";
+
+// ✅ Reset prompt label
+if (targetNameEl) targetNameEl.textContent = "—";
+currentTarget = null;
+tries = 0;
+setFlagForCurrent();
+
 
 
   if (targetFlagEl) {
@@ -537,14 +555,14 @@ svgRoot.setAttribute("focusable", "false");
   }
 
   function markCorrect(targetId, attemptNumber) {
-    // attemptNumber: 1 -> first try (green), 2 -> second try (yellow)
-    const cls = attemptNumber === 1 ? "correct1" : "correct2";
-    forEachGroupEl(targetId, el => {
-      el.classList.remove("tempWrong", "wrongFinal");
-      el.classList.add(cls, "blink");
-      setTimeout(() => el.classList.remove("blink"), 400);
-    });
-  }
+  // attemptNumber: 1 -> first try (green), 2 -> second try (yellow)
+  const cls = attemptNumber === 1 ? "correct1" : "correct2";
+  forEachGroupEl(targetId, el => {
+    el.classList.remove("tempWrong", "wrongFinal", "blink");
+    el.classList.add(cls); // ✅ instant color, no blink
+  });
+}
+
 
   function markFinalWrong(targetId) {
     forEachGroupEl(targetId, el => {
@@ -622,9 +640,11 @@ if (tries === 0) {
 
 
       // second wrong => finalize
-      locked.add(currentTarget);
-      markFinalWrong(currentTarget);
-      pickNext();
+flashWrong(hit);              // ✅ flash what they clicked
+locked.add(currentTarget);
+markFinalWrong(currentTarget); // ✅ mark correct target red
+pickNext();
+
     });
   }
 
