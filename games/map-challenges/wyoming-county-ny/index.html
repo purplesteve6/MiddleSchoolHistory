@@ -3,12 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wyoming County, NY Map Challenge | Middle School History</title>
+  <title>Wyoming County (NY) Towns Map Challenge | Middle School History</title>
 
-  <link rel="stylesheet" href="../../styles.css" />
-<link rel="stylesheet" href="../_engine/map-engine.css" />
-<link rel="stylesheet" href="./wyoming-county-ny.css" />
+  <!-- Global site styles -->
+  <link rel="stylesheet" href="/styles.css" />
 
+  <!-- Shared engine styles -->
+  <link rel="stylesheet" href="/games/map-challenges/_engine/map-challenge.css" />
+
+  <!-- Page-specific overrides (usually just :root vars) -->
+  <link rel="stylesheet" href="/games/map-challenges/wyoming-county-ny/wyoming-county-ny.css" />
 </head>
 
 <body class="map-challenge-page">
@@ -16,18 +20,21 @@
   <!-- MAIN SITE HEADER (injected) -->
   <div id="siteHeader" data-include="/partials/main-header.html"></div>
 
-  <!-- Banner (swap image later if you want) -->
-  <section class="challenge-band challenge-band--image"
-           style="background-image: url('/assets/images/banners/map-challenges-banner.jpg');"
-           aria-label="Wyoming County Map Challenge banner">
+  <!-- Full-width band under header -->
+  <section
+    id="challengeBand"
+    class="challenge-band challenge-band--image"
+    style="background-image: url('/assets/images/banners/map-challenges-banner.jpg');"
+    aria-label="Map Challenge banner"
+  >
     <div class="challenge-band__bottom">
       <div class="challenge-band__inner">
-        <h1 class="challenge-band__title">WYOMING COUNTY, NY MAP CHALLENGE</h1>
+        <h1 class="challenge-band__title" id="bannerTitle">MAP CHALLENGE</h1>
       </div>
     </div>
   </section>
 
-  <main class="challenge-main" aria-label="Wyoming County map challenge">
+  <main id="challengeMain" class="challenge-main" aria-label="Map challenge">
     <section class="map-stage" aria-label="Map stage">
 
       <!-- HUD -->
@@ -35,8 +42,15 @@
         <div class="hud__prompt">
           Click:
           <span id="targetName">—</span>
-          <!-- Flags optional; hidden by engine when showFlags=false -->
-          <img id="targetFlag" class="hud__flag" src="" alt="" style="display:none;" />
+          <img
+            id="targetFlag"
+            class="hud__flag"
+            src=""
+            alt=""
+            width="34"
+            height="22"
+            style="display:none;"
+          />
         </div>
 
         <div class="hud__right">
@@ -46,40 +60,47 @@
       </div>
 
       <!-- SVG gets injected here -->
-      <div class="map-box" id="mapBox" aria-label="Wyoming County map"></div>
+      <div class="map-box" id="mapBox" aria-label="Map"></div>
 
-      <!-- Start overlay -->
+      <!-- Dark overlay shown on load -->
       <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
         <div class="start-overlay__card">
-          <div class="overlay__kicker">MAP CHALLENGE</div>
-          <div class="overlay__title">WYOMING COUNTY</div>
+          <div class="overlay__kicker" id="overlayKicker">MAP CHALLENGE</div>
+          <div class="overlay__title" id="overlayTitle">MAP</div>
 
-          <div class="overlay__body">
-            How fast can you identify the towns of Wyoming County, New York?
+          <div class="overlay__body" id="overlayBody">
+            Click the regions as fast as you can!
           </div>
 
           <div class="overlay__actions">
             <button class="begin-btn" id="beginBtn" type="button">Begin</button>
           </div>
 
-          <img class="overlay__logo"
-               src="/assets/images/logo/MSHistory_Logo_Small.png"
-               alt="Middle School History logo" />
+          <img
+            class="overlay__logo"
+            id="overlayLogo"
+            src="/assets/images/logo/MSHistory_Logo_Small.png"
+            alt="Middle School History logo"
+          />
         </div>
       </div>
 
     </section>
   </main>
 
-  <!-- Cursor tooltip MUST be outside the scaled .map-stage -->
+  <!-- Cursor-follow tooltip (outside scaled .map-stage) -->
   <div class="cursor-tip" id="cursorTip" aria-hidden="true"></div>
 
   <!-- FOOTER (injected) -->
   <div id="siteFooter" data-include="/partials/footer.html"></div>
 
-<script src="../../include.js"></script>
-<script src="./config.js"></script>
-<script src="../_engine/map-engine.js"></script>
+  <!-- Inject header/footer -->
+  <script src="/include.js"></script>
 
+  <!-- Per-map config -->
+  <script src="/games/map-challenges/wyoming-county-ny/config.js"></script>
+
+  <!-- Shared game engine -->
+  <script src="/games/map-challenges/_engine/map-challenge.js"></script>
 </body>
 </html>

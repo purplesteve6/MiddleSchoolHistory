@@ -1,15 +1,14 @@
-/* Wyoming County page tweaks (optional) */
+/* Wyoming County (NY) Towns - Map Challenge Overrides
+   Keep this file minimal: just override :root variables when needed.
+*/
 
-.challenge-main{
-  padding-bottom: 24px;
-}
+:root{
+  /* If your SVG is a different aspect ratio, adjust these 3 values */
+  --map-w: 960px;
+  --map-h: 720px;
+  --map-ar: 4 / 3;
 
-/* If your site background is dark, this keeps HUD readable */
-.map-stage{
-  padding: 18px 0 28px;
-}
-
-/* You can adjust max “visual size” of the map here without hardcoding SVG dims */
-.map-box{
-  width: min(96vw, 980px);
+  /* Optional: tweak overlay accent colors per map */
+  /* --kicker-brown: #7a4b1f; */
+  /* --site-purple: #2b1b4d; */
 }
