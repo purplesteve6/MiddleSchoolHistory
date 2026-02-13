@@ -100,9 +100,6 @@
       <!-- SVG gets injected here -->
       <div class="map-box" id="mapBox" aria-label="Middle East map"></div>
 
-      <!-- Cursor-follow tooltip -->
-      <div class="cursor-tip" id="cursorTip" aria-hidden="true"></div>
-
       <!-- Dark overlay shown on load -->
       <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
         <div class="start-overlay__card">
@@ -125,6 +122,9 @@
 
     </section>
   </main>
+
+  <!-- Cursor-follow tooltip (MOVED OUTSIDE scaled .map-stage) -->
+  <div class="cursor-tip" id="cursorTip" aria-hidden="true"></div>
 
   <!-- FOOTER (injected) -->
   <div id="siteFooter" data-include="/partials/footer.html"></div>
@@ -313,7 +313,6 @@
 
     function displayNameFor(id){
       const base = DISPLAY_NAMES[id] ?? id.replaceAll("_"," ");
-      // Capitalize each word nicely
       return base.replace(/\b\w/g, char => char.toUpperCase());
     }
 
@@ -336,7 +335,6 @@
       targetFlagEl.alt = `${displayNameFor(currentTarget)} flag`;
       targetFlagEl.style.display = "inline-block";
 
-      // If an image is missing, hide gracefully
       targetFlagEl.onerror = () => {
         targetFlagEl.style.display = "none";
       };
@@ -371,23 +369,16 @@
       if (el) fn(el);
     }
 
-    // If user clicked israel_internal_borders, correctness should count as Israel,
-    // but colors should apply to the Israel group, not the border layer.
     function getVisualElForHit(hit){
       if (!hit) return null;
-
-      // Border layer: never color it; "visual" should be the Israel region instead
       if (hit.raw === "israel_internal_borders"){
         return getElById("israel");
       }
-
-      // Gaza/Palestine should color themselves (they are part of Israel group)
       return hit.el;
     }
 
     function clearAllCountryClasses(){
       if (!svgRoot) return;
-
       const allIds = COUNTRIES.concat(EXTRA_IDS);
       for (const id of allIds){
         const el = getElById(id);
@@ -396,7 +387,6 @@
     }
 
     function canShowCursorTip(){
-      // Show only during play, when no overlays are up, and we have a target.
       if (!document.body.classList.contains("is-playing")) return false;
       if (!currentTarget) return false;
       if (overlay && !overlay.classList.contains("is-hidden")) return false;
@@ -414,14 +404,12 @@
       const offsetX = 14;
       const offsetY = 18;
 
-      // Keep inside viewport a bit
       const vw = window.innerWidth;
       const vh = window.innerHeight;
 
       cursorTipEl.style.left = "0px";
       cursorTipEl.style.top = "0px";
 
-      // after text is set, measure
       const rect = cursorTipEl.getBoundingClientRect();
 
       let x = clientX + offsetX;
@@ -451,7 +439,6 @@
         return;
       }
 
-      // Immediately update tooltip if visible
       if (canShowCursorTip()){
         showCursorTip(lastMouseX, lastMouseY);
       }
@@ -504,7 +491,6 @@
         requestFit();
       });
 
-      // Overlay changes layout; refit after it appears
       requestFit();
     }
 
@@ -512,7 +498,6 @@
       stopTimer();
       const elapsed = Date.now() - timerStart;
 
-      // Average points out of 100 (same as percent)
       const avg = totalPoints / COUNTRIES.length;
       const avgPercent = `${avg.toFixed(1)}%`;
 
@@ -523,7 +508,6 @@
         stamp: new Date().toLocaleString()
       });
 
-      // Hide cursor tip when game ends
       hideCursorTip();
     }
 
@@ -581,7 +565,6 @@
     }
 
     function flashCorrectThenRed(){
-      // On second wrong: flash the CORRECT country then lock red
       forEachGroupEl(currentTarget, (el) => el.classList.remove("correct1","correct2"));
       forEachGroupEl(currentTarget, (el) => el.classList.add("blink"));
 
@@ -609,7 +592,6 @@
         svgRoot.style.height = "100%";
         svgRoot.style.display = "block";
 
-        // Make the container match the SVG’s actual viewBox aspect ratio
         const vb = svgRoot.getAttribute("viewBox");
         if (vb) {
           const parts = vb.trim().split(/\s+/).map(Number);
@@ -622,7 +604,6 @@
         }
       }
 
-      // After SVG injection/layout, fit
       requestFit();
     }
 
@@ -639,24 +620,16 @@
 
     mapBox.addEventListener("pointerleave", () => hideCursorTip());
     window.addEventListener("scroll", () => {
-      // Keep it tidy while scrolling
       if (!canShowCursorTip()) hideCursorTip();
     }, { passive: true });
 
-    /* ==========================
-       Click Handling
-       ========================== */
     mapBox.addEventListener("pointerdown", (e) => {
       const hit = normalizeClickedId(e);
       if (!hit) return;
 
-      // If that country already completed, ignore (no penalty)
       if (locked.has(hit.normalized)) return;
-
-      // Only accept clicks during play
       if (!document.body.classList.contains("is-playing")) return;
 
-      // Correct?
       if (hit.normalized === currentTarget){
         if (tries === 0){
           totalPoints += 100;
@@ -672,9 +645,7 @@
         return;
       }
 
-      // Wrong click
       if (tries === 0){
-        // First wrong: show clicked region red only while held down
         tempWrongEl = getVisualElForHit(hit);
         if (tempWrongEl){
           tempWrongEl.classList.add("tempWrong");
@@ -682,7 +653,6 @@
           try { tempWrongEl.setPointerCapture(e.pointerId); } catch(_) {}
         }
       } else {
-        // Second wrong: 0 points; flash the CORRECT country then lock red
         flashCorrectThenRed();
         tries = 0;
       }
@@ -702,7 +672,6 @@
       }
     });
 
-    // Begin
     if (beginBtn){
       beginBtn.addEventListener("click", () => {
         const endOverlay = document.getElementById("endOverlay");
@@ -723,23 +692,19 @@
       });
     }
 
-    // Reset
     if (resetBtn){
       resetBtn.addEventListener("click", () => resetGame(false));
     }
 
-    // Spacebar activates Begin / Play Again when an overlay is visible.
     document.addEventListener("keydown", (e) => {
       if (e.code !== "Space" && e.key !== " ") return;
 
-      // If start overlay is up, Space should click Begin
       if (overlay && !overlay.classList.contains("is-hidden")){
         e.preventDefault();
         beginBtn?.click();
         return;
       }
 
-      // If end overlay is up, Space should click Play Again
       const endOverlay = document.getElementById("endOverlay");
       if (endOverlay){
         const playAgainBtn = endOverlay.querySelector("#playAgainBtn");
@@ -750,23 +715,19 @@
       }
     });
 
-    // Refit on viewport changes (Chromebook-friendly)
     window.addEventListener("resize", requestFit, { passive: true });
     window.addEventListener("orientationchange", requestFit);
 
-    // visualViewport is more accurate on ChromeOS (address bar, zoom, etc.)
     if (window.visualViewport){
       window.visualViewport.addEventListener("resize", requestFit, { passive: true });
       window.visualViewport.addEventListener("scroll", requestFit, { passive: true });
     }
 
-    // Boot
     loadSvg().catch(err => {
       console.error(err);
       mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";
     });
 
-    // Extra fits after header/footer include can shift layout
     requestFit();
     setTimeout(requestFit, 0);
     setTimeout(requestFit, 250);
