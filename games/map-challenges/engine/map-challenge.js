@@ -95,7 +95,7 @@
   let remaining = [];
   let currentTarget = null;
   let tries = 0;        // 0 = first attempt, 1 = second attempt
-  let totalPoints = 0;  // 2 points for first try, 1 for second, 0 for fail
+  let totalPoints = 0;  // 100 points first try, 50 points second try, 0 if missed twice
 
   // completed targets should ignore clicks
   let locked = new Set();
@@ -356,13 +356,15 @@
   }
 
   function scoreMax() {
-    // 2 points each
-    return TARGETS.length * 2;
-  }
+  // 100 points each (perfect game = TARGETS.length * 100)
+  return TARGETS.length * 100;
+}
+
 
   function showEndOverlay() {
     const elapsed = Date.now() - timerStart;
-    const percent = scoreMax() ? Math.round((totalPoints / scoreMax()) * 100) : 0;
+    const percent = scoreMax() ? ((totalPoints / scoreMax()) * 100) : 0;
+
 
     // Remove existing end overlay if present
     const existing = document.getElementById("endOverlay");
@@ -383,17 +385,18 @@
         </div>
 
         <div class="results-metrics" aria-label="Results metrics">
-          <div class="results-metric">
-            <div class="results-label">TIME</div>
-            <div class="results-value">${fmtTime(elapsed)}</div>
-          </div>
-          <div class="results-metric">
-            <div class="results-label">SCORE</div>
-            <div class="results-value">${totalPoints}/${scoreMax()}</div>
-          </div>
-        </div>
+  <div class="results-metric">
+    <div class="results-label">SCORE</div>
+    <div class="results-value">${percent.toFixed(1)}%</div>
+  </div>
+  <div class="results-metric">
+    <div class="results-label">TIME</div>
+    <div class="results-value">${fmtTime(elapsed)}</div>
+  </div>
+</div>
 
-        <div class="results-completed">${percent}% accuracy by points</div>
+<div class="results-completed">Points: ${totalPoints}/${scoreMax()}</div>
+
 
         <div class="overlay__actions">
           <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
@@ -461,13 +464,17 @@ function resetGame(startImmediately) {
     if (!res.ok) throw new Error(`[map-challenge] Failed to fetch SVG: ${SVG_PATH} (HTTP ${res.status})`);
 
     const svgText = await res.text();
-    mapBox.innerHTML = svgText;
+mapBox.innerHTML = svgText;
 
-    svgRoot = mapBox.querySelector("svg");
-    if (!svgRoot) throw new Error("[map-challenge] SVG root not found after injection");
+svgRoot = mapBox.querySelector("svg");
+if (!svgRoot) throw new Error("[map-challenge] SVG root not found after injection");
 
-    // ensure injected svg doesn't steal focus outlines weirdly
-    svgRoot.setAttribute("focusable", "false");
+// ✅ Remove all <title> elements so hovering does NOT reveal town names
+svgRoot.querySelectorAll("title").forEach(t => t.remove());
+
+// ensure injected svg doesn't steal focus outlines weirdly
+svgRoot.setAttribute("focusable", "false");
+
 
     // start clean
     resetGame(false);
@@ -597,19 +604,20 @@ function resetGame(startImmediately) {
       if (locked.has(clicked)) return;
 
       if (clicked === currentTarget) {
-        // correct
-        if (tries === 0) {
-          totalPoints += 2;
-          markCorrect(currentTarget, 1);
-        } else {
-          totalPoints += 1;
-          markCorrect(currentTarget, 2);
-        }
+  // correct
+  if (tries === 0) {
+    totalPoints += 100;
+    markCorrect(currentTarget, 1);
+  } else {
+    totalPoints += 50;
+    markCorrect(currentTarget, 2);
+  }
 
-        locked.add(currentTarget);
-        pickNext();
-        return;
-      }
+  locked.add(currentTarget);
+  pickNext();
+  return;
+}
+
 
       // wrong
       if (tries === 0) {

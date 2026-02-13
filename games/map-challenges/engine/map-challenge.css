@@ -266,9 +266,10 @@ body.is-playing{
 /* Feedback colors */
 /* ============================= */
 
-.correct1{ fill: var(--green) !important; }
-.correct2{ fill: var(--yellow) !important; }
-.wrongFinal{ fill: var(--red) !important; }
+.correct1, .correct1 *{ fill: var(--green) !important; }
+.correct2, .correct2 *{ fill: var(--yellow) !important; }
+.wrongFinal, .wrongFinal *{ fill: var(--red) !important; }
+.tempWrong, .tempWrong *{ fill: var(--red) !important; }
 
 .tempWrong{
   fill: var(--red) !important;
