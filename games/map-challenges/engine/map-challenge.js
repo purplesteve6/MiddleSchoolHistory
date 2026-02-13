@@ -563,34 +563,23 @@ svgRoot.setAttribute("focusable", "false");
       hideCursorTip();
     });
 
-    // pointerdown: show temp red if wrong (visual feedback)
-    svgRoot.addEventListener("pointerdown", (e) => {
-      const hit = normalizeClickedId(e);
-      if (!hit) return;
+    // Wrong-click feedback: quick red flash (Middle East style)
+function flashWrong(hit) {
+  const visualEl = getVisualElForHit(hit);
+  if (!visualEl) return;
 
-      const clicked = hit.normalized;
+  // Clear any previous flash state
+  visualEl.classList.remove("tempWrong");
+  // Force reflow so the animation/class can re-trigger on rapid clicks
+  // eslint-disable-next-line no-unused-expressions
+  visualEl.getBBox?.(); // safe-ish for SVG; if missing, ignore
 
-      if (!document.body.classList.contains("is-playing")) return;
-      if (!currentTarget) return;
-      if (locked.has(clicked)) return;
+  visualEl.classList.add("tempWrong");
+  setTimeout(() => {
+    visualEl.classList.remove("tempWrong");
+  }, 120);
+}
 
-      // If wrong, show temp red
-      if (clicked !== currentTarget) {
-        const visualEl = getVisualElForHit(hit);
-        if (visualEl) {
-          tempWrongEl = visualEl;
-          tempWrongEl.classList.add("tempWrong");
-        }
-      }
-    });
-
-    // pointerup: clear temp red
-    document.addEventListener("pointerup", () => {
-      if (tempWrongEl) {
-        tempWrongEl.classList.remove("tempWrong");
-        tempWrongEl = null;
-      }
-    });
 
     // click: main game logic
     svgRoot.addEventListener("click", (e) => {
@@ -620,10 +609,12 @@ svgRoot.setAttribute("focusable", "false");
 
 
       // wrong
-      if (tries === 0) {
-        tries = 1; // second chance
-        return;
-      }
+if (tries === 0) {
+  flashWrong(hit);     // ✅ quick red flash
+  tries = 1;           // second chance
+  return;
+}
+
 
       // second wrong => finalize
       locked.add(currentTarget);
