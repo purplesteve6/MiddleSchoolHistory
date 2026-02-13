@@ -75,7 +75,7 @@ window.MAP_CHALLENGE_CONFIG = {
 
     overlayKicker: "MAP CHALLENGE",
     overlayTitle: "WYOMING COUNTY",
-    beginMessage: "Click each of the 16 towns in Wyoming County, New York as fast as you can!",
+    beginMessage: "How fast can you identify the 16 towns of Wyoming County, NY?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }
