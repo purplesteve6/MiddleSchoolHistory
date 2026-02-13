@@ -7,7 +7,8 @@ window.MAP_CHALLENGE_CONFIG = {
   slug: "wyoming-county-ny",
 
   // SVG file to load (must exist)
-  svgPath: "/games/map-challenges/wyoming-county-ny/wyoming-county-ny-clickable.svg",
+    svgPath: "./wyoming-county-ny-clickable.svg",
+
 
   // Flags optional (towns usually don't need them)
   showFlags: false,
