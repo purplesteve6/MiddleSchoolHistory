@@ -297,14 +297,26 @@ resetGame(false);
       return;
     }
 
-    const src = flagSrcFor(currentTarget);
-    targetFlagEl.src = src;
-    targetFlagEl.alt = `${displayNameFor(currentTarget)} flag`;
-    targetFlagEl.style.display = "inline-block";
+const src = flagSrcFor(currentTarget);
 
-    targetFlagEl.onerror = () => {
-      targetFlagEl.style.display = "none";
-    };
+// Hide by default so we never show a broken placeholder
+targetFlagEl.style.display = "none";
+targetFlagEl.alt = `${displayNameFor(currentTarget)} flag`;
+
+// Set handlers BEFORE src to catch fast failures
+targetFlagEl.onload = () => {
+  targetFlagEl.style.display = "inline-block";
+};
+
+targetFlagEl.onerror = () => {
+  targetFlagEl.style.display = "none";
+  targetFlagEl.src = "";
+  targetFlagEl.alt = "";
+};
+
+// Trigger load
+targetFlagEl.src = src;
+
   }
 
   function setPrompt() {
