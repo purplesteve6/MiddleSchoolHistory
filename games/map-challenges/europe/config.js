@@ -7,7 +7,7 @@ window.MAP_CHALLENGE_CONFIG = {
   slug: "europe",
 
   // SVG file to load (must exist)
-    svgPath: "./wyoming-county-ny-clickable.svg",
+    svgPath: "./europe-clickable.svg",
 
 
   // Flags optional (towns usually don't need them)
