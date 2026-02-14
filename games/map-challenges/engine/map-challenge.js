@@ -513,85 +513,86 @@
     updatePrompt();
   }
 
+  // Build an end-game overlay that matches the *start overlay* look/structure
+  // (kicker + title + stats + completed stamp + play again + logo)
   function endGame(isTimeout) {
     document.body.classList.remove("is-playing");
     setHudVisible(false);
 
     stopTimer();
     stopTimeout();
+    hideCursorTip();
 
-    // remove existing end overlay first
+    // Remove existing end overlay first
     const existing = document.getElementById("endOverlay");
     if (existing) existing.remove();
 
-    const end = document.createElement("div");
-    end.id = "endOverlay";
-    end.className = "end-overlay";
-    end.setAttribute("aria-label", "End overlay");
-
-    // ✅ Force overlay to be visible/on-top even if CSS/z-index gets weird
-    end.style.position = "fixed";
-    end.style.inset = "0";
-    end.style.zIndex = "9999";
-    end.style.display = "flex";
-    end.style.alignItems = "center";
-    end.style.justifyContent = "center";
-    end.style.padding = "16px";
-    end.style.background = "rgba(0,0,0,0.55)";
-
+    // Compute elapsed time
     const elapsed = timerStart ? performance.now() - timerStart : 0;
     const timeText = fmtTime(elapsed);
 
+    // Compute score as a percent (0–100)
+    // totalPoints is sum of (100, 50, 0) per target; max per target is 100
+    const scorePctNum = TARGETS.length ? (totalPoints / TARGETS.length) : 0;
+    const scoreText = `${scorePctNum.toFixed(1)}%`;
+
+    // Completed timestamp (local)
+    const completedText = new Date().toLocaleString();
+
+    // Create overlay using the SAME visual language as your start overlay
+    const end = document.createElement("div");
+    end.id = "endOverlay";
+    end.className = "start-overlay"; // <-- important: reuse start overlay styling
+    end.setAttribute("aria-label", "End overlay");
+
+    // NOTE: These classnames intentionally mirror the start overlay pattern:
+    // .start-overlay__card, .overlay__kicker, .overlay__title, .overlay__body, .overlay__actions, .overlay__logo
     end.innerHTML = `
-      <div class="end-overlay__card" style="
-        width: min(520px, 92vw);
-        background: #ffffff;
-        border-radius: 18px;
-        box-shadow: 0 18px 50px rgba(0,0,0,0.28);
-        padding: 18px 18px 16px;
-      ">
-        <div class="end-overlay__title" style="
-          font-size: 28px;
-          font-weight: 800;
-          letter-spacing: .3px;
-          margin-bottom: 10px;
-        ">${isTimeout ? "Time's Up!" : "Finished!"}</div>
+      <div class="start-overlay__card" role="dialog" aria-modal="true">
+        <div class="overlay__kicker">${escapeHtml(OVERLAY_KICKER)}</div>
+        <div class="overlay__title">${escapeHtml(OVERLAY_TITLE)}</div>
 
-        <div class="end-overlay__stats" style="
-          display: grid;
-          gap: 8px;
-          margin-bottom: 14px;
-          font-size: 16px;
-        ">
-          <div class="stat"><b>Time:</b> ${escapeHtml(timeText)}</div>
-          <div class="stat"><b>Points:</b> ${escapeHtml(String(totalPoints))}</div>
+        <div class="overlay__body">
+          <div class="results-grid">
+            <div class="results-item">
+              <div class="results-label">SCORE</div>
+              <div class="results-value">${escapeHtml(scoreText)}</div>
+            </div>
+
+            <div class="results-item">
+              <div class="results-label">TIME</div>
+              <div class="results-value">${escapeHtml(timeText)}</div>
+            </div>
+          </div>
+
+          <div class="results-completed">
+            Completed: ${escapeHtml(completedText)}
+          </div>
         </div>
 
-        <div class="end-overlay__actions" style="display:flex; gap:10px;">
-          <button class="begin-btn" id="playAgainBtn" type="button" style="
-            appearance: none;
-            border: none;
-            border-radius: 14px;
-            padding: 10px 14px;
-            font-weight: 800;
-            cursor: pointer;
-          ">Play Again</button>
+        <div class="overlay__actions">
+          <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
         </div>
+
+        <img class="overlay__logo" src="${escapeHtml(LOGO_SRC)}" alt="Middle School History logo" />
       </div>
     `;
 
     document.body.appendChild(end);
 
+    // Hook up play again
     const playAgainBtn = document.getElementById("playAgainBtn");
     playAgainBtn?.addEventListener("click", () => {
       end.remove();
       resetGame(true);
     });
 
+    // Ensure it snaps/settles visually
     requestFit();
     setTimeout(requestFit, 0);
     setTimeout(requestFit, 250);
   }
+
 
   function resetGame(startImmediately) {
     stopTimer();
