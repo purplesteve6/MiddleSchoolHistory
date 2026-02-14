@@ -552,23 +552,24 @@
         <div class="overlay__kicker">${escapeHtml(OVERLAY_KICKER)}</div>
         <div class="overlay__title">${escapeHtml(OVERLAY_TITLE)}</div>
 
-        <div class="overlay__body">
-          <div class="results-grid">
-            <div class="results-item">
-              <div class="results-label">SCORE</div>
-              <div class="results-value">${escapeHtml(scoreText)}</div>
-            </div>
+<div class="overlay__body">
+  <div class="results-metrics">
+    <div class="results-metric">
+      <div class="results-label">SCORE</div>
+      <div class="results-value">${escapeHtml(scoreText)}</div>
+    </div>
 
-            <div class="results-item">
-              <div class="results-label">TIME</div>
-              <div class="results-value">${escapeHtml(timeText)}</div>
-            </div>
-          </div>
+    <div class="results-metric">
+      <div class="results-label">TIME</div>
+      <div class="results-value">${escapeHtml(timeText)}</div>
+    </div>
+  </div>
 
-          <div class="results-completed">
-            Completed: ${escapeHtml(completedText)}
-          </div>
-        </div>
+  <div class="results-completed">
+    Completed: ${escapeHtml(completedText)}
+  </div>
+</div>
+
 
         <div class="overlay__actions">
           <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
@@ -578,7 +579,10 @@
       </div>
     `;
 
-    document.body.appendChild(end);
+    // Append inside the same container as the start overlay so it covers ONLY the game area
+const overlayHost = (overlay && overlay.parentElement) || stageEl || document.body;
+overlayHost.appendChild(end);
+
 
     // Hook up play again
     const playAgainBtn = document.getElementById("playAgainBtn");
