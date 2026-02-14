@@ -129,14 +129,14 @@
     if (overlay) overlay.classList.remove("is-hidden");
     document.body.classList.remove("is-playing");
     setHudVisible(false);
-    requestFit();
+    requestFit(); // important: layout changed
   }
 
   function hideStartOverlay() {
     if (overlay) overlay.classList.add("is-hidden");
     document.body.classList.add("is-playing");
     setHudVisible(true);
-    requestFit();
+    requestFit(); // important: layout changed
   }
 
   // ----------------------------
@@ -167,12 +167,13 @@
   }
 
   // ----------------------------
-  // Auto-fit scaling (Chromebook-safe)
+  // Auto-fit scaling (standalone-style; Chromebook-safe)
   // ----------------------------
   function fitStageToViewport() {
     if (!stageEl) return;
 
     const vv = window.visualViewport;
+
     const viewportW = vv ? vv.width : document.documentElement.clientWidth;
     const viewportH = vv ? vv.height : document.documentElement.clientHeight;
     if (!viewportW || !viewportH) return;
@@ -197,39 +198,61 @@
       return;
     }
 
+    // Padding so it doesn't feel jammed to edges
     const padX = 16;
     const padY = 16;
 
-    const maxW = Math.max(320, viewportW - padX);
-    const maxH = Math.max(320, viewportH - padY);
+    // rect.top is in layout viewport coords; if visualViewport is shifted, account for offsetTop
+    const offsetTop = vv ? (vv.offsetTop || 0) : 0;
+    const topInVisibleViewport = rect.top - offsetTop;
 
-    const scale = Math.min(1, maxW / naturalW, maxH / naturalH);
+    const availableW = viewportW - padX * 2;
+    const availableH = viewportH - topInVisibleViewport - padY;
+
+    if (availableW <= 0 || availableH <= 0) {
+      // fallback scale-down rather than breaking layout
+      const scaleFallback = 0.85;
+      stageEl.style.transformOrigin = "top center";
+      stageEl.style.transform = `scale(${scaleFallback})`;
+      stageEl.style.marginBottom = `${Math.round((1 - scaleFallback) * naturalH)}px`;
+      return;
+    }
+
+    // Compute scale. Clamp minimum to keep it usable.
+    const scale = Math.max(0.55, Math.min(1, availableW / naturalW, availableH / naturalH));
 
     stageEl.style.transformOrigin = "top center";
     stageEl.style.transform = `scale(${scale})`;
 
-    // keep space for scaled-down stage
-    const extra = Math.max(0, naturalH * scale - naturalH);
-    stageEl.style.marginBottom = `${extra}px`;
+    // Reserve space so scaled stage doesn't overlap content below
+    stageEl.style.marginBottom = `${Math.round((1 - scale) * naturalH)}px`;
   }
 
+  // Debounced fit (prevents thrash while resizing)
   let fitRaf = 0;
   function requestFit() {
     if (fitRaf) cancelAnimationFrame(fitRaf);
-    fitRaf = requestAnimationFrame(() => fitStageToViewport());
+    fitRaf = requestAnimationFrame(() => {
+      fitRaf = 0;
+      fitStageToViewport();
+    });
   }
 
-  // ✅ Re-fit when the stage's intrinsic size changes (overlay shows/hides, fonts load, etc.)
-  if (stageEl && "ResizeObserver" in window) {
-    const ro = new ResizeObserver(() => requestFit());
-    ro.observe(stageEl);
+  // Same listeners as the standalone version
+  window.addEventListener("resize", requestFit, { passive: true });
+  window.addEventListener("orientationchange", requestFit);
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", requestFit, { passive: true });
+    window.visualViewport.addEventListener("scroll", requestFit, { passive: true });
   }
 
-  // ✅ Also re-fit once everything (images/fonts) has finished loading
-  window.addEventListener("load", requestFit, { passive: true });
-
-  window.addEventListener("resize", requestFit);
-  window.visualViewport?.addEventListener("resize", requestFit);
+  // One extra: after the whole page (fonts/images) is ready
+  window.addEventListener("load", () => {
+    requestFit();
+    setTimeout(requestFit, 0);
+    setTimeout(requestFit, 250);
+  }, { passive: true });
 
   // ----------------------------
   // Utilities
@@ -526,6 +549,8 @@
     });
 
     requestFit();
+    setTimeout(requestFit, 0);
+    setTimeout(requestFit, 250);
   }
 
   function resetGame(startImmediately) {
@@ -559,6 +584,8 @@
     }
 
     requestFit();
+    setTimeout(requestFit, 0);
+    setTimeout(requestFit, 250);
   }
 
   // ----------------------------
@@ -591,6 +618,8 @@
     bindSvgEvents();
 
     requestFit();
+    setTimeout(requestFit, 0);
+    setTimeout(requestFit, 250);
   }
 
   function bindSvgEvents() {
