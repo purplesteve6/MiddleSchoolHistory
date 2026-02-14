@@ -173,59 +173,46 @@
     if (!stageEl) return;
 
     const vv = window.visualViewport;
-
     const viewportW = vv ? vv.width : document.documentElement.clientWidth;
     const viewportH = vv ? vv.height : document.documentElement.clientHeight;
     if (!viewportW || !viewportH) return;
 
-    // temporarily remove scaling so we can measure natural size
-    const prevTransform = stageEl.style.transform;
-    const prevOrigin = stageEl.style.transformOrigin;
-    const prevMB = stageEl.style.marginBottom;
+    // Need the SVG loaded before we can size it
+    if (!svgRoot) return;
 
-    stageEl.style.transform = "none";
-    stageEl.style.transformOrigin = "top center";
-    stageEl.style.marginBottom = "0px";
+    // Clear any previous scaling so we can measure the SVG "natural" size
+    svgRoot.style.transform = "none";
+    svgRoot.style.transformOrigin = "top center";
+    svgRoot.style.display = "block";
 
-    const rect = stageEl.getBoundingClientRect();
-    const naturalW = rect.width;
-    const naturalH = rect.height;
-
-    if (!naturalW || !naturalH) {
-      stageEl.style.transform = prevTransform;
-      stageEl.style.transformOrigin = prevOrigin;
-      stageEl.style.marginBottom = prevMB;
-      return;
-    }
+    // Measure the SVG itself (not the stage container)
+    const svgRect = svgRoot.getBoundingClientRect();
+    const naturalW = svgRect.width;
+    const naturalH = svgRect.height;
+    if (!naturalW || !naturalH) return;
 
     // Padding so it doesn't feel jammed to edges
     const padX = 16;
     const padY = 16;
 
-    // rect.top is in layout viewport coords; if visualViewport is shifted, account for offsetTop
+    // How much vertical space is actually visible below the top of the stage?
+    const stageRect = stageEl.getBoundingClientRect();
     const offsetTop = vv ? (vv.offsetTop || 0) : 0;
-    const topInVisibleViewport = rect.top - offsetTop;
+    const topInVisibleViewport = stageRect.top - offsetTop;
 
     const availableW = viewportW - padX * 2;
     const availableH = viewportH - topInVisibleViewport - padY;
 
     if (availableW <= 0 || availableH <= 0) {
-      // fallback scale-down rather than breaking layout
       const scaleFallback = 0.85;
-      stageEl.style.transformOrigin = "top center";
-      stageEl.style.transform = `scale(${scaleFallback})`;
-      stageEl.style.marginBottom = `${Math.round((1 - scaleFallback) * naturalH)}px`;
+      svgRoot.style.transform = `scale(${scaleFallback})`;
       return;
     }
 
-    // Compute scale. Clamp minimum to keep it usable.
     const scale = Math.max(0.55, Math.min(1, availableW / naturalW, availableH / naturalH));
 
-    stageEl.style.transformOrigin = "top center";
-    stageEl.style.transform = `scale(${scale})`;
-
-    // Reserve space so scaled stage doesn't overlap content below
-    stageEl.style.marginBottom = `${Math.round((1 - scale) * naturalH)}px`;
+    // Scale SVG only (no stage transform = no letterboxing hacks)
+    svgRoot.style.transform = `scale(${scale})`;
   }
 
   // Debounced fit (prevents thrash while resizing)
@@ -533,7 +520,7 @@
 
     // Compute score as a percent (0–100)
     // totalPoints is sum of (100, 50, 0) per target; max per target is 100
-    const scorePctNum = TARGETS.length ? (totalPoints / TARGETS.length) : 0;
+    const scorePctNum = TARGETS.length ? totalPoints / TARGETS.length : 0;
     const scoreText = `${scorePctNum.toFixed(1)}%`;
 
     // Completed timestamp (local)
@@ -552,24 +539,23 @@
         <div class="overlay__kicker">${escapeHtml(OVERLAY_KICKER)}</div>
         <div class="overlay__title">${escapeHtml(OVERLAY_TITLE)}</div>
 
-<div class="overlay__body">
-  <div class="results-metrics">
-    <div class="results-metric">
-      <div class="results-label">SCORE</div>
-      <div class="results-value">${escapeHtml(scoreText)}</div>
-    </div>
+        <div class="overlay__body">
+          <div class="results-metrics">
+            <div class="results-metric">
+              <div class="results-label">SCORE</div>
+              <div class="results-value">${escapeHtml(scoreText)}</div>
+            </div>
 
-    <div class="results-metric">
-      <div class="results-label">TIME</div>
-      <div class="results-value">${escapeHtml(timeText)}</div>
-    </div>
-  </div>
+            <div class="results-metric">
+              <div class="results-label">TIME</div>
+              <div class="results-value">${escapeHtml(timeText)}</div>
+            </div>
+          </div>
 
-  <div class="results-completed">
-    Completed: ${escapeHtml(completedText)}
-  </div>
-</div>
-
+          <div class="results-completed">
+            Completed: ${escapeHtml(completedText)}
+          </div>
+        </div>
 
         <div class="overlay__actions">
           <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
@@ -580,9 +566,8 @@
     `;
 
     // Append inside the same container as the start overlay so it covers ONLY the game area
-const overlayHost = (overlay && overlay.parentElement) || stageEl || document.body;
-overlayHost.appendChild(end);
-
+    const overlayHost = (overlay && overlay.parentElement) || stageEl || document.body;
+    overlayHost.appendChild(end);
 
     // Hook up play again
     const playAgainBtn = document.getElementById("playAgainBtn");
@@ -596,7 +581,6 @@ overlayHost.appendChild(end);
     setTimeout(requestFit, 0);
     setTimeout(requestFit, 250);
   }
-
 
   function resetGame(startImmediately) {
     stopTimer();
