@@ -2,7 +2,7 @@
    Map Challenge Engine (Template)
    - Reads per-map settings from window.MAP_CHALLENGE_CONFIG
    - Injects SVG, runs the click challenge, shows overlay + results
-   - Designed to be copied to new folders with ONLY config.js changed
+   - Designed to be reused across map-challenge games (engine)
    ============================================================ */
 
 (function () {
@@ -14,7 +14,7 @@
   // Required config
   // ----------------------------
   const SVG_PATH = CFG.svgPath;
-  const TARGETS = Array.isArray(CFG.targets) ? CFG.targets.map(s => String(s).toLowerCase()) : [];
+  const TARGETS = Array.isArray(CFG.targets) ? CFG.targets.map((s) => String(s).toLowerCase()) : [];
 
   if (!SVG_PATH || !TARGETS.length) {
     console.error("[map-challenge] Missing required config: svgPath and/or targets[]");
@@ -25,7 +25,7 @@
   // ----------------------------
   const SHOW_FLAGS = !!CFG.showFlags;
   const FLAGS_BASE = CFG.flagsBase || "";
-  const IGNORE_IDS = new Set((CFG.ignoreIds || []).map(s => String(s).toLowerCase()));
+  const IGNORE_IDS = new Set((CFG.ignoreIds || []).map((s) => String(s).toLowerCase()));
 
   // Aliases: clicking one ID counts as another (e.g., gaza -> israel)
   const ALIAS = {};
@@ -39,11 +39,11 @@
   const GROUPS = {};
   if (CFG.groups && typeof CFG.groups === "object") {
     for (const [k, arr] of Object.entries(CFG.groups)) {
-      GROUPS[String(k).toLowerCase()] = Array.isArray(arr) ? arr.map(s => String(s).toLowerCase()) : [];
+      GROUPS[String(k).toLowerCase()] = Array.isArray(arr) ? arr.map((s) => String(s).toLowerCase()) : [];
     }
   }
 
-  const EXTRA_IDS = Array.isArray(CFG.extraIds) ? CFG.extraIds.map(s => String(s).toLowerCase()) : [];
+  const EXTRA_IDS = Array.isArray(CFG.extraIds) ? CFG.extraIds.map((s) => String(s).toLowerCase()) : [];
 
   const DISPLAY_NAMES = {};
   if (CFG.displayNames && typeof CFG.displayNames === "object") {
@@ -55,21 +55,21 @@
   const UI = CFG.ui || {};
   const LOGO_SRC = UI.logoSrc || "/assets/images/logo/MSHistory_Logo_Small.png";
 
-  // Banner + overlay text (easy edits)
+  // Banner + overlay text
   const BANNER_TITLE = UI.bannerTitle || "MAP CHALLENGE";
   const BANNER_ARIA = UI.bannerAria || "Map Challenge banner";
   const MAIN_ARIA = UI.mainAria || "Map challenge";
   const MAP_ARIA = UI.mapAria || "Map";
 
   const OVERLAY_KICKER = UI.overlayKicker || "MAP CHALLENGE";
-const OVERLAY_TITLE = UI.overlayTitle || "MAP CHALLENGE";
-const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!";
-
+  const OVERLAY_TITLE = UI.overlayTitle || "MAP CHALLENGE";
+  const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!";
 
   // ----------------------------
   // DOM
   // ----------------------------
   const stageEl = document.querySelector(".map-stage");
+  const hudEl = document.querySelector(".hud");
   const mapBox = document.getElementById("mapBox");
   const overlay = document.getElementById("startOverlay");
   const beginBtn = document.getElementById("beginBtn");
@@ -79,7 +79,7 @@ const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!"
   const timerEl = document.getElementById("timer");
   const cursorTipEl = document.getElementById("cursorTip");
 
-  // Text-bind targets in HTML (template-friendly)
+  // Text-bind targets in HTML
   const bannerTitleEl = document.getElementById("bannerTitle");
   const bannerBandEl = document.getElementById("challengeBand");
   const mainEl = document.getElementById("challengeMain");
@@ -95,25 +95,46 @@ const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!"
 
   let remaining = [];
   let currentTarget = null;
-  let tries = 0;        // 0 = first attempt, 1 = second attempt
-  let totalPoints = 0;  // 100 points first try, 50 points second try, 0 if missed twice
+  let tries = 0; // 0 first attempt, 1 second attempt
+  let totalPoints = 0;
 
   // completed targets should ignore clicks
   let locked = new Set();
 
- let timerStart = 0;
-let timerInt = null;
+  let timerStart = 0;
+  let timerInt = null;
 
-// ✅ Auto-timeout (defaults to 60 minutes)
-let gameStartMs = 0;
-let timeoutInt = null;
+  // Auto-timeout (defaults to 60 minutes)
+  let gameStartMs = 0;
+  let timeoutInt = null;
+  const AUTO_TIMEOUT_MINUTES = Number.isFinite(CFG.autoTimeoutMinutes) ? Number(CFG.autoTimeoutMinutes) : 60;
 
-
-  // pointer-down temporary red
-  
-
+  // tooltip tracking
   let lastMouseX = 0;
   let lastMouseY = 0;
+
+  // ----------------------------
+  // HUD visibility helpers
+  // ----------------------------
+  function setHudVisible(isVisible) {
+    // Better UX: hide Click/Timer/Reset any time an overlay is showing
+    if (hudEl) {
+      hudEl.style.visibility = isVisible ? "visible" : "hidden";
+      hudEl.style.pointerEvents = isVisible ? "auto" : "none";
+    }
+  }
+
+  function showStartOverlay() {
+    if (overlay) overlay.classList.remove("is-hidden");
+    document.body.classList.remove("is-playing");
+    setHudVisible(false);
+  }
+
+  function hideStartOverlay() {
+    if (overlay) overlay.classList.add("is-hidden");
+    document.body.classList.add("is-playing");
+    setHudVisible(true);
+  }
 
   // ----------------------------
   // Template text injection
@@ -133,11 +154,11 @@ let timeoutInt = null;
       overlayLogoEl.alt = "Middle School History logo";
     }
 
-    // Flags (hide by default unless enabled)
+    // Flags: ensure NO broken image on load
     if (targetFlagEl) {
-      if (!SHOW_FLAGS) {
-        targetFlagEl.style.display = "none";
-      }
+      targetFlagEl.removeAttribute("src");
+      targetFlagEl.src = "";
+      targetFlagEl.style.display = "none";
     }
   }
 
@@ -148,10 +169,8 @@ let timeoutInt = null;
     if (!stageEl) return;
 
     const vv = window.visualViewport;
-
     const viewportW = vv ? vv.width : document.documentElement.clientWidth;
     const viewportH = vv ? vv.height : document.documentElement.clientHeight;
-
     if (!viewportW || !viewportH) return;
 
     // temporarily remove scaling so we can measure natural size
@@ -177,39 +196,37 @@ let timeoutInt = null;
     const padX = 16;
     const padY = 16;
 
-    const offsetTop = vv ? (vv.offsetTop || 0) : 0;
-    const topInVisibleViewport = rect.top - offsetTop;
+    const maxW = Math.max(320, viewportW - padX);
+    const maxH = Math.max(320, viewportH - padY);
 
-    const availableW = viewportW - padX * 2;
-    const availableH = viewportH - topInVisibleViewport - padY;
-
-    if (availableW <= 0 || availableH <= 0) {
-      const scaleFallback = 0.85;
-      stageEl.style.transformOrigin = "top center";
-      stageEl.style.transform = `scale(${scaleFallback})`;
-      stageEl.style.marginBottom = `${Math.round((1 - scaleFallback) * naturalH)}px`;
-      return;
-    }
-
-    const scale = Math.max(0.55, Math.min(1, availableW / naturalW, availableH / naturalH));
+    const scale = Math.min(1, maxW / naturalW, maxH / naturalH);
 
     stageEl.style.transformOrigin = "top center";
     stageEl.style.transform = `scale(${scale})`;
-    stageEl.style.marginBottom = `${Math.round((1 - scale) * naturalH)}px`;
+
+    // keep space for scaled-down stage
+    const extra = Math.max(0, naturalH * scale - naturalH);
+    stageEl.style.marginBottom = `${extra}px`;
   }
 
-  let fitRAF = 0;
+  let fitRaf = 0;
   function requestFit() {
-    if (fitRAF) cancelAnimationFrame(fitRAF);
-    fitRAF = requestAnimationFrame(() => {
-      fitRAF = 0;
-      fitStageToViewport();
-    });
+    if (fitRaf) cancelAnimationFrame(fitRaf);
+    fitRaf = requestAnimationFrame(() => fitStageToViewport());
   }
 
+  window.addEventListener("resize", requestFit);
+  window.visualViewport?.addEventListener("resize", requestFit);
+
   // ----------------------------
-  // Helpers
+  // Utilities
   // ----------------------------
+  function cssEsc(id) {
+    // CSS.escape may not exist on older Chromebooks
+    if (window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(id);
+    return String(id).replace(/[^\w-]/g, "\\$&");
+  }
+
   function shuffle(arr) {
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) {
@@ -219,178 +236,31 @@ let timeoutInt = null;
     return a;
   }
 
-  function fmtTime(ms) {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
-    const millis = ms % 1000;
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(millis).padStart(3, "0")}`;
-  }
-
-  function startTimer() {
-    stopTimer();
-    timerStart = Date.now();
-    if (timerEl) timerEl.textContent = "00:00.000";
-    timerInt = setInterval(() => {
-      if (timerEl) timerEl.textContent = fmtTime(Date.now() - timerStart);
-    }, 31);
-  }
-
-function stopTimer() {
-  if (timerInt) clearInterval(timerInt);
-  timerInt = null;
-}
-
-  function stopTimeout() {
-  if (timeoutInt) clearInterval(timeoutInt);
-  timeoutInt = null;
-}
-
-function startTimeout() {
-  stopTimeout();
-
-  const TIMEOUT_MS =
-    typeof CFG.timeoutMs === "number" && CFG.timeoutMs > 0
-      ? CFG.timeoutMs
-      : 60 * 60 * 1000; // 60 minutes default
-
-  gameStartMs = Date.now();
-
-  timeoutInt = setInterval(() => {
-    if (!document.body.classList.contains("is-playing")) return;
-    if (Date.now() - gameStartMs < TIMEOUT_MS) return;
-
-    // Timeout hit: return to begin state
-   const endOverlay = document.getElementById("endOverlay");
-if (endOverlay) endOverlay.remove();
-resetGame(false);
-
-  }, 1000);
-}
-
-
   function displayNameFor(id) {
-    const key = String(id).toLowerCase();
-    const base = (DISPLAY_NAMES[key] ?? key.replaceAll("_", " ")).trim();
-    // Title case-ish
-    return base.replace(/\b\w/g, ch => ch.toUpperCase());
+    const k = String(id).toLowerCase();
+    return DISPLAY_NAMES[k] || prettifyId(k);
   }
 
-    const FLAG_EXT = CFG.flagExt || ".jpg";
-
-  function flagSrcFor(id) {
-    return `${FLAGS_BASE}${id}${FLAG_EXT}`;
+  function prettifyId(id) {
+    return String(id)
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (m) => m.toUpperCase());
   }
 
-
-
-  function setFlagForCurrent() {
-    if (!targetFlagEl) return;
-    if (!SHOW_FLAGS) {
-      targetFlagEl.style.display = "none";
-      return;
-    }
-
-    if (!currentTarget) {
-      targetFlagEl.style.display = "none";
-      targetFlagEl.src = "";
-      targetFlagEl.alt = "";
-      return;
-    }
-
-const src = flagSrcFor(currentTarget);
-
-// Hide by default so we never show a broken placeholder
-targetFlagEl.style.display = "none";
-targetFlagEl.alt = `${displayNameFor(currentTarget)} flag`;
-
-// Set handlers BEFORE src to catch fast failures
-targetFlagEl.onload = () => {
-  targetFlagEl.style.display = "inline-block";
-};
-
-targetFlagEl.onerror = () => {
-  targetFlagEl.style.display = "none";
-  targetFlagEl.src = "";
-  targetFlagEl.alt = "";
-};
-
-// Trigger load
-targetFlagEl.src = src;
-
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
   }
 
-  function setPrompt() {
-    if (!targetNameEl) return;
-
-    if (!currentTarget) {
-      targetNameEl.textContent = "Done!";
-      setFlagForCurrent();
-      return;
-    }
-
-    targetNameEl.textContent = displayNameFor(currentTarget);
-    setFlagForCurrent();
-  }
-
-  function getElById(id) {
-    if (!svgRoot) return null;
-    return svgRoot.querySelector(`#${CSS.escape(id)}`);
-  }
-
-  function forEachGroupEl(targetId, fn) {
-    const key = String(targetId).toLowerCase();
-    const group = GROUPS[key];
-    if (group && group.length) {
-      group.forEach(id => {
-        const el = getElById(id);
-        if (el) fn(el, id);
-      });
-      return;
-    }
-    const el = getElById(key);
-    if (el) fn(el, key);
-  }
-
- // Wrong-click feedback: quick red flash (Middle East style)
-function flashWrong(hit) {
-  const visualEl = getVisualElForHit(hit);
-  if (!visualEl) return;
-
-  // Clear any previous flash state
-  visualEl.classList.remove("tempWrong");
- 
-
-  visualEl.classList.add("tempWrong");
-  setTimeout(() => {
-    visualEl.classList.remove("tempWrong");
-  }, 120);
-}
-
-  // If you ever need “raw click counts as X but don’t color raw layer” logic
-  // you can implement it by customizing groups/alias/extraIds in config.
-  function getVisualElForHit(hit) {
-    if (!hit) return null;
-    return hit.el;
-  }
-
-  function clearAllTargetClasses() {
-    if (!svgRoot) return;
-    const allIds = TARGETS.concat(EXTRA_IDS);
-    for (const id of allIds) {
-      const el = getElById(id);
-      if (el) el.classList.remove("correct1", "correct2", "wrongFinal", "blink", "tempWrong");
-    }
-  }
-
-  function canShowCursorTip() {
-    if (!document.body.classList.contains("is-playing")) return false;
-    if (!cursorTipEl) return false;
-    if (!svgRoot) return false;
-    return true;
-  }
-
+  // ----------------------------
+  // Cursor tooltip (optional)
+  // ----------------------------
   function showCursorTip(text) {
-    if (!canShowCursorTip()) return;
+    if (!cursorTipEl) return;
     cursorTipEl.textContent = text;
     cursorTipEl.classList.add("is-on");
     cursorTipEl.style.left = `${lastMouseX + 12}px`;
@@ -403,176 +273,64 @@ function flashWrong(hit) {
   }
 
   // ----------------------------
-  // Game flow
+  // Flags
   // ----------------------------
-  function pickNext() {
-  tries = 0;
-  currentTarget = remaining.shift() || null;
-  setPrompt();
+  function clearFlag() {
+    if (!targetFlagEl) return;
+    targetFlagEl.src = "";
+    targetFlagEl.style.display = "none";
+  }
 
-  // ✅ If tooltip is currently visible, update it immediately
-  if (cursorTipEl && cursorTipEl.classList.contains("is-on")) {
-    if (currentTarget) {
-      showCursorTip(displayNameFor(currentTarget));
-    } else {
-      hideCursorTip();
+  function setFlagForCurrent() {
+    if (!targetFlagEl) return;
+
+    if (!SHOW_FLAGS || !currentTarget) {
+      clearFlag();
+      return;
+    }
+
+    const src = `${FLAGS_BASE}${currentTarget}.png`;
+    targetFlagEl.src = src;
+    targetFlagEl.style.display = "inline-block";
+  }
+
+  // ----------------------------
+  // Prompt
+  // ----------------------------
+  function updatePrompt() {
+    if (targetNameEl) {
+      targetNameEl.textContent = currentTarget ? displayNameFor(currentTarget) : "";
+    }
+    setFlagForCurrent();
+  }
+
+  // ----------------------------
+  // SVG helpers
+  // ----------------------------
+  function forEachGroupEl(targetId, fn) {
+    if (!svgRoot) return;
+    const baseId = String(targetId).toLowerCase();
+
+    const ids = new Set([baseId]);
+    if (GROUPS[baseId]) GROUPS[baseId].forEach((x) => ids.add(String(x).toLowerCase()));
+
+    // Apply to any extra ids you listed (handy for label backgrounds etc.)
+    // Only if they match the same targetId via groups/alias you add later.
+    for (const id of ids) {
+      const el = svgRoot.getElementById ? svgRoot.getElementById(id) : svgRoot.querySelector(`#${cssEsc(id)}`);
+      if (el) fn(el);
     }
   }
 
-  if (!currentTarget) {
-   stopTimer();
-  stopTimeout();
+  function clearAllTargetClasses() {
+    if (!svgRoot) return;
 
-    showEndOverlay();
-  }
-}
-
-
-  function scoreMax() {
-  // 100 points each (perfect game = TARGETS.length * 100)
-  return TARGETS.length * 100;
-}
-
-
-  function showEndOverlay() {
-    const elapsed = Date.now() - timerStart;
-const completedAt = new Date().toLocaleString();
-    
-const percent = scoreMax() ? ((totalPoints / scoreMax()) * 100) : 0;
-
-
-    // Remove existing end overlay if present
-    const existing = document.getElementById("endOverlay");
-    if (existing) existing.remove();
-
-    const end = document.createElement("div");
-    end.className = "start-overlay";
-    end.id = "endOverlay";
-    end.setAttribute("aria-label", "Results overlay");
-
-    end.innerHTML = `
-      <div class="start-overlay__card">
-        <div class="overlay__kicker">${escapeHtml(OVERLAY_KICKER)}</div>
-        <div class="overlay__title">${escapeHtml(OVERLAY_TITLE)}</div>
-
-
-        <div class="results-metrics" aria-label="Results metrics">
-
-  <div class="results-metric">
-    <div class="results-label">SCORE</div>
-    <div class="results-value">${percent.toFixed(1)}%</div>
-  </div>
-  <div class="results-metric">
-    <div class="results-label">TIME</div>
-    <div class="results-value">${fmtTime(elapsed)}</div>
-  </div>
-</div>
-
-<div class="results-completed">Completed: ${completedAt}</div>
-
-
-
-        <div class="overlay__actions">
-          <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
-        </div>
-
-        <img class="overlay__logo"
-             src="${escapeAttr(LOGO_SRC)}"
-             alt="Middle School History logo" />
-      </div>
-    `;
-
-    (stageEl || document.body).appendChild(end);
-
-
-    const playAgainBtn = end.querySelector("#playAgainBtn");
-    playAgainBtn?.addEventListener("click", () => {
-      end.remove();
-      resetGame(true);
-    });
-  }
-
-function resetGame(startImmediately) {
-  // ✅ Stop any running clock interval immediately
-    stopTimer();
-  stopTimeout();
-
-
-  locked = new Set();
-  remaining = [];
-  currentTarget = null;
-  tries = 0;
-  totalPoints = 0;
-
-  clearAllTargetClasses();
-
-if (timerEl) timerEl.textContent = "00:00.000";
-
-// ✅ Reset prompt label
-if (targetNameEl) targetNameEl.textContent = "—";
-currentTarget = null;
-tries = 0;
-setFlagForCurrent();
-
-
-
-  if (targetFlagEl) {
-    targetFlagEl.style.display = "none";
-    targetFlagEl.src = "";
-    targetFlagEl.alt = "";
-    if (SHOW_FLAGS) targetFlagEl.style.display = "inline-block";
-    if (!SHOW_FLAGS) targetFlagEl.style.display = "none";
-  }
-
-  hideCursorTip();
-
-  // ✅ IMPORTANT: Always exit playing state on reset
-  document.body.classList.remove("is-playing");
-
-  if (overlay && !startImmediately) overlay.classList.remove("is-hidden");
-
-  if (startImmediately) {
-    if (overlay) overlay.classList.add("is-hidden");
-    document.body.classList.add("is-playing");
-    remaining = shuffle(TARGETS);
-    pickNext();
-startTimer();
-startTimeout();
-
-  }
-
-  requestFit();
-}
-
-
-  // ----------------------------
-  // SVG loading + hit testing
-  // ----------------------------
-  async function loadSvg() {
-    if (!mapBox) return;
-    const res = await fetch(SVG_PATH, { cache: "no-store" });
-    if (!res.ok) throw new Error(`[map-challenge] Failed to fetch SVG: ${SVG_PATH} (HTTP ${res.status})`);
-
-    const svgText = await res.text();
-mapBox.innerHTML = svgText;
-
-svgRoot = mapBox.querySelector("svg");
-if (!svgRoot) throw new Error("[map-challenge] SVG root not found after injection");
-
-// ✅ Remove all <title> elements so hovering does NOT reveal town names
-svgRoot.querySelectorAll("title").forEach(t => t.remove());
-
-// ensure injected svg doesn't steal focus outlines weirdly
-svgRoot.setAttribute("focusable", "false");
-
-
-    // start clean
-    resetGame(false);
-
-    // Bind pointer events
-    bindSvgEvents();
-
-    requestFit();
+    const allIds = new Set([...TARGETS, ...EXTRA_IDS]);
+    for (const id of allIds) {
+      forEachGroupEl(id, (el) => {
+        el.classList.remove("correct1", "correct2", "tempWrong", "wrongFinal", "blink");
+      });
+    }
   }
 
   function buildClickableSelector() {
@@ -582,7 +340,7 @@ svgRoot.setAttribute("focusable", "false");
     for (const id of EXTRA_IDS) all.add(`#${cssEsc(id)}`);
     for (const id of IGNORE_IDS) all.add(`#${cssEsc(id)}`);
 
-    // Also include alias keys so clicks on those can be normalized
+    // include alias keys so clicks on those can be normalized
     for (const k of Object.keys(ALIAS)) {
       all.add(`#${cssEsc(k)}`);
     }
@@ -594,7 +352,7 @@ svgRoot.setAttribute("focusable", "false");
     if (!svgRoot) return null;
 
     const selector = buildClickableSelector();
-    const targetEl = (e.target && e.target.closest) ? e.target.closest(selector) : null;
+    const targetEl = e.target && e.target.closest ? e.target.closest(selector) : null;
     if (!targetEl) return null;
 
     const raw = String(targetEl.id).toLowerCase();
@@ -608,55 +366,233 @@ svgRoot.setAttribute("focusable", "false");
     return { raw, normalized, el: targetEl };
   }
 
-  function markCorrect(targetId, attemptNumber) {
-  // attemptNumber: 1 -> first try (green), 2 -> second try (yellow)
-  const cls = attemptNumber === 1 ? "correct1" : "correct2";
-  forEachGroupEl(targetId, el => {
-    el.classList.remove("tempWrong", "wrongFinal", "blink");
-    el.classList.add(cls); // ✅ instant color, no blink
-  });
-}
+  // ----------------------------
+  // Marking / feedback
+  // ----------------------------
+  function flashWrong(hit) {
+    if (!hit || !hit.el) return;
+    const el = hit.el;
+    el.classList.add("tempWrong", "blink");
+    setTimeout(() => el.classList.remove("blink"), 250);
+    setTimeout(() => el.classList.remove("tempWrong"), 450);
+  }
 
+  function markCorrect(targetId, attemptNumber) {
+    const cls = attemptNumber === 1 ? "correct1" : "correct2";
+    forEachGroupEl(targetId, (el) => {
+      el.classList.remove("tempWrong", "wrongFinal", "blink");
+      el.classList.add(cls);
+    });
+  }
 
   function markFinalWrong(targetId) {
-    forEachGroupEl(targetId, el => {
+    forEachGroupEl(targetId, (el) => {
       el.classList.remove("tempWrong");
       el.classList.add("wrongFinal", "blink");
       setTimeout(() => el.classList.remove("blink"), 400);
     });
   }
 
+  // ----------------------------
+  // Timer
+  // ----------------------------
+  function fmtTime(ms) {
+    const total = Math.max(0, ms);
+    const minutes = Math.floor(total / 60000);
+    const seconds = Math.floor((total % 60000) / 1000);
+    const millis = Math.floor(total % 1000);
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(millis).padStart(3, "0")}`;
+  }
+
+  function stopTimer() {
+    if (timerInt) clearInterval(timerInt);
+    timerInt = null;
+  }
+
+  function startTimer() {
+    stopTimer();
+    timerStart = performance.now();
+    if (timerEl) timerEl.textContent = "00:00.000";
+    timerInt = setInterval(() => {
+      if (!timerEl) return;
+      const now = performance.now();
+      timerEl.textContent = fmtTime(now - timerStart);
+    }, 33);
+  }
+
+  // ----------------------------
+  // Auto-timeout
+  // ----------------------------
+  function stopTimeout() {
+    if (timeoutInt) clearInterval(timeoutInt);
+    timeoutInt = null;
+  }
+
+  function startTimeout() {
+    stopTimeout();
+    gameStartMs = Date.now();
+    timeoutInt = setInterval(() => {
+      const elapsedMin = (Date.now() - gameStartMs) / 60000;
+      if (elapsedMin >= AUTO_TIMEOUT_MINUTES) {
+        stopTimeout();
+        endGame(true);
+      }
+    }, 1000);
+  }
+
+  // ----------------------------
+  // Game flow
+  // ----------------------------
+  function pickNext() {
+    tries = 0;
+
+    if (!remaining.length) {
+      endGame(false);
+      return;
+    }
+
+    currentTarget = remaining.pop();
+    updatePrompt();
+  }
+
+  function endGame(isTimeout) {
+    document.body.classList.remove("is-playing");
+    setHudVisible(false);
+
+    stopTimer();
+    stopTimeout();
+
+    // remove existing end overlay first
+    const existing = document.getElementById("endOverlay");
+    if (existing) existing.remove();
+
+    const end = document.createElement("div");
+    end.id = "endOverlay";
+    end.className = "end-overlay";
+    end.setAttribute("aria-label", "End overlay");
+
+    const elapsed = timerStart ? performance.now() - timerStart : 0;
+    const timeText = fmtTime(elapsed);
+
+    end.innerHTML = `
+      <div class="end-overlay__card">
+        <div class="end-overlay__title">${isTimeout ? "Time's Up!" : "Finished!"}</div>
+        <div class="end-overlay__stats">
+          <div class="stat"><b>Time:</b> ${escapeHtml(timeText)}</div>
+          <div class="stat"><b>Points:</b> ${escapeHtml(String(totalPoints))}</div>
+        </div>
+        <div class="end-overlay__actions">
+          <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(end);
+
+    const playAgainBtn = document.getElementById("playAgainBtn");
+    playAgainBtn?.addEventListener("click", () => {
+      end.remove();
+      resetGame(true);
+    });
+  }
+
+  function resetGame(startImmediately) {
+    stopTimer();
+    stopTimeout();
+
+    currentTarget = null;
+    tries = 0;
+    totalPoints = 0;
+    locked = new Set();
+
+    remaining = shuffle(TARGETS);
+
+    clearAllTargetClasses();
+    clearFlag();
+
+    // Clear prompt text
+    if (targetNameEl) targetNameEl.textContent = "";
+
+    const endOverlay = document.getElementById("endOverlay");
+    if (endOverlay) endOverlay.remove();
+
+    if (startImmediately) {
+      hideStartOverlay();
+      pickNext();
+      startTimer();
+      startTimeout();
+    } else {
+      showStartOverlay();
+      // IMPORTANT: don’t show a dead flag image on load
+      clearFlag();
+    }
+
+    requestFit();
+  }
+
+  // ----------------------------
+  // SVG injection
+  // ----------------------------
+  async function loadSvg() {
+    if (!mapBox) return;
+
+    const res = await fetch(SVG_PATH, { cache: "no-store" });
+    const svgText = await res.text();
+
+    mapBox.innerHTML = svgText;
+
+    svgRoot = mapBox.querySelector("svg");
+    if (!svgRoot) {
+      console.error("[map-challenge] SVG did not load correctly.");
+      return;
+    }
+
+    // Remove all <title> elements so hovering does NOT reveal names
+    svgRoot.querySelectorAll("title").forEach((t) => t.remove());
+
+    // ensure injected svg doesn't steal focus outlines weirdly
+    svgRoot.setAttribute("focusable", "false");
+
+    // start clean (overlay visible)
+    resetGame(false);
+
+    // Bind pointer events
+    bindSvgEvents();
+
+    requestFit();
+  }
+
   function bindSvgEvents() {
     if (!svgRoot) return;
 
     // Tooltip follows cursor
-    svgRoot.addEventListener("mousemove", (e) => {
-      lastMouseX = e.clientX;
-      lastMouseY = e.clientY;
-      if (cursorTipEl && cursorTipEl.classList.contains("is-on")) {
-        cursorTipEl.style.left = `${lastMouseX + 12}px`;
-        cursorTipEl.style.top = `${lastMouseY + 12}px`;
-      }
-    }, { passive: true });
+    svgRoot.addEventListener(
+      "mousemove",
+      (e) => {
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        if (cursorTipEl && cursorTipEl.classList.contains("is-on")) {
+          cursorTipEl.style.left = `${lastMouseX + 12}px`;
+          cursorTipEl.style.top = `${lastMouseY + 12}px`;
+        }
+      },
+      { passive: true }
+    );
 
     // Hover tooltip: do NOT reveal hovered name (prevents giving answers)
-// If you want a tooltip, show the current target instead.
-svgRoot.addEventListener("pointerover", (e) => {
-  const hit = normalizeClickedId(e);
-  if (!hit) return;
-  if (!document.body.classList.contains("is-playing")) return;
-  if (locked.has(hit.normalized)) return;
+    // If you want a tooltip, show the current target instead.
+    svgRoot.addEventListener("pointerover", (e) => {
+      const hit = normalizeClickedId(e);
+      if (!hit) return;
+      if (!document.body.classList.contains("is-playing")) return;
+      if (locked.has(hit.normalized)) return;
 
-  // Show the prompt target, not the hovered region
-  if (currentTarget) showCursorTip(displayNameFor(currentTarget));
-});
+      if (currentTarget) showCursorTip(displayNameFor(currentTarget));
+    });
 
     svgRoot.addEventListener("pointerout", () => {
       hideCursorTip();
     });
-
-   
-
 
     // click: main game logic
     svgRoot.addEventListener("click", (e) => {
@@ -670,35 +606,32 @@ svgRoot.addEventListener("pointerover", (e) => {
       if (locked.has(clicked)) return;
 
       if (clicked === currentTarget) {
-  // correct
-  if (tries === 0) {
-    totalPoints += 100;
-    markCorrect(currentTarget, 1);
-  } else {
-    totalPoints += 50;
-    markCorrect(currentTarget, 2);
-  }
+        // correct
+        if (tries === 0) {
+          totalPoints += 100;
+          markCorrect(currentTarget, 1);
+        } else {
+          totalPoints += 50;
+          markCorrect(currentTarget, 2);
+        }
 
-  locked.add(currentTarget);
-  pickNext();
-  return;
-}
-
+        locked.add(currentTarget);
+        pickNext();
+        return;
+      }
 
       // wrong
-if (tries === 0) {
-  flashWrong(hit);     // ✅ quick red flash
-  tries = 1;           // second chance
-  return;
-}
-
+      if (tries === 0) {
+        flashWrong(hit); // quick red flash
+        tries = 1; // second chance
+        return;
+      }
 
       // second wrong => finalize
-flashWrong(hit);              // ✅ flash what they clicked
-locked.add(currentTarget);
-markFinalWrong(currentTarget); // ✅ mark correct target red
-pickNext();
-
+      flashWrong(hit); // flash what they clicked
+      locked.add(currentTarget);
+      markFinalWrong(currentTarget); // mark correct target red
+      pickNext();
     });
   }
 
@@ -707,23 +640,11 @@ pickNext();
   // ----------------------------
   if (beginBtn) {
     beginBtn.addEventListener("click", () => {
+      // if an end overlay exists, remove it
       const endOverlay = document.getElementById("endOverlay");
       if (endOverlay) endOverlay.remove();
 
-      if (overlay) overlay.classList.add("is-hidden");
-      document.body.classList.add("is-playing");
-
-      clearAllTargetClasses();
-      totalPoints = 0;
-
-      locked = new Set();
-      remaining = shuffle(TARGETS);
-          pickNext();
-    startTimer();
-    startTimeout();
-
-
-      requestFit();
+      resetGame(true);
     });
   }
 
@@ -734,15 +655,17 @@ pickNext();
   document.addEventListener("keydown", (e) => {
     if (e.code !== "Space" && e.key !== " ") return;
 
+    // space starts game if start overlay is visible
     if (overlay && !overlay.classList.contains("is-hidden")) {
       e.preventDefault();
       beginBtn?.click();
       return;
     }
 
+    // space plays again if end overlay exists
     const endOverlay = document.getElementById("endOverlay");
     if (endOverlay) {
-      const playAgainBtn = endOverlay.querySelector("#playAgainBtn");
+      const playAgainBtn = document.getElementById("playAgainBtn");
       if (playAgainBtn) {
         e.preventDefault();
         playAgainBtn.click();
@@ -750,44 +673,11 @@ pickNext();
     }
   });
 
-  window.addEventListener("resize", requestFit, { passive: true });
-  window.addEventListener("orientationchange", requestFit);
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", requestFit, { passive: true });
-    window.visualViewport.addEventListener("scroll", requestFit, { passive: true });
-  }
-
   // ----------------------------
   // Boot
   // ----------------------------
   applyUiText();
-
-  loadSvg().catch(err => {
-    console.error(err);
-    if (mapBox) mapBox.innerHTML = "<div style='padding:16px;color:#fff'>Could not load map SVG.</div>";
-  });
-
-  requestFit();
-  setTimeout(requestFit, 0);
-  setTimeout(requestFit, 250);
-
-  // ----------------------------
-  // Small utilities
-  // ----------------------------
-  function cssEsc(s) {
-    try { return CSS.escape(String(s)); }
-    catch { return String(s).replace(/[^a-z0-9_-]/gi, "\\$&"); }
-  }
-
-  function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, c => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-    }[c]));
-  }
-
-  function escapeAttr(str) {
-    // good enough for URLs in our own config
-    return String(str).replace(/"/g, "&quot;");
-  }
+  // On initial page load, overlay is visible -> hide HUD
+  setHudVisible(false);
+  loadSvg().catch((err) => console.error("[map-challenge] SVG load error:", err));
 })();
