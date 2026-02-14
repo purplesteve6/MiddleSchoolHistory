@@ -238,10 +238,10 @@
     });
   }
 
-  // Same listeners as the standalone version
-  	window.addEventListener("resize", requestFit, { passive: true });
-  	window.addEventListener("orientationchange", requestFit);
-	window.addEventListener("scroll", requestFit, { passive: true });
+  // Same listeners as the standalone version (+ window scroll)
+  window.addEventListener("resize", requestFit, { passive: true });
+  window.addEventListener("orientationchange", requestFit);
+  window.addEventListener("scroll", requestFit, { passive: true });
 
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", requestFit, { passive: true });
@@ -249,11 +249,15 @@
   }
 
   // One extra: after the whole page (fonts/images) is ready
-  window.addEventListener("load", () => {
-    requestFit();
-    setTimeout(requestFit, 0);
-    setTimeout(requestFit, 250);
-  }, { passive: true });
+  window.addEventListener(
+    "load",
+    () => {
+      requestFit();
+      setTimeout(requestFit, 0);
+      setTimeout(requestFit, 250);
+    },
+    { passive: true }
+  );
 
   // ----------------------------
   // Utilities
