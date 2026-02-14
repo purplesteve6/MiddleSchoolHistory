@@ -239,8 +239,9 @@
   }
 
   // Same listeners as the standalone version
-  window.addEventListener("resize", requestFit, { passive: true });
-  window.addEventListener("orientationchange", requestFit);
+  	window.addEventListener("resize", requestFit, { passive: true });
+  	window.addEventListener("orientationchange", requestFit);
+	window.addEventListener("scroll", requestFit, { passive: true });
 
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", requestFit, { passive: true });
