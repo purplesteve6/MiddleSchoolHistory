@@ -238,7 +238,7 @@
     });
   }
 
-  // Same listeners as the standalone version (+ window scroll)
+  // Same listeners as the standalone version
   window.addEventListener("resize", requestFit, { passive: true });
   window.addEventListener("orientationchange", requestFit);
   window.addEventListener("scroll", requestFit, { passive: true });
@@ -529,18 +529,53 @@
     end.className = "end-overlay";
     end.setAttribute("aria-label", "End overlay");
 
+    // ✅ Force overlay to be visible/on-top even if CSS/z-index gets weird
+    end.style.position = "fixed";
+    end.style.inset = "0";
+    end.style.zIndex = "9999";
+    end.style.display = "flex";
+    end.style.alignItems = "center";
+    end.style.justifyContent = "center";
+    end.style.padding = "16px";
+    end.style.background = "rgba(0,0,0,0.55)";
+
     const elapsed = timerStart ? performance.now() - timerStart : 0;
     const timeText = fmtTime(elapsed);
 
     end.innerHTML = `
-      <div class="end-overlay__card">
-        <div class="end-overlay__title">${isTimeout ? "Time's Up!" : "Finished!"}</div>
-        <div class="end-overlay__stats">
+      <div class="end-overlay__card" style="
+        width: min(520px, 92vw);
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.28);
+        padding: 18px 18px 16px;
+      ">
+        <div class="end-overlay__title" style="
+          font-size: 28px;
+          font-weight: 800;
+          letter-spacing: .3px;
+          margin-bottom: 10px;
+        ">${isTimeout ? "Time's Up!" : "Finished!"}</div>
+
+        <div class="end-overlay__stats" style="
+          display: grid;
+          gap: 8px;
+          margin-bottom: 14px;
+          font-size: 16px;
+        ">
           <div class="stat"><b>Time:</b> ${escapeHtml(timeText)}</div>
           <div class="stat"><b>Points:</b> ${escapeHtml(String(totalPoints))}</div>
         </div>
-        <div class="end-overlay__actions">
-          <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
+
+        <div class="end-overlay__actions" style="display:flex; gap:10px;">
+          <button class="begin-btn" id="playAgainBtn" type="button" style="
+            appearance: none;
+            border: none;
+            border-radius: 14px;
+            padding: 10px 14px;
+            font-weight: 800;
+            cursor: pointer;
+          ">Play Again</button>
         </div>
       </div>
     `;
