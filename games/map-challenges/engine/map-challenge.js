@@ -215,6 +215,25 @@
     fitRaf = requestAnimationFrame(() => fitStageToViewport());
   }
 
+  let fitRaf = 0;
+  function requestFit() {
+    if (fitRaf) cancelAnimationFrame(fitRaf);
+    fitRaf = requestAnimationFrame(() => fitStageToViewport());
+  }
+
+  // Re-fit when the stage's intrinsic size changes (overlay shows/hides, fonts load, etc.)
+  if (stageEl && "ResizeObserver" in window) {
+    const ro = new ResizeObserver(() => requestFit());
+    ro.observe(stageEl);
+  }
+
+  // Also re-fit once everything (images/fonts) has finished loading
+  window.addEventListener("load", requestFit, { passive: true });
+
+  window.addEventListener("resize", requestFit);
+  window.visualViewport?.addEventListener("resize", requestFit);
+
+
   window.addEventListener("resize", requestFit);
   window.visualViewport?.addEventListener("resize", requestFit);
 
