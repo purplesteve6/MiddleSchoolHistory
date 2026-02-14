@@ -25,6 +25,7 @@
   // ----------------------------
   const SHOW_FLAGS = !!CFG.showFlags;
   const FLAGS_BASE = CFG.flagsBase || "";
+  const FLAG_EXT = CFG.flagExt || ".png"; // supports per-game override; defaults to .png
   const IGNORE_IDS = new Set((CFG.ignoreIds || []).map((s) => String(s).toLowerCase()));
 
   // Aliases: clicking one ID counts as another (e.g., gaza -> israel)
@@ -128,12 +129,14 @@
     if (overlay) overlay.classList.remove("is-hidden");
     document.body.classList.remove("is-playing");
     setHudVisible(false);
+    requestFit();
   }
 
   function hideStartOverlay() {
     if (overlay) overlay.classList.add("is-hidden");
     document.body.classList.add("is-playing");
     setHudVisible(true);
+    requestFit();
   }
 
   // ----------------------------
@@ -158,6 +161,7 @@
     if (targetFlagEl) {
       targetFlagEl.removeAttribute("src");
       targetFlagEl.src = "";
+      targetFlagEl.alt = "";
       targetFlagEl.style.display = "none";
     }
   }
@@ -215,24 +219,14 @@
     fitRaf = requestAnimationFrame(() => fitStageToViewport());
   }
 
-  let fitRaf = 0;
-  function requestFit() {
-    if (fitRaf) cancelAnimationFrame(fitRaf);
-    fitRaf = requestAnimationFrame(() => fitStageToViewport());
-  }
-
-  // Re-fit when the stage's intrinsic size changes (overlay shows/hides, fonts load, etc.)
+  // ✅ Re-fit when the stage's intrinsic size changes (overlay shows/hides, fonts load, etc.)
   if (stageEl && "ResizeObserver" in window) {
     const ro = new ResizeObserver(() => requestFit());
     ro.observe(stageEl);
   }
 
-  // Also re-fit once everything (images/fonts) has finished loading
+  // ✅ Also re-fit once everything (images/fonts) has finished loading
   window.addEventListener("load", requestFit, { passive: true });
-
-  window.addEventListener("resize", requestFit);
-  window.visualViewport?.addEventListener("resize", requestFit);
-
 
   window.addEventListener("resize", requestFit);
   window.visualViewport?.addEventListener("resize", requestFit);
@@ -296,7 +290,10 @@
   // ----------------------------
   function clearFlag() {
     if (!targetFlagEl) return;
+    targetFlagEl.onload = null;
+    targetFlagEl.onerror = null;
     targetFlagEl.src = "";
+    targetFlagEl.alt = "";
     targetFlagEl.style.display = "none";
   }
 
@@ -308,9 +305,25 @@
       return;
     }
 
-    const src = `${FLAGS_BASE}${currentTarget}.png`;
+    const src = `${FLAGS_BASE}${currentTarget}${FLAG_EXT}`;
+
+    // Hide by default so we never show a broken placeholder
+    targetFlagEl.style.display = "none";
+    targetFlagEl.alt = `${displayNameFor(currentTarget)} flag`;
+
+    // Set handlers BEFORE src to catch fast cache outcomes
+    targetFlagEl.onload = () => {
+      targetFlagEl.style.display = "inline-block";
+    };
+
+    targetFlagEl.onerror = () => {
+      // Hide cleanly if missing/mismatched
+      targetFlagEl.style.display = "none";
+      targetFlagEl.src = "";
+      targetFlagEl.alt = "";
+    };
+
     targetFlagEl.src = src;
-    targetFlagEl.style.display = "inline-block";
   }
 
   // ----------------------------
@@ -333,8 +346,6 @@
     const ids = new Set([baseId]);
     if (GROUPS[baseId]) GROUPS[baseId].forEach((x) => ids.add(String(x).toLowerCase()));
 
-    // Apply to any extra ids you listed (handy for label backgrounds etc.)
-    // Only if they match the same targetId via groups/alias you add later.
     for (const id of ids) {
       const el = svgRoot.getElementById ? svgRoot.getElementById(id) : svgRoot.querySelector(`#${cssEsc(id)}`);
       if (el) fn(el);
@@ -513,6 +524,8 @@
       end.remove();
       resetGame(true);
     });
+
+    requestFit();
   }
 
   function resetGame(startImmediately) {
@@ -542,7 +555,6 @@
       startTimeout();
     } else {
       showStartOverlay();
-      // IMPORTANT: don’t show a dead flag image on load
       clearFlag();
     }
 
