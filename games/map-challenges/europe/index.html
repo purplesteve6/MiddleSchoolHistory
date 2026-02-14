@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Europe Map Challenge | Middle School History</title>
+
+    <!-- Global site styles -->
+  <link rel="stylesheet" href="../../../styles.css" />
+
+  <!-- Shared engine styles -->
+  <link rel="stylesheet" href="../engine/map-challenge.css" />
+
+  <!-- Page-specific overrides (usually just :root vars) -->
+  <link rel="stylesheet" href="./europe.css" />
+
+</head>
+
+<body class="map-challenge-page">
+
+  <!-- MAIN SITE HEADER (injected) -->
+  <div id="siteHeader" data-include="/partials/main-header.html"></div>
+
+  <!-- Full-width band under header -->
+  <section
+    id="challengeBand"
+    class="challenge-band challenge-band--image"
+    style="background-image: url('/assets/images/banners/map-challenges-banner.jpg');"
+    aria-label="Map Challenge banner"
+  >
+    <div class="challenge-band__bottom">
+      <div class="challenge-band__inner">
+        <h1 class="challenge-band__title" id="bannerTitle">MAP CHALLENGE</h1>
+      </div>
+    </div>
+  </section>
+
+  <main id="challengeMain" class="challenge-main" aria-label="Map challenge">
+    <section class="map-stage" aria-label="Map stage">
+
+      <!-- HUD -->
+      <div class="hud" aria-label="Game HUD">
+        <div class="hud__prompt">
+          Click:
+          <span id="targetName">—</span>
+          <img
+            id="targetFlag"
+            class="hud__flag"
+            src=""
+            alt=""
+            width="34"
+            height="22"
+            style="display:none;"
+          />
+        </div>
+
+        <div class="hud__right">
+          <div class="hud__timer" id="timer">00:00.000</div>
+          <button class="hud__reset" id="resetBtn" type="button">Reset</button>
+        </div>
+      </div>
+
+      <!-- SVG gets injected here -->
+      <div class="map-box" id="mapBox" aria-label="Map"></div>
+
+      <!-- Dark overlay shown on load -->
+      <div class="start-overlay" id="startOverlay" aria-label="Start overlay">
+        <div class="start-overlay__card">
+          <div class="overlay__kicker" id="overlayKicker">MAP CHALLENGE</div>
+          <div class="overlay__title" id="overlayTitle">MAP</div>
+
+          <div class="overlay__body" id="overlayBody">
+            Click the regions as fast as you can!
+          </div>
+
+          <div class="overlay__actions">
+            <button class="begin-btn" id="beginBtn" type="button">Begin</button>
+          </div>
+
+          <img
+            class="overlay__logo"
+            id="overlayLogo"
+            src="/assets/images/logo/MSHistory_Logo_Small.png"
+            alt="Middle School History logo"
+          />
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Cursor-follow tooltip (outside scaled .map-stage) -->
+  <div class="cursor-tip" id="cursorTip" aria-hidden="true"></div>
+
+  <!-- FOOTER (injected) -->
+  <div id="siteFooter" data-include="/partials/footer.html"></div>
+
+    <!-- Inject header/footer -->
+  <script src="../../../include.js"></script>
+
+  <!-- Per-map config -->
+  <script src="./config.js"></script>
+
+  <!-- Shared game engine -->
+  <script src="../engine/map-challenge.js"></script>
+
+</body>
+</html>
