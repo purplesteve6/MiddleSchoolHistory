@@ -66,8 +66,6 @@ window.MAP_CHALLENGE_CONFIG = {
 
   // IDs that exist in SVG but should NOT count as wrong / clickable targets
   ignoreIds: [
-    "county_outline",
-    "labels",
     "water",
     "borders",
     "context_land"
@@ -75,11 +73,11 @@ window.MAP_CHALLENGE_CONFIG = {
 
   // Optional display name overrides
   displayNames: {
-	bosnia_and_herzegovina: "Bosnia & Herzegovina"
-	north_macedonia: "North Macedonia"
-	san_marino: "San Marino"
-	united_kingdom: "United Kingdom"
-	vatican_city: "Vatican City"
+	bosnia_and_herzegovina: "Bosnia & Herzegovina",
+	north_macedonia: "North Macedonia",
+	san_marino: "San Marino",
+	united_kingdom: "United Kingdom",
+	vatican_city: "Vatican City",
   },
 
   // Optional aliasing (not needed for this map, but supported)
