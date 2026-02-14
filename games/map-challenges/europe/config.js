@@ -11,8 +11,9 @@ window.MAP_CHALLENGE_CONFIG = {
 
 
   // Flags optional (towns usually don't need them)
-  showFlags: true,
-  flagsBase: "/games/map-challenges/europe/flags/",
+ 	showFlags: true,
+ 	flagsBase: "/games/map-challenges/europe/flags/",
+	flagExt: ".png",
 
   // IDs that count as "targets" (must match SVG element IDs)
   targets: [
