@@ -1,4 +1,3 @@
-@ -1,785 +1,789 @@
 /* ============================================================
    Map Challenge Engine (Template)
    - Reads per-map settings from window.MAP_CHALLENGE_CONFIG
@@ -26,10 +25,9 @@
   // ----------------------------
   const SHOW_FLAGS = !!CFG.showFlags;
   const FLAGS_BASE = CFG.flagsBase || "";
-  const FLAG_EXT = CFG.flagExt || ".png"; // supports per-game override; defaults to .png
+  const FLAG_EXT = CFG.flagExt || ".png";
   const IGNORE_IDS = new Set((CFG.ignoreIds || []).map((s) => String(s).toLowerCase()));
 
-  // Aliases: clicking one ID counts as another (e.g., gaza -> israel)
   const ALIAS = {};
   if (CFG.alias && typeof CFG.alias === "object") {
     for (const [k, v] of Object.entries(CFG.alias)) {
@@ -37,7 +35,6 @@
     }
   }
 
-  // Groups: when a target is correct/wrong, apply styles to multiple SVG IDs
   const GROUPS = {};
   if (CFG.groups && typeof CFG.groups === "object") {
     for (const [k, arr] of Object.entries(CFG.groups)) {
@@ -56,13 +53,6 @@
 
   const UI = CFG.ui || {};
   const LOGO_SRC = UI.logoSrc || "/assets/images/logo/MSHistory_Logo_Small.png";
-
-  // Banner + overlay text
-  const BANNER_TITLE = UI.bannerTitle || "MAP CHALLENGE";
-  const BANNER_ARIA = UI.bannerAria || "Map Challenge banner";
-  const MAIN_ARIA = UI.mainAria || "Map challenge";
-  const MAP_ARIA = UI.mapAria || "Map";
-
   const OVERLAY_KICKER = UI.overlayKicker || "MAP CHALLENGE";
   const OVERLAY_TITLE = UI.overlayTitle || "MAP CHALLENGE";
   const BEGIN_MESSAGE = UI.beginMessage || "Click the regions as fast as you can!";
@@ -81,84 +71,66 @@
   const timerEl = document.getElementById("timer");
   const cursorTipEl = document.getElementById("cursorTip");
 
-  // Text-bind targets in HTML
-  const bannerTitleEl = document.getElementById("bannerTitle");
-  const bannerBandEl = document.getElementById("challengeBand");
-  const mainEl = document.getElementById("challengeMain");
+  // Optional text targets (safe if missing)
   const overlayKickerEl = document.getElementById("overlayKicker");
   const overlayTitleEl = document.getElementById("overlayTitle");
   const overlayBodyEl = document.getElementById("overlayBody");
   const overlayLogoEl = document.getElementById("overlayLogo");
 
   // ----------------------------
-  // Internal state
+  // State
   // ----------------------------
   let svgRoot = null;
 
   let remaining = [];
   let currentTarget = null;
-  let tries = 0; // 0 first attempt, 1 second attempt
+  let tries = 0; // 0 = first try, 1 = second try
   let totalPoints = 0;
-
-  // completed targets should ignore clicks
   let locked = new Set();
 
   let timerStart = 0;
   let timerInt = null;
-
-  // Auto-timeout (defaults to 60 minutes)
-  let gameStartMs = 0;
-  let timeoutInt = null;
-  const AUTO_TIMEOUT_MINUTES = Number.isFinite(CFG.autoTimeoutMinutes) ? Number(CFG.autoTimeoutMinutes) : 60;
 
   // tooltip tracking
   let lastMouseX = 0;
   let lastMouseY = 0;
 
   // ----------------------------
-  // HUD visibility helpers
+  // HUD visibility (hide when overlay is up)
   // ----------------------------
   function setHudVisible(isVisible) {
-    // Better UX: hide Click/Timer/Reset any time an overlay is showing
-    if (hudEl) {
-      hudEl.style.visibility = isVisible ? "visible" : "hidden";
-      hudEl.style.pointerEvents = isVisible ? "auto" : "none";
-    }
+    if (!hudEl) return;
+    hudEl.style.visibility = isVisible ? "visible" : "hidden";
+    hudEl.style.pointerEvents = isVisible ? "auto" : "none";
   }
 
   function showStartOverlay() {
     if (overlay) overlay.classList.remove("is-hidden");
     document.body.classList.remove("is-playing");
     setHudVisible(false);
-    requestFit(); // important: layout changed
+    requestFit();
   }
 
   function hideStartOverlay() {
     if (overlay) overlay.classList.add("is-hidden");
     document.body.classList.add("is-playing");
     setHudVisible(true);
-    requestFit(); // important: layout changed
+    requestFit();
   }
 
   // ----------------------------
-  // Template text injection
+  // Text injection for start overlay (optional)
   // ----------------------------
   function applyUiText() {
-    if (bannerTitleEl) bannerTitleEl.textContent = BANNER_TITLE;
-    if (bannerBandEl) bannerBandEl.setAttribute("aria-label", BANNER_ARIA);
-    if (mainEl) mainEl.setAttribute("aria-label", MAIN_ARIA);
-    if (mapBox) mapBox.setAttribute("aria-label", MAP_ARIA);
-
     if (overlayKickerEl) overlayKickerEl.textContent = OVERLAY_KICKER;
     if (overlayTitleEl) overlayTitleEl.textContent = OVERLAY_TITLE;
     if (overlayBodyEl) overlayBodyEl.textContent = BEGIN_MESSAGE;
-
     if (overlayLogoEl) {
       overlayLogoEl.src = LOGO_SRC;
       overlayLogoEl.alt = "Middle School History logo";
     }
 
-    // Flags: ensure NO broken image on load
+    // ensure flag starts hidden (no broken placeholder)
     if (targetFlagEl) {
       targetFlagEl.removeAttribute("src");
       targetFlagEl.src = "";
@@ -168,18 +140,16 @@
   }
 
   // ----------------------------
-  // Auto-fit scaling (standalone-style; Chromebook-safe)
+  // Resize / fit (your original “perfect” stage scaling)
   // ----------------------------
   function fitStageToViewport() {
     if (!stageEl) return;
 
     const vv = window.visualViewport;
-
     const viewportW = vv ? vv.width : document.documentElement.clientWidth;
     const viewportH = vv ? vv.height : document.documentElement.clientHeight;
     if (!viewportW || !viewportH) return;
 
-    // temporarily remove scaling so we can measure natural size
     const prevTransform = stageEl.style.transform;
     const prevOrigin = stageEl.style.transformOrigin;
     const prevMB = stageEl.style.marginBottom;
@@ -199,11 +169,9 @@
       return;
     }
 
-    // Padding so it doesn't feel jammed to edges
     const padX = 16;
     const padY = 16;
 
-    // rect.top is in layout viewport coords; if visualViewport is shifted, account for offsetTop
     const offsetTop = vv ? (vv.offsetTop || 0) : 0;
     const topInVisibleViewport = rect.top - offsetTop;
 
@@ -211,7 +179,6 @@
     const availableH = viewportH - topInVisibleViewport - padY;
 
     if (availableW <= 0 || availableH <= 0) {
-      // fallback scale-down rather than breaking layout
       const scaleFallback = 0.85;
       stageEl.style.transformOrigin = "top center";
       stageEl.style.transform = `scale(${scaleFallback})`;
@@ -219,17 +186,13 @@
       return;
     }
 
-    // Compute scale. Clamp minimum to keep it usable.
     const scale = Math.max(0.55, Math.min(1, availableW / naturalW, availableH / naturalH));
 
     stageEl.style.transformOrigin = "top center";
     stageEl.style.transform = `scale(${scale})`;
-
-    // Reserve space so scaled stage doesn't overlap content below
     stageEl.style.marginBottom = `${Math.round((1 - scale) * naturalH)}px`;
   }
 
-  // Debounced fit (prevents thrash while resizing)
   let fitRaf = 0;
   function requestFit() {
     if (fitRaf) cancelAnimationFrame(fitRaf);
@@ -239,7 +202,6 @@
     });
   }
 
-  // Same listeners as the standalone version
   window.addEventListener("resize", requestFit, { passive: true });
   window.addEventListener("orientationchange", requestFit);
   window.addEventListener("scroll", requestFit, { passive: true });
@@ -249,7 +211,6 @@
     window.visualViewport.addEventListener("scroll", requestFit, { passive: true });
   }
 
-  // One extra: after the whole page (fonts/images) is ready
   window.addEventListener(
     "load",
     () => {
@@ -264,7 +225,6 @@
   // Utilities
   // ----------------------------
   function cssEsc(id) {
-    // CSS.escape may not exist on older Chromebooks
     if (window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(id);
     return String(id).replace(/[^\w-]/g, "\\$&");
   }
@@ -278,15 +238,15 @@
     return a;
   }
 
-  function displayNameFor(id) {
-    const k = String(id).toLowerCase();
-    return DISPLAY_NAMES[k] || prettifyId(k);
-  }
-
   function prettifyId(id) {
     return String(id)
       .replace(/_/g, " ")
       .replace(/\b\w/g, (m) => m.toUpperCase());
+  }
+
+  function displayNameFor(id) {
+    const k = String(id).toLowerCase();
+    return DISPLAY_NAMES[k] || prettifyId(k);
   }
 
   function escapeHtml(s) {
@@ -299,7 +259,7 @@
   }
 
   // ----------------------------
-  // Cursor tooltip (optional)
+  // Tooltip (optional)
   // ----------------------------
   function showCursorTip(text) {
     if (!cursorTipEl) return;
@@ -336,17 +296,14 @@
 
     const src = `${FLAGS_BASE}${currentTarget}${FLAG_EXT}`;
 
-    // Hide by default so we never show a broken placeholder
     targetFlagEl.style.display = "none";
     targetFlagEl.alt = `${displayNameFor(currentTarget)} flag`;
 
-    // Set handlers BEFORE src to catch fast cache outcomes
     targetFlagEl.onload = () => {
       targetFlagEl.style.display = "inline-block";
     };
 
     targetFlagEl.onerror = () => {
-      // Hide cleanly if missing/mismatched
       targetFlagEl.style.display = "none";
       targetFlagEl.src = "";
       targetFlagEl.alt = "";
@@ -359,14 +316,12 @@
   // Prompt
   // ----------------------------
   function updatePrompt() {
-    if (targetNameEl) {
-      targetNameEl.textContent = currentTarget ? displayNameFor(currentTarget) : "";
-    }
+    if (targetNameEl) targetNameEl.textContent = currentTarget ? displayNameFor(currentTarget) : "";
     setFlagForCurrent();
   }
 
   // ----------------------------
-  // SVG helpers
+  // SVG helpers (groups)
   // ----------------------------
   function forEachGroupEl(targetId, fn) {
     if (!svgRoot) return;
@@ -376,14 +331,15 @@
     if (GROUPS[baseId]) GROUPS[baseId].forEach((x) => ids.add(String(x).toLowerCase()));
 
     for (const id of ids) {
-      const el = svgRoot.getElementById ? svgRoot.getElementById(id) : svgRoot.querySelector(`#${cssEsc(id)}`);
+      const el = svgRoot.getElementById
+        ? svgRoot.getElementById(id)
+        : svgRoot.querySelector(`#${cssEsc(id)}`);
       if (el) fn(el);
     }
   }
 
   function clearAllTargetClasses() {
     if (!svgRoot) return;
-
     const allIds = new Set([...TARGETS, ...EXTRA_IDS]);
     for (const id of allIds) {
       forEachGroupEl(id, (el) => {
@@ -394,29 +350,21 @@
 
   function buildClickableSelector() {
     const all = new Set();
-
     for (const id of TARGETS) all.add(`#${cssEsc(id)}`);
     for (const id of EXTRA_IDS) all.add(`#${cssEsc(id)}`);
     for (const id of IGNORE_IDS) all.add(`#${cssEsc(id)}`);
-
-    // include alias keys so clicks on those can be normalized
-    for (const k of Object.keys(ALIAS)) {
-      all.add(`#${cssEsc(k)}`);
-    }
-
+    for (const k of Object.keys(ALIAS)) all.add(`#${cssEsc(k)}`);
     return Array.from(all).join(",");
   }
 
   function normalizeClickedId(e) {
     if (!svgRoot) return null;
-
     const selector = buildClickableSelector();
     const targetEl = e.target && e.target.closest ? e.target.closest(selector) : null;
     if (!targetEl) return null;
 
     const raw = String(targetEl.id).toLowerCase();
     if (!raw) return null;
-
     if (IGNORE_IDS.has(raw)) return null;
 
     const normalized = (ALIAS[raw] ?? raw).toLowerCase();
@@ -426,14 +374,13 @@
   }
 
   // ----------------------------
-  // Marking / feedback
+  // Marking / feedback classes
   // ----------------------------
   function flashWrong(hit) {
     if (!hit || !hit.el) return;
-    const el = hit.el;
-    el.classList.add("tempWrong", "blink");
-    setTimeout(() => el.classList.remove("blink"), 250);
-    setTimeout(() => el.classList.remove("tempWrong"), 450);
+    hit.el.classList.add("tempWrong", "blink");
+    setTimeout(() => hit.el.classList.remove("blink"), 250);
+    setTimeout(() => hit.el.classList.remove("tempWrong"), 450);
   }
 
   function markCorrect(targetId, attemptNumber) {
@@ -474,29 +421,8 @@
     if (timerEl) timerEl.textContent = "00:00.000";
     timerInt = setInterval(() => {
       if (!timerEl) return;
-      const now = performance.now();
-      timerEl.textContent = fmtTime(now - timerStart);
+      timerEl.textContent = fmtTime(performance.now() - timerStart);
     }, 33);
-  }
-
-  // ----------------------------
-  // Auto-timeout
-  // ----------------------------
-  function stopTimeout() {
-    if (timeoutInt) clearInterval(timeoutInt);
-    timeoutInt = null;
-  }
-
-  function startTimeout() {
-    stopTimeout();
-    gameStartMs = Date.now();
-    timeoutInt = setInterval(() => {
-      const elapsedMin = (Date.now() - gameStartMs) / 60000;
-      if (elapsedMin >= AUTO_TIMEOUT_MINUTES) {
-        stopTimeout();
-        endGame(true);
-      }
-    }, 1000);
   }
 
   // ----------------------------
@@ -504,63 +430,50 @@
   // ----------------------------
   function pickNext() {
     tries = 0;
-
     if (!remaining.length) {
       endGame(false);
       return;
     }
-
     currentTarget = remaining.pop();
     updatePrompt();
   }
 
-  // Build an end-game overlay that matches the *start overlay* look/structure
-  // (kicker + title + stats + completed stamp + play again + logo)
   function endGame(isTimeout) {
     document.body.classList.remove("is-playing");
     setHudVisible(false);
 
     stopTimer();
-    stopTimeout();
     hideCursorTip();
 
-    // Remove existing end overlay first
     const existing = document.getElementById("endOverlay");
     if (existing) existing.remove();
 
-    // Compute elapsed time
     const elapsed = timerStart ? performance.now() - timerStart : 0;
     const timeText = fmtTime(elapsed);
 
-    // Compute score as a percent (0–100)
-    // totalPoints is sum of (100, 50, 0) per target; max per target is 100
-    const scorePctNum = TARGETS.length ? (totalPoints / TARGETS.length) : 0;
+    const scorePctNum = TARGETS.length ? totalPoints / TARGETS.length : 0;
     const scoreText = `${scorePctNum.toFixed(1)}%`;
 
-    // Completed timestamp (local)
     const completedText = new Date().toLocaleString();
 
-    // Create overlay using the SAME visual language as your start overlay
     const end = document.createElement("div");
     end.id = "endOverlay";
-    end.className = "start-overlay"; // <-- important: reuse start overlay styling
+    end.className = "start-overlay";
     end.setAttribute("aria-label", "End overlay");
 
-    // NOTE: These classnames intentionally mirror the start overlay pattern:
-    // .start-overlay__card, .overlay__kicker, .overlay__title, .overlay__body, .overlay__actions, .overlay__logo
     end.innerHTML = `
       <div class="start-overlay__card" role="dialog" aria-modal="true">
         <div class="overlay__kicker">${escapeHtml(OVERLAY_KICKER)}</div>
         <div class="overlay__title">${escapeHtml(OVERLAY_TITLE)}</div>
 
         <div class="overlay__body">
-          <div class="results-grid">
-            <div class="results-item">
+          <div class="results-metrics">
+            <div class="results-metric">
               <div class="results-label">SCORE</div>
               <div class="results-value">${escapeHtml(scoreText)}</div>
             </div>
 
-            <div class="results-item">
+            <div class="results-metric">
               <div class="results-label">TIME</div>
               <div class="results-value">${escapeHtml(timeText)}</div>
             </div>
@@ -570,24 +483,6 @@
             Completed: ${escapeHtml(completedText)}
           </div>
         </div>
-<div class="overlay__body">
-  <div class="results-metrics">
-    <div class="results-metric">
-      <div class="results-label">SCORE</div>
-      <div class="results-value">${escapeHtml(scoreText)}</div>
-    </div>
-
-    <div class="results-metric">
-      <div class="results-label">TIME</div>
-      <div class="results-value">${escapeHtml(timeText)}</div>
-    </div>
-  </div>
-
-  <div class="results-completed">
-    Completed: ${escapeHtml(completedText)}
-  </div>
-</div>
-
 
         <div class="overlay__actions">
           <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
@@ -597,29 +492,23 @@
       </div>
     `;
 
-    document.body.appendChild(end);
-    // Append inside the same container as the start overlay so it covers ONLY the game area
-const overlayHost = (overlay && overlay.parentElement) || stageEl || document.body;
-overlayHost.appendChild(end);
+    // IMPORTANT: append to the same host as the start overlay so it overlays only the game area
+    const overlayHost = (overlay && overlay.parentElement) || stageEl || document.body;
+    overlayHost.appendChild(end);
 
-
-    // Hook up play again
-    const playAgainBtn = document.getElementById("playAgainBtn");
+    const playAgainBtn = end.querySelector("#playAgainBtn");
     playAgainBtn?.addEventListener("click", () => {
       end.remove();
       resetGame(true);
     });
 
-    // Ensure it snaps/settles visually
     requestFit();
     setTimeout(requestFit, 0);
     setTimeout(requestFit, 250);
   }
 
-
   function resetGame(startImmediately) {
     stopTimer();
-    stopTimeout();
 
     currentTarget = null;
     tries = 0;
@@ -631,7 +520,6 @@ overlayHost.appendChild(end);
     clearAllTargetClasses();
     clearFlag();
 
-    // Clear prompt text
     if (targetNameEl) targetNameEl.textContent = "";
 
     const endOverlay = document.getElementById("endOverlay");
@@ -641,7 +529,6 @@ overlayHost.appendChild(end);
       hideStartOverlay();
       pickNext();
       startTimer();
-      startTimeout();
     } else {
       showStartOverlay();
       clearFlag();
@@ -653,7 +540,7 @@ overlayHost.appendChild(end);
   }
 
   // ----------------------------
-  // SVG injection
+  // SVG injection + events
   // ----------------------------
   async function loadSvg() {
     if (!mapBox) return;
@@ -669,17 +556,14 @@ overlayHost.appendChild(end);
       return;
     }
 
-    // Remove all <title> elements so hovering does NOT reveal names
+    // remove titles to avoid revealing answers on hover
     svgRoot.querySelectorAll("title").forEach((t) => t.remove());
-
-    // ensure injected svg doesn't steal focus outlines weirdly
     svgRoot.setAttribute("focusable", "false");
 
-    // start clean (overlay visible)
-    resetGame(false);
-
-    // Bind pointer events
     bindSvgEvents();
+
+    // start clean with overlay visible
+    resetGame(false);
 
     requestFit();
     setTimeout(requestFit, 0);
@@ -689,7 +573,6 @@ overlayHost.appendChild(end);
   function bindSvgEvents() {
     if (!svgRoot) return;
 
-    // Tooltip follows cursor
     svgRoot.addEventListener(
       "mousemove",
       (e) => {
@@ -703,34 +586,28 @@ overlayHost.appendChild(end);
       { passive: true }
     );
 
-    // Hover tooltip: do NOT reveal hovered name (prevents giving answers)
-    // If you want a tooltip, show the current target instead.
     svgRoot.addEventListener("pointerover", (e) => {
       const hit = normalizeClickedId(e);
       if (!hit) return;
       if (!document.body.classList.contains("is-playing")) return;
       if (locked.has(hit.normalized)) return;
-
       if (currentTarget) showCursorTip(displayNameFor(currentTarget));
     });
 
-    svgRoot.addEventListener("pointerout", () => {
-      hideCursorTip();
-    });
+    svgRoot.addEventListener("pointerout", () => hideCursorTip());
 
-    // click: main game logic
     svgRoot.addEventListener("click", (e) => {
       const hit = normalizeClickedId(e);
       if (!hit) return;
 
-      const clicked = hit.normalized;
-
       if (!document.body.classList.contains("is-playing")) return;
       if (!currentTarget) return;
+
+      const clicked = hit.normalized;
+
       if (locked.has(clicked)) return;
 
       if (clicked === currentTarget) {
-        // correct
         if (tries === 0) {
           totalPoints += 100;
           markCorrect(currentTarget, 1);
@@ -738,36 +615,31 @@ overlayHost.appendChild(end);
           totalPoints += 50;
           markCorrect(currentTarget, 2);
         }
-
         locked.add(currentTarget);
         pickNext();
         return;
       }
 
-      // wrong
       if (tries === 0) {
-        flashWrong(hit); // quick red flash
-        tries = 1; // second chance
+        flashWrong(hit);
+        tries = 1;
         return;
       }
 
-      // second wrong => finalize
-      flashWrong(hit); // flash what they clicked
+      flashWrong(hit);
       locked.add(currentTarget);
-      markFinalWrong(currentTarget); // mark correct target red
+      markFinalWrong(currentTarget);
       pickNext();
     });
   }
 
   // ----------------------------
-  // Start / Reset / Keyboard
+  // Controls
   // ----------------------------
   if (beginBtn) {
     beginBtn.addEventListener("click", () => {
-      // if an end overlay exists, remove it
       const endOverlay = document.getElementById("endOverlay");
       if (endOverlay) endOverlay.remove();
-
       resetGame(true);
     });
   }
@@ -779,17 +651,15 @@ overlayHost.appendChild(end);
   document.addEventListener("keydown", (e) => {
     if (e.code !== "Space" && e.key !== " ") return;
 
-    // space starts game if start overlay is visible
     if (overlay && !overlay.classList.contains("is-hidden")) {
       e.preventDefault();
       beginBtn?.click();
       return;
     }
 
-    // space plays again if end overlay exists
     const endOverlay = document.getElementById("endOverlay");
     if (endOverlay) {
-      const playAgainBtn = document.getElementById("playAgainBtn");
+      const playAgainBtn = endOverlay.querySelector("#playAgainBtn");
       if (playAgainBtn) {
         e.preventDefault();
         playAgainBtn.click();
@@ -801,7 +671,6 @@ overlayHost.appendChild(end);
   // Boot
   // ----------------------------
   applyUiText();
-  // On initial page load, overlay is visible -> hide HUD
   setHudVisible(false);
   loadSvg().catch((err) => console.error("[map-challenge] SVG load error:", err));
 })();
