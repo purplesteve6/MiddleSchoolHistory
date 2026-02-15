@@ -674,15 +674,30 @@ function showCursorTip(text) {
     resetBtn.addEventListener("click", () => resetGame(false));
   }
 
-  document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", (e) => {
     if (e.code !== "Space" && e.key !== " ") return;
 
+    // If currently playing: Space = instant restart (no overlay)
+    if (document.body.classList.contains("is-playing")) {
+      e.preventDefault();
+
+      // Remove end overlay if it exists (safety)
+      const endOverlay = document.getElementById("endOverlay");
+      if (endOverlay) endOverlay.remove();
+
+      // Restart immediately
+      resetGame(true);
+      return;
+    }
+
+    // If start overlay is visible: Space starts
     if (overlay && !overlay.classList.contains("is-hidden")) {
       e.preventDefault();
       beginBtn?.click();
       return;
     }
 
+    // If end overlay is visible: Space triggers "Play Again"
     const endOverlay = document.getElementById("endOverlay");
     if (endOverlay) {
       const playAgainBtn = endOverlay.querySelector("#playAgainBtn");
@@ -692,6 +707,7 @@ function showCursorTip(text) {
       }
     }
   });
+
 
   // ----------------------------
   // Boot
