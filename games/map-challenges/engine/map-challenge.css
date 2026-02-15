@@ -35,7 +35,13 @@
 
   --stage-pad: 14px;
   --stage-pad-2: 28px; /* 2 * 14px */
-  --stage-w: calc(var(--map-w) + var(--stage-pad-2));
+
+  /* NEW: keep stage sizing math perfectly even */
+  --stage-border: 1px;
+
+  /* NEW: include border on both sides so inner content width == --map-w */
+  --stage-w: calc(var(--map-w) + var(--stage-pad-2) + (2 * var(--stage-border)));
+
 
   /* ============================= */
   /* Overlay theme */
@@ -138,7 +144,7 @@ body.is-playing{
   border-radius: 22px;
   overflow: hidden;
 
-  border: 1px solid var(--stroke);
+  border: var(--stage-border) solid var(--stroke);
   box-shadow: var(--shadow);
   background: rgba(255,255,255,0.03);
 
