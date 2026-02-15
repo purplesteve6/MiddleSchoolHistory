@@ -315,10 +315,19 @@
   // ----------------------------
   // Prompt
   // ----------------------------
-  function updatePrompt() {
-    if (targetNameEl) targetNameEl.textContent = currentTarget ? displayNameFor(currentTarget) : "";
+    function updatePrompt() {
+    const label = currentTarget ? displayNameFor(currentTarget) : "";
+
+    if (targetNameEl) targetNameEl.textContent = label;
     setFlagForCurrent();
+
+    // NEW: if the cursor tooltip is already showing, refresh it immediately
+    if (cursorTipEl && cursorTipEl.classList.contains("is-on")) {
+      if (label) showCursorTip(label);
+      else hideCursorTip();
+    }
   }
+
 
   // ----------------------------
   // SVG helpers (groups)
