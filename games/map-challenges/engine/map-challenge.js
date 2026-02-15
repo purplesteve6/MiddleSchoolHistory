@@ -604,13 +604,19 @@ function showCursorTip(text) {
       (e) => {
         lastMouseX = e.clientX;
         lastMouseY = e.clientY;
-        if (cursorTipEl && cursorTipEl.classList.contains("is-on")) {
+
+        // NEW: Keep tooltip visible anywhere over the SVG during play
+        if (document.body.classList.contains("is-playing") && currentTarget) {
+          showCursorTip(displayNameFor(currentTarget));
+        } else if (cursorTipEl && cursorTipEl.classList.contains("is-on")) {
+          // If tooltip is on but we aren't playing, keep it positioned nicely
           cursorTipEl.style.left = `${lastMouseX + 12}px`;
           cursorTipEl.style.top = `${lastMouseY + 12}px`;
         }
       },
       { passive: true }
     );
+
 
     svgRoot.addEventListener("pointerover", (e) => {
       const hit = normalizeClickedId(e);
@@ -620,7 +626,9 @@ function showCursorTip(text) {
       if (currentTarget) showCursorTip(displayNameFor(currentTarget));
     });
 
-    svgRoot.addEventListener("pointerout", () => hideCursorTip());
+       // NEW: Only hide when leaving the SVG entirely (not when moving between internal shapes)
+    svgRoot.addEventListener("mouseleave", () => hideCursorTip());
+
 
     svgRoot.addEventListener("click", (e) => {
       const hit = normalizeClickedId(e);
