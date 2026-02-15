@@ -28,9 +28,6 @@
   const FLAG_EXT = CFG.flagExt || ".png";
   const IGNORE_IDS = new Set((CFG.ignoreIds || []).map((s) => String(s).toLowerCase()));
 
-  // Optional "natural" map width in pixels before viewport scaling
-  const DESIGN_WIDTH = Number.isFinite(Number(CFG.designWidth)) ? Number(CFG.designWidth) : 1600;
-
   const ALIAS = {};
   if (CFG.alias && typeof CFG.alias === "object") {
     for (const [k, v] of Object.entries(CFG.alias)) {
@@ -558,51 +555,6 @@
       console.error("[map-challenge] SVG did not load correctly.");
       return;
     }
-
-    // --- NEW: set CSS sizing vars from the SVG's real proportions (prevents letterboxing) ---
-    (function applySvgSizingVars() {
-      const rootStyle = document.documentElement.style;
-
-      // Prefer viewBox because it's the most reliable for SVG intrinsic proportions
-      const vb = (svgRoot.getAttribute("viewBox") || "").trim();
-      let vbW = 0;
-      let vbH = 0;
-
-      if (vb) {
-        const parts = vb.split(/[\s,]+/).map(Number);
-        if (parts.length === 4 && parts.every((n) => Number.isFinite(n))) {
-          vbW = parts[2];
-          vbH = parts[3];
-        }
-      }
-
-      // Fallback: width/height attributes (may be missing or in %)
-      if (!(vbW > 0 && vbH > 0)) {
-        const wAttr = (svgRoot.getAttribute("width") || "").trim();
-        const hAttr = (svgRoot.getAttribute("height") || "").trim();
-        const wNum = parseFloat(wAttr);
-        const hNum = parseFloat(hAttr);
-        if (Number.isFinite(wNum) && Number.isFinite(hNum) && wNum > 0 && hNum > 0) {
-          vbW = wNum;
-          vbH = hNum;
-        }
-      }
-
-      // If we still can't determine, bail safely (keeps your CSS defaults)
-      if (!(vbW > 0 && vbH > 0)) return;
-
-      const ar = vbW / vbH;
-
-      // Set ratio for CSS (used by aspect-ratio)
-      rootStyle.setProperty("--map-ar", `${vbW} / ${vbH}`);
-
-      // Set a consistent "design size" (engine will scale stage to viewport as before)
-      const mapW = Math.round(DESIGN_WIDTH);
-      const mapH = Math.round(mapW / ar);
-
-      rootStyle.setProperty("--map-w", `${mapW}px`);
-      rootStyle.setProperty("--map-h", `${mapH}px`);
-    })();
 
     // remove titles to avoid revealing answers on hover
     svgRoot.querySelectorAll("title").forEach((t) => t.remove());

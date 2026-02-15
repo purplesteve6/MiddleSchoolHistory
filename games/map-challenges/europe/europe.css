@@ -1,11 +1,14 @@
 /* Europe - Map Challenge Overrides
-   Keep this file minimal: only override theme variables when needed.
-   Map sizing is now auto-derived from the SVG viewBox by map-challenge.js.
+   Keep this file minimal: just override :root variables when needed.
 */
 
 :root{
+  /* If your SVG is a different aspect ratio, adjust these 3 values */
+  --map-w: 960px;
+  --map-h: 720px;
+  --map-ar: 4 / 3;
+
   /* Optional: tweak overlay accent colors per map */
   /* --kicker-brown: #7a4b1f; */
   /* --site-purple: #2b1b4d; */
 }
-

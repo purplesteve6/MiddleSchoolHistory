@@ -33,15 +33,9 @@
   --map-h: 720px;
   --map-ar: 4 / 3;
 
-  --stage-pad: 25px;
-  --stage-pad-2: 50px; /* 2 * 25px */
-
-  /* NEW: keep stage sizing math perfectly even */
-  --stage-border: 1px;
-
-  /* NEW: include border on both sides so inner content width == --map-w */
-  --stage-w: calc(var(--map-w) + var(--stage-pad-2) + (2 * var(--stage-border)));
-
+  --stage-pad: 14px;
+  --stage-pad-2: 28px; /* 2 * 14px */
+  --stage-w: calc(var(--map-w) + var(--stage-pad-2));
 
   /* ============================= */
   /* Overlay theme */
@@ -144,7 +138,7 @@ body.is-playing{
   border-radius: 22px;
   overflow: hidden;
 
-  border: var(--stage-border) solid var(--stroke);
+  border: 1px solid var(--stroke);
   box-shadow: var(--shadow);
   background: rgba(255,255,255,0.03);
 
@@ -152,10 +146,8 @@ body.is-playing{
   place-items: center;
   padding: var(--stage-pad);
 
-  width: fit-content;
-  max-width: 100%;
+  width: min(var(--stage-w), 100%);
   margin: 0 auto;
-
 }
 
 /* ============================= */
@@ -163,18 +155,15 @@ body.is-playing{
 /* ============================= */
 
 .map-box{
-  /* Let the engine (JS) control size by setting --map-w/--map-h,
-     but don’t force a mismatched rectangle. */
   width: var(--map-w);
-  height: auto;
-  aspect-ratio: var(--map-ar);
+  height: var(--map-h);
 
   max-width: 100%;
+  aspect-ratio: var(--map-ar);
 
   border-radius: 18px;
   overflow: hidden; /* no scrollbars inside map container */
 }
-
 
 .map-box svg{
   width: 100%;
