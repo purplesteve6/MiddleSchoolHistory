@@ -261,13 +261,30 @@
   // ----------------------------
   // Tooltip (optional)
   // ----------------------------
-  function showCursorTip(text) {
-    if (!cursorTipEl) return;
-    cursorTipEl.textContent = text;
-    cursorTipEl.classList.add("is-on");
-    cursorTipEl.style.left = `${lastMouseX + 12}px`;
-    cursorTipEl.style.top = `${lastMouseY + 12}px`;
+  
+function showCursorTip(text) {
+  if (!cursorTipEl) return;
+
+  let html = text;
+
+  // If flags are enabled, prepend flag image
+  if (SHOW_FLAGS && currentTarget) {
+    const flagSrc = `${FLAGS_BASE}${currentTarget}${FLAG_EXT}`;
+    html = `
+      <span class="cursor-tip__inner">
+        <img src="${flagSrc}" class="cursor-tip__flag" alt="" />
+        <span>${text}</span>
+      </span>
+    `;
   }
+
+  cursorTipEl.innerHTML = html;
+
+  cursorTipEl.classList.add("is-on");
+  cursorTipEl.style.left = `${lastMouseX + 12}px`;
+  cursorTipEl.style.top = `${lastMouseY + 12}px`;
+}
+
 
   function hideCursorTip() {
     if (!cursorTipEl) return;

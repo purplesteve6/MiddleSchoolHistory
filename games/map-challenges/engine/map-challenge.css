@@ -509,6 +509,24 @@ body.is-playing{
   backdrop-filter: blur(6px);
 }
 
+
+
 body.is-playing .cursor-tip.is-on{
   display: block;
 }
+
+/* --- NEW: Tooltip flag layout --- */
+
+.cursor-tip__inner{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cursor-tip__flag{
+  height: 16px;
+  width: auto;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
