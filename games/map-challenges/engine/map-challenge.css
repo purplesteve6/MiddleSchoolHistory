@@ -33,8 +33,8 @@
   --map-h: 720px;
   --map-ar: 4 / 3;
 
-  --stage-pad: 14px;
-  --stage-pad-2: 28px; /* 2 * 14px */
+  --stage-pad: 25px;
+  --stage-pad-2: 50px; /* 2 * 25px */
 
   /* NEW: keep stage sizing math perfectly even */
   --stage-border: 1px;
@@ -163,15 +163,18 @@ body.is-playing{
 /* ============================= */
 
 .map-box{
+  /* Let the engine (JS) control size by setting --map-w/--map-h,
+     but don’t force a mismatched rectangle. */
   width: var(--map-w);
-  height: var(--map-h);
+  height: auto;
+  aspect-ratio: var(--map-ar);
 
   max-width: 100%;
-  aspect-ratio: var(--map-ar);
 
   border-radius: 18px;
   overflow: hidden; /* no scrollbars inside map container */
 }
+
 
 .map-box svg{
   width: 100%;

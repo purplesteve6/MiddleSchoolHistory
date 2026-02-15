@@ -9,6 +9,12 @@ window.MAP_CHALLENGE_CONFIG = {
   // SVG file to load (must exist)
     svgPath: "./europe-clickable.svg",
 
+  // Optional: “design size” for this map (engine uses this as the natural size before scaling)
+  // If omitted, engine will default to 1600 wide and compute height from the SVG.
+  
+designWidth: 1600,
+
+
 
   // Flags optional (towns usually don't need them)
  	showFlags: true,
