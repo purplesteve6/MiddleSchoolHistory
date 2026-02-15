@@ -231,7 +231,7 @@ body.is-playing{
   /* allow room for optional flag */
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .hud__right{
@@ -282,14 +282,23 @@ body.is-playing{
 
 
 .hud__flag{
-  width: 48px;
-  height: auto;
+  /* Consistent visual height for all flags (width adjusts automatically) */
+  height: 18px;
+  width: auto;
+
   object-fit: contain;
+  flex: 0 0 auto;
+  display: block;
+
+  /* breathing room so it doesn't touch the text edge */
+  margin-right: 8px;
+
   border: none;
   border-radius: 0;
   box-shadow: none;
   transform: none;
 }
+
 
 /* ============================= */
 /* Feedback colors */
