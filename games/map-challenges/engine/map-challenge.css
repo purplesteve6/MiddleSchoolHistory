@@ -152,8 +152,10 @@ body.is-playing{
   place-items: center;
   padding: var(--stage-pad);
 
-  width: min(var(--stage-w), 100%);
+  width: fit-content;
+  max-width: 100%;
   margin: 0 auto;
+
 }
 
 /* ============================= */
