@@ -72,8 +72,11 @@ window.MAP_CHALLENGE_CONFIG = {
 
   // Optional extra IDs to clear classes from (usually only used with alias/group setups)
   extraIds: [
-    // example: "warsaw_label_bg"
-	const EXTRA_IDS = ["gaza", "palestine", "israel_internal_borders"];
+    "gaza",
+    "palestine",
+    "israel_internal_borders"
+  ],
+
   ],
 
   // UI text for this specific map
