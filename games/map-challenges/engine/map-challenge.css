@@ -193,7 +193,7 @@ body.is-playing{
 
 .hud{
   position: absolute;
-  top: 12;
+  top: 0;
   left: 0;
   right: 0;
   height: var(--hud-h);
