@@ -75,7 +75,7 @@ window.MAP_CHALLENGE_CONFIG = {
     "gaza",
     "palestine",
     "israel_internal_borders"
-  ],
+
 
   ],
 
