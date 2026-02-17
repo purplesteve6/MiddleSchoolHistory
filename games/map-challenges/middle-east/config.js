@@ -75,9 +75,16 @@ window.MAP_CHALLENGE_CONFIG = {
     "gaza",
     "palestine",
     "israel_internal_borders"
-
-
   ],
+
+
+// No Paint IDs - These are layers that never get painted if they are clicked, but need to behave like they do.
+
+
+noPaintIds: [
+  "israel_internal_borders"
+],
+
 
   // UI text for this specific map
   ui: {
