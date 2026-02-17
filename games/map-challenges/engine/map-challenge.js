@@ -127,7 +127,11 @@
   // ----------------------------
   function applyUiText() {
     if (overlayKickerEl) overlayKickerEl.textContent = OVERLAY_KICKER;
-    if (overlayTitleEl) overlayTitleEl.textContent = OVERLAY_TITLE;
+if (overlayTitleEl) {
+  const parts = String(OVERLAY_TITLE).split(/\n|\s*\|\s*/g);
+  overlayTitleEl.innerHTML = parts.map(escapeHtml).join("<br>");
+}
+
     if (overlayBodyEl) overlayBodyEl.textContent = BEGIN_MESSAGE;
     if (overlayLogoEl) {
       overlayLogoEl.src = LOGO_SRC;
@@ -261,6 +265,12 @@
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#39;");
   }
+
+function formatOverlayTitle(title) {
+  const parts = String(title).split(/\n|\s*\|\s*/g);
+  return parts.map(escapeHtml).join("<br>");
+}
+
 
   // ----------------------------
   // Tooltip (optional)
@@ -523,7 +533,8 @@ function flashWrong(hit) {
     end.innerHTML = `
       <div class="start-overlay__card" role="dialog" aria-modal="true">
         <div class="overlay__kicker">${escapeHtml(OVERLAY_KICKER)}</div>
-        <div class="overlay__title">${escapeHtml(OVERLAY_TITLE)}</div>
+        <div class="overlay__title">${formatOverlayTitle(OVERLAY_TITLE)}</div>
+
 
         <div class="overlay__body">
           <div class="results-metrics">
