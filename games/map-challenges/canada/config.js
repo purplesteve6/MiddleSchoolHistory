@@ -215,8 +215,8 @@ window.MAP_CHALLENGE_CONFIG = {
   noPaintIds: [
     "manitoba_water",
     "manitoba_water_borders",
-    "northwest_territories_water"	
-    "northwest_territories_water_borders"
+    "northwest_territories_water",	
+    "northwest_territories_water_borders",
 
   ],
 
