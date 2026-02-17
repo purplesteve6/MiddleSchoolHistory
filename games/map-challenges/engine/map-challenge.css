@@ -309,7 +309,7 @@ body.is-playing{
 .wrongFinal, .wrongFinal *{ fill: var(--red) !important; }
 
 .tempWrong, .tempWrong *{
-  fill: var(--red) !important;
+  fill: var(--yellow) !important;
   animation: wrongFlash 0.12s linear 1;
 }
 
