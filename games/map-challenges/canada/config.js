@@ -86,7 +86,7 @@ window.MAP_CHALLENGE_CONFIG = {
   ignoreIds: [
     "water",
     "borders",
-    "context_land"
+    "context_land",
   ],
 
   /* ------------------------------------------------------------
@@ -145,10 +145,10 @@ window.MAP_CHALLENGE_CONFIG = {
   alias: {
     // example:
     // palestine: "israel"
-    	manitoba_water: "manitoba"
-	manitoba_water_borders: "manitoba"
-	northwest_territories_water: "northwest_territories"
-	northwest_territories_water_borders: "northwest_territories"
+    	manitoba_water: "manitoba",
+	manitoba_water_borders: "manitoba",
+	northwest_territories_water: "northwest_territories",
+	northwest_territories_water_borders: "northwest_territories",
   },
 
   /* ------------------------------------------------------------
@@ -194,8 +194,8 @@ window.MAP_CHALLENGE_CONFIG = {
   extraIds: [
     "manitoba_water",
     "manitoba_water_borders",
-    "northwest_territories_water"	
-    "northwest_territories_water_borders"
+    "northwest_territories_water",	
+    "northwest_territories_water_borders",
   ],
 
   /* ------------------------------------------------------------
