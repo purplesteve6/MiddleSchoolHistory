@@ -409,12 +409,22 @@ function showCursorTip(text) {
   // ----------------------------
   // Marking / feedback classes
   // ----------------------------
-  function flashWrong(hit) {
-    if (!hit || !hit.el) return;
-    hit.el.classList.add("tempWrong", "blink");
-    setTimeout(() => hit.el.classList.remove("blink"), 250);
-    setTimeout(() => hit.el.classList.remove("tempWrong"), 450);
-  }
+function flashWrong(hit) {
+  if (!hit || !hit.el) return;
+
+  hit.el.classList.add("tempWrong");
+
+  // Remove yellow highlight when mouse is released
+  const removeHighlight = () => {
+    hit.el.classList.remove("tempWrong");
+    window.removeEventListener("pointerup", removeHighlight);
+    window.removeEventListener("mouseup", removeHighlight);
+  };
+
+  window.addEventListener("pointerup", removeHighlight, { once: true });
+  window.addEventListener("mouseup", removeHighlight, { once: true });
+}
+
 
   function markCorrect(targetId, attemptNumber) {
     const cls = attemptNumber === 1 ? "correct1" : "correct2";

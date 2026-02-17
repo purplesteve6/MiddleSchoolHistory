@@ -310,14 +310,10 @@ body.is-playing{
 
 .tempWrong, .tempWrong *{
   fill: var(--yellow) !important;
-  animation: wrongFlash 0.12s linear 1;
 }
 
-@keyframes wrongFlash{
-  0%{ opacity: 1; }
-  50%{ opacity: 0.25; }
-  100%{ opacity: 1; }
-}
+
+
 
 .blink{
   animation: blink 0.35s ease-in-out 1;
