@@ -1,5 +1,5 @@
 /* ============================================================
-   United States: by Capitol - Map Challenge Config (TEMPLATE-FRIENDLY)
+   United States: by Capitol City - Map Challenge Config (TEMPLATE-FRIENDLY)
    ------------------------------------------------------------
    ✅ You usually only edit THIS file (plus the SVG, and optional CSS)
    ✅ IDs must match the SVG element IDs (case-sensitive in the SVG)
@@ -288,21 +288,21 @@ window.MAP_CHALLENGE_CONFIG = {
 
   ui: {
     // Top banner text (big header across the game)
-    bannerTitle: "UNITED STATES: BY CAPITOL MAP CHALLENGE",
+    bannerTitle: "UNITED STATES: BY CAPITAL CITY MAP CHALLENGE",
 
     // Screen reader description of the banner
-    bannerAria: "United States by Capitol map challenge banner",
+    bannerAria: "United States by capital city map challenge banner",
 
     // Accessibility labels for the main game area and the map itself
-    mainAria: "United States by Capitol map challenge",
-    mapAria: "United States countries map",
+    mainAria: "United States by capital city map challenge",
+    mapAria: "United States map",
 
     // Start overlay text:
     // - overlayKicker is the small label (like a category tag)
     // - overlayTitle is the big title (supports line breaks using \n e.g. UNITED STATES:\13 Colonies) 
     // - beginMessage is the short explanation under the title
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "UNITED STATES:\nBY CAPITOL",
+    overlayTitle: "UNITED STATES:\nBY CAPITAL CITY",
     beginMessage: "How quickly can you identify all 50 states by their capitals?",
 
     // Logo image shown in the overlay
