@@ -67,7 +67,7 @@ window.MAP_CHALLENGE_CONFIG = {
   groups: {
     // example:
     // israel: ["israel", "gaza", "palestine"]
-	israel: ["israel", "gaza", "palestine", "israel_internal_borders"]
+	israel: ["israel", "gaza", "palestine"]
   },
 
   // Optional extra IDs to clear classes from (usually only used with alias/group setups)
@@ -79,8 +79,6 @@ window.MAP_CHALLENGE_CONFIG = {
 
 
 // No Paint IDs - These are layers that never get painted if they are clicked, but need to behave like they do.
-
-
 noPaintIds: [
   "israel_internal_borders"
 ],

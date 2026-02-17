@@ -426,8 +426,27 @@ function showCursorTip(text) {
 function flashWrong(hit) {
   if (!hit) return;
 
-  // If the clicked thing is a "do not recolor" layer (ex: internal borders), do nothing.
-  if (NO_PAINT_IDS.has(hit.raw)) return;
+function flashWrong(hit) {
+  if (!hit) return;
+
+  // Flash the normalized country group (e.g. so clicking palestine/gaza flashes all of israel)
+  forEachGroupEl(hit.normalized, (el) => {
+    // Also skip painting any group elements that are flagged as no-paint
+    const id = String(el.id || "").toLowerCase();
+    if (NO_PAINT_IDS.has(id)) return;
+
+    el.classList.add("tempWrong", "blink");
+  });
+
+  setTimeout(() => {
+    forEachGroupEl(hit.normalized, (el) => el.classList.remove("blink"));
+  }, 150);
+
+  setTimeout(() => {
+    forEachGroupEl(hit.normalized, (el) => el.classList.remove("tempWrong"));
+  }, 220);
+}
+
 
   // Flash the normalized country group (so clicking palestine/gaza flashes all of israel)
   forEachGroupEl(hit.normalized, (el) => {
