@@ -1,0 +1,14 @@
+/* United States: By Capitol - Map Challenge Overrides
+   Keep this file minimal: just override :root variables when needed.
+*/
+
+:root{
+  /* If your SVG is a different aspect ratio, adjust these 3 values */
+ --map-w: 960px;
+  --map-h: 610px;
+  --map-ar: 96 / 61;
+
+  /* Optional: tweak overlay accent colors per map */
+  /* --kicker-brown: #7a4b1f; */
+  /* --site-purple: #2b1b4d; */
+}

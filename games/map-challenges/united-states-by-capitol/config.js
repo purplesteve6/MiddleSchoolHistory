@@ -1,5 +1,5 @@
 /* ============================================================
-   Middle East - Map Challenge Config (TEMPLATE-FRIENDLY)
+   United States: by Capitol - Map Challenge Config (TEMPLATE-FRIENDLY)
    ------------------------------------------------------------
    ✅ You usually only edit THIS file (plus the SVG, and optional CSS)
    ✅ IDs must match the SVG element IDs (case-sensitive in the SVG)
@@ -17,7 +17,7 @@ window.MAP_CHALLENGE_CONFIG = {
 
   // Path to the clickable SVG for THIS game (must exist at this location).
   // Tip: keep the SVG in the same folder as index.html and config.js.
-  svgPath: "./middle-east-clickable.svg",
+  svgPath: "./united-states-by-capitol-clickable.svg",
 
   /* ------------------------------------------------------------
      OPTIONAL: FLAGS (turn on/off + where to find them)
@@ -33,10 +33,10 @@ window.MAP_CHALLENGE_CONFIG = {
 
   // If true, flags appear in the UI when identifying places.
   // If you don't have flags, set this to false.
-  showFlags: true,
+  showFlags: false,
 
   // Folder where the flag images live (absolute path from site root).
-  flagsBase: "/games/map-challenges/middle-east/flags/",
+  flagsBase: "/games/map-challenges/united-states-by-capitol/flags/",
 
   // File extension for flags. Common: ".png" or ".jpg"
   flagExt: ".jpg",
@@ -52,22 +52,56 @@ window.MAP_CHALLENGE_CONFIG = {
   ------------------------------------------------------------ */
 
   targets: [
-    "bahrain",
-    "cyprus",
-    "egypt",
-    "iran",
-    "iraq",
-    "israel",
-    "jordan",
-    "kuwait",
-    "lebanon",
-    "oman",
-    "qatar",
-    "saudi_arabia",
-    "syria",
-    "turkey",
-    "uae",
-    "yemen",
+	"alabama",
+	"alaska",
+	"arizona",
+	"arkansas",
+	"california",
+	"colorado",
+	"connecticut",
+	"delaware",
+	"florida",
+	"georgia",
+	"hawaii",
+	"idaho",	
+	"illinois",
+	"indiana",
+	"iowa",
+	"kansas",
+	"kentucky",
+	"louisiana",
+	"maine",
+	"maryland",
+	"massachusetts",
+	"michigan",
+	"minnesota",
+	"mississippi",
+	"missouri",
+	"montana",
+	"nebraska",
+	"nevada",
+	"new_hampshire",
+	"new_jersey",
+	"new_mexico",
+	"new_york",
+	"north_carolina",
+	"north_dakota",
+	"ohio",
+	"oklahoma",
+	"oregon",
+	"pennsylvania",
+	"rhode_island",
+	"south_carolina",
+	"south_dakota",
+	"tennessee",
+	"texas",
+	"utah",	
+	"vermont",
+	"virginia",
+	"washington",
+	"west_virginia",
+	"wisconsin",
+	"wyoming",
   ],
 
   /* ------------------------------------------------------------
@@ -103,8 +137,56 @@ window.MAP_CHALLENGE_CONFIG = {
   ------------------------------------------------------------ */
 
   displayNames: {
-    saudi_arabia: "Saudi Arabia",
-    uae: "United Arab Emirates (UAE)",
+	alabama: "Montgomery",
+	alaska: "Juneau",
+	arizona: "Phoenix",
+	arkansas: "Little Rock",
+	california: "Sacramento",
+	colorado: "Denver",
+	connecticut: "Hartford",
+	delaware: "Dover",
+	florida: "Tallahassee",
+	georgia: "Atlanta",
+	hawaii: "Honolulu",
+	idaho: "Boise",
+	illinois: "Springfield",
+	indiana: "Indianapolis",
+	iowa: "Des Moines",
+	kansas: "Topeka",
+	kentucky: "Frankfort",
+	louisiana: "Baton Rouge",
+	maine: "Augusta",
+	maryland: "Annapolis",
+	massachusetts: "Boston",
+	michigan: "Lansing",
+	minnesota: "Saint Paul",
+	mississippi: "Jackson",
+	missouri: "Jefferson City",
+	montana: "Helena",
+	nebraska: "Lincoln",
+	nevada: "Carson City",
+	new_hampshire: "Concord",
+	new_jersey: "Trenton",
+	new_mexico: "Santa Fe",
+	new_york: "Albany",
+	north_carolina: "Raleigh",
+	north_dakota: "Bismarck",
+	ohio: "Columbus",
+	oklahoma: "Oklahoma City",
+	oregon: "Salem",
+	pennsylvania: "Harrisburg",
+	rhode_island: "Providence",
+	south_carolina: "Columbia",
+	south_dakota: "Pierre",
+	tennessee: "Nashville",
+	texas: "Austin",
+	utah: "Salt Lake City",
+	vermont: "Montpelier",
+	virginia: "Richmond",
+	washington: "Olympia",
+	west_virginia: "Charleston",
+	wisconsin: "Madison",
+	wyoming: "Cheyenne",
   },
 
   /* ------------------------------------------------------------
@@ -136,10 +218,7 @@ window.MAP_CHALLENGE_CONFIG = {
   alias: {
     // example:
     // palestine: "israel"
-    palestine: "israel",
-    gaza: "israel",
-    israel_internal_borders: "israel",
-    israel: "israel",
+    
   },
 
   /* ------------------------------------------------------------
@@ -165,7 +244,7 @@ window.MAP_CHALLENGE_CONFIG = {
   groups: {
     // example:
     // israel: ["israel", "gaza", "palestine"]
-    israel: ["israel", "gaza", "palestine"]
+    
   },
 
   /* ------------------------------------------------------------
@@ -182,9 +261,7 @@ window.MAP_CHALLENGE_CONFIG = {
   ------------------------------------------------------------ */
 
   extraIds: [
-    "gaza",
-    "palestine",
-    "israel_internal_borders"
+    
   ],
 
   /* ------------------------------------------------------------
@@ -202,7 +279,7 @@ window.MAP_CHALLENGE_CONFIG = {
   ------------------------------------------------------------ */
 
   noPaintIds: [
-    "israel_internal_borders"
+    
   ],
 
   /* ------------------------------------------------------------
@@ -211,22 +288,22 @@ window.MAP_CHALLENGE_CONFIG = {
 
   ui: {
     // Top banner text (big header across the game)
-    bannerTitle: "MIDDLE EAST MAP CHALLENGE",
+    bannerTitle: "UNITED STATES: BY CAPITOL MAP CHALLENGE",
 
     // Screen reader description of the banner
-    bannerAria: "Middle East countries map challenge banner",
+    bannerAria: "United States by Capitol map challenge banner",
 
     // Accessibility labels for the main game area and the map itself
-    mainAria: "Middle East countries map challenge",
-    mapAria: "Middle East countries map",
+    mainAria: "United States by Capitol map challenge",
+    mapAria: "United States countries map",
 
     // Start overlay text:
     // - overlayKicker is the small label (like a category tag)
     // - overlayTitle is the big title (supports line breaks using \n e.g. UNITED STATES:\13 Colonies) 
     // - beginMessage is the short explanation under the title
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "MIDDLE EAST",
-    beginMessage: "How fast can you identify the countries of the Middle East?",
+    overlayTitle: "UNITED STATES:\nBY CAPITOL",
+    beginMessage: "How quickly can you identify all 50 states by their capitals?",
 
     // Logo image shown in the overlay
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
