@@ -172,8 +172,7 @@ window.MAP_CHALLENGE_CONFIG = {
   ------------------------------------------------------------ */
 
   groups: {
-  	manitoba: ["manitoba", "manitoba_water", "manitoba_water_borders"],
-  	northwest_territories: ["northwest_territories", "northwest_territories_water", "northwest_territories_water_borders"]
+  	
 },
 
 
