@@ -1,0 +1,14 @@
+/* Europe: by capital city - Map Challenge Overrides
+   Keep this file minimal: just override :root variables when needed.
+*/
+
+:root{
+  /* If your SVG is a different aspect ratio, adjust these 3 values */
+  --map-w: 960px;
+  --map-h: 784px;
+  --map-ar: 60 / 49;
+
+  /* Optional: tweak overlay accent colors per map */
+  /* --kicker-brown: #7a4b1f; */
+  /* --site-purple: #2b1b4d; */
+}
