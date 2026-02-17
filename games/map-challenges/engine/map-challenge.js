@@ -84,9 +84,13 @@
 
   let remaining = [];
   let currentTarget = null;
-  let tries = 0; // 0 = first try, 1 = second try
+  let tries = 0;
   let totalPoints = 0;
   let locked = new Set();
+
+  // Forced-find mode: after 2nd miss, the correct region blinks until clicked
+  let forceFind = false;
+
 
   let timerStart = 0;
   let timerInt = null;
@@ -366,13 +370,16 @@ function showCursorTip(text) {
 
   function clearAllTargetClasses() {
     if (!svgRoot) return;
+
     const allIds = new Set([...TARGETS, ...EXTRA_IDS]);
+
     for (const id of allIds) {
       forEachGroupEl(id, (el) => {
-        el.classList.remove("correct1", "correct2", "tempWrong", "wrongFinal", "blink");
+        el.classList.remove("correct1", "correct2", "tempWrong", "wrongFinal", "blink", "mustFind");
       });
     }
   }
+
 
   function buildClickableSelector() {
     const all = new Set();
@@ -425,9 +432,28 @@ function showCursorTip(text) {
     });
   }
 
+  // Forced-find: make the correct region blink until the user clicks it
+  function startForceFind(targetId) {
+    forceFind = true;
+    forEachGroupEl(targetId, (el) => {
+      el.classList.remove("tempWrong", "blink");
+      el.classList.add("mustFind");
+    });
+  }
+
+  // Forced-find resolution: stop blinking, mark as missed (red), award 0 points
+  function resolveForceFind(targetId) {
+    forceFind = false;
+    forEachGroupEl(targetId, (el) => {
+      el.classList.remove("mustFind", "tempWrong", "blink");
+      el.classList.add("wrongFinal");
+    });
+  }
+
   // ----------------------------
   // Timer
   // ----------------------------
+
   function fmtTime(ms) {
     const total = Math.max(0, ms);
     const minutes = Math.floor(total / 60000);
@@ -540,11 +566,13 @@ function showCursorTip(text) {
     tries = 0;
     totalPoints = 0;
     locked = new Set();
+    forceFind = false;
 
     remaining = shuffle(TARGETS);
 
     clearAllTargetClasses();
     clearFlag();
+
 
     if (targetNameEl) targetNameEl.textContent = "";
 
@@ -639,9 +667,24 @@ function showCursorTip(text) {
 
       const clicked = hit.normalized;
 
-      if (locked.has(clicked)) return;
+      // If we are forcing the user to find the correct answer,
+      // ignore ALL clicks except the current target.
+      if (forceFind && clicked !== currentTarget) return;
 
+      // Correct click
       if (clicked === currentTarget) {
+        // Forced-find resolution: no points, stop blinking, mark as missed (red), then continue
+        if (forceFind) {
+          resolveForceFind(currentTarget);
+          locked.add(currentTarget);
+          pickNext();
+          return;
+        }
+
+        // If already locked, ignore (normal mode only)
+        if (locked.has(clicked)) return;
+
+        // Normal scoring (unchanged)
         if (tries === 0) {
           totalPoints += 100;
           markCorrect(currentTarget, 1);
@@ -654,17 +697,26 @@ function showCursorTip(text) {
         return;
       }
 
+      // Non-current targets: ignore if locked
+      if (locked.has(clicked)) return;
+
+      // Wrong click (not in forced-find mode)
       if (tries === 0) {
         flashWrong(hit);
         tries = 1;
         return;
       }
 
+      // Second miss:
+      // - still flash the WRONG clicked region briefly red
+      // - then force the player to find the correct region (blinks until clicked)
       flashWrong(hit);
-      locked.add(currentTarget);
-      markFinalWrong(currentTarget);
-      pickNext();
+      startForceFind(currentTarget);
+      // Do NOT lock currentTarget yet, and do NOT pickNext() yet.
+      // No points will be awarded when they finally click it.
     });
+
+
   }
 
   // ----------------------------

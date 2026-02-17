@@ -329,6 +329,34 @@ body.is-playing{
   100%{ filter: brightness(1); }
 }
 
+
+/* =========================================
+   Forced-Find Mode (Correct answer blinks
+   continuously until clicked)
+========================================= */
+
+.mustFind, .mustFind *{
+  fill: var(--red) !important;
+  animation: mustFindPulse 0.65s ease-in-out infinite;
+}
+
+@keyframes mustFindPulse{
+  0%{
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50%{
+    opacity: 0.30;
+    filter: brightness(1.6);
+  }
+  100%{
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+
+
 /* ============================= */
 /* Start/End overlay */
 /* ============================= */
