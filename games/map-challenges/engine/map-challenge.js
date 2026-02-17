@@ -409,20 +409,27 @@ function showCursorTip(text) {
   // ----------------------------
   // Marking / feedback classes
   // ----------------------------
+
+
 function flashWrong(hit) {
   if (!hit || !hit.el) return;
 
+  // Safety: never paint the correct answer yellow while we're forcing the red blink
+  if (forceFind) return;
+
   hit.el.classList.add("tempWrong");
 
-  // Remove yellow highlight when mouse is released
   const removeHighlight = () => {
     hit.el.classList.remove("tempWrong");
-    window.removeEventListener("pointerup", removeHighlight);
-    window.removeEventListener("mouseup", removeHighlight);
+    hit.el.removeEventListener("pointerup", removeHighlight);
+    hit.el.removeEventListener("pointercancel", removeHighlight);
+    hit.el.removeEventListener("pointerleave", removeHighlight);
   };
 
-  window.addEventListener("pointerup", removeHighlight, { once: true });
-  window.addEventListener("mouseup", removeHighlight, { once: true });
+  // Remove on release, cancel, or leaving the region
+  hit.el.addEventListener("pointerup", removeHighlight, { once: true });
+  hit.el.addEventListener("pointercancel", removeHighlight, { once: true });
+  hit.el.addEventListener("pointerleave", removeHighlight, { once: true });
 }
 
 
@@ -666,6 +673,26 @@ function flashWrong(hit) {
 
        // NEW: Only hide when leaving the SVG entirely (not when moving between internal shapes)
     svgRoot.addEventListener("mouseleave", () => hideCursorTip());
+
+
+svgRoot.addEventListener("pointerdown", (e) => {
+  const hit = normalizeClickedId(e);
+  if (!hit) return;
+
+  if (!document.body.classList.contains("is-playing")) return;
+  if (!currentTarget) return;
+
+  const clicked = hit.normalized;
+
+  // During forced-find, ignore all presses except the target (and don't yellow-highlight)
+  if (forceFind) return;
+
+  // If it's wrong, turn it yellow while pressed
+  if (clicked !== currentTarget && !locked.has(clicked)) {
+    flashWrong(hit);
+  }
+});
+
 
 
     svgRoot.addEventListener("click", (e) => {
