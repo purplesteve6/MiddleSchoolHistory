@@ -4,8 +4,8 @@
 
 :root{
   /* If your SVG is a different aspect ratio, adjust these 3 values */
- --map-w: 1700px;
-  --map-h: 1500px;
+ --map-w: 960px;
+  --map-h: 847px;
   --map-ar: 17 / 15;
 
   /* Optional: tweak overlay accent colors per map */
