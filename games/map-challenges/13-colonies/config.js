@@ -89,7 +89,7 @@ window.MAP_CHALLENGE_CONFIG = {
 
     overlayKicker: "MAP CHALLENGE",
     overlayTitle: "UNITED STATES: 13 COLONIES",
-    beginMessage: "How fast can you identify the 13 oringal colonies of the United States?",
+    beginMessage: "How fast can you identify the 13 oringal U.S. colonies?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }
