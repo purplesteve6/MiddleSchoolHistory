@@ -67,7 +67,7 @@ window.MAP_CHALLENGE_CONFIG = {
   groups: {
     // example:
     // israel: ["israel", "gaza", "palestine"]
-	israel: ["israel", "gaza", "palestine"]
+	israel: ["israel", "gaza", "palestine", "israel_internal_borders"]
   },
 
   // Optional extra IDs to clear classes from (usually only used with alias/group setups)
