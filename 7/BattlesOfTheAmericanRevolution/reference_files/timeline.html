@@ -151,7 +151,7 @@
       text-shadow: 0 2px 10px rgba(0,0,0,.55);
     }
 
-    /* Event markers (bubbles) */
+    /* Context event markers (bubbles) */
     .marker{
       position:absolute; top:0; bottom:0; width:0;
       border-left: 2px dashed rgba(255,216,74,.55);
@@ -173,6 +173,7 @@
       width: 280px;
       text-align:center;
       pointer-events:none;
+      z-index: 4;
     }
 
     .markerBubble{
@@ -199,6 +200,7 @@
       box-shadow: 0 10px 24px rgba(0,0,0,.35);
       cursor:pointer;
       transition: transform .12s ease, filter .12s ease;
+      z-index: 2;
     }
     .bar:hover{transform: translateY(-1px); filter: brightness(1.06)}
     .bar:focus{outline:none; box-shadow: var(--focus)}
@@ -208,7 +210,7 @@
       border-color: rgba(255,216,74,.65);
     }
 
-    /* Battle “cards” (alternating lanes) */
+    /* Battle cards */
     .battle{
       position:absolute;
       transform: translateX(-50%);
@@ -256,7 +258,7 @@
       background: rgba(255,216,74,.55);
       opacity:.95;
       border-radius: 99px;
-      z-index: 2;
+      z-index: 1;
     }
     .connector::after{
       content:"";
@@ -333,7 +335,7 @@
         <div class="miniTrack" id="miniTrack">
           <div class="miniWindow" id="miniWindow" title="Drag to jump"></div>
         </div>
-        <div class="tiny" id="yearReadout">Date: —</div>
+        <div class="tiny" id="dateReadout">Date: —</div>
       </div>
     </section>
   </div>
@@ -341,10 +343,8 @@
   <script>
     const timelineColors = ["#FFD84A","#B3122A","#F2C94C","#7B0B1D","#E9B949","#9E0F26"];
 
-    // Optional highlight: timeline.html?active=long_island
     const activeId = (new URLSearchParams(location.search).get("active") || "").toLowerCase();
 
-    // Range (monthly scaling)
     const range = {
       startISO: "1775-01-01",
       endISO:   "1783-12-31"
@@ -358,11 +358,10 @@
     const startDate = parseUTC(range.startISO);
     const endDate = parseUTC(range.endISO);
 
-    // Month index from start (0 = Jan 1775), with a fraction through the month
     function dateToMonthFloat(iso){
       const dt = parseUTC(iso);
       const y = dt.getUTCFullYear();
-      const m = dt.getUTCMonth(); // 0-11
+      const m = dt.getUTCMonth();
       const startY = startDate.getUTCFullYear();
       const startM = startDate.getUTCMonth();
       const base = (y - startY) * 12 + (m - startM);
@@ -376,7 +375,7 @@
 
     const totalMonths = dateToMonthFloat(range.endISO);
 
-    // Battles (Option B) — FIXED PATHS: timeline is in /reference_files/, so use ../
+    // Battles (timeline.html is in /reference_files/, so images/pages are ../)
     const battles = [
       { id:"lexington_concord", name:"Lexington & Concord", startISO:"1775-04-19", endISO:"1775-04-20", display:"Apr 19, 1775", colorIndex:0, image:"../images/lexcon_timeline.webp", page:"../battles/lexington-concord.html" },
       { id:"bunker_hill", name:"Bunker Hill", startISO:"1775-06-17", endISO:"1775-06-18", display:"Jun 17, 1775", colorIndex:1, image:"../images/bunkerhill_timeline.webp", page:"../battles/bunker-hill.html" },
@@ -390,45 +389,37 @@
       { id:"saratoga", name:"Saratoga (NY)", startISO:"1777-09-19", endISO:"1777-10-17", display:"Sep–Oct 1777", colorIndex:0, image:"../images/saratoga_timeline.webp", page:"../battles/saratoga.html" },
 
       { id:"yorktown", name:"Yorktown", startISO:"1781-09-28", endISO:"1781-10-19", display:"Sep–Oct 1781", colorIndex:1, image:"../images/yorktown_timeline.webp", page:"../battles/yorktown.html" }
-    
+    ].map(b => ({
+      ...b,
+      startM: dateToMonthFloat(b.startISO),
+      endM: dateToMonthFloat(b.endISO)
+    }));
 
-].map((b) => ({
-  ...b,
-  startM: dateToMonthFloat(b.startISO),
-  endM: dateToMonthFloat(b.endISO)
-}));
+    // Explicit lanes so your alternation is exactly what you want
+    const laneMap = {
+      lexington_concord: "above",
+      ticonderoga: "below",
+      bunker_hill: "above",
+      long_island: "below",
+      harlem_heights: "above",
+      trenton: "below",
+      saratoga: "above",
+      yorktown: "below"
+    };
+    battles.forEach(b => b.lane = laneMap[b.id] || "above");
 
-// Explicit lanes (forces perfect alternation)
-const laneMap = {
-  lexington_concord: "above",
-  ticonderoga: "below",
-  bunker_hill: "above",
-  long_island: "below",
-  harlem_heights: "above",
-  trenton: "below",
-  saratoga: "above",
-  yorktown: "below"
-};
-
-// Apply lanes
-battles.forEach(b => {
-  b.lane = laneMap[b.id] || "above";
-});
-
-
-    // Context “bubbles” — NOT alternated; all on top. NYC removed.
+    // Context bubbles (stay in the TOP band, like before)
     const events = [
-  { id:"declaration", iso:"1776-07-04", top:"1776", bottom:"Declaration of Independence", lane:"above" },
-  { id:"france_alliance", iso:"1778-02-06", top:"1778", bottom:"France becomes an ally", lane:"above" },
-  { id:"treaty_paris", iso:"1783-09-03", top:"1783", bottom:"Treaty of Paris", lane:"below" }
-].map(e => ({ ...e, xM: dateToMonthFloat(e.iso) }));
-
+      { id:"declaration", iso:"1776-07-04", top:"1776", bottom:"Declaration of Independence" },
+      { id:"france_alliance", iso:"1778-02-06", top:"1778", bottom:"France becomes an ally" },
+      { id:"treaty_paris", iso:"1783-09-03", top:"1783", bottom:"Treaty of Paris" }
+    ].map(e => ({ ...e, xM: dateToMonthFloat(e.iso) }));
 
     const viewport = document.getElementById("viewport");
     const canvas = document.getElementById("canvas");
     const zoom = document.getElementById("zoom");
     const zoomVal = document.getElementById("zoomVal");
-    const yearReadout = document.getElementById("yearReadout");
+    const dateReadout = document.getElementById("dateReadout");
     const miniTrack = document.getElementById("miniTrack");
     const miniWindow = document.getElementById("miniWindow");
     const centerSelect = document.getElementById("centerSelect");
@@ -461,7 +452,6 @@ battles.forEach(b => {
       viewport.scrollLeft = clamp(targetX, 0, viewport.scrollWidth);
     }
 
-    // --- Roman-style lane positioning helpers ---
     function getBarCenterY(){
       const cs = getComputedStyle(document.documentElement);
       const barsTop = parseFloat(cs.getPropertyValue("--barsTop"));
@@ -520,14 +510,12 @@ battles.forEach(b => {
       if (line) line.style.top = barCenterY + "px";
     }
 
-    // Ticks: monthly + year labels at January
     function renderTicks(){
       const tickWrap = document.createElement("div");
       tickWrap.className = "ticks";
 
       const startY = startDate.getUTCFullYear();
       const startM = startDate.getUTCMonth();
-
       const endY = endDate.getUTCFullYear();
       const endM = endDate.getUTCMonth();
       const count = (endY - startY) * 12 + (endM - startM) + 1;
@@ -555,6 +543,47 @@ battles.forEach(b => {
       canvas.appendChild(tickWrap);
     }
 
+    function monthFloatToDate(mf){
+      const y0 = startDate.getUTCFullYear();
+      const m0 = startDate.getUTCMonth();
+
+      const whole = Math.floor(mf);
+      const frac = mf - whole;
+
+      const y = y0 + Math.floor((m0 + whole) / 12);
+      const m = (m0 + whole) % 12;
+
+      const monthStart = new Date(Date.UTC(y, m, 1));
+      const nextMonth = new Date(Date.UTC(y, m+1, 1));
+      const t = monthStart.getTime() + frac * (nextMonth.getTime() - monthStart.getTime());
+      return new Date(t);
+    }
+
+    function fmtDate(dt){
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return `${months[dt.getUTCMonth()]} ${dt.getUTCFullYear()}`;
+    }
+
+    function updateDateReadout(){
+      const centerX = viewport.scrollLeft + viewport.clientWidth/2;
+      const mf = centerX / pxPerMonth;
+      const dt = monthFloatToDate(mf);
+      dateReadout.textContent = "Date: " + fmtDate(dt);
+    }
+
+    function syncMiniWindow(){
+      const total = viewport.scrollWidth;
+      const view = viewport.clientWidth;
+      const trackW = miniTrack.getBoundingClientRect().width;
+      const ratio = trackW / total;
+
+      const winW = Math.max(28, view * ratio);
+      miniWindow.style.width = winW + "px";
+
+      const left = viewport.scrollLeft * ratio;
+      miniWindow.style.left = clamp(left, 0, trackW - winW) + "px";
+    }
+
     function render(){
       pxPerMonth = parseInt(zoom.value, 10);
       zoomVal.textContent = `${pxPerMonth} px/mo`;
@@ -570,42 +599,43 @@ battles.forEach(b => {
       line.style.top = "245px";
       canvas.appendChild(line);
 
-      
+      /* Context events: keep them in the TOP band (where they were) */
+      const bubbles = events
+        .map(e => ({ ...e, x: xForMonth(e.xM) }))
+        .sort((a,b) => a.x - b.x);
 
-// Context bubbles — text above if above-line event, below if below-line event
-events.forEach((ev)=>{
-  const x = xForMonth(ev.xM);
+      const rows = [[], [], []];
 
-  const m = document.createElement("div");
-  m.className = "marker";
-  m.style.left = x + "px";
-  canvas.appendChild(m);
+      for (const b of bubbles){
+        let placedRow = 0;
+        for (let r = 0; r < rows.length; r++){
+          const last = rows[r][rows[r].length - 1];
+          if (!last || Math.abs(b.x - last.x) > 230){
+            placedRow = r;
+            rows[r].push(b);
+            break;
+          }
+          placedRow = r;
+        }
 
-  const note = document.createElement("div");
-  note.className = "markerNote";
-  note.style.left = x + "px";
+        const m = document.createElement("div");
+        m.className = "marker";
+        m.style.left = b.x + "px";
+        canvas.appendChild(m);
 
-  // Get center line Y
-  const barCenterY = getBarCenterY();
+        const note = document.createElement("div");
+        note.className = "markerNote";
+        note.style.left = b.x + "px";
+        note.style.top = (6 + placedRow * 50) + "px";
 
-  if (ev.lane === "below") {
-    // Position BELOW the timeline line
-    note.style.top = (barCenterY + 24) + "px";
-  } else {
-    // Default: ABOVE the timeline line
-    note.style.top = (barCenterY - 90) + "px";
-  }
-
-  note.innerHTML = `
-    <span class="markerBubble">
-      <span class="t1">${ev.top}</span>
-      <span class="t2">${ev.bottom}</span>
-    </span>
-  `;
-  canvas.appendChild(note);
-});
-
-
+        note.innerHTML = `
+          <span class="markerBubble">
+            <span class="t1">${b.top}</span>
+            <span class="t2">${b.bottom}</span>
+          </span>
+        `;
+        canvas.appendChild(note);
+      }
 
       const bars = document.createElement("div");
       bars.className = "bars";
@@ -650,12 +680,16 @@ events.forEach((ev)=>{
           <div class="empYears">${b.display}</div>
         `;
 
+        /* ✅ Battle card rule:
+           - Above line: TEXT above IMAGE
+           - Below line: TEXT below IMAGE
+        */
         if (b.lane === "above"){
-          stack.appendChild(avatarWrap);
           stack.appendChild(meta);
+          stack.appendChild(avatarWrap);
         } else {
-          stack.appendChild(meta);
           stack.appendChild(avatarWrap);
+          stack.appendChild(meta);
         }
 
         const connector = document.createElement("div");
@@ -663,7 +697,6 @@ events.forEach((ev)=>{
 
         a.appendChild(stack);
         a.appendChild(connector);
-
         canvas.appendChild(a);
       });
 
@@ -675,48 +708,7 @@ events.forEach((ev)=>{
       });
     }
 
-    function syncMiniWindow(){
-      const total = viewport.scrollWidth;
-      const view = viewport.clientWidth;
-      const trackW = miniTrack.getBoundingClientRect().width;
-      const ratio = trackW / total;
-
-      const winW = Math.max(28, view * ratio);
-      miniWindow.style.width = winW + "px";
-
-      const left = viewport.scrollLeft * ratio;
-      miniWindow.style.left = clamp(left, 0, trackW - winW) + "px";
-    }
-
-    function monthFloatToDate(mf){
-      const y0 = startDate.getUTCFullYear();
-      const m0 = startDate.getUTCMonth();
-
-      const whole = Math.floor(mf);
-      const frac = mf - whole;
-
-      const y = y0 + Math.floor((m0 + whole) / 12);
-      const m = (m0 + whole) % 12;
-
-      const monthStart = new Date(Date.UTC(y, m, 1));
-      const nextMonth = new Date(Date.UTC(y, m+1, 1));
-      const t = monthStart.getTime() + frac * (nextMonth.getTime() - monthStart.getTime());
-      return new Date(t);
-    }
-
-    function fmtDate(dt){
-      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-      return `${months[dt.getUTCMonth()]} ${dt.getUTCFullYear()}`;
-    }
-
-    function updateDateReadout(){
-      const centerX = viewport.scrollLeft + viewport.clientWidth/2;
-      const mf = centerX / pxPerMonth;
-      const dt = monthFloatToDate(mf);
-      yearReadout.textContent = "Date: " + fmtDate(dt);
-    }
-
-    // --- interactions ---
+    // interactions
     zoom.addEventListener("input", () => {
       const prevCenter = viewport.scrollLeft + viewport.clientWidth/2;
       const prevMF = prevCenter / pxPerMonth;
