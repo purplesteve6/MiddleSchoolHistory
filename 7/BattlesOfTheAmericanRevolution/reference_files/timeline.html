@@ -8,11 +8,14 @@
 
   <style>
     html, body{ height:100%; margin:0; overflow:hidden; }
+
     :root{
       --bg:#081a3a;
       --bg2:#06122a;
+
       --text:#f7f3e6;
       --muted: rgba(247,243,230,.82);
+
       --gold:#FFD84A;
       --gold2:#f2c94c;
       --red:#b3122a;
@@ -24,21 +27,21 @@
       --shadow: 0 14px 40px rgba(0,0,0,.45);
       --radius: 18px;
       --max: 980px;
-
       --focus: 0 0 0 4px rgba(255,216,74,.35);
 
-      /* Geometry tuned for shorter timeline */
+      /* Geometry */
       --barsTop: 300px;
       --barTopInBars: 11px;
       --barH: 18px;
 
       --avatar: 104px;
-      --gapToPortraitEdge: 120px;
+      --gapToPortraitEdge: 112px;
       --stackGap: 10px;
       --metaH: 44px;
     }
 
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -55,6 +58,7 @@
     .tiny{font-size:.92rem; color: rgba(247,243,230,.72)}
 
     .wrap{ max-width: var(--max); margin: 0 auto; padding: 1rem 1rem 1.25rem; }
+
     .card{
       background: linear-gradient(180deg, var(--panel), var(--panel2));
       border:1px solid rgba(255,255,255,.12);
@@ -67,6 +71,7 @@
       display:flex; align-items:center; justify-content:flex-end;
       gap:1rem; flex-wrap:wrap; margin-bottom:.15rem;
     }
+
     .timeline-hint{
       margin-right:auto;
       font-weight:1000;
@@ -75,6 +80,7 @@
       white-space: nowrap;
       display:flex; align-items:center;
     }
+
     .timeline-tip{
       margin-top:.25rem;
       margin-bottom:.5rem;
@@ -83,7 +89,9 @@
       color: rgba(255,255,255,.75);
       width:100%;
     }
+
     .timeline-controls{display:flex; gap:.55rem; flex-wrap:wrap; align-items:center}
+
     .controlPill{
       display:flex; align-items:center; gap:.5rem;
       padding:.35rem .55rem;
@@ -92,7 +100,7 @@
       background: rgba(255,255,255,.06);
     }
     .controlPill label{font-weight:1000; font-size:.9rem; color: rgba(247,243,230,.85); white-space:nowrap}
-    .controlPill input[type="range"]{width: 140px}
+    .controlPill input[type="range"]{width: 150px}
     .controlPill select{
       color: var(--text);
       background: rgba(6,18,42,.45);
@@ -114,8 +122,10 @@
 
       overflow-x: auto;
       overflow-y: hidden;
+
       scrollbar-width: none;
       -ms-overflow-style: none;
+
       height: 640px;
     }
     .timelineViewport::-webkit-scrollbar{ display:none; }
@@ -126,10 +136,12 @@
       min-width: 900px;
     }
 
-    .ticks{position:absolute; left:0; right:0; top: 18px; height: 55px; pointer-events:none}
+    /* Ticks */
+    .ticks{position:absolute; left:0; right:0; top: 18px; height: 66px; pointer-events:none}
     .tick{position:absolute; top:0; width:1px; background: rgba(255,255,255,.18)}
-    .tick.small{height: 16px; top: 22px; opacity:.6}
-    .tick.big{height: 34px; top: 8px; opacity:.9}
+    .tick.month{height: 14px; top: 36px; opacity:.55}
+    .tick.year{height: 38px; top: 10px; opacity:.9}
+
     .tickLabel{
       position:absolute; top: 0;
       transform: translateX(-50%);
@@ -139,6 +151,7 @@
       text-shadow: 0 2px 10px rgba(0,0,0,.55);
     }
 
+    /* Event markers (bubbles) */
     .marker{
       position:absolute; top:0; bottom:0; width:0;
       border-left: 2px dashed rgba(255,216,74,.55);
@@ -156,12 +169,12 @@
 
     .markerNote{
       position:absolute;
-      top: 6px;
       transform: translateX(-50%);
       width: 280px;
       text-align:center;
       pointer-events:none;
     }
+
     .markerBubble{
       display:inline-block;
       padding:.22rem .62rem .3rem;
@@ -176,9 +189,8 @@
     }
     .markerBubble .t1{display:block; font-size:.92rem}
     .markerBubble .t2{display:block; margin-top:.18rem; font-size:.86rem; opacity:.95}
-    .markerNote.row2{ top: 56px; }
-    .markerNote.row3{ top: 106px; }
 
+    /* Bars */
     .bars{position:absolute; left:0; right:0; top: var(--barsTop); height: 40px;}
     .bar{
       position:absolute; top: var(--barTopInBars); height: var(--barH);
@@ -196,6 +208,7 @@
       border-color: rgba(255,216,74,.65);
     }
 
+    /* Battle “cards” (alternating lanes) */
     .battle{
       position:absolute;
       transform: translateX(-50%);
@@ -204,8 +217,16 @@
       cursor:pointer;
       user-select:none;
       text-decoration:none;
+      z-index: 3;
     }
     .battle:focus{outline:none; box-shadow: var(--focus); border-radius: 14px}
+
+    .stack{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: var(--stackGap);
+    }
 
     .avatarWrap{
       width: var(--avatar); height: var(--avatar);
@@ -217,15 +238,43 @@
       box-shadow: 0 16px 34px rgba(0,0,0,.40);
     }
     .avatarWrap img{width:100%; height:100%; object-fit:cover; display:block}
+
     .meta{
       min-height: var(--metaH);
       display:flex; flex-direction:column; justify-content:center; align-items:center;
       line-height:1.15;
-      margin-top: .35rem;
     }
     .empName{font-weight:1000; letter-spacing:.2px}
     .empYears{color: rgba(247,243,230,.78); font-weight:900; font-size:.92rem; margin-top:.18rem}
 
+    /* Connector (portrait -> timeline) */
+    .connector{
+      position:absolute;
+      width:2px;
+      left:50%;
+      transform: translateX(-50%);
+      background: rgba(255,216,74,.55);
+      opacity:.95;
+      border-radius: 99px;
+      z-index: 2;
+    }
+    .connector::after{
+      content:"";
+      position:absolute;
+      width:10px; height:10px;
+      left:50%;
+      transform: translateX(-50%);
+      border-radius:50%;
+      background: rgba(255,216,74,.95);
+      box-shadow: 0 6px 18px rgba(0,0,0,.45);
+      bottom:-5px;
+    }
+    .connector.dotTop::after{
+      top:-5px;
+      bottom:auto;
+    }
+
+    /* Mini-map */
     .scrubber{
       margin-top:.75rem;
       padding:.55rem .7rem;
@@ -260,10 +309,10 @@
         <div class="timeline-hint">Scroll the Timeline</div>
 
         <div class="timeline-controls">
-          <div class="controlPill" title="Zoom changes how much horizontal space the years take">
+          <div class="controlPill" title="Zoom changes how much horizontal space each month takes">
             <label for="zoom">Zoom</label>
-            <input id="zoom" type="range" min="50" max="260" step="10" value="140" />
-            <span class="tiny" id="zoomVal">140 px/yr</span>
+            <input id="zoom" type="range" min="30" max="140" step="5" value="70" />
+            <span class="tiny" id="zoomVal">70 px/mo</span>
           </div>
 
           <div class="controlPill" title="Jump the timeline to a battle">
@@ -284,7 +333,7 @@
         <div class="miniTrack" id="miniTrack">
           <div class="miniWindow" id="miniWindow" title="Drag to jump"></div>
         </div>
-        <div class="tiny" id="yearReadout">Year: —</div>
+        <div class="tiny" id="yearReadout">Date: —</div>
       </div>
     </section>
   </div>
@@ -292,46 +341,70 @@
   <script>
     const timelineColors = ["#FFD84A","#B3122A","#F2C94C","#7B0B1D","#E9B949","#9E0F26"];
 
-    // Read optional highlight: timeline.html?active=long_island
+    // Optional highlight: timeline.html?active=long_island
     const activeId = (new URLSearchParams(location.search).get("active") || "").toLowerCase();
 
-    // Range for the war (extra padding at ends for readability)
-    const range = { start: 1775.0, end: 1783.9 };
+    // Range (monthly scaling)
+    const range = {
+      startISO: "1775-01-01",
+      endISO:   "1783-12-31"
+    };
 
-    // Convert YYYY-MM-DD to a "year.fraction" for positioning
-    function dateToYearFloat(iso){
-      // Treat as UTC to avoid timezone shifts
+    function parseUTC(iso){
       const [y,m,d] = iso.split("-").map(n=>parseInt(n,10));
-      const dt = new Date(Date.UTC(y, m-1, d));
-      const start = new Date(Date.UTC(y,0,1));
-      const end = new Date(Date.UTC(y+1,0,1));
-      const frac = (dt - start) / (end - start);
-      return y + frac;
+      return new Date(Date.UTC(y, m-1, d));
     }
+
+    const startDate = parseUTC(range.startISO);
+    const endDate = parseUTC(range.endISO);
+
+    // Month index from start (0 = Jan 1775), with a fraction through the month
+    function dateToMonthFloat(iso){
+      const dt = parseUTC(iso);
+      const y = dt.getUTCFullYear();
+      const m = dt.getUTCMonth(); // 0-11
+      const startY = startDate.getUTCFullYear();
+      const startM = startDate.getUTCMonth();
+      const base = (y - startY) * 12 + (m - startM);
+
+      const monthStart = new Date(Date.UTC(y, m, 1));
+      const nextMonth = new Date(Date.UTC(y, m+1, 1));
+      const frac = (dt - monthStart) / (nextMonth - monthStart);
+
+      return base + frac;
+    }
+
+    const totalMonths = dateToMonthFloat(range.endISO);
 
     // Battles (Option B)
     const battles = [
-      { id:"lexington_concord", name:"Lexington & Concord", start: dateToYearFloat("1775-04-19"), end: dateToYearFloat("1775-04-20"), display:"Apr 19, 1775", colorIndex:0, image:"../images/lexcon_timeline.webp", page:"../battles/lexington-concord.html" },
-      { id:"bunker_hill", name:"Bunker Hill", start: dateToYearFloat("1775-06-17"), end: dateToYearFloat("1775-06-18"), display:"Jun 17, 1775", colorIndex:1, image:"../images/bunkerhill_timeline.webp", page:"../battles/bunker-hill.html" },
-      { id:"ticonderoga", name:"Fort Ticonderoga (NY)", start: dateToYearFloat("1775-05-10"), end: dateToYearFloat("1775-05-11"), display:"May 10, 1775", colorIndex:2, image:"../images/ticonderoga_timeline.webp", page:"../battles/fort-ticonderoga.html" },
+      { id:"lexington_concord", name:"Lexington & Concord", startISO:"1775-04-19", endISO:"1775-04-20", display:"Apr 19, 1775", colorIndex:0, image:"./images/lexcon_timeline.webp", page:"./battles/lexington-concord.html" },
+      { id:"bunker_hill", name:"Bunker Hill", startISO:"1775-06-17", endISO:"1775-06-18", display:"Jun 17, 1775", colorIndex:1, image:"./images/bunkerhill_timeline.webp", page:"./battles/bunker-hill.html" },
+      { id:"ticonderoga", name:"Fort Ticonderoga (NY)", startISO:"1775-05-10", endISO:"1775-05-11", display:"May 10, 1775", colorIndex:2, image:"./images/ticonderoga_timeline.webp", page:"./battles/fort-ticonderoga.html" },
 
-      { id:"long_island", name:"Long Island / Brooklyn (NY)", start: dateToYearFloat("1776-08-27"), end: dateToYearFloat("1776-08-30"), display:"Aug 27, 1776", colorIndex:3, image:"../images/longisland_timeline.webp", page:"../battles/long-island.html" },
-      { id:"harlem_heights", name:"Harlem Heights (NY)", start: dateToYearFloat("1776-09-16"), end: dateToYearFloat("1776-09-17"), display:"Sep 16, 1776", colorIndex:4, image:"../images/harlemheights_timeline.webp", page:"../battles/harlem-heights.html" },
+      { id:"long_island", name:"Long Island / Brooklyn (NY)", startISO:"1776-08-27", endISO:"1776-08-30", display:"Aug 27, 1776", colorIndex:3, image:"./images/longisland_timeline.webp", page:"./battles/long-island.html" },
+      { id:"harlem_heights", name:"Harlem Heights (NY)", startISO:"1776-09-16", endISO:"1776-09-17", display:"Sep 16, 1776", colorIndex:4, image:"./images/harlemheights_timeline.webp", page:"./battles/harlem-heights.html" },
 
-      { id:"trenton", name:"Trenton", start: dateToYearFloat("1776-12-26"), end: dateToYearFloat("1776-12-27"), display:"Dec 26, 1776", colorIndex:5, image:"../images/trenton_timeline.webp", page:"../battles/trenton.html" },
+      { id:"trenton", name:"Trenton", startISO:"1776-12-26", endISO:"1776-12-27", display:"Dec 26, 1776", colorIndex:5, image:"./images/trenton_timeline.webp", page:"./battles/trenton.html" },
 
-      { id:"saratoga", name:"Saratoga (NY)", start: dateToYearFloat("1777-09-19"), end: dateToYearFloat("1777-10-17"), display:"Sep–Oct 1777", colorIndex:0, image:"../images/saratoga_timeline.webp", page:"../battles/saratoga.html" },
+      { id:"saratoga", name:"Saratoga (NY)", startISO:"1777-09-19", endISO:"1777-10-17", display:"Sep–Oct 1777", colorIndex:0, image:"./images/saratoga_timeline.webp", page:"./battles/saratoga.html" },
 
-      { id:"yorktown", name:"Yorktown", start: dateToYearFloat("1781-09-28"), end: dateToYearFloat("1781-10-19"), display:"Sep–Oct 1781", colorIndex:1, image:"../images/yorktown_timeline.webp", page:"../battles/yorktown.html" }
-    ];
+      { id:"yorktown", name:"Yorktown", startISO:"1781-09-28", endISO:"1781-10-19", display:"Sep–Oct 1781", colorIndex:1, image:"./images/yorktown_timeline.webp", page:"./battles/yorktown.html" }
+    ].map((b, i) => ({
+      ...b,
+      startM: dateToMonthFloat(b.startISO),
+      endM: dateToMonthFloat(b.endISO),
+      // Alternate lanes (Roman-style)
+      lane: (i % 2 === 0) ? "above" : "below"
+    }));
 
-    // Major “bubble” events
+    // Event “bubbles” (also alternated top/bottom to avoid collisions)
     const events = [
-      { id:"declaration", x: dateToYearFloat("1776-07-04"), top:"1776", bottom:"Declaration of Independence", row:1 },
-      { id:"nyc_captured", x: dateToYearFloat("1776-09-15"), top:"1776", bottom:"British take New York City", row:2 },
-      { id:"france_alliance", x: dateToYearFloat("1778-02-06"), top:"1778", bottom:"France becomes an ally", row:3 },
-      { id:"treaty_paris", x: dateToYearFloat("1783-09-03"), top:"1783", bottom:"Treaty of Paris", row:1 }
-    ];
+      { id:"declaration", iso:"1776-07-04", top:"1776", bottom:"Declaration of Independence", lane:"above" },
+      { id:"nyc_captured", iso:"1776-09-15", top:"1776", bottom:"British take New York City", lane:"below" },
+      { id:"france_alliance", iso:"1778-02-06", top:"1778", bottom:"France becomes an ally", lane:"above" },
+      { id:"treaty_paris", iso:"1783-09-03", top:"1783", bottom:"Treaty of Paris", lane:"below" }
+    ].map(e => ({ ...e, xM: dateToMonthFloat(e.iso) }));
 
     const viewport = document.getElementById("viewport");
     const canvas = document.getElementById("canvas");
@@ -342,11 +415,10 @@
     const miniWindow = document.getElementById("miniWindow");
     const centerSelect = document.getElementById("centerSelect");
 
-    let pxPerYear = parseInt(zoom.value, 10);
+    let pxPerMonth = parseInt(zoom.value, 10);
 
     function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
-    function span(){ return (range.end - range.start); }
-    function xFor(t){ return (t - range.start) * pxPerYear; }
+    function xForMonth(tMonth){ return tMonth * pxPerMonth; }
 
     function populateDropdown(){
       centerSelect.innerHTML = "";
@@ -366,38 +438,100 @@
     function centerOn(id){
       const b = battles.find(x=>x.id===id);
       if(!b) return;
-      const mid = (b.start + b.end) / 2;
-      const targetX = xFor(mid) - (viewport.clientWidth/2);
+      const mid = (b.startM + b.endM) / 2;
+      const targetX = xForMonth(mid) - (viewport.clientWidth/2);
       viewport.scrollLeft = clamp(targetX, 0, viewport.scrollWidth);
     }
 
+    // --- Roman-style lane positioning helpers ---
+    function getBarCenterY(){
+      const cs = getComputedStyle(document.documentElement);
+      const barsTop = parseFloat(cs.getPropertyValue("--barsTop"));
+      const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars"));
+      const barH = parseFloat(cs.getPropertyValue("--barH"));
+      return barsTop + barTopInBars + (barH/2);
+    }
+
+    function positionLanesSymmetrically(){
+      const cs = getComputedStyle(document.documentElement);
+      const gap = parseFloat(cs.getPropertyValue("--gapToPortraitEdge"));
+      const avatarH = parseFloat(cs.getPropertyValue("--avatar"));
+      const barCenterY = getBarCenterY();
+
+      const sampleAbove = canvas.querySelector(".battle.laneAbove .avatarWrap");
+      const sampleBelow = canvas.querySelector(".battle.laneBelow .avatarWrap");
+
+      let aboveAvatarOffsetTop = 0;
+      let belowAvatarOffsetTop = 0;
+
+      if (sampleAbove) aboveAvatarOffsetTop = sampleAbove.offsetTop;
+      if (sampleBelow) belowAvatarOffsetTop = sampleBelow.offsetTop;
+
+      const aboveLaneTop = (barCenterY - gap) - (aboveAvatarOffsetTop + avatarH);
+      const belowLaneTop = (barCenterY + gap) - (belowAvatarOffsetTop);
+
+      canvas.querySelectorAll(".battle.laneAbove").forEach(el => el.style.top = aboveLaneTop + "px");
+      canvas.querySelectorAll(".battle.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
+    }
+
+    function adjustConnectors(){
+      const barCenterY = getBarCenterY();
+
+      canvas.querySelectorAll(".battle").forEach(card => {
+        const avatar = card.querySelector(".avatarWrap");
+        const connector = card.querySelector(".connector");
+        if (!avatar || !connector) return;
+
+        const cardTop = card.offsetTop;
+        const avatarTop = cardTop + avatar.offsetTop;
+        const avatarBottom = avatarTop + avatar.offsetHeight;
+
+        const isAbove = card.classList.contains("laneAbove");
+        const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
+
+        const minY = Math.min(portraitEdgeY, barCenterY);
+        const maxY = Math.max(portraitEdgeY, barCenterY);
+        const height = Math.max(0, maxY - minY);
+
+        connector.style.top = (minY - cardTop) + "px";
+        connector.style.height = height + "px";
+        connector.classList.toggle("dotTop", barCenterY === minY);
+      });
+
+      const line = canvas.querySelector(".timelineLine");
+      if (line) line.style.top = barCenterY + "px";
+    }
+
+    // Ticks: monthly + year labels at January
     function renderTicks(){
       const tickWrap = document.createElement("div");
       tickWrap.className = "ticks";
 
-      // big tick each year; small tick mid-year
-      const startYear = Math.floor(range.start);
-      const endYear = Math.ceil(range.end);
+      const startY = startDate.getUTCFullYear();
+      const startM = startDate.getUTCMonth();
 
-      for(let y=startYear; y<=endYear; y++){
-        const bigX = xFor(y);
-        const big = document.createElement("div");
-        big.className = "tick big";
-        big.style.left = bigX + "px";
-        tickWrap.appendChild(big);
+      // total months inclusive-ish
+      const endY = endDate.getUTCFullYear();
+      const endM = endDate.getUTCMonth();
+      const count = (endY - startY) * 12 + (endM - startM) + 1;
 
-        const label = document.createElement("div");
-        label.className = "tickLabel";
-        label.style.left = bigX + "px";
-        label.textContent = y.toString();
-        tickWrap.appendChild(label);
+      for(let idx=0; idx<count; idx++){
+        const y = startY + Math.floor((startM + idx) / 12);
+        const m = (startM + idx) % 12;
 
-        const midX = xFor(y + 0.5);
-        if(midX >= 0 && midX <= xFor(range.end)){
-          const small = document.createElement("div");
-          small.className = "tick small";
-          small.style.left = midX + "px";
-          tickWrap.appendChild(small);
+        const x = xForMonth(idx);
+
+        const t = document.createElement("div");
+        t.className = "tick " + (m === 0 ? "year" : "month");
+        t.style.left = x + "px";
+        tickWrap.appendChild(t);
+
+        if (m === 0){
+          const label = document.createElement("div");
+          label.className = "tickLabel";
+          label.style.left = x + "px";
+          label.textContent = y.toString();
+          tickWrap.appendChild(label);
         }
       }
 
@@ -405,32 +539,42 @@
     }
 
     function render(){
-      pxPerYear = parseInt(zoom.value, 10);
-      zoomVal.textContent = `${pxPerYear} px/yr`;
+      pxPerMonth = parseInt(zoom.value, 10);
+      zoomVal.textContent = `${pxPerMonth} px/mo`;
 
-      // canvas width based on range
-      const w = Math.max(900, Math.ceil(span() * pxPerYear) + 120);
+      const w = Math.max(900, Math.ceil(totalMonths * pxPerMonth) + 220);
       canvas.style.width = w + "px";
       canvas.innerHTML = "";
 
       renderTicks();
 
-      // timeline center line
+      // timeline center line (positioned by adjustConnectors later, but give it a default)
       const line = document.createElement("div");
       line.className = "timelineLine";
       line.style.top = "245px";
       canvas.appendChild(line);
 
-      // bubbles
-      events.forEach(ev=>{
+      // Event bubbles (alternate top/bottom)
+      events.forEach((ev, i)=>{
+        const x = xForMonth(ev.xM);
+
         const m = document.createElement("div");
         m.className = "marker";
-        m.style.left = xFor(ev.x) + "px";
+        m.style.left = x + "px";
         canvas.appendChild(m);
 
         const note = document.createElement("div");
-        note.className = "markerNote" + (ev.row===2 ? " row2" : ev.row===3 ? " row3" : "");
-        note.style.left = xFor(ev.x) + "px";
+        note.className = "markerNote";
+        note.style.left = x + "px";
+
+        // Place above/below with stagger so they don’t collide
+        if (ev.lane === "above"){
+          note.style.top = (i % 2 === 0) ? "6px" : "56px";
+        } else {
+          // below: push near bottom area, still readable
+          note.style.top = "520px";
+        }
+
         note.innerHTML = `
           <span class="markerBubble">
             <span class="t1">${ev.top}</span>
@@ -440,16 +584,15 @@
         canvas.appendChild(note);
       });
 
-      // bars layer
+      // Bars layer
       const bars = document.createElement("div");
       bars.className = "bars";
       canvas.appendChild(bars);
 
-      // battles (portraits above line; bars aligned in bars layer)
-      const topY = 110;
-      battles.forEach((b, i)=>{
-        const leftX = xFor(b.start);
-        const rightX = xFor(b.end);
+      // Battles
+      battles.forEach((b)=>{
+        const leftX = xForMonth(b.startM);
+        const rightX = xForMonth(b.endM);
 
         // bar
         const bar = document.createElement("a");
@@ -459,33 +602,60 @@
         bar.setAttribute("aria-label", `${b.name} (${b.display})`);
         bar.style.left = leftX + "px";
 
-        const rawW = Math.max(8, (rightX - leftX)); // enforce minimum visible width
+        const rawW = Math.max(10, (rightX - leftX));
         bar.style.width = rawW + "px";
 
         const c = timelineColors[b.colorIndex % timelineColors.length];
         bar.style.background = `linear-gradient(90deg, ${c}, rgba(255,255,255,.06))`;
         bars.appendChild(bar);
 
-        // portrait “card”
+        // portrait card
         const midX = (leftX + rightX) / 2;
 
         const a = document.createElement("a");
         a.href = b.page;
-        a.className = "battle";
+        a.className = `battle ${b.lane === "above" ? "laneAbove" : "laneBelow"}`;
         a.style.left = midX + "px";
-        a.style.top = topY + "px";
 
-        a.innerHTML = `
-          <div class="avatarWrap"><img src="${b.image}" alt="${b.name}"></div>
-          <div class="meta">
-            <div class="empName">${b.name}</div>
-            <div class="empYears">${b.display}</div>
-          </div>
+        // stack (swap order based on lane)
+        const stack = document.createElement("div");
+        stack.className = "stack";
+
+        const avatarWrap = document.createElement("div");
+        avatarWrap.className = "avatarWrap";
+        avatarWrap.innerHTML = `<img src="${b.image}" alt="${b.name}">`;
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.innerHTML = `
+          <div class="empName">${b.name}</div>
+          <div class="empYears">${b.display}</div>
         `;
+
+        if (b.lane === "above"){
+          stack.appendChild(avatarWrap);
+          stack.appendChild(meta);
+        } else {
+          stack.appendChild(meta);
+          stack.appendChild(avatarWrap);
+        }
+
+        const connector = document.createElement("div");
+        connector.className = "connector";
+
+        a.appendChild(stack);
+        a.appendChild(connector);
+
         canvas.appendChild(a);
       });
 
-      syncMiniWindow();
+      // After layout paints, place lanes + connectors accurately
+      requestAnimationFrame(() => {
+        positionLanesSymmetrically();
+        adjustConnectors();
+        syncMiniWindow();
+        updateDateReadout();
+      });
     }
 
     function syncMiniWindow(){
@@ -501,36 +671,63 @@
       miniWindow.style.left = clamp(left, 0, trackW - winW) + "px";
     }
 
-    function updateYearReadout(){
-      // estimate year at center of viewport
+    function monthFloatToDate(mf){
+      // mf is months since startDate
+      const y0 = startDate.getUTCFullYear();
+      const m0 = startDate.getUTCMonth();
+
+      const whole = Math.floor(mf);
+      const frac = mf - whole;
+
+      const y = y0 + Math.floor((m0 + whole) / 12);
+      const m = (m0 + whole) % 12;
+
+      const monthStart = new Date(Date.UTC(y, m, 1));
+      const nextMonth = new Date(Date.UTC(y, m+1, 1));
+      const t = monthStart.getTime() + frac * (nextMonth.getTime() - monthStart.getTime());
+      return new Date(t);
+    }
+
+    function fmtDate(dt){
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return `${months[dt.getUTCMonth()]} ${dt.getUTCFullYear()}`;
+    }
+
+    function updateDateReadout(){
       const centerX = viewport.scrollLeft + viewport.clientWidth/2;
-      const y = range.start + (centerX / pxPerYear);
-      yearReadout.textContent = "Year: " + y.toFixed(2);
+      const mf = centerX / pxPerMonth;
+      const dt = monthFloatToDate(mf);
+      yearReadout.textContent = "Date: " + fmtDate(dt);
     }
 
     // --- interactions ---
     zoom.addEventListener("input", () => {
       const prevCenter = viewport.scrollLeft + viewport.clientWidth/2;
-      const prevYear = range.start + (prevCenter / pxPerYear);
+      const prevMF = prevCenter / pxPerMonth;
 
       render();
 
-      // restore same centered year after zoom
-      const newCenter = xFor(prevYear);
+      // restore same centered month after zoom
+      const newCenter = xForMonth(prevMF);
       viewport.scrollLeft = clamp(newCenter - viewport.clientWidth/2, 0, viewport.scrollWidth);
-      syncMiniWindow();
-      updateYearReadout();
+
+      requestAnimationFrame(() => {
+        syncMiniWindow();
+        updateDateReadout();
+      });
     });
 
     centerSelect.addEventListener("change", () => {
       if(centerSelect.value) centerOn(centerSelect.value);
-      syncMiniWindow();
-      updateYearReadout();
+      requestAnimationFrame(() => {
+        syncMiniWindow();
+        updateDateReadout();
+      });
     });
 
     viewport.addEventListener("scroll", () => {
       syncMiniWindow();
-      updateYearReadout();
+      updateDateReadout();
     });
 
     // mini-map drag
@@ -542,7 +739,9 @@
       dragOffset = e.clientX - miniWindow.getBoundingClientRect().left;
       e.preventDefault();
     });
+
     window.addEventListener("mouseup", () => dragging = false);
+
     window.addEventListener("mousemove", (e) => {
       if (!dragging) return;
 
@@ -561,7 +760,7 @@
       viewport.scrollLeft = newLeft / ratio;
 
       syncMiniWindow();
-      updateYearReadout();
+      updateDateReadout();
     });
 
     miniTrack.addEventListener("mousedown", (e) => {
@@ -580,12 +779,16 @@
 
       viewport.scrollLeft = targetLeft / ratio;
       syncMiniWindow();
-      updateYearReadout();
+      updateDateReadout();
     });
 
     window.addEventListener("resize", () => {
-      syncMiniWindow();
-      updateYearReadout();
+      requestAnimationFrame(() => {
+        syncMiniWindow();
+        updateDateReadout();
+        positionLanesSymmetrically();
+        adjustConnectors();
+      });
     });
 
     // init
@@ -593,18 +796,17 @@
     render();
 
     // initial center:
-    // 1) if ?active=... present, center on that
-    // 2) else center near 1776 (busy year)
     requestAnimationFrame(() => {
       if(activeId && battles.some(b=>b.id===activeId)){
         centerSelect.value = activeId;
         centerOn(activeId);
       }else{
-        const targetYear = 1776.7;
-        viewport.scrollLeft = clamp(xFor(targetYear) - viewport.clientWidth/2, 0, viewport.scrollWidth);
+        // Center around late summer 1776 (busy cluster)
+        const target = dateToMonthFloat("1776-09-01");
+        viewport.scrollLeft = clamp(xForMonth(target) - viewport.clientWidth/2, 0, viewport.scrollWidth);
       }
       syncMiniWindow();
-      updateYearReadout();
+      updateDateReadout();
     });
   </script>
 </body>
