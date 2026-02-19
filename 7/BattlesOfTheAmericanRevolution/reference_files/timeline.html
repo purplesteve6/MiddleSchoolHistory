@@ -418,10 +418,11 @@ battles.forEach(b => {
 
     // Context “bubbles” — NOT alternated; all on top. NYC removed.
     const events = [
-      { id:"declaration", iso:"1776-07-04", top:"1776", bottom:"Declaration of Independence" },
-      { id:"france_alliance", iso:"1778-02-06", top:"1778", bottom:"France becomes an ally" },
-      { id:"treaty_paris", iso:"1783-09-03", top:"1783", bottom:"Treaty of Paris" }
-    ].map(e => ({ ...e, xM: dateToMonthFloat(e.iso) }));
+  { id:"declaration", iso:"1776-07-04", top:"1776", bottom:"Declaration of Independence", lane:"above" },
+  { id:"france_alliance", iso:"1778-02-06", top:"1778", bottom:"France becomes an ally", lane:"above" },
+  { id:"treaty_paris", iso:"1783-09-03", top:"1783", bottom:"Treaty of Paris", lane:"below" }
+].map(e => ({ ...e, xM: dateToMonthFloat(e.iso) }));
+
 
     const viewport = document.getElementById("viewport");
     const canvas = document.getElementById("canvas");
@@ -569,30 +570,42 @@ battles.forEach(b => {
       line.style.top = "245px";
       canvas.appendChild(line);
 
-      // Context bubbles — ALL TOP, lightly staggered only to avoid collisions
-      events.forEach((ev, i)=>{
-        const x = xForMonth(ev.xM);
+      
 
-        const m = document.createElement("div");
-        m.className = "marker";
-        m.style.left = x + "px";
-        canvas.appendChild(m);
+// Context bubbles — text above if above-line event, below if below-line event
+events.forEach((ev)=>{
+  const x = xForMonth(ev.xM);
 
-        const note = document.createElement("div");
-        note.className = "markerNote";
-        note.style.left = x + "px";
+  const m = document.createElement("div");
+  m.className = "marker";
+  m.style.left = x + "px";
+  canvas.appendChild(m);
 
-        // keep them on top, just stagger rows if close
-        note.style.top = (i % 2 === 0) ? "6px" : "56px";
+  const note = document.createElement("div");
+  note.className = "markerNote";
+  note.style.left = x + "px";
 
-        note.innerHTML = `
-          <span class="markerBubble">
-            <span class="t1">${ev.top}</span>
-            <span class="t2">${ev.bottom}</span>
-          </span>
-        `;
-        canvas.appendChild(note);
-      });
+  // Get center line Y
+  const barCenterY = getBarCenterY();
+
+  if (ev.lane === "below") {
+    // Position BELOW the timeline line
+    note.style.top = (barCenterY + 24) + "px";
+  } else {
+    // Default: ABOVE the timeline line
+    note.style.top = (barCenterY - 90) + "px";
+  }
+
+  note.innerHTML = `
+    <span class="markerBubble">
+      <span class="t1">${ev.top}</span>
+      <span class="t2">${ev.bottom}</span>
+    </span>
+  `;
+  canvas.appendChild(note);
+});
+
+
 
       const bars = document.createElement("div");
       bars.className = "bars";
