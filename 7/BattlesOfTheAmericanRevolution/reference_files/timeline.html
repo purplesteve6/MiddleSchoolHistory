@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top">
+  <title>Revolution Timeline</title>
+
+  <style>
+    html, body{ height:100%; margin:0; overflow:hidden; }
+    :root{
+      --bg:#081a3a;
+      --bg2:#06122a;
+      --text:#f7f3e6;
+      --muted: rgba(247,243,230,.82);
+      --gold:#FFD84A;
+      --gold2:#f2c94c;
+      --red:#b3122a;
+      --red2:#7b0b1d;
+
+      --panel: rgba(255,255,255,.055);
+      --panel2: rgba(255,255,255,.032);
+
+      --shadow: 0 14px 40px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 980px;
+
+      --focus: 0 0 0 4px rgba(255,216,74,.35);
+
+      /* Geometry tuned for shorter timeline */
+      --barsTop: 300px;
+      --barTopInBars: 11px;
+      --barH: 18px;
+
+      --avatar: 104px;
+      --gapToPortraitEdge: 120px;
+      --stackGap: 10px;
+      --metaH: 44px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(900px 700px at 0% 50%, rgba(179,18,42,.18), transparent 60%),
+        radial-gradient(900px 700px at 100% 50%, rgba(255,216,74,.14), transparent 60%),
+        linear-gradient(90deg, var(--bg2) 0%, var(--bg) 50%, var(--bg2) 100%);
+      background-attachment: fixed;
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    a{color:inherit}
+    .tiny{font-size:.92rem; color: rgba(247,243,230,.72)}
+
+    .wrap{ max-width: var(--max); margin: 0 auto; padding: 1rem 1rem 1.25rem; }
+    .card{
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1rem 1.1rem 1.1rem;
+    }
+
+    .timeline-head{
+      display:flex; align-items:center; justify-content:flex-end;
+      gap:1rem; flex-wrap:wrap; margin-bottom:.15rem;
+    }
+    .timeline-hint{
+      margin-right:auto;
+      font-weight:1000;
+      font-size: 1.25rem;
+      color: #fff;
+      white-space: nowrap;
+      display:flex; align-items:center;
+    }
+    .timeline-tip{
+      margin-top:.25rem;
+      margin-bottom:.5rem;
+      text-align:center;
+      font-size:1.0rem;
+      color: rgba(255,255,255,.75);
+      width:100%;
+    }
+    .timeline-controls{display:flex; gap:.55rem; flex-wrap:wrap; align-items:center}
+    .controlPill{
+      display:flex; align-items:center; gap:.5rem;
+      padding:.35rem .55rem;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+    }
+    .controlPill label{font-weight:1000; font-size:.9rem; color: rgba(247,243,230,.85); white-space:nowrap}
+    .controlPill input[type="range"]{width: 140px}
+    .controlPill select{
+      color: var(--text);
+      background: rgba(6,18,42,.45);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      padding: .35rem .6rem;
+      font-weight:900;
+      outline: none;
+    }
+    .controlPill select:focus{box-shadow:var(--focus)}
+
+    .timelineViewport{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(900px 260px at 20% 0%, rgba(179,18,42,.14), transparent 55%),
+        radial-gradient(900px 260px at 80% 20%, rgba(255,216,74,.10), transparent 55%),
+        rgba(6,18,42,.35);
+
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      height: 640px;
+    }
+    .timelineViewport::-webkit-scrollbar{ display:none; }
+
+    .timelineCanvas{
+      position:relative;
+      height: 620px;
+      min-width: 900px;
+    }
+
+    .ticks{position:absolute; left:0; right:0; top: 18px; height: 55px; pointer-events:none}
+    .tick{position:absolute; top:0; width:1px; background: rgba(255,255,255,.18)}
+    .tick.small{height: 16px; top: 22px; opacity:.6}
+    .tick.big{height: 34px; top: 8px; opacity:.9}
+    .tickLabel{
+      position:absolute; top: 0;
+      transform: translateX(-50%);
+      color: rgba(247,243,230,.78);
+      font-weight:1000; font-size:.86rem;
+      white-space:nowrap;
+      text-shadow: 0 2px 10px rgba(0,0,0,.55);
+    }
+
+    .marker{
+      position:absolute; top:0; bottom:0; width:0;
+      border-left: 2px dashed rgba(255,216,74,.55);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .timelineLine{
+      position:absolute;
+      left:0; right:0;
+      height:2px;
+      background: rgba(255,255,255,.14);
+      pointer-events:none;
+    }
+
+    .markerNote{
+      position:absolute;
+      top: 6px;
+      transform: translateX(-50%);
+      width: 280px;
+      text-align:center;
+      pointer-events:none;
+    }
+    .markerBubble{
+      display:inline-block;
+      padding:.22rem .62rem .3rem;
+      border-radius: 999px;
+      border:1px solid rgba(255,216,74,.40);
+      background: rgba(179,18,42,.12);
+      color: rgba(255,216,74,.95);
+      font-weight:1000;
+      letter-spacing:.2px;
+      text-shadow: 0 2px 10px rgba(0,0,0,.55);
+      line-height:1.1;
+    }
+    .markerBubble .t1{display:block; font-size:.92rem}
+    .markerBubble .t2{display:block; margin-top:.18rem; font-size:.86rem; opacity:.95}
+    .markerNote.row2{ top: 56px; }
+    .markerNote.row3{ top: 106px; }
+
+    .bars{position:absolute; left:0; right:0; top: var(--barsTop); height: 40px;}
+    .bar{
+      position:absolute; top: var(--barTopInBars); height: var(--barH);
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+      cursor:pointer;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .bar:hover{transform: translateY(-1px); filter: brightness(1.06)}
+    .bar:focus{outline:none; box-shadow: var(--focus)}
+    .bar.is-active{
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(255,216,74,.22), 0 10px 24px rgba(0,0,0,.35);
+      border-color: rgba(255,216,74,.65);
+    }
+
+    .battle{
+      position:absolute;
+      transform: translateX(-50%);
+      width: 210px;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+      text-decoration:none;
+    }
+    .battle:focus{outline:none; box-shadow: var(--focus); border-radius: 14px}
+
+    .avatarWrap{
+      width: var(--avatar); height: var(--avatar);
+      margin: 0 auto;
+      border-radius: 22px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 16px 34px rgba(0,0,0,.40);
+    }
+    .avatarWrap img{width:100%; height:100%; object-fit:cover; display:block}
+    .meta{
+      min-height: var(--metaH);
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      line-height:1.15;
+      margin-top: .35rem;
+    }
+    .empName{font-weight:1000; letter-spacing:.2px}
+    .empYears{color: rgba(247,243,230,.78); font-weight:900; font-size:.92rem; margin-top:.18rem}
+
+    .scrubber{
+      margin-top:.75rem;
+      padding:.55rem .7rem;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      display:flex; align-items:center; gap:.8rem; flex-wrap:wrap;
+    }
+    .miniTrack{
+      position:relative;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      flex: 1 1 320px;
+      overflow:hidden;
+    }
+    .miniWindow{
+      position:absolute; top:0; bottom:0;
+      border-radius: 999px;
+      background: rgba(255,216,74,.28);
+      border: 1px solid rgba(255,216,74,.55);
+      cursor:grab;
+    }
+    .miniWindow:active{cursor:grabbing}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="card" aria-label="Timeline">
+      <div class="timeline-head">
+        <div class="timeline-hint">Scroll the Timeline</div>
+
+        <div class="timeline-controls">
+          <div class="controlPill" title="Zoom changes how much horizontal space the years take">
+            <label for="zoom">Zoom</label>
+            <input id="zoom" type="range" min="50" max="260" step="10" value="140" />
+            <span class="tiny" id="zoomVal">140 px/yr</span>
+          </div>
+
+          <div class="controlPill" title="Jump the timeline to a battle">
+            <label for="centerSelect">Center on:</label>
+            <select id="centerSelect" aria-label="Center timeline on a battle"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-tip">Tip: scroll sideways. Click a portrait or bar to open its page.</div>
+
+      <div class="timelineViewport" id="viewport" tabindex="0" aria-label="Timeline viewport (scroll horizontally)">
+        <div class="timelineCanvas" id="canvas"></div>
+      </div>
+
+      <div class="scrubber" aria-label="Timeline mini map scrubber">
+        <div class="tiny" style="font-weight:900;">Mini-map</div>
+        <div class="miniTrack" id="miniTrack">
+          <div class="miniWindow" id="miniWindow" title="Drag to jump"></div>
+        </div>
+        <div class="tiny" id="yearReadout">Year: —</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const timelineColors = ["#FFD84A","#B3122A","#F2C94C","#7B0B1D","#E9B949","#9E0F26"];
+
+    // Read optional highlight: timeline.html?active=long_island
+    const activeId = (new URLSearchParams(location.search).get("active") || "").toLowerCase();
+
+    // Range for the war (extra padding at ends for readability)
+    const range = { start: 1775.0, end: 1783.9 };
+
+    // Convert YYYY-MM-DD to a "year.fraction" for positioning
+    function dateToYearFloat(iso){
+      // Treat as UTC to avoid timezone shifts
+      const [y,m,d] = iso.split("-").map(n=>parseInt(n,10));
+      const dt = new Date(Date.UTC(y, m-1, d));
+      const start = new Date(Date.UTC(y,0,1));
+      const end = new Date(Date.UTC(y+1,0,1));
+      const frac = (dt - start) / (end - start);
+      return y + frac;
+    }
+
+    // Battles (Option B)
+    const battles = [
+      { id:"lexington_concord", name:"Lexington & Concord", start: dateToYearFloat("1775-04-19"), end: dateToYearFloat("1775-04-20"), display:"Apr 19, 1775", colorIndex:0, image:"../images/lexcon_timeline.webp", page:"../battles/lexington-concord.html" },
+      { id:"bunker_hill", name:"Bunker Hill", start: dateToYearFloat("1775-06-17"), end: dateToYearFloat("1775-06-18"), display:"Jun 17, 1775", colorIndex:1, image:"../images/bunkerhill_timeline.webp", page:"../battles/bunker-hill.html" },
+      { id:"ticonderoga", name:"Fort Ticonderoga (NY)", start: dateToYearFloat("1775-05-10"), end: dateToYearFloat("1775-05-11"), display:"May 10, 1775", colorIndex:2, image:"../images/ticonderoga_timeline.webp", page:"../battles/fort-ticonderoga.html" },
+
+      { id:"long_island", name:"Long Island / Brooklyn (NY)", start: dateToYearFloat("1776-08-27"), end: dateToYearFloat("1776-08-30"), display:"Aug 27, 1776", colorIndex:3, image:"../images/longisland_timeline.webp", page:"../battles/long-island.html" },
+      { id:"harlem_heights", name:"Harlem Heights (NY)", start: dateToYearFloat("1776-09-16"), end: dateToYearFloat("1776-09-17"), display:"Sep 16, 1776", colorIndex:4, image:"../images/harlemheights_timeline.webp", page:"../battles/harlem-heights.html" },
+
+      { id:"trenton", name:"Trenton", start: dateToYearFloat("1776-12-26"), end: dateToYearFloat("1776-12-27"), display:"Dec 26, 1776", colorIndex:5, image:"../images/trenton_timeline.webp", page:"../battles/trenton.html" },
+
+      { id:"saratoga", name:"Saratoga (NY)", start: dateToYearFloat("1777-09-19"), end: dateToYearFloat("1777-10-17"), display:"Sep–Oct 1777", colorIndex:0, image:"../images/saratoga_timeline.webp", page:"../battles/saratoga.html" },
+
+      { id:"yorktown", name:"Yorktown", start: dateToYearFloat("1781-09-28"), end: dateToYearFloat("1781-10-19"), display:"Sep–Oct 1781", colorIndex:1, image:"../images/yorktown_timeline.webp", page:"../battles/yorktown.html" }
+    ];
+
+    // Major “bubble” events
+    const events = [
+      { id:"declaration", x: dateToYearFloat("1776-07-04"), top:"1776", bottom:"Declaration of Independence", row:1 },
+      { id:"nyc_captured", x: dateToYearFloat("1776-09-15"), top:"1776", bottom:"British take New York City", row:2 },
+      { id:"france_alliance", x: dateToYearFloat("1778-02-06"), top:"1778", bottom:"France becomes an ally", row:3 },
+      { id:"treaty_paris", x: dateToYearFloat("1783-09-03"), top:"1783", bottom:"Treaty of Paris", row:1 }
+    ];
+
+    const viewport = document.getElementById("viewport");
+    const canvas = document.getElementById("canvas");
+    const zoom = document.getElementById("zoom");
+    const zoomVal = document.getElementById("zoomVal");
+    const yearReadout = document.getElementById("yearReadout");
+    const miniTrack = document.getElementById("miniTrack");
+    const miniWindow = document.getElementById("miniWindow");
+    const centerSelect = document.getElementById("centerSelect");
+
+    let pxPerYear = parseInt(zoom.value, 10);
+
+    function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
+    function span(){ return (range.end - range.start); }
+    function xFor(t){ return (t - range.start) * pxPerYear; }
+
+    function populateDropdown(){
+      centerSelect.innerHTML = "";
+      const opt0 = document.createElement("option");
+      opt0.value = "";
+      opt0.textContent = "— Select —";
+      centerSelect.appendChild(opt0);
+
+      battles.forEach(b=>{
+        const opt = document.createElement("option");
+        opt.value = b.id;
+        opt.textContent = b.name;
+        centerSelect.appendChild(opt);
+      });
+    }
+
+    function centerOn(id){
+      const b = battles.find(x=>x.id===id);
+      if(!b) return;
+      const mid = (b.start + b.end) / 2;
+      const targetX = xFor(mid) - (viewport.clientWidth/2);
+      viewport.scrollLeft = clamp(targetX, 0, viewport.scrollWidth);
+    }
+
+    function renderTicks(){
+      const tickWrap = document.createElement("div");
+      tickWrap.className = "ticks";
+
+      // big tick each year; small tick mid-year
+      const startYear = Math.floor(range.start);
+      const endYear = Math.ceil(range.end);
+
+      for(let y=startYear; y<=endYear; y++){
+        const bigX = xFor(y);
+        const big = document.createElement("div");
+        big.className = "tick big";
+        big.style.left = bigX + "px";
+        tickWrap.appendChild(big);
+
+        const label = document.createElement("div");
+        label.className = "tickLabel";
+        label.style.left = bigX + "px";
+        label.textContent = y.toString();
+        tickWrap.appendChild(label);
+
+        const midX = xFor(y + 0.5);
+        if(midX >= 0 && midX <= xFor(range.end)){
+          const small = document.createElement("div");
+          small.className = "tick small";
+          small.style.left = midX + "px";
+          tickWrap.appendChild(small);
+        }
+      }
+
+      canvas.appendChild(tickWrap);
+    }
+
+    function render(){
+      pxPerYear = parseInt(zoom.value, 10);
+      zoomVal.textContent = `${pxPerYear} px/yr`;
+
+      // canvas width based on range
+      const w = Math.max(900, Math.ceil(span() * pxPerYear) + 120);
+      canvas.style.width = w + "px";
+      canvas.innerHTML = "";
+
+      renderTicks();
+
+      // timeline center line
+      const line = document.createElement("div");
+      line.className = "timelineLine";
+      line.style.top = "245px";
+      canvas.appendChild(line);
+
+      // bubbles
+      events.forEach(ev=>{
+        const m = document.createElement("div");
+        m.className = "marker";
+        m.style.left = xFor(ev.x) + "px";
+        canvas.appendChild(m);
+
+        const note = document.createElement("div");
+        note.className = "markerNote" + (ev.row===2 ? " row2" : ev.row===3 ? " row3" : "");
+        note.style.left = xFor(ev.x) + "px";
+        note.innerHTML = `
+          <span class="markerBubble">
+            <span class="t1">${ev.top}</span>
+            <span class="t2">${ev.bottom}</span>
+          </span>
+        `;
+        canvas.appendChild(note);
+      });
+
+      // bars layer
+      const bars = document.createElement("div");
+      bars.className = "bars";
+      canvas.appendChild(bars);
+
+      // battles (portraits above line; bars aligned in bars layer)
+      const topY = 110;
+      battles.forEach((b, i)=>{
+        const leftX = xFor(b.start);
+        const rightX = xFor(b.end);
+
+        // bar
+        const bar = document.createElement("a");
+        bar.href = b.page;
+        bar.className = "bar" + (activeId && activeId===b.id ? " is-active" : "");
+        bar.setAttribute("role","link");
+        bar.setAttribute("aria-label", `${b.name} (${b.display})`);
+        bar.style.left = leftX + "px";
+
+        const rawW = Math.max(8, (rightX - leftX)); // enforce minimum visible width
+        bar.style.width = rawW + "px";
+
+        const c = timelineColors[b.colorIndex % timelineColors.length];
+        bar.style.background = `linear-gradient(90deg, ${c}, rgba(255,255,255,.06))`;
+        bars.appendChild(bar);
+
+        // portrait “card”
+        const midX = (leftX + rightX) / 2;
+
+        const a = document.createElement("a");
+        a.href = b.page;
+        a.className = "battle";
+        a.style.left = midX + "px";
+        a.style.top = topY + "px";
+
+        a.innerHTML = `
+          <div class="avatarWrap"><img src="${b.image}" alt="${b.name}"></div>
+          <div class="meta">
+            <div class="empName">${b.name}</div>
+            <div class="empYears">${b.display}</div>
+          </div>
+        `;
+        canvas.appendChild(a);
+      });
+
+      syncMiniWindow();
+    }
+
+    function syncMiniWindow(){
+      const total = viewport.scrollWidth;
+      const view = viewport.clientWidth;
+      const trackW = miniTrack.getBoundingClientRect().width;
+      const ratio = trackW / total;
+
+      const winW = Math.max(28, view * ratio);
+      miniWindow.style.width = winW + "px";
+
+      const left = viewport.scrollLeft * ratio;
+      miniWindow.style.left = clamp(left, 0, trackW - winW) + "px";
+    }
+
+    function updateYearReadout(){
+      // estimate year at center of viewport
+      const centerX = viewport.scrollLeft + viewport.clientWidth/2;
+      const y = range.start + (centerX / pxPerYear);
+      yearReadout.textContent = "Year: " + y.toFixed(2);
+    }
+
+    // --- interactions ---
+    zoom.addEventListener("input", () => {
+      const prevCenter = viewport.scrollLeft + viewport.clientWidth/2;
+      const prevYear = range.start + (prevCenter / pxPerYear);
+
+      render();
+
+      // restore same centered year after zoom
+      const newCenter = xFor(prevYear);
+      viewport.scrollLeft = clamp(newCenter - viewport.clientWidth/2, 0, viewport.scrollWidth);
+      syncMiniWindow();
+      updateYearReadout();
+    });
+
+    centerSelect.addEventListener("change", () => {
+      if(centerSelect.value) centerOn(centerSelect.value);
+      syncMiniWindow();
+      updateYearReadout();
+    });
+
+    viewport.addEventListener("scroll", () => {
+      syncMiniWindow();
+      updateYearReadout();
+    });
+
+    // mini-map drag
+    let dragging = false;
+    let dragOffset = 0;
+
+    miniWindow.addEventListener("mousedown", (e) => {
+      dragging = true;
+      dragOffset = e.clientX - miniWindow.getBoundingClientRect().left;
+      e.preventDefault();
+    });
+    window.addEventListener("mouseup", () => dragging = false);
+    window.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+
+      const trackRect = miniTrack.getBoundingClientRect();
+      const trackW = trackRect.width;
+      const total = viewport.scrollWidth;
+      const view = viewport.clientWidth;
+
+      const ratio = trackW / total;
+      const winW = Math.max(28, view * ratio);
+
+      let newLeft = (e.clientX - trackRect.left) - dragOffset;
+      newLeft = clamp(newLeft, 0, trackW - winW);
+
+      miniWindow.style.left = newLeft + "px";
+      viewport.scrollLeft = newLeft / ratio;
+
+      syncMiniWindow();
+      updateYearReadout();
+    });
+
+    miniTrack.addEventListener("mousedown", (e) => {
+      if (e.target === miniWindow) return;
+
+      const trackRect = miniTrack.getBoundingClientRect();
+      const clickX = e.clientX - trackRect.left;
+
+      const total = viewport.scrollWidth;
+      const view = viewport.clientWidth;
+      const trackW = trackRect.width;
+      const ratio = trackW / total;
+
+      const winW = Math.max(28, view * ratio);
+      const targetLeft = clamp(clickX - winW/2, 0, trackW - winW);
+
+      viewport.scrollLeft = targetLeft / ratio;
+      syncMiniWindow();
+      updateYearReadout();
+    });
+
+    window.addEventListener("resize", () => {
+      syncMiniWindow();
+      updateYearReadout();
+    });
+
+    // init
+    populateDropdown();
+    render();
+
+    // initial center:
+    // 1) if ?active=... present, center on that
+    // 2) else center near 1776 (busy year)
+    requestAnimationFrame(() => {
+      if(activeId && battles.some(b=>b.id===activeId)){
+        centerSelect.value = activeId;
+        centerOn(activeId);
+      }else{
+        const targetYear = 1776.7;
+        viewport.scrollLeft = clamp(xFor(targetYear) - viewport.clientWidth/2, 0, viewport.scrollWidth);
+      }
+      syncMiniWindow();
+      updateYearReadout();
+    });
+  </script>
+</body>
+</html>
