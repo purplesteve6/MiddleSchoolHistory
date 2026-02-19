@@ -23,6 +23,133 @@
   --focus: 0 0 0 4px rgba(255,216,74,.35);
 }
 
+/* ===== TOPIC HEADER (universal partial: /partials/header.html) ===== */
+.topic-header{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+  overflow: visible;                 /* allow logo overlap */
+  backdrop-filter: blur(12px);
+  background: rgba(6,18,42,.68);
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+
+/* Logo “patch” */
+.topic-header .nav-logo{
+  position: absolute;
+  left: 12px;
+  top: 15px;
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.topic-header .nav-logo-img{
+  width: auto;
+  max-width: none;
+  display: block;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  height: 140px;
+}
+
+/* Header layout */
+.topic-header .nav{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: .8rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+}
+
+/* Brand (badge + text stack) */
+.topic-header .brand{
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+}
+
+.topic-header .columnIcon{
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px solid rgba(255,216,74,.28);
+  background: linear-gradient(135deg, rgba(179,18,42,.22), rgba(255,216,74,.12));
+  box-shadow: 0 10px 22px rgba(0,0,0,.45);
+  flex: 0 0 auto;
+}
+
+.topic-header .columnIcon img{
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  display: block;
+}
+
+.topic-header .brandText{
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.topic-header .brandKicker{
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(247,243,230,.72);
+}
+
+.topic-header .brandTitle{
+  font-weight: 1000;
+}
+
+.topic-header .brandSub{
+  font-size: .9rem;
+  font-weight: 500;
+  color: rgba(247,243,230,.72);
+  margin-top: .08rem;
+}
+
+/* Home button */
+.topic-header .btn{
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .55rem .85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06);
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+  white-space: nowrap;
+}
+
+.topic-header .btn:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.09);
+  border-color: rgba(255,216,74,.35);
+}
+
+.topic-header .btn:focus{
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+/* Responsive tweak so header doesn’t collide with big logo */
+@media (max-width: 720px){
+  .topic-header .nav{ padding-left: 190px; }
+  .topic-header .nav-logo-img{ height: 110px; }
+}
+
+
 *{box-sizing:border-box}
 html,body{height:100%}
 
