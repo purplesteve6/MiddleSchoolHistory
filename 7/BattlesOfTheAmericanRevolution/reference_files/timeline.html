@@ -376,20 +376,20 @@
 
     const totalMonths = dateToMonthFloat(range.endISO);
 
-    // Battles (Option B)
+    // Battles (Option B) — FIXED PATHS: timeline is in /reference_files/, so use ../
     const battles = [
-      { id:"lexington_concord", name:"Lexington & Concord", startISO:"1775-04-19", endISO:"1775-04-20", display:"Apr 19, 1775", colorIndex:0, image:"./images/lexcon_timeline.webp", page:"./battles/lexington-concord.html" },
-      { id:"bunker_hill", name:"Bunker Hill", startISO:"1775-06-17", endISO:"1775-06-18", display:"Jun 17, 1775", colorIndex:1, image:"./images/bunkerhill_timeline.webp", page:"./battles/bunker-hill.html" },
-      { id:"ticonderoga", name:"Fort Ticonderoga (NY)", startISO:"1775-05-10", endISO:"1775-05-11", display:"May 10, 1775", colorIndex:2, image:"./images/ticonderoga_timeline.webp", page:"./battles/fort-ticonderoga.html" },
+      { id:"lexington_concord", name:"Lexington & Concord", startISO:"1775-04-19", endISO:"1775-04-20", display:"Apr 19, 1775", colorIndex:0, image:"../images/lexcon_timeline.webp", page:"../battles/lexington-concord.html" },
+      { id:"bunker_hill", name:"Bunker Hill", startISO:"1775-06-17", endISO:"1775-06-18", display:"Jun 17, 1775", colorIndex:1, image:"../images/bunkerhill_timeline.webp", page:"../battles/bunker-hill.html" },
+      { id:"ticonderoga", name:"Fort Ticonderoga (NY)", startISO:"1775-05-10", endISO:"1775-05-11", display:"May 10, 1775", colorIndex:2, image:"../images/ticonderoga_timeline.webp", page:"../battles/fort-ticonderoga.html" },
 
-      { id:"long_island", name:"Long Island / Brooklyn (NY)", startISO:"1776-08-27", endISO:"1776-08-30", display:"Aug 27, 1776", colorIndex:3, image:"./images/longisland_timeline.webp", page:"./battles/long-island.html" },
-      { id:"harlem_heights", name:"Harlem Heights (NY)", startISO:"1776-09-16", endISO:"1776-09-17", display:"Sep 16, 1776", colorIndex:4, image:"./images/harlemheights_timeline.webp", page:"./battles/harlem-heights.html" },
+      { id:"long_island", name:"Long Island / Brooklyn (NY)", startISO:"1776-08-27", endISO:"1776-08-30", display:"Aug 27, 1776", colorIndex:3, image:"../images/longisland_timeline.webp", page:"../battles/long-island.html" },
+      { id:"harlem_heights", name:"Harlem Heights (NY)", startISO:"1776-09-16", endISO:"1776-09-17", display:"Sep 16, 1776", colorIndex:4, image:"../images/harlemheights_timeline.webp", page:"../battles/harlem-heights.html" },
 
-      { id:"trenton", name:"Trenton", startISO:"1776-12-26", endISO:"1776-12-27", display:"Dec 26, 1776", colorIndex:5, image:"./images/trenton_timeline.webp", page:"./battles/trenton.html" },
+      { id:"trenton", name:"Trenton", startISO:"1776-12-26", endISO:"1776-12-27", display:"Dec 26, 1776", colorIndex:5, image:"../images/trenton_timeline.webp", page:"../battles/trenton.html" },
 
-      { id:"saratoga", name:"Saratoga (NY)", startISO:"1777-09-19", endISO:"1777-10-17", display:"Sep–Oct 1777", colorIndex:0, image:"./images/saratoga_timeline.webp", page:"./battles/saratoga.html" },
+      { id:"saratoga", name:"Saratoga (NY)", startISO:"1777-09-19", endISO:"1777-10-17", display:"Sep–Oct 1777", colorIndex:0, image:"../images/saratoga_timeline.webp", page:"../battles/saratoga.html" },
 
-      { id:"yorktown", name:"Yorktown", startISO:"1781-09-28", endISO:"1781-10-19", display:"Sep–Oct 1781", colorIndex:1, image:"./images/yorktown_timeline.webp", page:"./battles/yorktown.html" }
+      { id:"yorktown", name:"Yorktown", startISO:"1781-09-28", endISO:"1781-10-19", display:"Sep–Oct 1781", colorIndex:1, image:"../images/yorktown_timeline.webp", page:"../battles/yorktown.html" }
     ].map((b, i) => ({
       ...b,
       startM: dateToMonthFloat(b.startISO),
@@ -398,12 +398,11 @@
       lane: (i % 2 === 0) ? "above" : "below"
     }));
 
-    // Event “bubbles” (also alternated top/bottom to avoid collisions)
+    // Context “bubbles” — NOT alternated; all on top. NYC removed.
     const events = [
-      { id:"declaration", iso:"1776-07-04", top:"1776", bottom:"Declaration of Independence", lane:"above" },
-      { id:"nyc_captured", iso:"1776-09-15", top:"1776", bottom:"British take New York City", lane:"below" },
-      { id:"france_alliance", iso:"1778-02-06", top:"1778", bottom:"France becomes an ally", lane:"above" },
-      { id:"treaty_paris", iso:"1783-09-03", top:"1783", bottom:"Treaty of Paris", lane:"below" }
+      { id:"declaration", iso:"1776-07-04", top:"1776", bottom:"Declaration of Independence" },
+      { id:"france_alliance", iso:"1778-02-06", top:"1778", bottom:"France becomes an ally" },
+      { id:"treaty_paris", iso:"1783-09-03", top:"1783", bottom:"Treaty of Paris" }
     ].map(e => ({ ...e, xM: dateToMonthFloat(e.iso) }));
 
     const viewport = document.getElementById("viewport");
@@ -510,7 +509,6 @@
       const startY = startDate.getUTCFullYear();
       const startM = startDate.getUTCMonth();
 
-      // total months inclusive-ish
       const endY = endDate.getUTCFullYear();
       const endM = endDate.getUTCMonth();
       const count = (endY - startY) * 12 + (endM - startM) + 1;
@@ -548,13 +546,12 @@
 
       renderTicks();
 
-      // timeline center line (positioned by adjustConnectors later, but give it a default)
       const line = document.createElement("div");
       line.className = "timelineLine";
       line.style.top = "245px";
       canvas.appendChild(line);
 
-      // Event bubbles (alternate top/bottom)
+      // Context bubbles — ALL TOP, lightly staggered only to avoid collisions
       events.forEach((ev, i)=>{
         const x = xForMonth(ev.xM);
 
@@ -567,13 +564,8 @@
         note.className = "markerNote";
         note.style.left = x + "px";
 
-        // Place above/below with stagger so they don’t collide
-        if (ev.lane === "above"){
-          note.style.top = (i % 2 === 0) ? "6px" : "56px";
-        } else {
-          // below: push near bottom area, still readable
-          note.style.top = "520px";
-        }
+        // keep them on top, just stagger rows if close
+        note.style.top = (i % 2 === 0) ? "6px" : "56px";
 
         note.innerHTML = `
           <span class="markerBubble">
@@ -584,17 +576,14 @@
         canvas.appendChild(note);
       });
 
-      // Bars layer
       const bars = document.createElement("div");
       bars.className = "bars";
       canvas.appendChild(bars);
 
-      // Battles
       battles.forEach((b)=>{
         const leftX = xForMonth(b.startM);
         const rightX = xForMonth(b.endM);
 
-        // bar
         const bar = document.createElement("a");
         bar.href = b.page;
         bar.className = "bar" + (activeId && activeId===b.id ? " is-active" : "");
@@ -609,7 +598,6 @@
         bar.style.background = `linear-gradient(90deg, ${c}, rgba(255,255,255,.06))`;
         bars.appendChild(bar);
 
-        // portrait card
         const midX = (leftX + rightX) / 2;
 
         const a = document.createElement("a");
@@ -617,7 +605,6 @@
         a.className = `battle ${b.lane === "above" ? "laneAbove" : "laneBelow"}`;
         a.style.left = midX + "px";
 
-        // stack (swap order based on lane)
         const stack = document.createElement("div");
         stack.className = "stack";
 
@@ -649,7 +636,6 @@
         canvas.appendChild(a);
       });
 
-      // After layout paints, place lanes + connectors accurately
       requestAnimationFrame(() => {
         positionLanesSymmetrically();
         adjustConnectors();
@@ -672,7 +658,6 @@
     }
 
     function monthFloatToDate(mf){
-      // mf is months since startDate
       const y0 = startDate.getUTCFullYear();
       const m0 = startDate.getUTCMonth();
 
@@ -707,7 +692,6 @@
 
       render();
 
-      // restore same centered month after zoom
       const newCenter = xForMonth(prevMF);
       viewport.scrollLeft = clamp(newCenter - viewport.clientWidth/2, 0, viewport.scrollWidth);
 
@@ -795,13 +779,11 @@
     populateDropdown();
     render();
 
-    // initial center:
     requestAnimationFrame(() => {
       if(activeId && battles.some(b=>b.id===activeId)){
         centerSelect.value = activeId;
         centerOn(activeId);
       }else{
-        // Center around late summer 1776 (busy cluster)
         const target = dateToMonthFloat("1776-09-01");
         viewport.scrollLeft = clamp(xForMonth(target) - viewport.clientWidth/2, 0, viewport.scrollWidth);
       }
