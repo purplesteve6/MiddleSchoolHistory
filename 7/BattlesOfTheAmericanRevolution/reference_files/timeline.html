@@ -390,13 +390,31 @@
       { id:"saratoga", name:"Saratoga (NY)", startISO:"1777-09-19", endISO:"1777-10-17", display:"Sep–Oct 1777", colorIndex:0, image:"../images/saratoga_timeline.webp", page:"../battles/saratoga.html" },
 
       { id:"yorktown", name:"Yorktown", startISO:"1781-09-28", endISO:"1781-10-19", display:"Sep–Oct 1781", colorIndex:1, image:"../images/yorktown_timeline.webp", page:"../battles/yorktown.html" }
-    ].map((b, i) => ({
-      ...b,
-      startM: dateToMonthFloat(b.startISO),
-      endM: dateToMonthFloat(b.endISO),
-      // Alternate lanes (Roman-style)
-      lane: (i % 2 === 0) ? "above" : "below"
-    }));
+    
+
+].map((b) => ({
+  ...b,
+  startM: dateToMonthFloat(b.startISO),
+  endM: dateToMonthFloat(b.endISO)
+}));
+
+// Explicit lanes (forces perfect alternation)
+const laneMap = {
+  lexington_concord: "above",
+  ticonderoga: "below",
+  bunker_hill: "above",
+  long_island: "below",
+  harlem_heights: "above",
+  trenton: "below",
+  saratoga: "above",
+  yorktown: "below"
+};
+
+// Apply lanes
+battles.forEach(b => {
+  b.lane = laneMap[b.id] || "above";
+});
+
 
     // Context “bubbles” — NOT alternated; all on top. NYC removed.
     const events = [
