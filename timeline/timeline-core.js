@@ -192,8 +192,8 @@
       renderContext(pxPerDay);
 
       // Event bars (draw twice: above and below ticks) + event cards
-      renderEventBars(barsTop, pxPerDay);
-      renderEventBars(barsBottom, pxPerDay);
+renderEventBars(barsTop, pxPerDay, "above");
+renderEventBars(barsBottom, pxPerDay, "below");
       renderEvents(pxPerDay);
 
       // Lane positions + connectors
@@ -291,40 +291,53 @@
       }
     }
 
-    function renderEventBars(barsEl, pxPerDay){
-      const events = Array.isArray(cfg.events) ? cfg.events : [];
-      const palette = cfg.barColors || ["var(--gold)", "var(--red)", "var(--gold2)", "var(--red2)"];
 
-      events.forEach((ev, idx) => {
-const showInterval = (ev.showInterval !== undefined)
-  ? !!ev.showInterval
-  : (ev.showBar !== undefined ? !!ev.showBar : true);
+function renderEventBars(barsEl, pxPerDay, laneSide){
+  const events = Array.isArray(cfg.events) ? cfg.events : [];
+  const palette = cfg.barColors || ["var(--gold)", "var(--red)", "var(--gold2)", "var(--red2)"];
 
-if (!showInterval) return;
-        const s = parseFlexibleDate(ev.start, "start", ev);
-        const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
-        if (!s || !e) return;
+  events.forEach((ev, idx) => {
+    // New flag (with legacy fallback)
+    const showInterval = (ev.showInterval !== undefined)
+      ? !!ev.showInterval
+      : (ev.showBar !== undefined ? !!ev.showBar : true);
 
-        const left = dateToX(s, pxPerDay);
-        const right = dateToX(e, pxPerDay) + pxPerDay;
-        const w = Math.max(6, right - left);
+    if (!showInterval) return;
 
-        const bar = document.createElement("a");
-        bar.className = "bar";
-        bar.href = resolveAsset(ev.href || "#");
-        bar.style.left = left + "px";
-        bar.style.width = w + "px";
-        bar.style.background = palette[idx % palette.length];
-        bar.title = ev.label ? `${ev.label} (${ev.dateLabel || ""})` : (ev.dateLabel || "");
-        bar.setAttribute("aria-label", ev.label ? `Open page for ${ev.label}` : "Open event");
-        barsEl.appendChild(bar);
+    // ONLY draw this event's interval on the side where its picture/card is
+    const evSide = (ev.side === "below") ? "below" : "above";
+    if (evSide !== laneSide) return;
 
-        if (ev.id && String(ev.id) === String(window.TIMELINE_ACTIVE_ID || "")){
-          bar.style.boxShadow = "0 0 0 4px rgba(255,216,74,.20), 0 14px 30px rgba(0,0,0,.45)";
-          bar.style.borderColor = "rgba(255,216,74,.55)";
-        }
-      });
+    const s = parseFlexibleDate(ev.start, "start", ev);
+    const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
+    if (!s || !e) return;
+
+    const left = dateToX(s, pxPerDay);
+    const right = dateToX(e, pxPerDay) + pxPerDay;
+    const w = Math.max(6, right - left);
+
+    const bar = document.createElement("a");
+    bar.className = "bar";
+    bar.href = resolveAsset(ev.href || "#");
+    bar.style.left = left + "px";
+    bar.style.width = w + "px";
+
+    // intervalColor override (if you’re using it already)
+    const c = (ev.intervalColor || "").toString().trim().toLowerCase();
+    const useDefault = (!c || c === "default");
+    bar.style.background = useDefault ? palette[idx % palette.length] : ev.intervalColor;
+
+    bar.title = ev.label ? `${ev.label} (${ev.dateLabel || ""})` : (ev.dateLabel || "");
+    bar.setAttribute("aria-label", ev.label ? `Open page for ${ev.label}` : "Open event");
+    barsEl.appendChild(bar);
+
+    if (ev.id && String(ev.id) === String(window.TIMELINE_ACTIVE_ID || "")){
+      bar.style.boxShadow = "0 0 0 4px rgba(255,216,74,.20), 0 14px 30px rgba(0,0,0,.45)";
+      bar.style.borderColor = "rgba(255,216,74,.55)";
     }
+  });
+}
+
 
     function renderEvents(pxPerDay){
       const events = Array.isArray(cfg.events) ? cfg.events : [];
