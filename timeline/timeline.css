@@ -30,15 +30,18 @@
   /* ===== GEOMETRY ===== */
   --canvasH: 620px;
 
-  /* Center the ticks vertically (they are now the main timeline) */
-  --ticksTop: 285px; /* top of the ticks band (band height is 55px) */
-  --timelineMidY: calc(var(--ticksTop) + 27.5px); /* JS anchors connectors/cards to this */
+  /* Central tick band (now the main timeline) */
+  --ticksH: 55px;
+  --ticksTop: 265px; /* moved UP (was 285px) */
+  --timelineMidY: calc(var(--ticksTop) + (var(--ticksH) / 2)); /* JS anchors connectors/cards to this */
 
   /* Two interval-bar lanes (above + below the tick spine) */
-  --barsGap: 14px;
-  --barsLaneH: 40px; /* keep in sync with .bars height */
+  --barsGap: 8px;          /* reduced gap (was 14px) */
+  --barsLaneH: 40px;       /* keep in sync with .bars height */
+
   --barsTop: calc(var(--ticksTop) - var(--barsGap) - var(--barsLaneH));
-  --barsBottomTop: calc(var(--ticksTop) + var(--barsGap));
+  /* IMPORTANT: bottom bars start AFTER the ticks band */
+  --barsBottomTop: calc(var(--ticksTop) + var(--ticksH) + var(--barsGap));
 
   --barTopInBars: 11px;
   --barH: 18px;
@@ -188,7 +191,7 @@ body{
   position:absolute;
   left:0; right:0;
   top: var(--ticksTop);
-  height: 55px;
+  height: var(--ticksH);
   pointer-events:none;
 }
 .tick{ position:absolute; top:0; width:1px; background: rgba(255,255,255,.18); }
@@ -223,7 +226,7 @@ body{
   height: var(--barsLaneH);
 }
 
-/* NEW: two bars lanes (above + below ticks) */
+/* two bars lanes (above + below ticks) */
 .barsTop{ top: var(--barsTop); }
 .barsBottom{ top: var(--barsBottomTop); }
 
