@@ -539,10 +539,6 @@
       return (ay <= 0) ? (ay - 1) : ay;
     }
 
-    function histYearToAstro(hy){
-      // hy is historical year (e.g., -27 = 27 BCE, -1 = 1 BCE, 1 = 1 CE)
-      return (hy <= -1) ? (hy + 1) : hy;
-    }
 
     
 
