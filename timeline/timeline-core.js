@@ -69,7 +69,9 @@
     const miniTrack = document.getElementById("miniTrack");
     const miniWindow = document.getElementById("miniWindow");
 
-    const zoomLevels = cfg.zoomLevels || ["day","month","year","decade","century","fit"];
+
+    const zoomLevelsRaw = cfg.zoomLevels || ["day","month","year","decade","century","fit"];
+    const zoomLevels = allowDayZoom ? zoomLevelsRaw : zoomLevelsRaw.filter(z => z !== "day");
     const intervalLevels = ["day","month","year","decade","century"]; // UI list only
     const defaultInterval = cfg.defaultInterval || "decade";
     const defaultZoom = cfg.defaultZoom || defaultInterval;
@@ -80,6 +82,13 @@
       mount.innerHTML = `<div style="padding:.5rem; font-weight:900;">Bad range in TIMELINE_CONFIG</div>`;
       return;
     }
+
+    // If the timeline span is very large, "day" zoom becomes unusable (massive px-per-day / huge scroll surface).
+    // Threshold is in YEARS; adjust later or move into timeline-config.js if you want.
+    const spanYears = Math.abs(toHistoricalYear(rangeEnd) - toHistoricalYear(rangeBegin)) + 1;
+    const MAX_YEARS_FOR_DAY_ZOOM = 200;
+
+    const allowDayZoom = spanYears <= MAX_YEARS_FOR_DAY_ZOOM;
 
     let currentCenterDate = rangeBegin;
 
@@ -99,7 +108,7 @@
       intervalSelect.appendChild(o);
     }
 
-    zoomSelect.value = defaultZoom;
+    zoomSelect.value = (allowDayZoom ? defaultZoom : (defaultZoom === "day" ? "month" : defaultZoom));
     intervalSelect.value = defaultInterval;
 
     populateCenterDropdown();
@@ -113,10 +122,14 @@
     syncIntervalToZoom();
 
     zoomSelect.addEventListener("change", () => {
+      if (!allowDayZoom && zoomSelect.value === "day"){
+        zoomSelect.value = "month";
+      }
       syncIntervalToZoom();
       render();
       scrollToCenterDate(currentCenterDate);
     });
+
 
     centerSelect.addEventListener("change", () => centerOn(centerSelect.value));
 
