@@ -393,43 +393,41 @@ if (laneClass === "laneAbove"){
       canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
     }
 
-    function adjustConnectors(){
-      // Connector should bisect the “day box row” at the anchor date:
-      const root = document.querySelector(".timeline-embed");
-      const cs = getComputedStyle(root);
-      const dayBoxTop = parseFloat(cs.getPropertyValue("--dayBoxTop")) || (parseFloat(cs.getPropertyValue("--barsTop")) + 34);
-      const dayBoxH = parseFloat(cs.getPropertyValue("--dayBoxH")) || 16;
-      const dayMidY = dayBoxTop + (dayBoxH / 2);
+function adjustConnectors(){
+  // Connector should pin to the CENTER of the reign bar row:
+  const barMidY = getBarCenterY();
 
-      const cards = canvas.querySelectorAll(".eventCard");
+  const cards = canvas.querySelectorAll(".eventCard");
 
-      cards.forEach(card => {
-        const avatar = card.querySelector(".avatarWrap");
-        const connector = card.querySelector(".connector");
-        if (!avatar || !connector) return;
+  cards.forEach(card => {
+    const avatar = card.querySelector(".avatarWrap");
+    const connector = card.querySelector(".connector");
+    if (!avatar || !connector) return;
 
-        const cardTop = card.offsetTop;
-        const avatarTop = cardTop + avatar.offsetTop;
-        const avatarBottom = avatarTop + avatar.offsetHeight;
+    const cardTop = card.offsetTop;
+    const avatarTop = cardTop + avatar.offsetTop;
+    const avatarBottom = avatarTop + avatar.offsetHeight;
 
-        const isAbove = card.classList.contains("laneAbove");
-        const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
+    const isAbove = card.classList.contains("laneAbove");
+    const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
 
-        const minY = Math.min(portraitEdgeY, dayMidY);
-        const maxY = Math.max(portraitEdgeY, dayMidY);
-        const height = Math.max(0, maxY - minY);
+    const minY = Math.min(portraitEdgeY, barMidY);
+    const maxY = Math.max(portraitEdgeY, barMidY);
+    const height = Math.max(0, maxY - minY);
 
-        connector.style.left = "50%";
-        connector.style.top = (minY - cardTop) + "px";
-        connector.style.height = height + "px";
+    connector.style.left = "50%";
+    connector.style.top = (minY - cardTop) + "px";
+    connector.style.height = height + "px";
 
-        connector.classList.toggle("dotTop", dayMidY === minY);
-      });
+ // If the card is above, the dot should be at the bottom end (so NOT dotTop).
+// If the card is below, the dot should be at the top end (dotTop).
+connector.classList.toggle("dotTop", !isAbove);
 
-      // Keep line in sync too
-      const line = canvas.querySelector(".timelineLine");
-      if (line) line.style.top = getBarCenterY() + "px";
-    }
+  });
+
+  // No timelineLine element (removed earlier), so nothing to sync here.
+}
+
 
     function getBarCenterY(){
       const root = document.querySelector(".timeline-embed");
