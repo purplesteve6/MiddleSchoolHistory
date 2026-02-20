@@ -402,3 +402,36 @@ window.TIMELINE_CONFIG = {
 
   ]
 };
+
+
+
+/**
+ * ============================================================
+ * EMBEDDING INSTRUCTIONS (COPY/PASTE)
+ * ============================================================
+ *
+ * ✅ Recommended universal embed (works from ANY page):
+ *
+ * <section class="timeline-embed" aria-label="Timeline">
+ *   <iframe
+ *     src="/timeline/timeline.html?topic=/6/RomanEmperors"
+ *     class="timeline-frame"
+ *     loading="lazy"
+ *     title="Timeline"
+ *     frameborder="0"
+ *   ></iframe>
+ * </section>
+ *
+ * 1) Change ONLY the topic path:
+ *    topic=/6/RomanEmperors  →  topic=/6/NewTopicFolder
+ *
+ * 2) Required file location:
+ *    /6/NewTopicFolder/timeline-config.js
+ *
+ * 3) Paths inside events (image/href):
+ *    - Use topic-relative paths like "images/timeline/pic.jpg" or "pages/event.html"
+ *    - Leading "/" makes it site-absolute
+ *
+ * Note:
+ * - If you omit ?topic=..., the timeline defaults to "/6/RomanEmperors".
+ */
