@@ -129,6 +129,17 @@
       }
     }, { passive:false });
 
+    // Keep ticks/overlays correct even when scrolling via scrollbar drag, touch, or inertia.
+    let scrollRAF = 0;
+    viewport.addEventListener("scroll", () => {
+      if (scrollRAF) cancelAnimationFrame(scrollRAF);
+      scrollRAF = requestAnimationFrame(() => {
+        syncMiniWindow();
+        updateReadout();
+      });
+    }, { passive:true });
+
+
     makeMiniMapDraggable();
 
     window.addEventListener("resize", () => {
@@ -287,6 +298,10 @@
     function renderTicksVisible(containerEl, interval, pxPerDay){
       containerEl.innerHTML = "";
 
+      // IMPORTANT: boundary overlays (dotted lines + top/bottom pills) are appended to `canvas`,
+      // not to the ticks container. When ticks redraw during scrolling, we must remove old overlays
+      // or they "stack up" and appear in random places.
+      canvas.querySelectorAll(".boundaryOverlay").forEach(el => el.remove());
       const zoomLevel = zoomSelect.value;
 
       // IMPORTANT:
@@ -341,7 +356,10 @@
             boundaryKey.add(key);
 
             // dotted full-height line
+
             const line = document.createElement("div");
+            line.className = "boundaryOverlay";
+
             line.style.position = "absolute";
             line.style.left = x + "px";
             line.style.top = "0";
@@ -357,11 +375,15 @@
 
             // top label
             const topLbl = boundaryPill(labelText, x);
+            topLbl.classList.add("boundaryOverlay");
+
             topLbl.style.top = "6px";
             canvas.appendChild(topLbl);
 
             // bottom label
             const bottomLbl = boundaryPill(labelText, x);
+            bottomLbl.classList.add("boundaryOverlay");
+
             bottomLbl.style.bottom = "6px";
             canvas.appendChild(bottomLbl);
           }
