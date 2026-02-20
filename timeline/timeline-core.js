@@ -155,8 +155,10 @@ const bars = document.createElement("div");
 bars.className = "bars";
 canvas.appendChild(bars);
 
-      // Span boxes (event time periods)
-      renderSpanBoxes(pxPerDay);
+// Span boxes (event time periods)
+// Disabled: reign bars already show duration, so span boxes would duplicate visuals.
+// renderSpanBoxes(pxPerDay);
+
 
       // Context events (tags + dotted lines)
       renderContext(pxPerDay);
