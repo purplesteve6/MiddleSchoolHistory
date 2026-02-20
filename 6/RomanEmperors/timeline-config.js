@@ -54,7 +54,7 @@
 window.TIMELINE_CONFIG = {
 
   defaultInterval: "decade",
-  defaultZoom: "decade",
+  defaultZoom: "century",
 
   // If an END date is written as a year-only number (example: end: 476),
   // choose what day of that year it means:
@@ -156,7 +156,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "-0027-01-16",
       image:     "images/timeline/augustus_timeline.jpg",
       href:      "emperors/augustus.html",
-      side:      "above",
+      side:      "below",
       showBar:   true
     },
 
@@ -169,7 +169,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0014-09-17",
       image:     "images/timeline/tiberius_timeline.jpg",
       href:      "emperors/tiberius.html",
-      side:      "below",
+      side:      "above",
       showBar:   true
     },
 
@@ -182,7 +182,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0037-03-16",
       image:     "images/timeline/caligula_timeline.jpg",
       href:      "emperors/caligula.html",
-      side:      "above",
+      side:      "below",
       showBar:   true
     },
 
@@ -195,7 +195,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0041-01-24",
       image:     "images/timeline/claudius_timeline.jpg",
       href:      "emperors/claudius.html",
-      side:      "below",
+      side:      "above",
       showBar:   true
     },
 
@@ -208,7 +208,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0054-10-13",
       image:     "images/timeline/nero_timeline.jpg",
       href:      "emperors/nero.html",
-      side:      "above",
+      side:      "below",
       showBar:   true
     },
 
@@ -221,7 +221,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0098-01-28",
       image:     "images/timeline/trajan_timeline.jpg",
       href:      "emperors/trajan.html",
-      side:      "below",
+      side:      "above",
       showBar:   true
     },
 
@@ -234,7 +234,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0117-08-11",
       image:     "images/timeline/hadrian_timeline.jpg",
       href:      "emperors/hadrian.html",
-      side:      "above",
+      side:      "below",
       showBar:   true
     },
 
@@ -247,7 +247,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0161-03-07",
       image:     "images/timeline/marcusAurelius_timeline.jpg",
       href:      "emperors/marcus-aurelius.html",
-      side:      "below",
+      side:      "above",
       showBar:   true
     },
 
@@ -261,7 +261,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0180-03-17",
       image:     "images/timeline/commodus_timeline.jpg",
       href:      "emperors/commodus.html",
-      side:      "above",
+      side:      "below",
       showBar:   true
     },
 
@@ -274,7 +274,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0284-11-20",
       image:     "images/timeline/diocletian_timeline.jpg",
       href:      "emperors/diocletian.html",
-      side:      "below",
+      side:      "above",
       showBar:   true
     },
 
@@ -287,7 +287,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0306-07-25",
       image:     "images/timeline/constantine_timeline.jpg",
       href:      "emperors/constantine.html",
-      side:      "above",
+      side:      "below",
       showBar:   true
     },
 
@@ -300,7 +300,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0379-01-19",
       image:     "images/timeline/theodosiusI_timeline.jpg",
       href:      "emperors/theodosius.html",
-      side:      "below",
+      side:      "above",
       showBar:   true
     },
 
@@ -313,7 +313,7 @@ window.TIMELINE_CONFIG = {
       anchor:    "0475-10-31",
       image:     "images/timeline/romulusAugustulus_timeline.jpg",
       href:      "emperors/romulus-augustulus.html",
-      side:      "above",
+      side:      "below",
       showBar:   true
     }
 
