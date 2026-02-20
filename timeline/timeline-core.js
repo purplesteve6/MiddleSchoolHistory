@@ -58,7 +58,6 @@
       </div>
     `;
 
-    // Apply theme overrides (CSS variables) from config.theme
     applyTheme(cfg.theme || {});
 
     const viewport = document.getElementById("viewport");
@@ -70,13 +69,11 @@
     const miniTrack = document.getElementById("miniTrack");
     const miniWindow = document.getElementById("miniWindow");
 
-    // Normalize config
     const zoomLevels = cfg.zoomLevels || ["day","month","year","decade","century","fit"];
-    const intervalLevels = ["day","month","year","decade","century"]; // UI list only; now derived
+    const intervalLevels = ["day","month","year","decade","century"]; // UI list only
     const defaultInterval = cfg.defaultInterval || "decade";
     const defaultZoom = cfg.defaultZoom || defaultInterval;
 
-    // Range
     const rangeBegin = parseFlexibleDate(cfg.range?.begin ?? "0001-01-01", "start");
     const rangeEnd = parseFlexibleDate(cfg.range?.end ?? "0100-12-31", "end");
     if (!rangeBegin || !rangeEnd){
@@ -84,11 +81,8 @@
       return;
     }
 
-    // Track the date currently centered in the viewport.
-    // This makes zoom behave like "field of view around what you're looking at".
     let currentCenterDate = rangeBegin;
 
-    // Fill selects
     zoomSelect.innerHTML = "";
     for (const z of zoomLevels){
       const o = document.createElement("option");
@@ -108,7 +102,6 @@
     zoomSelect.value = defaultZoom;
     intervalSelect.value = defaultInterval;
 
-    // Center dropdown
     populateCenterDropdown();
 
     function syncIntervalToZoom(){
@@ -117,21 +110,17 @@
       intervalSelect.value = derived;
     }
 
-    // Ticks are always one level below zoom (so we disable manual tick selection for now).
     intervalSelect.disabled = true;
     syncIntervalToZoom();
 
     zoomSelect.addEventListener("change", () => {
       syncIntervalToZoom();
-      // Re-render using currentCenterDate as the anchor for the zoom span
       render();
-      // Keep the same center in view after re-scaling
       scrollToCenterDate(currentCenterDate);
     });
 
     centerSelect.addEventListener("change", () => centerOn(centerSelect.value));
 
-    // Horizontal wheel scrolling
     viewport.addEventListener("wheel", (e) => {
       if (viewport.scrollWidth > viewport.clientWidth){
         e.preventDefault();
@@ -141,12 +130,9 @@
       }
     }, { passive:false });
 
-    // Mini-map dragging
     makeMiniMapDraggable();
 
-    // Resize
     window.addEventListener("resize", () => {
-      // Re-render to maintain the “one unit in view” promise
       render();
       scrollToCenterDate(currentCenterDate);
       requestAnimationFrame(() => {
@@ -155,22 +141,19 @@
       });
     });
 
-    // Initial render + initial center
     render();
     centerOn(centerSelect.value || "__begin__");
 
     /* ----------------- ZOOM/TICKS RULES ----------------- */
 
     function tickForZoom(z){
-      // Ticks are always one level smaller than zoom (except day).
-      // (We'll add week + half-decade later; this matches your current UI set.)
       switch(z){
         case "century": return "decade";
         case "decade":  return "year";
         case "year":    return "month";
         case "month":   return "day";
         case "day":     return "day";
-        case "fit":     return "century"; // sensible default for full timeline
+        case "fit":     return "century";
         default:        return "day";
       }
     }
@@ -181,8 +164,6 @@
       return d;
     }
 
-    // Compute a clean calendar-aligned span for the zoom level that CONTAINS anchorDate.
-    // This fixes “partial centuries/decades” caused by spans starting at rangeBegin.
     function zoomSpanAligned(anchorDate, zoom){
       const a = clampDateToRange(anchorDate);
 
@@ -190,14 +171,13 @@
         return { start: rangeBegin, end: rangeEnd };
       }
 
-      // Work in historical years for boundaries (no year 0 in display logic),
-      // but create Dates using astronomical years (JS Date uses year 0).
       const ay = a.getUTCFullYear();              // astronomical
       const histY = (ay <= 0) ? (ay - 1) : ay;    // historical
       const m = a.getUTCMonth();                  // 0–11
 
       if (zoom === "day"){
-        return { start: makeUTCDate(ay, m, a.getUTCDate()), end: makeUTCDate(ay, m, a.getUTCDate()) };
+        const dd = a.getUTCDate();
+        return { start: makeUTCDate(ay, m, dd), end: makeUTCDate(ay, m, dd) };
       }
 
       if (zoom === "month"){
@@ -215,21 +195,16 @@
 
       if (zoom === "decade"){
         const y0 = Math.floor(histY / 10) * 10;
-        const startHist = y0;
-        const endHist = y0 + 9;
-        const startAstro = histYearToAstro(startHist);
-        const endAstro = histYearToAstro(endHist);
+        const startAstro = histYearToAstro(y0);
+        const endAstro = histYearToAstro(y0 + 9);
         const start = makeUTCDate(startAstro, 0, 1);
         const end = makeUTCDate(endAstro, 11, 31);
         return { start: clampDateToRange(start), end: clampDateToRange(end) };
       }
 
-      // century
       const c0 = Math.floor(histY / 100) * 100;
-      const startHist = c0;
-      const endHist = c0 + 99;
-      const startAstro = histYearToAstro(startHist);
-      const endAstro = histYearToAstro(endHist);
+      const startAstro = histYearToAstro(c0);
+      const endAstro = histYearToAstro(c0 + 99);
       const start = makeUTCDate(startAstro, 0, 1);
       const end = makeUTCDate(endAstro, 11, 31);
       return { start: clampDateToRange(start), end: clampDateToRange(end) };
@@ -274,33 +249,26 @@
       const width = Math.max(900, Math.floor(totalDays * pxPerDay));
       canvas.style.width = width + "px";
 
-      // Bars container (TOP)
       const barsTop = document.createElement("div");
       barsTop.className = "bars barsTop";
       canvas.appendChild(barsTop);
 
-      // Horizontal center line (timeline spine)
       const spine = document.createElement("div");
       spine.className = "timelineLine";
       canvas.appendChild(spine);
 
-      // Ticks (MIDDLE)
       const ticksEl = document.createElement("div");
       ticksEl.className = "ticks";
       canvas.appendChild(ticksEl);
 
-      // IMPORTANT: render ticks only for the VISIBLE region to prevent freezing at small intervals
       renderTicksVisible(ticksEl, tickInterval, pxPerDay);
 
-      // Bars container (BOTTOM)
       const barsBottom = document.createElement("div");
       barsBottom.className = "bars barsBottom";
       canvas.appendChild(barsBottom);
 
-      // Context events (tags + dotted lines)
       renderContext(pxPerDay);
 
-      // Event bars + event cards
       renderEventBars(barsTop, pxPerDay, "above");
       renderEventBars(barsBottom, pxPerDay, "below");
       renderEvents(pxPerDay);
@@ -316,38 +284,109 @@
     function renderTicksVisible(containerEl, interval, pxPerDay){
       containerEl.innerHTML = "";
 
-      const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
+      const zoomLevel = zoomSelect.value;
 
-      // Visible day index range (with padding so labels don't pop in/out at edges)
-      const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay))); // ~30px worth of padding
+      const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
+      const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay)));
+
       const leftIndex = clamp(Math.floor(viewport.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
       const rightIndex = clamp(Math.ceil((viewport.scrollLeft + viewport.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
 
       const visBegin = addDays(rangeBegin, leftIndex);
       const visEnd = addDays(rangeBegin, rightIndex);
 
-      const zoomLevel = zoomSelect.value;
-
-      const marks = (zoomLevel === "month" && interval === "day")
-        ? buildDayTickMarks(visBegin, visEnd, 5)
-        : buildTickMarks(visBegin, visEnd, interval);
+      // Special handling for day ticks:
+      // - Month zoom: label even-numbered days; day 1 gets Month+Year label + full-height dotted line
+      // - Day zoom: full date label on each tick
+      let marks;
+      if (interval === "day"){
+        if (zoomLevel === "month"){
+          marks = buildDayMarksMonthView(visBegin, visEnd);
+        } else if (zoomLevel === "day"){
+          marks = buildDayMarksDayView(visBegin, visEnd);
+        } else {
+          // fallback (shouldn't usually happen with our mapping)
+          marks = buildDayMarksMonthView(visBegin, visEnd);
+        }
+      } else {
+        marks = buildTickMarks(visBegin, visEnd, interval);
+      }
 
       for (const m of marks){
         const x = dateToX(m.date, pxPerDay);
 
+        // Optional: full-height month-start dotted line
+        if (m.monthStartLine){
+          const line = document.createElement("div");
+          line.className = "monthStartLine";
+          line.style.left = x + "px";
+          canvas.appendChild(line);
+        }
+
         const t = document.createElement("div");
-        t.className = "tick " + (m.big ? "big" : "small");
+        t.className = "tick " + (m.big ? "big" : "small") + (m.monthStart ? " monthStartTick" : "");
         t.style.left = x + "px";
         containerEl.appendChild(t);
 
         if (m.big){
           const lbl = document.createElement("div");
-          lbl.className = "tickLabel";
+          lbl.className = "tickLabel" + (m.monthStart ? " monthStartLabel" : "");
           lbl.style.left = x + "px";
           lbl.textContent = m.label;
           containerEl.appendChild(lbl);
         }
       }
+    }
+
+    function buildDayMarksMonthView(begin, end){
+      const marks = [];
+      let cur = new Date(begin.getTime());
+
+      while (cur <= end){
+        const dayNum = cur.getUTCDate();
+        const isFirst = (dayNum === 1);
+
+        if (isFirst){
+          marks.push({
+            date: new Date(cur.getTime()),
+            big: true,
+            label: formatMonthYear(cur),
+            monthStart: true,
+            monthStartLine: true
+          });
+        } else {
+          const even = (dayNum % 2 === 0);
+          marks.push({
+            date: new Date(cur.getTime()),
+            big: even,
+            label: even ? String(dayNum) : "",
+            monthStart: false,
+            monthStartLine: false
+          });
+        }
+
+        cur = addDays(cur, 1);
+      }
+
+      return marks;
+    }
+
+    function buildDayMarksDayView(begin, end){
+      const marks = [];
+      let cur = new Date(begin.getTime());
+
+      while (cur <= end){
+        marks.push({
+          date: new Date(cur.getTime()),
+          big: true,
+          label: formatFullDate(cur),
+          monthStart: false,
+          monthStartLine: false
+        });
+        cur = addDays(cur, 1);
+      }
+
+      return marks;
     }
 
     function renderContext(pxPerDay){
@@ -719,7 +758,6 @@
       readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
       syncMiniWindow();
 
-      // Re-render ticks for the new visible range (cheap now that ticks are viewport-only)
       const ticksEl = canvas.querySelector(".ticks");
       const tickInterval = intervalSelect.value;
       if (ticksEl) renderTicksVisible(ticksEl, tickInterval, pxPerDay);
@@ -762,7 +800,6 @@
     function cap(s){ return s ? s[0].toUpperCase() + s.slice(1) : s; }
     function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
 
-    // Historical year <-> astronomical year conversion
     // 1 BCE = year 0, 2 BCE = -1, etc.
     function histYearToAstro(y){
       return (y <= -1) ? (y + 1) : y;
@@ -819,6 +856,25 @@
       return `${yy}-${m}-${day}`;
     }
 
+    function formatMonthYear(d){
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      const y = d.getUTCFullYear();
+      const histY = (y <= 0) ? (y - 1) : y;
+      const suffix = (histY < 0) ? " BCE" : "";
+      const shownYear = (histY < 0) ? Math.abs(histY) : histY;
+      return `${months[d.getUTCMonth()]} ${shownYear}${suffix}`;
+    }
+
+    function formatFullDate(d){
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      const y = d.getUTCFullYear();
+      const histY = (y <= 0) ? (y - 1) : y;
+      const suffix = (histY < 0) ? " BCE" : "";
+      const shownYear = (histY < 0) ? Math.abs(histY) : histY;
+      const dd = String(d.getUTCDate()).padStart(2, "0");
+      return `${months[d.getUTCMonth()]} ${dd}, ${shownYear}${suffix}`;
+    }
+
     function addDays(d, n){
       const x = new Date(d.getTime());
       x.setUTCDate(x.getUTCDate() + n);
@@ -835,8 +891,6 @@
     }
 
     function buildIntervalSpans(begin, end, interval){
-      // NOTE: This is now primarily used for tick generation within the *visible* range,
-      // so performance is fine even for small intervals.
       const spans = [];
       let cur = new Date(begin.getTime());
 
@@ -862,7 +916,7 @@
           const y0 = Math.floor(y / 10) * 10;
           last = makeUTCDate(y0 + 9, 11, 31);
 
-        } else { // century
+        } else {
           const y = start.getUTCFullYear();
           const y0 = Math.floor(y / 100) * 100;
           last = makeUTCDate(y0 + 99, 11, 31);
@@ -879,12 +933,10 @@
     function buildTickMarks(begin, end, interval){
       const spans = buildIntervalSpans(begin, end, interval);
       const marks = [];
-      // Special-case day ticks: for month view we want fewer labels (e.g., 1, 6, 11, 16, 21, 26, 31)
 
       for (const sp of spans){
         marks.push({ date: sp.start, big:true, label: sp.label });
 
-        // half-tick (unlabeled) between big ticks
         if (interval !== "day"){
           const mid = addDays(sp.start, Math.floor(daysBetween(sp.start, sp.end) / 2));
           marks.push({ date: mid, big:false, label:"" });
@@ -895,38 +947,10 @@
       return marks;
     }
 
-    function buildDayTickMarks(begin, end, labelStep = 1){
-      const marks = [];
-      let cur = new Date(begin.getTime());
-
-      while (cur <= end){
-        const dayNum = cur.getUTCDate();
-        const shouldLabel = (labelStep <= 1) ? true : ((dayNum - 1) % labelStep === 0);
-
-        marks.push({
-          date: new Date(cur.getTime()),
-          big: shouldLabel,
-          label: shouldLabel ? String(dayNum) : ""
-        });
-
-        cur = addDays(cur, 1);
-      }
-
-      return marks;
-    }
-
     function intervalLabel(d, interval){
       const y = d.getUTCFullYear();
       const histY = (y <= 0) ? (y - 1) : y;
 
-      const mo = d.getUTCMonth()+1;
-      const da = d.getUTCDate();
-
-      if (interval === "day"){
-        return String(da);
-      }
-
-      // ✅ Month abbreviations
       if (interval === "month"){
         const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
         return months[d.getUTCMonth()];
