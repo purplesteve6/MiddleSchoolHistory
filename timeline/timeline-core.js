@@ -1,3 +1,4 @@
+@ -1,788 +1,789 @@
 (function(){
   function init(){
     const mount = document.getElementById("timelineMount");
@@ -758,63 +759,31 @@ if (m){
       return marks;
     }
 
-function intervalLabel(d, interval){
-  const y = d.getUTCFullYear();
-  const histY = (y <= 0) ? (y - 1) : y;
+    function intervalLabel(d, interval){
+      const y = d.getUTCFullYear();
+      const histY = (y <= 0) ? (y - 1) : y;
 
-  const mo = d.getUTCMonth()+1;
-  const da = d.getUTCDate();
+      const mo = d.getUTCMonth()+1;
+      const da = d.getUTCDate();
 
-  if (interval === "day"){
-    return (histY < 0)
-      ? `${Math.abs(histY)}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")} BCE`
-      : `${histY}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")}`;
-  }
-
-  if (interval === "month"){
-    return (histY < 0)
-      ? `${Math.abs(histY)}-${String(mo).padStart(2,"0")} BCE`
-      : `${histY}-${String(mo).padStart(2,"0")}`;
-  }
-
-  if (interval === "year"){
-    return (histY < 0)
-      ? `${Math.abs(histY)} BCE`
-      : `${histY}`;
-  }
-
-  if (interval === "decade"){
-    const d0 = Math.floor(histY/10)*10;
-    return (d0 < 0)
-      ? `${Math.abs(d0)}s BCE`
-      : `${d0}s`;
-  }
-
-  // Century label
-  const c0 = Math.floor(histY/100) * 100;
-  return (c0 < 0)
-    ? `${Math.abs(c0)}s BCE`
-    : `${c0}s`;
+      if (interval === "day") return `${histY}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")}`;
+      if (interval === "month") return `${histY}-${String(mo).padStart(2,"0")}`;
+      if (interval === "year") return `${histY}`;
+if (interval === "decade"){
+  const d0 = Math.floor(histY/10)*10;
+  return `${d0}s`;
 }
+
+// Century label (100s, 200s, -300s, etc.)
+const c0 = Math.floor(histY/100) * 100;
+return `${c0}s`;
+
+    }
+  }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
-
-try {
-  init();
-} catch (err) {
-  const mount = document.getElementById("timelineMount");
-  if (mount){
-    mount.innerHTML = `
-      <div style="padding:.75rem; font-weight:900; color:#ffd84a; background:rgba(0,0,0,.65); border:2px solid rgba(255,216,74,.35); border-radius:12px;">
-        Timeline error: <span style="color:#fff;">${String(err && err.message ? err.message : err)}</span>
-      </div>
-    `;
-  }
-  console.error("Timeline error:", err);
-}
-
-
+    init();
   }
 })();
