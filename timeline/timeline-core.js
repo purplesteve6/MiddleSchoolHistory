@@ -259,9 +259,19 @@
 
       const pxPerDay = getPxPerDayForView(zoomLevel, currentCenterDate);
 
+
       const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
-      const width = Math.max(900, Math.floor(totalDays * pxPerDay));
+
+      // Prevent browser freeze: avoid creating a canvas hundreds of millions of pixels wide.
+      const MAX_CANVAS_WIDTH = 8_000_000; // 8 million px is generally safe; adjust if needed.
+      const maxPxPerDay = MAX_CANVAS_WIDTH / Math.max(1, totalDays);
+
+      const effectivePxPerDay = Math.min(pxPerDay, maxPxPerDay);
+
+      const width = Math.max(900, Math.floor(totalDays * effectivePxPerDay));
       canvas.style.width = width + "px";
+
+
 
       const barsTop = document.createElement("div");
       barsTop.className = "bars barsTop";
