@@ -616,6 +616,15 @@ if (laneClass === "laneAbove"){
       return (y <= -1) ? (y + 1) : y;
     }
 
+// JS Date quirk: years 0–99 get treated as 1900–1999.
+// This helper forces the intended astronomical year.
+function makeUTCDate(fullYear, monthIndex, day){
+  const d = new Date(Date.UTC(0, monthIndex, day));
+  d.setUTCFullYear(fullYear);
+  return d;
+}
+
+
     /**
      * parseFlexibleDate(v, kind)
      *
@@ -645,33 +654,33 @@ if (laneClass === "laneAbove"){
       const wantEndOfYear = (kind === "end") && (endMode === "endOfYear");
 
       // number year
-      if (typeof v === "number" && Number.isFinite(v)){
-        const ay = histYearToAstro(v);
-        return wantEndOfYear
-          ? new Date(Date.UTC(ay, 11, 31))
-          : new Date(Date.UTC(ay, 0, 1));
-      }
+if (typeof v === "number" && Number.isFinite(v)){
+  const ay = histYearToAstro(v);
+  return wantEndOfYear
+    ? makeUTCDate(ay, 11, 31)
+    : makeUTCDate(ay, 0, 1);
+}
 
       const s = String(v).trim();
 
       // "YYYY" or "-44" (year-only string)
-      if (/^-?\d{1,6}$/.test(s)){
-        const y = parseInt(s, 10);
-        const ay = histYearToAstro(y);
-        return wantEndOfYear
-          ? new Date(Date.UTC(ay, 11, 31))
-          : new Date(Date.UTC(ay, 0, 1));
-      }
+if (/^-?\d{1,6}$/.test(s)){
+  const y = parseInt(s, 10);
+  const ay = histYearToAstro(y);
+  return wantEndOfYear
+    ? makeUTCDate(ay, 11, 31)
+    : makeUTCDate(ay, 0, 1);
+}
 
       // "YYYY-MM-DD" with optional negative year: "-0044-03-15"
       const m = s.match(/^(-?\d{1,6})-(\d{2})-(\d{2})$/);
-      if (m){
-        const y = parseInt(m[1], 10);
-        const mo = parseInt(m[2], 10);
-        const d = parseInt(m[3], 10);
-        const ay = histYearToAstro(y);
-        return new Date(Date.UTC(ay, mo - 1, d));
-      }
+if (m){
+  const y = parseInt(m[1], 10);
+  const mo = parseInt(m[2], 10);
+  const d = parseInt(m[3], 10);
+  const ay = histYearToAstro(y);
+  return makeUTCDate(ay, mo - 1, d);
+}
 
       return null;
     }
