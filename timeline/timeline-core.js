@@ -115,6 +115,20 @@
 
 
     let currentCenterDate = rangeBegin;
+    // Track the scale/span used by the most recent full render().
+    // This prevents tick redraws from using a different pxPerDay than the bars/canvas.
+    let lastRender = {
+      zoom: null,
+      spanKey: null,
+      pxPerDay: null
+    };
+
+    function spanKeyFor(zoom, centerDate){
+      if (zoom === "fit") return "fit";
+      const sp = zoomSpanAligned(centerDate, zoom);
+      return `${sp.start.getTime()}-${sp.end.getTime()}`;
+    }
+
 
     zoomSelect.innerHTML = "";
     for (const z of zoomLevels){
@@ -311,6 +325,12 @@
 
 
       const pxPerDay = getEffectivePxPerDay(zoomLevel, currentCenterDate);
+
+      // Record the scale/span used for this render so scroll tick redraws stay aligned.
+      lastRender.zoom = zoomLevel;
+      lastRender.spanKey = spanKeyFor(zoomLevel, currentCenterDate);
+      lastRender.pxPerDay = pxPerDay; 
+
 
       const width = Math.max(900, Math.floor(TOTAL_DAYS * pxPerDay));
       canvas.style.width = width + "px";
@@ -971,7 +991,7 @@ function buildTickMarksAligned(begin, end, interval){
     function updateReadout(){
       const zoomLevel = zoomSelect.value;
 
-      // 1) Estimate center date using the current scale (may be stale if we crossed into a new month)
+      // 1) Estimate center date using the current scale (may be stale if we crossed into a new zoom span)
       const pxPerDayEstimate = getEffectivePxPerDay(zoomLevel, currentCenterDate);
 
       const centerCanvasX = viewport.scrollLeft + (viewport.clientWidth / 2);
@@ -981,14 +1001,20 @@ function buildTickMarksAligned(begin, end, interval){
       // 2) Update the true center date
       currentCenterDate = d;
 
-      // 3) Recompute the correct scale for the NEW center date
-      const pxPerDay = getEffectivePxPerDay(zoomLevel, currentCenterDate);
-
       readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
       syncMiniWindow();
 
-      // 4) In month/day zoom, the scale is "one unit in view", so when center changes
-      // (especially crossing month boundaries), we should re-render the canvas to avoid dropouts.
+      // If the aligned span for the current zoom changes (e.g., we cross into a new century),
+      // we MUST re-render so ticks + bars are built with the same pxPerDay/canvas width.
+      const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
+      if (newSpanKey !== lastRender.spanKey){
+        render();
+        // Keep the current center date in the middle after re-render so the view doesn't jump.
+        scrollToCenterDate(currentCenterDate);
+        return;
+      }
+
+      // Month/day zoom still benefits from always re-rendering when center changes (prevents dropouts).
       if (zoomLevel === "month" || zoomLevel === "day"){
         render();
         // Keep the current center date in the middle after re-render so the view doesn't jump.
@@ -996,11 +1022,14 @@ function buildTickMarksAligned(begin, end, interval){
         return;
       }
 
-      // Otherwise, just redraw visible ticks/overlays with the correct scale.
+      // Otherwise, just redraw visible ticks/overlays using the SAME scale as the last full render.
       const ticksEl = canvas.querySelector(".ticks");
       const tickInterval = intervalSelect.value;
+      const pxPerDay = lastRender.pxPerDay ?? getEffectivePxPerDay(zoomLevel, currentCenterDate);
       if (ticksEl) renderTicksVisible(ticksEl, tickInterval, pxPerDay);
     }
+
+
 
     /* ----------------- UTILITIES ----------------- */
 
