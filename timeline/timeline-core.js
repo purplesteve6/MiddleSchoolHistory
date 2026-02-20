@@ -1,5 +1,20 @@
-
 (function(){
+  function safeInit(){
+    try {
+      init();
+    } catch (err) {
+      const mount = document.getElementById("timelineMount");
+      if (mount){
+        mount.innerHTML = `
+          <div style="padding:.75rem; font-weight:900; color:#ffd84a; background:rgba(0,0,0,.65); border:2px solid rgba(255,216,74,.35); border-radius:12px;">
+            Timeline error: <span style="color:#fff;">${String(err && err.message ? err.message : err)}</span>
+          </div>
+        `;
+      }
+      console.error("Timeline error:", err);
+    }
+  }
+
   function init(){
     const mount = document.getElementById("timelineMount");
     if (!mount) return;
@@ -151,20 +166,18 @@
       // Ticks
       renderTicks(interval, pxPerDay);
 
-// Bars container (for event span bars)
-const bars = document.createElement("div");
-bars.className = "bars";
-canvas.appendChild(bars);
+      // Bars container (colored reign bars)
+      const bars = document.createElement("div");
+      bars.className = "bars";
+      canvas.appendChild(bars);
 
-// Span boxes (event time periods)
-// Disabled: reign bars already show duration, so span boxes would duplicate visuals.
-// renderSpanBoxes(pxPerDay);
-
+      // Span boxes (translucent duplicates) — disabled intentionally:
+      // renderSpanBoxes(pxPerDay);
 
       // Context events (tags + dotted lines)
       renderContext(pxPerDay);
 
-      // Event bars (optional) + event cards
+      // Event bars + event cards
       renderEventBars(bars, pxPerDay);
       renderEvents(pxPerDay);
 
@@ -222,12 +235,13 @@ canvas.appendChild(bars);
       }
     }
 
+    // Left in place (not called) in case you ever want it back.
     function renderSpanBoxes(pxPerDay){
       const events = Array.isArray(cfg.events) ? cfg.events : [];
       for (const ev of events){
         const s = parseFlexibleDate(ev.start, "start", ev);
         const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
-       if (!s || !e) continue;
+        if (!s || !e) continue;
 
         const left = dateToX(s, pxPerDay);
         const right = dateToX(e, pxPerDay) + pxPerDay;
@@ -242,10 +256,9 @@ canvas.appendChild(bars);
     function renderContext(pxPerDay){
       const ctx = Array.isArray(cfg.contextEvents) ? cfg.contextEvents : [];
       for (const c of ctx){
-		const d = parseFlexibleDate(c.date, "anchor");
-
-
+        const d = parseFlexibleDate(c.date, "anchor");
         if (!d) continue;
+
         const x = dateToX(d, pxPerDay);
 
         const tag = document.createElement("div");
@@ -271,7 +284,7 @@ canvas.appendChild(bars);
 
         const s = parseFlexibleDate(ev.start, "start", ev);
         const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
-        	if (!s || !e) return;
+        if (!s || !e) return;
 
         const left = dateToX(s, pxPerDay);
         const right = dateToX(e, pxPerDay) + pxPerDay;
@@ -296,12 +309,11 @@ canvas.appendChild(bars);
 
     function renderEvents(pxPerDay){
       const events = Array.isArray(cfg.events) ? cfg.events : [];
-      events.forEach((ev, idx) => {
+      events.forEach((ev) => {
         const anchor = parseFlexibleDate(ev.anchor ?? ev.start, "anchor", ev);
         if (!anchor) return;
 
         const x = dateToX(anchor, pxPerDay);
-
         const laneClass = (ev.side === "below") ? "laneBelow" : "laneAbove";
 
         const card = document.createElement("a");
@@ -314,7 +326,7 @@ canvas.appendChild(bars);
         const stack = document.createElement("div");
         stack.className = "stack";
 
-        // Text + date label (position relative to image depends on above/below rule)
+        // Text block
         const meta = document.createElement("div");
         meta.className = "meta";
 
@@ -329,6 +341,7 @@ canvas.appendChild(bars);
         meta.appendChild(nm);
         meta.appendChild(yrs);
 
+        // Portrait
         const avatarWrap = document.createElement("div");
         avatarWrap.className = "avatarWrap";
 
@@ -342,18 +355,16 @@ canvas.appendChild(bars);
           avatarWrap.innerHTML = `<div class="ph">No<br/>Image</div>`;
         }
 
-// Your rule:
-// - Above timeline: text ABOVE picture
-// - Below timeline: text BELOW picture
-if (laneClass === "laneAbove"){
-  // Text first, then portrait
-  stack.appendChild(meta);
-  stack.appendChild(avatarWrap);
-} else {
-  // Portrait first, then text
-  stack.appendChild(avatarWrap);
-  stack.appendChild(meta);
-}
+        // ORDER RULE:
+        // - Above timeline: text ABOVE picture
+        // - Below timeline: text BELOW picture
+        if (laneClass === "laneAbove"){
+          stack.appendChild(meta);
+          stack.appendChild(avatarWrap);
+        } else {
+          stack.appendChild(avatarWrap);
+          stack.appendChild(meta);
+        }
 
         const connector = document.createElement("div");
         connector.className = "connector";
@@ -373,7 +384,6 @@ if (laneClass === "laneAbove"){
     /* ----------------- LAYOUT HELPERS ----------------- */
 
     function positionLanesSymmetrically(){
-      // Mirrors your existing “gapToPortraitEdge” approach
       const root = document.querySelector(".timeline-embed");
       const cs = getComputedStyle(root);
 
@@ -384,8 +394,8 @@ if (laneClass === "laneAbove"){
       const sampleAbove = canvas.querySelector(".eventCard.laneAbove .avatarWrap");
       const sampleBelow = canvas.querySelector(".eventCard.laneBelow .avatarWrap");
 
-      let aboveAvatarOffsetTop = sampleAbove ? sampleAbove.offsetTop : 0;
-      let belowAvatarOffsetTop = sampleBelow ? sampleBelow.offsetTop : 0;
+      const aboveAvatarOffsetTop = sampleAbove ? sampleAbove.offsetTop : 0;
+      const belowAvatarOffsetTop = sampleBelow ? sampleBelow.offsetTop : 0;
 
       const aboveLaneTop = (barCenterY - gap) - (aboveAvatarOffsetTop + avatarH);
       const belowLaneTop = (barCenterY + gap) - (belowAvatarOffsetTop);
@@ -394,42 +404,35 @@ if (laneClass === "laneAbove"){
       canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
     }
 
-function adjustConnectors(){
-  // Connector should pin to the CENTER of the reign bar row:
-  const barMidY = getBarCenterY();
+    function adjustConnectors(){
+      // Pin connectors to the CENTER of the reign bar row:
+      const barMidY = getBarCenterY();
+      const cards = canvas.querySelectorAll(".eventCard");
 
-  const cards = canvas.querySelectorAll(".eventCard");
+      cards.forEach(card => {
+        const avatar = card.querySelector(".avatarWrap");
+        const connector = card.querySelector(".connector");
+        if (!avatar || !connector) return;
 
-  cards.forEach(card => {
-    const avatar = card.querySelector(".avatarWrap");
-    const connector = card.querySelector(".connector");
-    if (!avatar || !connector) return;
+        const cardTop = card.offsetTop;
+        const avatarTop = cardTop + avatar.offsetTop;
+        const avatarBottom = avatarTop + avatar.offsetHeight;
 
-    const cardTop = card.offsetTop;
-    const avatarTop = cardTop + avatar.offsetTop;
-    const avatarBottom = avatarTop + avatar.offsetHeight;
+        const isAbove = card.classList.contains("laneAbove");
+        const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
 
-    const isAbove = card.classList.contains("laneAbove");
-    const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
+        const minY = Math.min(portraitEdgeY, barMidY);
+        const maxY = Math.max(portraitEdgeY, barMidY);
+        const height = Math.max(0, maxY - minY);
 
-    const minY = Math.min(portraitEdgeY, barMidY);
-    const maxY = Math.max(portraitEdgeY, barMidY);
-    const height = Math.max(0, maxY - minY);
+        connector.style.left = "50%";
+        connector.style.top = (minY - cardTop) + "px";
+        connector.style.height = height + "px";
 
-    connector.style.left = "50%";
-    connector.style.top = (minY - cardTop) + "px";
-    connector.style.height = height + "px";
-
- // If the card is above, the dot should be at the bottom end (so NOT dotTop).
-// If the card is below, the dot should be at the top end (dotTop).
-connector.classList.toggle("dotTop", !isAbove);
-
-
-  });
-
-  // No timelineLine element (removed earlier), so nothing to sync here.
-}
-
+        // If card is below, dot should be at the top; if above, dot at bottom.
+        connector.classList.toggle("dotTop", !isAbove);
+      });
+    }
 
     function getBarCenterY(){
       const root = document.querySelector(".timeline-embed");
@@ -478,7 +481,7 @@ connector.classList.toggle("dotTop", !isAbove);
       const zoomLevel = zoomSelect.value;
       const pxPerDay = (zoomLevel === "fit") ? computeFitPxPerDay() : (pxPerDayMap[zoomLevel] ?? 0.12);
 
-      const anchor = parseFlexibleDate(ev.anchor ?? ev.start, "anchor");
+      const anchor = parseFlexibleDate(ev.anchor ?? ev.start, "anchor", ev);
       if (!anchor) return;
 
       const centerX = dateToX(anchor, pxPerDay);
@@ -568,7 +571,6 @@ connector.classList.toggle("dotTop", !isAbove);
     /* ----------------- UTILITIES ----------------- */
 
     function applyTheme(theme){
-      // set CSS vars on .timeline-embed for easy global styling overrides
       const root = document.querySelector(".timeline-embed");
       if (!root) return;
 
@@ -596,8 +598,7 @@ connector.classList.toggle("dotTop", !isAbove);
       if (!path) return path;
       if (/^(https?:)?\/\//.test(path)) return path; // absolute URL
       if (path.startsWith("/")) return path;          // site absolute
-      // relative to topic folder
-      const base = window.TIMELINE_CONFIG_BASE || "/";
+      const base = window.TIMELINE_CONFIG_BASE || "/"; // relative to topic folder
       return base + path.replace(/^\.\//, "");
     }
 
@@ -613,21 +614,20 @@ connector.classList.toggle("dotTop", !isAbove);
       return (y <= -1) ? (y + 1) : y;
     }
 
-// JS Date quirk: years 0–99 get treated as 1900–1999.
-// This helper forces the intended astronomical year.
-function makeUTCDate(fullYear, monthIndex, day){
-  const d = new Date(Date.UTC(0, monthIndex, day));
-  d.setUTCFullYear(fullYear);
-  return d;
-}
-
+    // JS Date quirk: years 0–99 get treated as 1900–1999.
+    // This helper forces the intended astronomical year.
+    function makeUTCDate(fullYear, monthIndex, day){
+      const d = new Date(Date.UTC(0, monthIndex, day));
+      d.setUTCFullYear(fullYear);
+      return d;
+    }
 
     /**
      * parseFlexibleDate(v, kind)
      *
      * kind:
      *   - "start": numeric years become Jan 1 of that year
-     *   - "end":   numeric years become either Jan 1 (default) OR Dec 31 (if cfg.numericYearEndMode === "endOfYear")
+     *   - "end":   numeric years become either Jan 1 OR Dec 31 depending on numericYearEndMode
      *   - "anchor"/"point": numeric years become Jan 1 of that year
      *
      * Config option:
@@ -635,54 +635,43 @@ function makeUTCDate(fullYear, monthIndex, day){
      *     - "startOfYear": end: 476 -> 476-01-01
      *     - "endOfYear" (default): end: 476 -> 476-12-31
      */
-
- 
-
     function parseFlexibleDate(v, kind = "anchor", ev = null){
       if (v === null || v === undefined) return null;
 
-      // If v is just a year (number or "YYYY"/"-44"), we need to decide:
-      // - for START-like uses: interpret as Jan 1
-      // - for END-like uses: interpret as Dec 31 (by default), unless overridden
       const endMode =
         (ev && ev.numericYearEndMode) ||
         cfg.numericYearEndMode ||
-        "endOfYear"; // default matches your expectation: numeric end year => 12/31
+        "endOfYear";
 
       const wantEndOfYear = (kind === "end") && (endMode === "endOfYear");
 
       // number year
-if (typeof v === "number" && Number.isFinite(v)){
-  const ay = histYearToAstro(v);
-  return wantEndOfYear
-    ? makeUTCDate(ay, 11, 31)
-    : makeUTCDate(ay, 0, 1);
-}
+      if (typeof v === "number" && Number.isFinite(v)){
+        const ay = histYearToAstro(v);
+        return wantEndOfYear ? makeUTCDate(ay, 11, 31) : makeUTCDate(ay, 0, 1);
+      }
 
       const s = String(v).trim();
 
       // "YYYY" or "-44" (year-only string)
-if (/^-?\d{1,6}$/.test(s)){
-  const y = parseInt(s, 10);
-  const ay = histYearToAstro(y);
-  return wantEndOfYear
-    ? makeUTCDate(ay, 11, 31)
-    : makeUTCDate(ay, 0, 1);
-}
+      if (/^-?\d{1,6}$/.test(s)){
+        const y = parseInt(s, 10);
+        const ay = histYearToAstro(y);
+        return wantEndOfYear ? makeUTCDate(ay, 11, 31) : makeUTCDate(ay, 0, 1);
+      }
 
       // "YYYY-MM-DD" with optional negative year: "-0044-03-15"
       const m = s.match(/^(-?\d{1,6})-(\d{2})-(\d{2})$/);
-if (m){
-  const y = parseInt(m[1], 10);
-  const mo = parseInt(m[2], 10);
-  const d = parseInt(m[3], 10);
-  const ay = histYearToAstro(y);
-  return makeUTCDate(ay, mo - 1, d);
-}
+      if (m){
+        const y = parseInt(m[1], 10);
+        const mo = parseInt(m[2], 10);
+        const d = parseInt(m[3], 10);
+        const ay = histYearToAstro(y);
+        return makeUTCDate(ay, mo - 1, d);
+      }
 
       return null;
     }
-
 
     function formatISO(d){
       const y = d.getUTCFullYear(); // astronomical year
@@ -766,24 +755,42 @@ if (m){
       const mo = d.getUTCMonth()+1;
       const da = d.getUTCDate();
 
-      if (interval === "day") return `${histY}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")}`;
-      if (interval === "month") return `${histY}-${String(mo).padStart(2,"0")}`;
-      if (interval === "year") return `${histY}`;
-if (interval === "decade"){
-  const d0 = Math.floor(histY/10)*10;
-  return `${d0}s`;
-}
+      if (interval === "day"){
+        return (histY < 0)
+          ? `${Math.abs(histY)}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")} BCE`
+          : `${histY}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")}`;
+      }
 
-// Century label (100s, 200s, -300s, etc.)
-const c0 = Math.floor(histY/100) * 100;
-return `${c0}s`;
+      if (interval === "month"){
+        return (histY < 0)
+          ? `${Math.abs(histY)}-${String(mo).padStart(2,"0")} BCE`
+          : `${histY}-${String(mo).padStart(2,"0")}`;
+      }
 
+      if (interval === "year"){
+        return (histY < 0)
+          ? `${Math.abs(histY)} BCE`
+          : `${histY}`;
+      }
+
+      if (interval === "decade"){
+        const d0 = Math.floor(histY/10)*10;
+        return (d0 < 0)
+          ? `${Math.abs(d0)}s BCE`
+          : `${d0}s`;
+      }
+
+      // Century label
+      const c0 = Math.floor(histY/100) * 100;
+      return (c0 < 0)
+        ? `${Math.abs(c0)}s BCE`
+        : `${c0}s`;
     }
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", safeInit);
   } else {
-    init();
+    safeInit();
   }
 })();
