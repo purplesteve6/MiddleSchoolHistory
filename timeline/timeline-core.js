@@ -423,6 +423,7 @@ function adjustConnectors(){
 // If the card is below, the dot should be at the top end (dotTop).
 connector.classList.toggle("dotTop", !isAbove);
 
+
   });
 
   // No timelineLine element (removed earlier), so nothing to sync here.
