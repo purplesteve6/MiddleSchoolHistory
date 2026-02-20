@@ -86,6 +86,10 @@
     const MAX_YEARS_FOR_MONTH_ZOOM = 200;
 
 
+    const allowDayZoom = spanYears <= MAX_YEARS_FOR_DAY_ZOOM;
+    const allowMonthZoom = spanYears <= MAX_YEARS_FOR_MONTH_ZOOM;
+
+
     // Use one consistent px-per-day everywhere (rendering + scrolling + tick redraw).
     const TOTAL_DAYS = daysBetween(rangeBegin, rangeEnd) + 1;
     const MAX_CANVAS_WIDTH = 8_000_000;
