@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top">
+  <title>Timeline</title>
+
+  <!-- iframe embed safety: prevent iframe-level scrollbars -->
+  <style>
+    html, body { height:100%; margin:0; overflow:hidden; }
+  </style>
+
+  <link rel="stylesheet" href="./timeline.css" />
+</head>
+
+<body>
+  <main class="timeline-embed">
+    <div class="wrap">
+      <section class="card" aria-label="Timeline">
+        <div id="timelineMount"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Loader finds and loads /timelines/<topic>/timeline-config.js, then starts core -->
+  <script src="./timeline-loader.js"></script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+/* Standalone, embeddable timeline (namespaced) */
+.timeline-embed{
+  /* ===== THEME (overrideable by config) ===== */
+  --bg:#12060a;
+  --bg2:#0b0507;
+
+  --text:#fff6e5;
+  --muted:#ffdca6;
+  --subtle: rgba(255,246,229,.78);
+
+  --gold:#FFD84A;
+  --gold2:#f2c94c;
+  --red:#b3122a;
+  --red2:#7b0b1d;
+
+  --panel: rgba(255,255,255,.055);
+  --panel2: rgba(255,255,255,.032);
+  --shadow: 0 14px 40px rgba(0,0,0,.45);
+  --radius: 18px;
+  --max: 980px;
+
+  --focus: 0 0 0 4px rgba(255,216,74,.40);
+  --markerText: rgba(255,216,74,.95);
+
+  /* Alternating interval boxes */
+  --intervalA: rgba(255,216,74,.18);
+  --intervalB: rgba(179,18,42,.18);
+  --intervalStroke: rgba(255,255,255,.14);
+
+  /* ===== GEOMETRY ===== */
+  --canvasH: 620px;
+
+  --ticksTop: 18px;
+  --intervalTop: 78px;
+
+  --barsTop: 310px;
+  --barTopInBars: 11px;
+  --barH: 18px;
+
+  --avatar: 110px;
+  --gapToPortraitEdge: 120px;
+  --stackGap: 10px;
+  --metaH: 44px;
+
+  /* Day-span boxes */
+  --dayBoxTop: calc(var(--barsTop) + 34px);
+  --dayBoxH: 16px;
+  --dayStroke: rgba(255,255,255,.14);
+}
+
+.timeline-embed{
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+*{ box-sizing:border-box; }
+a{ color:inherit; }
+.tiny{ font-size:.92rem; color: rgba(255,246,229,.72); }
+
+body{
+  margin:0;
+  background:
+    radial-gradient(900px 700px at 0% 50%, rgba(179,18,42,.32), transparent 60%),
+    radial-gradient(900px 700px at 100% 50%, rgba(255,216,74,.18), transparent 60%),
+    linear-gradient(90deg, var(--bg2) 0%, var(--bg) 50%, var(--bg2) 100%);
+  background-attachment: fixed;
+  color:var(--text);
+  line-height:1.5;
+}
+
+.wrap{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 1rem 1rem 1.25rem;
+}
+
+.card{
+  background: linear-gradient(180deg, var(--panel), var(--panel2));
+  border:1px solid rgba(255,255,255,.12);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+/* Head + controls */
+.timeline-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+  gap: 1rem;
+  flex-wrap:wrap;
+  margin-bottom:.35rem;
+}
+
+.timeline-controls{
+  display:flex;
+  gap:.55rem;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.controlPill{
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.35rem .55rem;
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+}
+
+.controlPill label{
+  font-weight: 1000;
+  font-size: .9rem;
+  color: rgba(255,246,229,.85);
+  white-space:nowrap;
+}
+
+.controlPill select{
+  color: var(--text);
+  background: rgba(14,6,8,.35);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 999px;
+  padding: .35rem .6rem;
+  font-weight:900;
+  outline: none;
+}
+.controlPill select:focus{ box-shadow: var(--focus); }
+
+/* viewport */
+.timelineViewport{
+  border-radius: 16px;
+  border:1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(900px 260px at 20% 0%, rgba(179,18,42,.18), transparent 55%),
+    radial-gradient(900px 260px at 80% 20%, rgba(255,216,74,.10), transparent 55%),
+    rgba(14,6,8,.35);
+
+  overflow-x:auto;
+  overflow-y:hidden;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  height: 640px;
+}
+.timelineViewport::-webkit-scrollbar{ display:none; }
+
+.timelineCanvas{
+  position:relative;
+  height: var(--canvasH);
+  min-width: 900px;
+}
+
+/* Interval boxes row */
+.intervalRow{
+  position:absolute;
+  left:0; right:0;
+  top: var(--intervalTop);
+  height: 34px;
+  pointer-events:none;
+}
+.intervalBox{
+  position:absolute;
+  top:0;
+  height: 28px;
+  border-radius: 10px;
+  border: 1px solid var(--intervalStroke);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:1000;
+  font-size:.86rem;
+  color: rgba(255,246,229,.92);
+  text-shadow: 0 2px 10px rgba(0,0,0,.55);
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+/* ticks */
+.ticks{ position:absolute; left:0; right:0; top: var(--ticksTop); height: 55px; pointer-events:none; }
+.tick{ position:absolute; top:0; width:1px; background: rgba(255,255,255,.18); }
+.tick.small{ height: 16px; top: 22px; opacity:.6; }
+.tick.big{ height: 34px; top: 8px; opacity:.9; }
+.tickLabel{
+  position:absolute;
+  top:0;
+  transform: translateX(-50%);
+  color: rgba(255,246,229,.78);
+  font-weight:1000;
+  font-size:.86rem;
+  white-space:nowrap;
+  text-shadow: 0 2px 10px rgba(0,0,0,.55);
+}
+
+/* main line + bars */
+.timelineLine{
+  position:absolute;
+  left:0; right:0;
+  height:2px;
+  background: rgba(255,255,255,.14);
+  pointer-events:none;
+}
+
+.bars{
+  position:absolute;
+  left:0; right:0;
+  top: var(--barsTop);
+  height: 40px;
+}
+
+.bar{
+  position:absolute;
+  top: var(--barTopInBars);
+  height: var(--barH);
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  cursor:pointer;
+  transition: transform .12s ease, filter .12s ease;
+}
+.bar:hover{ transform: translateY(-1px); filter: brightness(1.06); }
+.bar:focus{ outline:none; box-shadow: var(--focus); }
+
+/* span/day boxes (for event time periods) */
+.spanBox{
+  position:absolute;
+  top: var(--dayBoxTop);
+  height: var(--dayBoxH);
+  border-radius: 6px;
+  border: 1px solid var(--dayStroke);
+  background: rgba(255,255,255,.06);
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+  pointer-events:none;
+}
+
+/* context tags (dotted line + pill tag) */
+.contextTag{
+  position:absolute;
+  top: 6px;
+  transform: translateX(-50%);
+  padding: .22rem .6rem;
+  border-radius: 999px;
+  border: 1px dashed rgba(255,216,74,.55);
+  background: rgba(179,18,42,.10);
+  color: rgba(255,216,74,.95);
+  font-weight:1000;
+  font-size:.86rem;
+  white-space:nowrap;
+}
+.contextLine{
+  position:absolute;
+  top: 26px;
+  width:0;
+  border-left: 2px dotted rgba(255,216,74,.45);
+  pointer-events:none;
+}
+
+/* event cards */
+.eventCard{
+  position:absolute;
+  transform: translateX(-50%);
+  width: 200px;
+  text-align:center;
+  cursor:pointer;
+  user-select:none;
+  text-decoration:none;
+}
+.eventCard:focus{ outline:none; box-shadow: var(--focus); border-radius: 14px; }
+
+.stack{ display:flex; flex-direction:column; align-items:center; gap: var(--stackGap); }
+
+.avatarWrap{
+  width: var(--avatar);
+  height: var(--avatar);
+  margin: 0 auto;
+  border-radius: 22px;
+  overflow:hidden;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  box-shadow: 0 16px 34px rgba(0,0,0,.40);
+  display:grid;
+  place-items:center;
+  position:relative;
+}
+.avatarWrap img{ width:100%; height:100%; object-fit:cover; display:block; }
+.avatarWrap .ph{ font-weight:1000; color: rgba(255,246,229,.82); padding:.5rem; font-size:.9rem; }
+
+.meta{
+  min-height: var(--metaH);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  line-height:1.15;
+}
+.empName{ font-weight:1000; letter-spacing:.2px; }
+.empYears{ color: rgba(255,246,229,.78); font-weight:900; font-size:.92rem; margin-top:.18rem; }
+
+.eventText{
+  margin-top:.1rem;
+  color: var(--markerText);
+  font-weight:1000;
+  line-height:1.12;
+  text-shadow: 0 2px 10px rgba(0,0,0,.55);
+}
+.eventText span{ display:block; }
+
+.eventCard .avatarWrap{
+  border-color: rgba(255,216,74,.55);
+  box-shadow: 0 0 0 4px rgba(255,216,74,.14), 0 16px 34px rgba(0,0,0,.40);
+}
+
+/* connectors */
+.connector{
+  position:absolute;
+  width:0;
+  border-left: 2px solid rgba(255,255,255,.18);
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,.45));
+  pointer-events:none;
+}
+.connector::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  transform: translateX(-50%);
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background: rgba(255,255,255,.22);
+  border: 1px solid rgba(255,255,255,.22);
+  top: 100%;
+  margin-top: -4px;
+}
+.connector.dotTop::after{ top: 0; margin-top: -4px; }
+
+/* lane classes */
+.laneAbove{}
+.laneBelow{}
+
+/* mini map */
+.scrubber{
+  margin-top:.75rem;
+  padding:.55rem .7rem;
+  border-radius: 16px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+  flex-wrap:wrap;
+}
+.miniTrack{
+  position:relative;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.10);
+  flex: 1 1 320px;
+  overflow:hidden;
+}
+.miniWindow{
+  position:absolute;
+  top:0; bottom:0;
+  border-radius: 999px;
+  background: rgba(255,216,74,.28);
+  border: 1px solid rgba(255,216,74,.55);
+  cursor:grab;
+}
+.miniWindow:active{ cursor:grabbing; }
