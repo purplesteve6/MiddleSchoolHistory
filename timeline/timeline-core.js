@@ -765,12 +765,39 @@ if (m){
       const mo = d.getUTCMonth()+1;
       const da = d.getUTCDate();
 
-      if (interval === "day") return `${histY}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")}`;
-      if (interval === "month") return `${histY}-${String(mo).padStart(2,"0")}`;
-      if (interval === "year") return `${histY}`;
+
+if (interval === "day"){
+  return (histY < 0)
+    ? `${Math.abs(histY)}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")} BCE`
+    : `${histY}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")}`;
+}
+
+if (interval === "month"){
+  return (histY < 0)
+    ? `${Math.abs(histY)}-${String(mo).padStart(2,"0")} BCE`
+    : `${histY}-${String(mo).padStart(2,"0")}`;
+}
+
+if (interval === "year"){
+  return (histY < 0)
+    ? `${Math.abs(histY)} BCE`
+    : `${histY}`;
+}
+
 if (interval === "decade"){
   const d0 = Math.floor(histY/10)*10;
-  return `${d0}s`;
+  return (d0 < 0)
+    ? `${Math.abs(d0)}s BCE`
+    : `${d0}s`;
+}
+
+// Century label (100s, 200s, etc.)
+const c0 = Math.floor(histY/100) * 100;
+return (c0 < 0)
+  ? `${Math.abs(c0)}s BCE`
+  : `${c0}s`;
+
+
 }
 
 // Century label (100s, 200s, -300s, etc.)
