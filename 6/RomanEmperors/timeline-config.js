@@ -8,151 +8,88 @@
  *
  * HOW THIS FILE WORKS (Plain English)
  * ------------------------------------
- * This file controls EVERYTHING about a specific timeline:
- *   • What time period it covers
- *   • What events appear
- *   • Whether events show interval bars
- *   • The colors of interval bars
- *   • The length of connector lines
- *   • The zoom defaults
+ * This file controls the data + options for ONE timeline topic.
+ * The universal timeline engine reads window.TIMELINE_CONFIG and:
+ *   • builds the ticks/labels
+ *   • draws interval bars (reigns)
+ *   • places portrait cards
+ *   • draws connector lines
  *
- * The universal engine (timeline-core.js) reads this file and
- * builds the timeline automatically.
- *
- * ============================================================
- *
- * -------------------------
- * 📁 PATH RULES (IMPORTANT)
- * -------------------------
- * All image and href paths are RELATIVE to this folder:
- *
+ * ------------------------------------------------------------
+ * PATH RULES (IMPORTANT)
+ * ------------------------------------------------------------
+ * All "image" and "href" paths in events should be RELATIVE to:
  *   /6/RomanEmperors/
  *
  * Examples:
  *   image: "images/timeline/augustus_timeline.jpg"
  *   href:  "emperors/augustus.html"
  *
- * DO NOT start paths with "/" unless it is a full absolute URL.
+ * If you start with "/" it becomes site-absolute (not topic-relative).
+ * Full URLs (https://...) also work.
  *
- * ============================================================
+ * ------------------------------------------------------------
+ * DATE RULES
+ * ------------------------------------------------------------
+ * BCE years MUST:
+ *   • be negative
+ *   • be zero-padded to 4 digits in date strings
  *
- * -------------------------
- * 📅 DATE RULES
- * -------------------------
+ * Correct:
+ *   "-0044-03-15"   (44 BCE, March 15)
+ *   "-0027-01-16"   (27 BCE, Jan 16)
  *
- * BCE YEARS MUST:
- *   • Be negative
- *   • Be zero-padded to 4 digits
+ * CE years:
+ *   "0014-09-17"
+ *   "0330-01-01"
  *
- * CORRECT:
- *   "-0044-03-15"   (44 BCE)
- *   "-0027-01-16"   (27 BCE)
+ * You MAY use a year-only number, but full dates are best:
+ *   start: 14
+ *   end:   37
  *
- * INCORRECT:
- *   "-44"
- *   "-27-1-16"
+ * If you use year-only numbers, numericYearEndMode decides what "end" means:
+ *   "endOfYear"   => end: 476 becomes 0476-12-31  (recommended)
+ *   "startOfYear" => end: 476 becomes 0476-01-01
  *
- * CE years can be written normally:
- *   "0037-03-16"
+ * ------------------------------------------------------------
+ * EVENT OPTIONS (per event)
+ * ------------------------------------------------------------
+ * Required fields:
+ *   id, label, start, end, anchor, image, href, side
  *
- * You may also use just a year number:
- *   14
- *   -27
+ * Optional fields:
+ *   dateLabel      → displayed next to the name
  *
- * If you use a NUMBER instead of full date,
- * the engine assumes:
- *   numericYearEndMode: "endOfYear"
+ *   showInterval   → whether the interval bar (reign bar) draws
+ *                    - true  (default)
+ *                    - false (use for single-day events like assassination)
  *
- * So:
- *   end: 476
- * becomes:
- *   0476-12-31
+ *   intervalColor  → overrides the interval bar color
+ *                    - "default"  (recommended; uses palette/theme)
+ *                    - "#RRGGBB"
+ *                    - "rgba(...)"
+ *                    - "var(--gold)" etc.
  *
- * ============================================================
+ *   lineLength     → OPTIONAL connector length override (pixels)
+ *                    - null means "use the default spacing"
  *
- * -------------------------
- * 🎛 EVENT OPTIONS (IMPORTANT)
- * -------------------------
+ *                    Reasonable values (pixels):
+ *                      100–115  subtle shorter line
+ *                      120      recommended default baseline
+ *                      130–150  slightly longer
+ *                      160–200  strong stagger (use sparingly)
  *
- * REQUIRED:
- *   id
- *   label
- *   start
- *   end
- *   anchor
- *   image
- *   href
- *   side ("above" or "below")
+ *                    Avoid:
+ *                      < 80   (crowded)
+ *                      > 240  (detached)
  *
- * OPTIONAL:
- *
- * showInterval (default: true)
- * --------------------------------
- * Controls whether an interval bar is drawn.
- *
- * Example:
- *   showInterval: false
- *
- * Use this for:
- *   • Assassinations
- *   • Single-day events
- *   • Battles
- *
- *
- * intervalColor (default: "default")
- * -----------------------------------
- * Controls the color of the interval bar.
- *
- * If set to:
- *   "default"
- * → uses the theme's alternating colors.
- *
- * You may override with:
- *   "#4cc9f0"
- *   "red"
- *   "var(--gold)"
- *
- * Example:
- *   intervalColor: "#3a86ff"
- *
- *
- * lineLength (default: null)
- * -----------------------------------
- * Controls how far the portrait sits from the timeline.
- *
- * If null:
- *   Uses the global default spacing (recommended).
- *
- * If a number:
- *   That number represents PIXELS.
- *
- * Example:
- *   lineLength: 160
- *   think of the default as being 120
- *
- * Reasonable values:
- *   100–140 → subtle adjustment
- *   150–200 → noticeable stagger
- *
- * Use this ONLY if:
- *   • Portraits feel crowded
- *   • You want to stagger visually
- *
- * Avoid:
- *   Very small numbers (<80)
- *   Very large numbers (>250)
- *
- * ============================================================
- *
- * 🧠 RULES ABOUT CONNECTOR LINES
- * --------------------------------
- *
- * If showInterval: false
- *   → line connects to timeline center spine
- *
- * If showInterval: true
- *   → line connects to the interval bar
- *     on the SAME SIDE as the portrait.
+ * ------------------------------------------------------------
+ * CONTEXT EVENTS
+ * ------------------------------------------------------------
+ * contextEvents show as small dotted tags (no portraits).
+ * Use these for “big timeline markers” like:
+ *   • Empire begins
+ *   • Western Empire falls
  *
  * ============================================================
  */
@@ -162,6 +99,8 @@ window.TIMELINE_CONFIG = {
   defaultInterval: "decade",
   defaultZoom: "century",
 
+  // If an END date is written as a year-only number (example: end: 476),
+  // choose what day of that year it means.
   numericYearEndMode: "endOfYear",
 
   range: {
@@ -198,6 +137,7 @@ window.TIMELINE_CONFIG = {
     markerText:"rgba(255,216,74,95)"
   },
 
+  // Default bar color palette (used when intervalColor === "default")
   barColors: [
     "#FFD84A",
     "#B3122A",
@@ -208,21 +148,27 @@ window.TIMELINE_CONFIG = {
   ],
 
   contextEvents: [
+
     {
       id:    "empire_begins",
+      // aligned to Augustus accession date (exact)
       date:  "-0027-01-16",
       label: "27 BCE — Empire Begins"
     },
+
     {
       id:    "byzantine_established",
       date:  "0330-01-01",
       label: "330 CE — Byzantine Empire Established"
     },
+
     {
       id:    "west_falls",
+      // aligned to Romulus Augustulus deposition date (exact)
       date:  "0476-09-04",
       label: "476 CE — Western Empire Falls"
     }
+
   ],
 
   events: [
@@ -238,6 +184,8 @@ window.TIMELINE_CONFIG = {
       href:         "index.html",
       side:         "above",
 
+      // New per-event options:
+      // Caesar is a single-day event, so we do NOT show an interval bar.
       showInterval: false,
       intervalColor:"default",
       lineLength:   null
@@ -257,9 +205,200 @@ window.TIMELINE_CONFIG = {
       showInterval: true,
       intervalColor:"default",
       lineLength:   null
-    }
+    },
 
-    // (Remaining events unchanged — truncated here for readability)
+    {
+      id:           "tiberius",
+      label:        "Tiberius",
+      dateLabel:    "14–37 CE",
+      start:        "0014-09-17",
+      end:          "0037-03-16",
+      anchor:       "0014-09-17",
+      image:        "images/timeline/tiberius_timeline.jpg",
+      href:         "emperors/tiberius.html",
+      side:         "above",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "caligula",
+      label:        "Caligula",
+      dateLabel:    "37–41 CE",
+      start:        "0037-03-16",
+      end:          "0041-01-24",
+      anchor:       "0037-03-16",
+      image:        "images/timeline/caligula_timeline.jpg",
+      href:         "emperors/caligula.html",
+      side:         "below",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "claudius",
+      label:        "Claudius",
+      dateLabel:    "41–54 CE",
+      start:        "0041-01-24",
+      end:          "0054-10-13",
+      anchor:       "0041-01-24",
+      image:        "images/timeline/claudius_timeline.jpg",
+      href:         "emperors/claudius.html",
+      side:         "above",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "nero",
+      label:        "Nero",
+      dateLabel:    "54–68 CE",
+      start:        "0054-10-13",
+      end:          "0068-06-09",
+      anchor:       "0054-10-13",
+      image:        "images/timeline/nero_timeline.jpg",
+      href:         "emperors/nero.html",
+      side:         "below",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "trajan",
+      label:        "Trajan",
+      dateLabel:    "98–117 CE",
+      start:        "0098-01-28",
+      end:          "0117-08-09",
+      anchor:       "0098-01-28",
+      image:        "images/timeline/trajan_timeline.jpg",
+      href:         "emperors/trajan.html",
+      side:         "above",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "hadrian",
+      label:        "Hadrian",
+      dateLabel:    "117–138 CE",
+      start:        "0117-08-11",
+      end:          "0138-07-10",
+      anchor:       "0117-08-11",
+      image:        "images/timeline/hadrian_timeline.jpg",
+      href:         "emperors/hadrian.html",
+      side:         "below",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "marcus_aurelius",
+      label:        "Marcus Aurelius",
+      dateLabel:    "161–180 CE",
+      start:        "0161-03-07",
+      end:          "0180-03-17",
+      anchor:       "0161-03-07",
+      image:        "images/timeline/marcusaurelius_timeline.jpg",
+      href:         "emperors/marcus-aurelius.html",
+      side:         "above",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "commodus",
+      label:        "Commodus",
+      dateLabel:    "180–192 CE",
+      // Using sole reign start (after Marcus Aurelius' death)
+      start:        "0180-03-17",
+      end:          "0192-12-31",
+      anchor:       "0180-03-17",
+      image:        "images/timeline/commodus_timeline.jpg",
+      href:         "emperors/commodus.html",
+      side:         "below",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "diocletian",
+      label:        "Diocletian",
+      dateLabel:    "284–305 CE",
+      start:        "0284-11-20",
+      end:          "0305-05-01",
+      anchor:       "0284-11-20",
+      image:        "images/timeline/diocletian_timeline.jpg",
+      href:         "emperors/diocletian.html",
+      side:         "above",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "constantine",
+      label:        "Constantine",
+      dateLabel:    "306–337 CE",
+      start:        "0306-07-25",
+      end:          "0337-05-22",
+      anchor:       "0306-07-25",
+      image:        "images/timeline/constantine_timeline.jpg",
+      href:         "emperors/constantine.html",
+      side:         "below",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "theodosius",
+      label:        "Theodosius I",
+      dateLabel:    "379–395 CE",
+      start:        "0379-01-19",
+      end:          "0395-01-17",
+      anchor:       "0379-01-19",
+      image:        "images/timeline/theodosiusi_timeline.jpg",
+      href:         "emperors/theodosius.html",
+      side:         "above",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "romulus_augustulus",
+      label:        "Romulus Augustulus",
+      dateLabel:    "475–476 CE",
+      start:        "0475-10-31",
+      end:          "0476-09-04",
+      anchor:       "0475-10-31",
+      image:        "images/timeline/romulusaugustulus_timeline.jpg",
+      href:         "emperors/romulus-augustulus.html",
+      side:         "below",
+
+      showInterval: true,
+      intervalColor:"default",
+      lineLength:   null
+    }
 
   ]
 };
