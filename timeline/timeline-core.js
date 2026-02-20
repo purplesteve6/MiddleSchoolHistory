@@ -312,31 +312,95 @@
         marks = buildTickMarks(visBegin, visEnd, interval);
       }
 
+
       for (const m of marks){
         const x = dateToX(m.date, pxPerDay);
 
-        // Optional: full-height month-start dotted line
-        if (m.monthStartLine){
+        // Month view: show month boundary line + gold labels (top + bottom) on day 1
+        const isMonthBoundary =
+          (zoomLevel === "month") &&
+          (m.date.getUTCDate() === 1);
+
+        // Year view: show year boundary line + gold labels (top + bottom) on Jan 1
+        const isYearBoundary =
+          (zoomLevel === "year") &&
+          (interval === "month") &&
+          (m.date.getUTCMonth() === 0) &&
+          (m.date.getUTCDate() === 1);
+
+        if (isMonthBoundary || isYearBoundary){
           const line = document.createElement("div");
-          line.className = "monthStartLine";
+          line.style.position = "absolute";
           line.style.left = x + "px";
+          line.style.top = "0";
+          line.style.bottom = "0";
+          line.style.width = "0";
+          line.style.borderLeft = "2px dotted rgba(255,216,74,0.85)";
+          line.style.zIndex = "8";
+          line.style.pointerEvents = "none";
           canvas.appendChild(line);
+
+          let topText = "";
+          if (isMonthBoundary){
+            topText = formatMonthYear(m.date); // e.g., "Mar 180 CE"
+          } else {
+            // Year boundary: just the year (calendar-aware BCE/CE)
+            const histY = toHistoricalYear(m.date);
+            topText = (histY < 0) ? `${Math.abs(histY)} BCE` : `${histY} CE`;
+          }
+
+          const topLbl = document.createElement("div");
+          topLbl.textContent = topText;
+          topLbl.style.position = "absolute";
+          topLbl.style.left = x + "px";
+          topLbl.style.top = "6px";
+          topLbl.style.transform = "translateX(-50%)";
+          topLbl.style.padding = "2px 8px";
+          topLbl.style.borderRadius = "999px";
+          topLbl.style.background = "rgba(0,0,0,0.55)";
+          topLbl.style.border = "1px solid rgba(255,216,74,0.45)";
+          topLbl.style.color = "rgba(255,216,74,0.98)";
+          topLbl.style.fontWeight = "900";
+          topLbl.style.fontSize = "12px";
+          topLbl.style.zIndex = "9";
+          topLbl.style.pointerEvents = "none";
+          canvas.appendChild(topLbl);
+
+          const bottomLbl = document.createElement("div");
+          bottomLbl.textContent = topText;
+          bottomLbl.style.position = "absolute";
+          bottomLbl.style.left = x + "px";
+          bottomLbl.style.bottom = "6px";
+          bottomLbl.style.transform = "translateX(-50%)";
+          bottomLbl.style.padding = "2px 8px";
+          bottomLbl.style.borderRadius = "999px";
+          bottomLbl.style.background = "rgba(0,0,0,0.55)";
+          bottomLbl.style.border = "1px solid rgba(255,216,74,0.45)";
+          bottomLbl.style.color = "rgba(255,216,74,0.98)";
+          bottomLbl.style.fontWeight = "900";
+          bottomLbl.style.fontSize = "12px";
+          bottomLbl.style.zIndex = "9";
+          bottomLbl.style.pointerEvents = "none";
+          canvas.appendChild(bottomLbl);
         }
 
         const t = document.createElement("div");
-        t.className = "tick " + (m.big ? "big" : "small") + (m.monthStart ? " monthStartTick" : "");
+        t.className = "tick " + (m.big ? "big" : "small");
         t.style.left = x + "px";
         containerEl.appendChild(t);
 
-        if (m.big){
+        // Only render a visible label if we actually have label text
+        if (m.big && m.label){
           const lbl = document.createElement("div");
-          lbl.className = "tickLabel" + (m.monthStart ? " monthStartLabel" : "");
+          lbl.className = "tickLabel";
           lbl.style.left = x + "px";
           lbl.textContent = m.label;
           containerEl.appendChild(lbl);
         }
       }
+
     }
+
 
     function buildDayMarksMonthView(begin, end){
       const marks = [];
@@ -347,14 +411,16 @@
         const isFirst = (dayNum === 1);
 
         if (isFirst){
+          // Day 1: keep a tick (unlabeled), and let the renderer draw the gold top/bottom labels + dotted line.
           marks.push({
             date: new Date(cur.getTime()),
-            big: true,
-            label: formatMonthYear(cur),
+            big: false,
+            label: "",
             monthStart: true,
             monthStartLine: true
           });
         } else {
+          // Even-numbered days only (2,4,6...) so 31 won't sit next to 1 with no gap weirdness.
           const even = (dayNum % 2 === 0);
           marks.push({
             date: new Date(cur.getTime()),
@@ -370,6 +436,7 @@
 
       return marks;
     }
+
 
     function buildDayMarksDayView(begin, end){
       const marks = [];
