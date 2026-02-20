@@ -28,12 +28,12 @@
     mount.innerHTML = `
       <div class="timeline-head">
         <div class="timeline-controls">
-          <div class="controlPill" title="Zoom changes the scale of the timeline">
+          <div class="controlPill" title="Zoom changes the field of view of the timeline">
             <label for="zoomSelect">Zoom</label>
             <select id="zoomSelect" aria-label="Zoom level"></select>
           </div>
 
-          <div class="controlPill" title="Controls how often tick labels appear">
+          <div class="controlPill" title="Ticks are automatically derived from zoom">
             <label for="intervalSelect">Ticks</label>
             <select id="intervalSelect" aria-label="Tick interval"></select>
           </div>
@@ -72,18 +72,9 @@
 
     // Normalize config
     const zoomLevels = cfg.zoomLevels || ["day","month","year","decade","century","fit"];
-    const intervalLevels = ["day","month","year","decade","century"];
+    const intervalLevels = ["day","month","year","decade","century"]; // UI list only; now derived
     const defaultInterval = cfg.defaultInterval || "decade";
     const defaultZoom = cfg.defaultZoom || defaultInterval;
-
-    // (Kept for backwards compatibility / fallback, but no longer used for non-fit zoom)
-    const pxPerDayMap = Object.assign({
-      day: 18,
-      month: 3.0,
-      year: 0.55,
-      decade: 0.12,
-      century: 0.03
-    }, cfg.pxPerDay || {});
 
     // Range
     const rangeBegin = parseFlexibleDate(cfg.range?.begin ?? "0001-01-01", "start");
@@ -94,7 +85,7 @@
     }
 
     // Track the date currently centered in the viewport.
-    // This lets "zoom" mean "field of view" around what you're looking at.
+    // This makes zoom behave like "field of view around what you're looking at".
     let currentCenterDate = rangeBegin;
 
     // Fill selects
@@ -130,10 +121,17 @@
     intervalSelect.disabled = true;
     syncIntervalToZoom();
 
-    zoomSelect.addEventListener("change", () => { syncIntervalToZoom(); render(); });
+    zoomSelect.addEventListener("change", () => {
+      syncIntervalToZoom();
+      // Re-render using currentCenterDate as the anchor for the zoom span
+      render();
+      // Keep the same center in view after re-scaling
+      scrollToCenterDate(currentCenterDate);
+    });
+
     centerSelect.addEventListener("change", () => centerOn(centerSelect.value));
 
-    // Horizontal wheel scrolling (same feel as your existing timeline)
+    // Horizontal wheel scrolling
     viewport.addEventListener("wheel", (e) => {
       if (viewport.scrollWidth > viewport.clientWidth){
         e.preventDefault();
@@ -148,59 +146,117 @@
 
     // Resize
     window.addEventListener("resize", () => {
-      syncMiniWindow();
+      // Re-render to maintain the “one unit in view” promise
+      render();
+      scrollToCenterDate(currentCenterDate);
       requestAnimationFrame(() => {
         positionLanesSymmetrically();
         adjustConnectors();
       });
     });
 
-    // Initial render
+    // Initial render + initial center
     render();
-    // Initial center
     centerOn(centerSelect.value || "__begin__");
 
-    /* ----------------- ZOOM/TICKS HELPERS ----------------- */
+    /* ----------------- ZOOM/TICKS RULES ----------------- */
 
     function tickForZoom(z){
       // Ticks are always one level smaller than zoom (except day).
-      // (We will expand this later for week/half-decade/full-timeline.)
+      // (We'll add week + half-decade later; this matches your current UI set.)
       switch(z){
         case "century": return "decade";
-        case "decade": return "year";
-        case "year": return "month";
-        case "month": return "day";
-        case "day": return "day";
-        case "fit": return defaultInterval;
-        default: return "day";
+        case "decade":  return "year";
+        case "year":    return "month";
+        case "month":   return "day";
+        case "day":     return "day";
+        case "fit":     return "century"; // sensible default for full timeline
+        default:        return "day";
       }
     }
 
-    function spanForZoom(anchorDate, zoom){
+    function clampDateToRange(d){
+      if (d < rangeBegin) return rangeBegin;
+      if (d > rangeEnd) return rangeEnd;
+      return d;
+    }
+
+    // Compute a clean calendar-aligned span for the zoom level that CONTAINS anchorDate.
+    // This fixes “partial centuries/decades” caused by spans starting at rangeBegin.
+    function zoomSpanAligned(anchorDate, zoom){
+      const a = clampDateToRange(anchorDate);
+
       if (zoom === "fit"){
         return { start: rangeBegin, end: rangeEnd };
       }
-      // Use the existing interval-span builder, then pick the span containing anchorDate.
-      const spans = buildIntervalSpans(rangeBegin, rangeEnd, zoom);
-      for (const s of spans){
-        if (anchorDate >= s.start && anchorDate <= s.end) return s;
-      }
-      return { start: rangeBegin, end: rangeEnd };
-    }
 
-    function computeZoomPxPerDay(zoom, anchorDate){
-      const span = spanForZoom(anchorDate, zoom);
-      const days = daysBetween(span.start, span.end) + 1;
-      return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, days));
+      // Work in historical years for boundaries (no year 0 in display logic),
+      // but create Dates using astronomical years (JS Date uses year 0).
+      const ay = a.getUTCFullYear();              // astronomical
+      const histY = (ay <= 0) ? (ay - 1) : ay;    // historical
+      const m = a.getUTCMonth();                  // 0–11
+
+      if (zoom === "day"){
+        return { start: makeUTCDate(ay, m, a.getUTCDate()), end: makeUTCDate(ay, m, a.getUTCDate()) };
+      }
+
+      if (zoom === "month"){
+        const start = makeUTCDate(ay, m, 1);
+        const lastDay = new Date(Date.UTC(ay, m + 1, 0)).getUTCDate();
+        const end = makeUTCDate(ay, m, lastDay);
+        return { start: clampDateToRange(start), end: clampDateToRange(end) };
+      }
+
+      if (zoom === "year"){
+        const start = makeUTCDate(ay, 0, 1);
+        const end = makeUTCDate(ay, 11, 31);
+        return { start: clampDateToRange(start), end: clampDateToRange(end) };
+      }
+
+      if (zoom === "decade"){
+        const y0 = Math.floor(histY / 10) * 10;
+        const startHist = y0;
+        const endHist = y0 + 9;
+        const startAstro = histYearToAstro(startHist);
+        const endAstro = histYearToAstro(endHist);
+        const start = makeUTCDate(startAstro, 0, 1);
+        const end = makeUTCDate(endAstro, 11, 31);
+        return { start: clampDateToRange(start), end: clampDateToRange(end) };
+      }
+
+      // century
+      const c0 = Math.floor(histY / 100) * 100;
+      const startHist = c0;
+      const endHist = c0 + 99;
+      const startAstro = histYearToAstro(startHist);
+      const endAstro = histYearToAstro(endHist);
+      const start = makeUTCDate(startAstro, 0, 1);
+      const end = makeUTCDate(endAstro, 11, 31);
+      return { start: clampDateToRange(start), end: clampDateToRange(end) };
     }
 
     function computeFitPxPerDay(){
       const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
-      return Math.max(0.008, (viewport.clientWidth - 40) / totalDays);
+      return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, totalDays));
+    }
+
+    function computeZoomPxPerDay(zoom, anchorDate){
+      const span = zoomSpanAligned(anchorDate, zoom);
+      const days = daysBetween(span.start, span.end) + 1;
+      return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, days));
     }
 
     function getPxPerDayForView(zoom, anchorDate){
       return (zoom === "fit") ? computeFitPxPerDay() : computeZoomPxPerDay(zoom, anchorDate);
+    }
+
+    function scrollToCenterDate(d){
+      const zoomLevel = zoomSelect.value;
+      const pxPerDay = getPxPerDayForView(zoomLevel, d);
+      const centerX = dateToX(d, pxPerDay);
+      viewport.scrollLeft = clamp(centerX - (viewport.clientWidth / 2), 0, Math.max(0, viewport.scrollWidth - viewport.clientWidth));
+      syncMiniWindow();
+      updateReadout();
     }
 
     /* ----------------- RENDER ----------------- */
@@ -218,10 +274,6 @@
       const width = Math.max(900, Math.floor(totalDays * pxPerDay));
       canvas.style.width = width + "px";
 
-      // NOTE:
-      // We no longer render "interval boxes" at the top.
-      // The ticks are the single date indicator, and are positioned via CSS in the middle.
-
       // Bars container (TOP)
       const barsTop = document.createElement("div");
       barsTop.className = "bars barsTop";
@@ -236,25 +288,23 @@
       const ticksEl = document.createElement("div");
       ticksEl.className = "ticks";
       canvas.appendChild(ticksEl);
-      renderTicks(ticksEl, tickInterval, pxPerDay);
+
+      // IMPORTANT: render ticks only for the VISIBLE region to prevent freezing at small intervals
+      renderTicksVisible(ticksEl, tickInterval, pxPerDay);
 
       // Bars container (BOTTOM)
       const barsBottom = document.createElement("div");
       barsBottom.className = "bars barsBottom";
       canvas.appendChild(barsBottom);
 
-      // Span boxes (translucent duplicates) — disabled intentionally:
-      // renderSpanBoxes(pxPerDay);
-
       // Context events (tags + dotted lines)
       renderContext(pxPerDay);
 
-      // Event bars (draw twice: above and below ticks) + event cards
+      // Event bars + event cards
       renderEventBars(barsTop, pxPerDay, "above");
       renderEventBars(barsBottom, pxPerDay, "below");
       renderEvents(pxPerDay);
 
-      // Lane positions + connectors
       requestAnimationFrame(() => {
         positionLanesSymmetrically();
         adjustConnectors();
@@ -263,33 +313,21 @@
       });
     }
 
-    // Left in place (not called) in case you ever want it back.
-    function renderIntervalBoxes(interval, pxPerDay){
-      const row = document.createElement("div");
-      row.className = "intervalRow";
-      canvas.appendChild(row);
-
-      const spans = buildIntervalSpans(rangeBegin, rangeEnd, interval);
-      const colors = cfg.intervalColors || ["var(--intervalA)", "var(--intervalB)"];
-
-      spans.forEach((sp, idx) => {
-        const left = dateToX(sp.start, pxPerDay);
-        const right = dateToX(sp.end, pxPerDay) + pxPerDay; // inclusive-ish
-        const box = document.createElement("div");
-        box.className = "intervalBox";
-        box.style.left = left + "px";
-        box.style.width = Math.max(24, right - left) + "px";
-        box.style.background = colors[idx % colors.length];
-        box.textContent = sp.label;
-        row.appendChild(box);
-      });
-    }
-
-    // UPDATED: render ticks into a provided container (so we can position it between the two bar lanes)
-    function renderTicks(containerEl, interval, pxPerDay){
+    function renderTicksVisible(containerEl, interval, pxPerDay){
       containerEl.innerHTML = "";
 
-      const marks = buildTickMarks(rangeBegin, rangeEnd, interval);
+      const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
+
+      // Visible day index range (with padding so labels don't pop in/out at edges)
+      const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay))); // ~30px worth of padding
+      const leftIndex = clamp(Math.floor(viewport.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
+      const rightIndex = clamp(Math.ceil((viewport.scrollLeft + viewport.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
+
+      const visBegin = addDays(rangeBegin, leftIndex);
+      const visEnd = addDays(rangeBegin, rightIndex);
+
+      const marks = buildTickMarks(visBegin, visEnd, interval);
+
       for (const m of marks){
         const x = dateToX(m.date, pxPerDay);
 
@@ -305,24 +343,6 @@
           lbl.textContent = m.label;
           containerEl.appendChild(lbl);
         }
-      }
-    }
-
-    // Left in place (not called) in case you ever want it back.
-    function renderSpanBoxes(pxPerDay){
-      const events = Array.isArray(cfg.events) ? cfg.events : [];
-      for (const ev of events){
-        const s = parseFlexibleDate(ev.start, "start", ev);
-        const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
-        if (!s || !e) continue;
-
-        const left = dateToX(s, pxPerDay);
-        const right = dateToX(e, pxPerDay) + pxPerDay;
-        const box = document.createElement("div");
-        box.className = "spanBox";
-        box.style.left = left + "px";
-        box.style.width = Math.max(6, right - left) + "px";
-        canvas.appendChild(box);
       }
     }
 
@@ -343,7 +363,6 @@
         const line = document.createElement("div");
         line.className = "contextLine";
         line.style.left = x + "px";
-        // Anchor context lines to the timeline centerline (ticks center)
         line.style.height = (getBarCenterY() - 26) + "px";
         canvas.appendChild(line);
       }
@@ -354,14 +373,12 @@
       const palette = cfg.barColors || ["var(--gold)", "var(--red)", "var(--gold2)", "var(--red2)"];
 
       events.forEach((ev, idx) => {
-        // New flag (with legacy fallback)
         const showInterval = (ev.showInterval !== undefined)
           ? !!ev.showInterval
           : (ev.showBar !== undefined ? !!ev.showBar : true);
 
         if (!showInterval) return;
 
-        // ONLY draw this event's interval on the side where its picture/card is
         const evSide = (ev.side === "below") ? "below" : "above";
         if (evSide !== laneSide) return;
 
@@ -379,7 +396,6 @@
         bar.style.left = left + "px";
         bar.style.width = w + "px";
 
-        // intervalColor override (if you’re using it already)
         const c = (ev.intervalColor || "").toString().trim().toLowerCase();
         const useDefault = (!c || c === "default");
         bar.style.background = useDefault ? palette[idx % palette.length] : ev.intervalColor;
@@ -398,12 +414,8 @@
     function renderEvents(pxPerDay){
       const events = Array.isArray(cfg.events) ? cfg.events : [];
       events.forEach((ev) => {
-
-        // Default: anchor cards to the MIDDLE of the interval bar (start–end).
-        // Override ONLY if ev.anchor is provided AND differs from ev.start.
         let anchor = null;
 
-        // If anchor exists but is the same as start, treat it as redundant
         const hasOverrideAnchor =
           (ev.anchor != null) &&
           (String(ev.anchor).trim() !== String(ev.start).trim());
@@ -414,7 +426,6 @@
           const s = parseFlexibleDate(ev.start, "start", ev);
           const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
           if (s && e) {
-            // Use midpoint; add +0.5 day so we land visually closer to the true center
             const midDays = Math.floor(daysBetween(s, e) / 2);
             anchor = addDays(s, midDays);
           }
@@ -422,9 +433,7 @@
 
         if (!anchor) return;
 
-        // Nudge by half a day so the anchor matches the visual "center" of an inclusive bar
         const x = dateToX(anchor, pxPerDay) + (pxPerDay / 2);
-
         const laneClass = (ev.side === "below") ? "laneBelow" : "laneAbove";
 
         const card = document.createElement("a");
@@ -438,7 +447,6 @@
         const stack = document.createElement("div");
         stack.className = "stack";
 
-        // Text block
         const meta = document.createElement("div");
         meta.className = "meta";
 
@@ -453,7 +461,6 @@
         meta.appendChild(nm);
         meta.appendChild(yrs);
 
-        // Portrait
         const avatarWrap = document.createElement("div");
         avatarWrap.className = "avatarWrap";
 
@@ -467,9 +474,6 @@
           avatarWrap.innerHTML = `<div class="ph">No<br/>Image</div>`;
         }
 
-        // ORDER RULE:
-        // - Above timeline: text ABOVE picture
-        // - Below timeline: text BELOW picture
         if (laneClass === "laneAbove"){
           stack.appendChild(meta);
           stack.appendChild(avatarWrap);
@@ -484,12 +488,10 @@
         card.appendChild(stack);
         canvas.appendChild(card);
 
-        // Put connector on the canvas so it can reach the interval lanes/spine precisely
         connector.dataset.eid = String(ev.id || "");
-        connector.classList.add(laneClass); // laneAbove / laneBelow for styling if needed
+        connector.classList.add(laneClass);
         canvas.appendChild(connector);
 
-        // Active highlight
         if (ev.id && String(ev.id) === String(window.TIMELINE_ACTIVE_ID || "")){
           nm.style.textDecoration = "underline";
           avatarWrap.style.boxShadow = "0 0 0 4px rgba(255,216,74,.14), 0 16px 34px rgba(0,0,0,.45)";
@@ -505,11 +507,8 @@
 
       const gap = parseFloat(cs.getPropertyValue("--gapToPortraitEdge")) || 120;
       const avatarH = parseFloat(cs.getPropertyValue("--avatar")) || 110;
-
-      // NEW: keep cards from getting clipped at the top
       const safeTop = parseFloat(cs.getPropertyValue("--safeTop")) || 12;
 
-      // barCenterY is now the central timeline (ticks) midline
       const barCenterY = getBarCenterY();
 
       const sampleAbove = canvas.querySelector(".eventCard.laneAbove .avatarWrap");
@@ -521,7 +520,6 @@
       let aboveLaneTop = (barCenterY - gap) - (aboveAvatarOffsetTop + avatarH);
       const belowLaneTop = (barCenterY + gap) - (belowAvatarOffsetTop);
 
-      // Clamp the above lane so it never starts above the safe top
       if (aboveLaneTop < safeTop) aboveLaneTop = safeTop;
 
       canvas.querySelectorAll(".eventCard.laneAbove").forEach(el => el.style.top = aboveLaneTop + "px");
@@ -532,11 +530,8 @@
       const root = document.querySelector(".timeline-embed");
       const cs = getComputedStyle(root);
 
-      // Timeline spine centerline (ticks center)
       const spineY = getBarCenterY();
 
-      // Interval lane Y targets (center of the bar inside each lane)
-      // IMPORTANT: use actual DOM offsets (more reliable than CSS var parsing)
       const barsTopEl = canvas.querySelector(".barsTop");
       const barsBottomEl = canvas.querySelector(".barsBottom");
 
@@ -568,12 +563,10 @@
           ? (isAbove ? intervalYTop : intervalYBottom)
           : spineY;
 
-        // Find the connector that matches this event id (now on canvas)
         const connector = canvas.querySelector(`.connector[data-eid="${CSS.escape(eid)}"]`);
         const avatar = card.querySelector(".avatarWrap");
         if (!connector || !avatar) return;
 
-        // Compute portrait edge in CANVAS coordinates
         const cardTop = card.offsetTop;
         const avatarTop = cardTop + avatar.offsetTop;
         const avatarBottom = avatarTop + avatar.offsetHeight;
@@ -582,8 +575,7 @@
         const minY = Math.min(portraitEdgeY, targetY);
         const maxY = Math.max(portraitEdgeY, targetY);
 
-        // Place connector at the card’s X center (same as card itself)
-        connector.style.left = card.style.left; // x position in px already set on the card
+        connector.style.left = card.style.left;
         connector.style.top = minY + "px";
         connector.style.height = Math.max(0, maxY - minY) + "px";
 
@@ -591,22 +583,16 @@
       });
     }
 
-    // UPDATED:
-    // This now returns the "timeline centerline" (ticks center), if available.
-    // Fallbacks keep older CSS from breaking.
     function getBarCenterY(){
       const root = document.querySelector(".timeline-embed");
       const cs = getComputedStyle(root);
 
-      // Preferred: explicit midline variable in CSS
       const mid = parseFloat(cs.getPropertyValue("--timelineMidY"));
       if (Number.isFinite(mid)) return mid;
 
-      // Next-best: derive from ticksTop + half the tick band height (ticks band is 55px in CSS)
       const ticksTop = parseFloat(cs.getPropertyValue("--ticksTop"));
       if (Number.isFinite(ticksTop)) return ticksTop + (55 / 2);
 
-      // Legacy fallback: old single-bars-row center
       const barsTop = parseFloat(cs.getPropertyValue("--barsTop")) || 310;
       const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars")) || 11;
       const barH = parseFloat(cs.getPropertyValue("--barH")) || 18;
@@ -638,10 +624,9 @@
 
     function centerOn(id){
       if (id === "__begin__"){
-        viewport.scrollLeft = 0;
         currentCenterDate = rangeBegin;
-        syncMiniWindow();
-        updateReadout();
+        render();
+        scrollToCenterDate(currentCenterDate);
         return;
       }
 
@@ -652,17 +637,9 @@
       const anchor = parseFlexibleDate(ev.anchor ?? ev.start, "anchor", ev);
       if (!anchor) return;
 
-      const zoomLevel = zoomSelect.value;
-      const pxPerDay = getPxPerDayForView(zoomLevel, anchor);
-
-      const centerX = dateToX(anchor, pxPerDay);
-      viewport.scrollLeft = clamp(centerX - (viewport.clientWidth / 2), 0, viewport.scrollWidth);
-
       currentCenterDate = anchor;
-
-      syncMiniWindow();
-      updateReadout();
-      render(); // ensure scale aligns to the new center
+      render();
+      scrollToCenterDate(currentCenterDate);
     }
 
     function syncMiniWindow(){
@@ -733,10 +710,15 @@
       const dayIndex = Math.round(centerCanvasX / pxPerDay);
       const d = addDays(rangeBegin, dayIndex);
 
-      currentCenterDate = d;
+      currentCenterDate = clampDateToRange(d);
 
-      readout.textContent = `Center date: ${formatISO(d)}`;
+      readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
       syncMiniWindow();
+
+      // Re-render ticks for the new visible range (cheap now that ticks are viewport-only)
+      const ticksEl = canvas.querySelector(".ticks");
+      const tickInterval = intervalSelect.value;
+      if (ticksEl) renderTicksVisible(ticksEl, tickInterval, pxPerDay);
     }
 
     /* ----------------- UTILITIES ----------------- */
@@ -767,45 +749,27 @@
 
     function resolveAsset(path){
       if (!path) return path;
-      if (/^(https?:)?\/\//.test(path)) return path; // absolute URL
-      if (path.startsWith("/")) return path;          // site absolute
-      const base = window.TIMELINE_CONFIG_BASE || "/"; // relative to topic folder
+      if (/^(https?:)?\/\//.test(path)) return path;
+      if (path.startsWith("/")) return path;
+      const base = window.TIMELINE_CONFIG_BASE || "/";
       return base + path.replace(/^\.\//, "");
     }
 
     function cap(s){ return s ? s[0].toUpperCase() + s.slice(1) : s; }
     function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
 
-    // Year handling notes:
-    // - Config can use ISO-like strings with negative years, e.g. "-0044-03-15"
-    // - OR plain years like -44 or "476"
-    // - We convert “historical year” to “astronomical year” for JS Date:
-    //   1 BCE = year 0, 2 BCE = -1, etc.
+    // Historical year <-> astronomical year conversion
+    // 1 BCE = year 0, 2 BCE = -1, etc.
     function histYearToAstro(y){
       return (y <= -1) ? (y + 1) : y;
     }
 
-    // JS Date quirk: years 0–99 get treated as 1900–1999.
-    // This helper forces the intended astronomical year.
     function makeUTCDate(fullYear, monthIndex, day){
       const d = new Date(Date.UTC(0, monthIndex, day));
       d.setUTCFullYear(fullYear);
       return d;
     }
 
-    /**
-     * parseFlexibleDate(v, kind)
-     *
-     * kind:
-     *   - "start": numeric years become Jan 1 of that year
-     *   - "end":   numeric years become either Jan 1 OR Dec 31 depending on numericYearEndMode
-     *   - "anchor"/"point": numeric years become Jan 1 of that year
-     *
-     * Config option:
-     *   cfg.numericYearEndMode:
-     *     - "startOfYear": end: 476 -> 476-01-01
-     *     - "endOfYear" (default): end: 476 -> 476-12-31
-     */
     function parseFlexibleDate(v, kind = "anchor", ev = null){
       if (v === null || v === undefined) return null;
 
@@ -816,7 +780,6 @@
 
       const wantEndOfYear = (kind === "end") && (endMode === "endOfYear");
 
-      // number year
       if (typeof v === "number" && Number.isFinite(v)){
         const ay = histYearToAstro(v);
         return wantEndOfYear ? makeUTCDate(ay, 11, 31) : makeUTCDate(ay, 0, 1);
@@ -824,14 +787,12 @@
 
       const s = String(v).trim();
 
-      // "YYYY" or "-44" (year-only string)
       if (/^-?\d{1,6}$/.test(s)){
         const y = parseInt(s, 10);
         const ay = histYearToAstro(y);
         return wantEndOfYear ? makeUTCDate(ay, 11, 31) : makeUTCDate(ay, 0, 1);
       }
 
-      // "YYYY-MM-DD" with optional negative year: "-0044-03-15"
       const m = s.match(/^(-?\d{1,6})-(\d{2})-(\d{2})$/);
       if (m){
         const y = parseInt(m[1], 10);
@@ -845,11 +806,10 @@
     }
 
     function formatISO(d){
-      const y = d.getUTCFullYear(); // astronomical year
+      const y = d.getUTCFullYear(); // astronomical
       const m = String(d.getUTCMonth()+1).padStart(2,"0");
       const day = String(d.getUTCDate()).padStart(2,"0");
 
-      // Convert back to historical year for display (no year 0)
       const histY = (y <= 0) ? (y - 1) : y;
       const yy = String(histY).padStart(4, "0");
       return `${yy}-${m}-${day}`;
@@ -871,6 +831,8 @@
     }
 
     function buildIntervalSpans(begin, end, interval){
+      // NOTE: This is now primarily used for tick generation within the *visible* range,
+      // so performance is fine even for small intervals.
       const spans = [];
       let cur = new Date(begin.getTime());
 
@@ -882,10 +844,9 @@
           last = new Date(start.getTime());
 
         } else if (interval === "month") {
-          // End of month: compute last day, but construct via makeUTCDate to avoid year 0–99 bug
           const y = start.getUTCFullYear();
-          const m = start.getUTCMonth(); // 0–11
-          const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(); // safe for day count
+          const m = start.getUTCMonth();
+          const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
           last = makeUTCDate(y, m, lastDay);
 
         } else if (interval === "year") {
@@ -918,6 +879,7 @@
       for (const sp of spans){
         marks.push({ date: sp.start, big:true, label: sp.label });
 
+        // half-tick (unlabeled) between big ticks
         if (interval !== "day"){
           const mid = addDays(sp.start, Math.floor(daysBetween(sp.start, sp.end) / 2));
           marks.push({ date: mid, big:false, label:"" });
@@ -941,29 +903,23 @@
           : `${histY}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")}`;
       }
 
+      // ✅ Month abbreviations
       if (interval === "month"){
         const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
         return months[d.getUTCMonth()];
       }
 
       if (interval === "year"){
-        return (histY < 0)
-          ? `${Math.abs(histY)} BCE`
-          : `${histY}`;
+        return (histY < 0) ? `${Math.abs(histY)} BCE` : `${histY}`;
       }
 
       if (interval === "decade"){
         const d0 = Math.floor(histY/10)*10;
-        return (d0 < 0)
-          ? `${Math.abs(d0)} BCE`
-          : `${d0}`;
+        return (d0 < 0) ? `${Math.abs(d0)} BCE` : `${d0}`;
       }
 
-      // Century label
       const c0 = Math.floor(histY/100) * 100;
-      return (c0 < 0)
-        ? `${Math.abs(c0)} BCE`
-        : `${c0}`;
+      return (c0 < 0) ? `${Math.abs(c0)} BCE` : `${c0}`;
     }
   }
 
