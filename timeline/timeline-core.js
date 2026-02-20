@@ -728,7 +728,46 @@
       return daysBetween(rangeBegin, date) * pxPerDay;
     }
 
-    function buildIntervalSpans(begin, end, interval){
+function buildIntervalSpans(begin, end, interval){
+  const spans = [];
+  let cur = new Date(begin.getTime());
+
+  while (cur <= end) {
+    const start = new Date(cur.getTime());
+    let last;
+
+    if (interval === "day") {
+      last = new Date(start.getTime());
+
+    } else if (interval === "month") {
+      // End of month: compute last day, but construct via makeUTCDate to avoid year 0–99 bug
+      const y = start.getUTCFullYear();
+      const m = start.getUTCMonth(); // 0–11
+      const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(); // safe for day count
+      last = makeUTCDate(y, m, lastDay);
+
+    } else if (interval === "year") {
+      const y = start.getUTCFullYear();
+      last = makeUTCDate(y, 11, 31);
+
+    } else if (interval === "decade") {
+      const y = start.getUTCFullYear();
+      const y0 = Math.floor(y / 10) * 10;
+      last = makeUTCDate(y0 + 9, 11, 31);
+
+    } else { // century
+      const y = start.getUTCFullYear();
+      const y0 = Math.floor(y / 100) * 100;
+      last = makeUTCDate(y0 + 99, 11, 31);
+    }
+
+    const endSpan = (last > end) ? end : last;
+    spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
+    cur = addDays(endSpan, 1);
+  }
+
+  return spans;
+}
 
 function buildIntervalSpans(begin, end, interval){
   const spans = [];
