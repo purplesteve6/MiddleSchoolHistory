@@ -327,16 +327,22 @@
       const events = Array.isArray(cfg.events) ? cfg.events : [];
       events.forEach((ev) => {
 
-// Anchor cards to the MIDDLE of the interval bar (start–end),
-// unless an explicit ev.anchor is provided.
+// Default: anchor cards to the MIDDLE of the interval bar (start–end).
+// Override ONLY if ev.anchor is provided AND differs from ev.start.
 let anchor = null;
 
-if (ev.anchor != null) {
+// If anchor exists but is the same as start, treat it as redundant
+const hasOverrideAnchor =
+  (ev.anchor != null) &&
+  (String(ev.anchor).trim() !== String(ev.start).trim());
+
+if (hasOverrideAnchor) {
   anchor = parseFlexibleDate(ev.anchor, "anchor", ev);
 } else {
   const s = parseFlexibleDate(ev.start, "start", ev);
   const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
   if (s && e) {
+    // Use midpoint; add +0.5 day so we land visually closer to the true center
     const midDays = Math.floor(daysBetween(s, e) / 2);
     anchor = addDays(s, midDays);
   }
@@ -344,7 +350,8 @@ if (ev.anchor != null) {
 
 if (!anchor) return;
 
-const x = dateToX(anchor, pxPerDay);
+// Nudge by half a day so the anchor matches the visual "center" of an inclusive bar
+const x = dateToX(anchor, pxPerDay) + (pxPerDay / 2);
 
         const laneClass = (ev.side === "below") ? "laneBelow" : "laneAbove";
 
