@@ -791,14 +791,15 @@ if (interval === "decade"){
     : `${d0}s`;
 }
 
-    }
-
-
-// Century label (100s, 200s, -300s, etc.)
+// Century label
 const c0 = Math.floor(histY/100) * 100;
-return `${c0}s`;
+return (c0 < 0)
+  ? `${Math.abs(c0)}s BCE`
+  : `${c0}s`;
 
-    }
+
+
+
   }
 
   if (document.readyState === "loading") {
