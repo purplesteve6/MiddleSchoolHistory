@@ -326,7 +326,11 @@
       const visBegin = addDays(rangeBegin, leftIndex);
       const visEnd = addDays(rangeBegin, rightIndex);
 
-      const marks = buildTickMarks(visBegin, visEnd, interval);
+      const zoomLevel = zoomSelect.value;
+
+      const marks = (zoomLevel === "month" && interval === "day")
+        ? buildDayTickMarks(visBegin, visEnd, 5)
+        : buildTickMarks(visBegin, visEnd, interval);
 
       for (const m of marks){
         const x = dateToX(m.date, pxPerDay);
@@ -875,6 +879,7 @@
     function buildTickMarks(begin, end, interval){
       const spans = buildIntervalSpans(begin, end, interval);
       const marks = [];
+      // Special-case day ticks: for month view we want fewer labels (e.g., 1, 6, 11, 16, 21, 26, 31)
 
       for (const sp of spans){
         marks.push({ date: sp.start, big:true, label: sp.label });
@@ -890,6 +895,26 @@
       return marks;
     }
 
+    function buildDayTickMarks(begin, end, labelStep = 1){
+      const marks = [];
+      let cur = new Date(begin.getTime());
+
+      while (cur <= end){
+        const dayNum = cur.getUTCDate();
+        const shouldLabel = (labelStep <= 1) ? true : ((dayNum - 1) % labelStep === 0);
+
+        marks.push({
+          date: new Date(cur.getTime()),
+          big: shouldLabel,
+          label: shouldLabel ? String(dayNum) : ""
+        });
+
+        cur = addDays(cur, 1);
+      }
+
+      return marks;
+    }
+
     function intervalLabel(d, interval){
       const y = d.getUTCFullYear();
       const histY = (y <= 0) ? (y - 1) : y;
@@ -898,9 +923,7 @@
       const da = d.getUTCDate();
 
       if (interval === "day"){
-        return (histY < 0)
-          ? `${Math.abs(histY)}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")} BCE`
-          : `${histY}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")}`;
+        return String(da);
       }
 
       // ✅ Month abbreviations
