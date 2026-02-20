@@ -85,8 +85,15 @@
     const MAX_YEARS_FOR_DAY_ZOOM = 200;
     const MAX_YEARS_FOR_MONTH_ZOOM = 200;
 
-    const allowDayZoom = spanYears <= MAX_YEARS_FOR_DAY_ZOOM;
-    const allowMonthZoom = spanYears <= MAX_YEARS_FOR_MONTH_ZOOM;
+
+    // Use one consistent px-per-day everywhere (rendering + scrolling + tick redraw).
+    const TOTAL_DAYS = daysBetween(rangeBegin, rangeEnd) + 1;
+    const MAX_CANVAS_WIDTH = 8_000_000;
+    const MAX_PX_PER_DAY = MAX_CANVAS_WIDTH / Math.max(1, TOTAL_DAYS);
+
+    function getEffectivePxPerDay(zoom, anchorDate){
+      return Math.min(getPxPerDayForView(zoom, anchorDate), MAX_PX_PER_DAY);
+    }
 
 
 
@@ -275,12 +282,7 @@
     function scrollToCenterDate(d){
 
       const zoomLevel = zoomSelect.value;
-
-      const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
-      const MAX_CANVAS_WIDTH = 8_000_000;
-      const maxPxPerDay = MAX_CANVAS_WIDTH / Math.max(1, totalDays);
-
-      const pxPerDay = Math.min(getPxPerDayForView(zoomLevel, d), maxPxPerDay);
+      const pxPerDay = getEffectivePxPerDay(zoomLevel, d);
       const centerX = dateToX(d, pxPerDay);
 
 
@@ -303,17 +305,10 @@
       intervalSelect.value = tickInterval;
 
 
-      const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
 
-      // Prevent browser freeze: avoid creating a canvas hundreds of millions of pixels wide.
-      const MAX_CANVAS_WIDTH = 8_000_000; // 8 million px is generally safe; adjust if needed.
-      const maxPxPerDay = MAX_CANVAS_WIDTH / Math.max(1, totalDays);
+      const pxPerDay = getEffectivePxPerDay(zoomLevel, currentCenterDate);
 
-      // Use ONE consistent scale for width AND positioning.
-      const idealPxPerDay = getPxPerDayForView(zoomLevel, currentCenterDate);
-      const pxPerDay = Math.min(idealPxPerDay, maxPxPerDay);
-
-      const width = Math.max(900, Math.floor(totalDays * pxPerDay));
+      const width = Math.max(900, Math.floor(TOTAL_DAYS * pxPerDay));
       canvas.style.width = width + "px";
 
 
@@ -543,27 +538,38 @@
       return spans;
     }
 
+
+
     function snapToBoundary(d, interval){
-      const y = d.getUTCFullYear();
+      const ay = d.getUTCFullYear();     // astronomical year
       const m = d.getUTCMonth();
       const day = d.getUTCDate();
 
       if (interval === "month"){
-        return makeUTCDate(y, m, 1);
+        return makeUTCDate(ay, m, 1);
       }
+
       if (interval === "year"){
-        return makeUTCDate(y, 0, 1);
+        return makeUTCDate(ay, 0, 1);
       }
+
+      // For decade/century boundaries, use HISTORICAL years so BCE alignment is correct.
+      const histY = toHistoricalYear(d);
+
       if (interval === "decade"){
-        const y0 = Math.floor(y / 10) * 10;
+        const h0 = Math.floor(histY / 10) * 10;
+        const y0 = histYearToAstro(h0);
         return makeUTCDate(y0, 0, 1);
       }
+
       if (interval === "century"){
-        const y0 = Math.floor(y / 100) * 100;
+        const h0 = Math.floor(histY / 100) * 100;
+        const y0 = histYearToAstro(h0);
         return makeUTCDate(y0, 0, 1);
       }
+
       // day
-      return makeUTCDate(y, m, day);
+      return makeUTCDate(ay, m, day);
     }
 
     function intervalEnd(start, interval){
@@ -944,7 +950,7 @@
       const zoomLevel = zoomSelect.value;
 
       // 1) Estimate center date using the current scale (may be stale if we crossed into a new month)
-      const pxPerDayEstimate = getPxPerDayForView(zoomLevel, currentCenterDate);
+      const pxPerDayEstimate = getEffectivePxPerDay(zoomLevel, currentCenterDate);
 
       const centerCanvasX = viewport.scrollLeft + (viewport.clientWidth / 2);
       const dayIndex = Math.round(centerCanvasX / pxPerDayEstimate);
@@ -954,7 +960,7 @@
       currentCenterDate = d;
 
       // 3) Recompute the correct scale for the NEW center date
-      const pxPerDay = getPxPerDayForView(zoomLevel, currentCenterDate);
+      const pxPerDay = getEffectivePxPerDay(zoomLevel, currentCenterDate);
 
       readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
       syncMiniWindow();
