@@ -83,7 +83,7 @@
     const spanYears = Math.abs(toHistoricalYear(rangeEnd) - toHistoricalYear(rangeBegin)) + 1;
 
     const MAX_YEARS_FOR_DAY_ZOOM = 200;
-    const MAX_YEARS_FOR_MONTH_ZOOM = 800;
+    const MAX_YEARS_FOR_MONTH_ZOOM = 200;
 
     const allowDayZoom = spanYears <= MAX_YEARS_FOR_DAY_ZOOM;
     const allowMonthZoom = spanYears <= MAX_YEARS_FOR_MONTH_ZOOM;
