@@ -469,13 +469,20 @@ function adjustConnectors(){
   const spineY = getBarCenterY();
 
   // Interval lane Y targets (center of the bar inside each lane)
-  const barsTop = parseFloat(cs.getPropertyValue("--barsTop")) || 0;
-  const barsBottomTop = parseFloat(cs.getPropertyValue("--barsBottomTop")) || 0;
+  // IMPORTANT: use actual DOM offsets (more reliable than CSS var parsing)
+  const barsTopEl = canvas.querySelector(".barsTop");
+  const barsBottomEl = canvas.querySelector(".barsBottom");
+
   const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars")) || 0;
   const barH = parseFloat(cs.getPropertyValue("--barH")) || 0;
 
-  const intervalYTop = barsTop + barTopInBars + (barH / 2);
-  const intervalYBottom = barsBottomTop + barTopInBars + (barH / 2);
+  const barsTopY = barsTopEl ? barsTopEl.offsetTop : 0;
+  const barsBottomY = barsBottomEl ? barsBottomEl.offsetTop : 0;
+
+  const intervalYTop = barsTopY + barTopInBars + (barH / 2);
+  const intervalYBottom = barsBottomY + barTopInBars + (barH / 2);
+
+
 
   const events = Array.isArray(cfg.events) ? cfg.events : [];
   const cards = canvas.querySelectorAll(".eventCard");
