@@ -76,7 +76,7 @@
     const defaultInterval = cfg.defaultInterval || "decade";
     const defaultZoom = cfg.defaultZoom || defaultInterval;
 
-    // px per day by zoom
+    // (Kept for backwards compatibility / fallback, but no longer used for non-fit zoom)
     const pxPerDayMap = Object.assign({
       day: 18,
       month: 3.0,
@@ -92,6 +92,10 @@
       mount.innerHTML = `<div style="padding:.5rem; font-weight:900;">Bad range in TIMELINE_CONFIG</div>`;
       return;
     }
+
+    // Track the date currently centered in the viewport.
+    // This lets "zoom" mean "field of view" around what you're looking at.
+    let currentCenterDate = rangeBegin;
 
     // Fill selects
     zoomSelect.innerHTML = "";
@@ -116,8 +120,17 @@
     // Center dropdown
     populateCenterDropdown();
 
-    zoomSelect.addEventListener("change", render);
-    intervalSelect.addEventListener("change", render);
+    function syncIntervalToZoom(){
+      const z = zoomSelect.value;
+      const derived = tickForZoom(z);
+      intervalSelect.value = derived;
+    }
+
+    // Ticks are always one level below zoom (so we disable manual tick selection for now).
+    intervalSelect.disabled = true;
+    syncIntervalToZoom();
+
+    zoomSelect.addEventListener("change", () => { syncIntervalToZoom(); render(); });
     centerSelect.addEventListener("change", () => centerOn(centerSelect.value));
 
     // Horizontal wheel scrolling (same feel as your existing timeline)
@@ -147,15 +160,60 @@
     // Initial center
     centerOn(centerSelect.value || "__begin__");
 
+    /* ----------------- ZOOM/TICKS HELPERS ----------------- */
+
+    function tickForZoom(z){
+      // Ticks are always one level smaller than zoom (except day).
+      // (We will expand this later for week/half-decade/full-timeline.)
+      switch(z){
+        case "century": return "decade";
+        case "decade": return "year";
+        case "year": return "month";
+        case "month": return "day";
+        case "day": return "day";
+        case "fit": return defaultInterval;
+        default: return "day";
+      }
+    }
+
+    function spanForZoom(anchorDate, zoom){
+      if (zoom === "fit"){
+        return { start: rangeBegin, end: rangeEnd };
+      }
+      // Use the existing interval-span builder, then pick the span containing anchorDate.
+      const spans = buildIntervalSpans(rangeBegin, rangeEnd, zoom);
+      for (const s of spans){
+        if (anchorDate >= s.start && anchorDate <= s.end) return s;
+      }
+      return { start: rangeBegin, end: rangeEnd };
+    }
+
+    function computeZoomPxPerDay(zoom, anchorDate){
+      const span = spanForZoom(anchorDate, zoom);
+      const days = daysBetween(span.start, span.end) + 1;
+      return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, days));
+    }
+
+    function computeFitPxPerDay(){
+      const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
+      return Math.max(0.008, (viewport.clientWidth - 40) / totalDays);
+    }
+
+    function getPxPerDayForView(zoom, anchorDate){
+      return (zoom === "fit") ? computeFitPxPerDay() : computeZoomPxPerDay(zoom, anchorDate);
+    }
+
     /* ----------------- RENDER ----------------- */
 
     function render(){
       canvas.innerHTML = "";
 
       const zoomLevel = zoomSelect.value;
-      const interval = intervalSelect.value;
+      const tickInterval = tickForZoom(zoomLevel);
+      intervalSelect.value = tickInterval;
 
-      const pxPerDay = (zoomLevel === "fit") ? computeFitPxPerDay() : (pxPerDayMap[zoomLevel] ?? 0.12);
+      const pxPerDay = getPxPerDayForView(zoomLevel, currentCenterDate);
+
       const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
       const width = Math.max(900, Math.floor(totalDays * pxPerDay));
       canvas.style.width = width + "px";
@@ -169,16 +227,16 @@
       barsTop.className = "bars barsTop";
       canvas.appendChild(barsTop);
 
-	// Horizontal center line (timeline spine)
-	const spine = document.createElement("div");
-	spine.className = "timelineLine";
-	canvas.appendChild(spine);
+      // Horizontal center line (timeline spine)
+      const spine = document.createElement("div");
+      spine.className = "timelineLine";
+      canvas.appendChild(spine);
 
       // Ticks (MIDDLE)
       const ticksEl = document.createElement("div");
       ticksEl.className = "ticks";
       canvas.appendChild(ticksEl);
-      renderTicks(ticksEl, interval, pxPerDay);
+      renderTicks(ticksEl, tickInterval, pxPerDay);
 
       // Bars container (BOTTOM)
       const barsBottom = document.createElement("div");
@@ -192,8 +250,8 @@
       renderContext(pxPerDay);
 
       // Event bars (draw twice: above and below ticks) + event cards
-renderEventBars(barsTop, pxPerDay, "above");
-renderEventBars(barsBottom, pxPerDay, "below");
+      renderEventBars(barsTop, pxPerDay, "above");
+      renderEventBars(barsBottom, pxPerDay, "below");
       renderEvents(pxPerDay);
 
       // Lane positions + connectors
@@ -291,83 +349,81 @@ renderEventBars(barsBottom, pxPerDay, "below");
       }
     }
 
+    function renderEventBars(barsEl, pxPerDay, laneSide){
+      const events = Array.isArray(cfg.events) ? cfg.events : [];
+      const palette = cfg.barColors || ["var(--gold)", "var(--red)", "var(--gold2)", "var(--red2)"];
 
-function renderEventBars(barsEl, pxPerDay, laneSide){
-  const events = Array.isArray(cfg.events) ? cfg.events : [];
-  const palette = cfg.barColors || ["var(--gold)", "var(--red)", "var(--gold2)", "var(--red2)"];
+      events.forEach((ev, idx) => {
+        // New flag (with legacy fallback)
+        const showInterval = (ev.showInterval !== undefined)
+          ? !!ev.showInterval
+          : (ev.showBar !== undefined ? !!ev.showBar : true);
 
-  events.forEach((ev, idx) => {
-    // New flag (with legacy fallback)
-    const showInterval = (ev.showInterval !== undefined)
-      ? !!ev.showInterval
-      : (ev.showBar !== undefined ? !!ev.showBar : true);
+        if (!showInterval) return;
 
-    if (!showInterval) return;
+        // ONLY draw this event's interval on the side where its picture/card is
+        const evSide = (ev.side === "below") ? "below" : "above";
+        if (evSide !== laneSide) return;
 
-    // ONLY draw this event's interval on the side where its picture/card is
-    const evSide = (ev.side === "below") ? "below" : "above";
-    if (evSide !== laneSide) return;
+        const s = parseFlexibleDate(ev.start, "start", ev);
+        const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
+        if (!s || !e) return;
 
-    const s = parseFlexibleDate(ev.start, "start", ev);
-    const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
-    if (!s || !e) return;
+        const left = dateToX(s, pxPerDay);
+        const right = dateToX(e, pxPerDay) + pxPerDay;
+        const w = Math.max(6, right - left);
 
-    const left = dateToX(s, pxPerDay);
-    const right = dateToX(e, pxPerDay) + pxPerDay;
-    const w = Math.max(6, right - left);
+        const bar = document.createElement("a");
+        bar.className = "bar";
+        bar.href = resolveAsset(ev.href || "#");
+        bar.style.left = left + "px";
+        bar.style.width = w + "px";
 
-    const bar = document.createElement("a");
-    bar.className = "bar";
-    bar.href = resolveAsset(ev.href || "#");
-    bar.style.left = left + "px";
-    bar.style.width = w + "px";
+        // intervalColor override (if you’re using it already)
+        const c = (ev.intervalColor || "").toString().trim().toLowerCase();
+        const useDefault = (!c || c === "default");
+        bar.style.background = useDefault ? palette[idx % palette.length] : ev.intervalColor;
 
-    // intervalColor override (if you’re using it already)
-    const c = (ev.intervalColor || "").toString().trim().toLowerCase();
-    const useDefault = (!c || c === "default");
-    bar.style.background = useDefault ? palette[idx % palette.length] : ev.intervalColor;
+        bar.title = ev.label ? `${ev.label} (${ev.dateLabel || ""})` : (ev.dateLabel || "");
+        bar.setAttribute("aria-label", ev.label ? `Open page for ${ev.label}` : "Open event");
+        barsEl.appendChild(bar);
 
-    bar.title = ev.label ? `${ev.label} (${ev.dateLabel || ""})` : (ev.dateLabel || "");
-    bar.setAttribute("aria-label", ev.label ? `Open page for ${ev.label}` : "Open event");
-    barsEl.appendChild(bar);
-
-    if (ev.id && String(ev.id) === String(window.TIMELINE_ACTIVE_ID || "")){
-      bar.style.boxShadow = "0 0 0 4px rgba(255,216,74,.20), 0 14px 30px rgba(0,0,0,.45)";
-      bar.style.borderColor = "rgba(255,216,74,.55)";
+        if (ev.id && String(ev.id) === String(window.TIMELINE_ACTIVE_ID || "")){
+          bar.style.boxShadow = "0 0 0 4px rgba(255,216,74,.20), 0 14px 30px rgba(0,0,0,.45)";
+          bar.style.borderColor = "rgba(255,216,74,.55)";
+        }
+      });
     }
-  });
-}
-
 
     function renderEvents(pxPerDay){
       const events = Array.isArray(cfg.events) ? cfg.events : [];
       events.forEach((ev) => {
 
-// Default: anchor cards to the MIDDLE of the interval bar (start–end).
-// Override ONLY if ev.anchor is provided AND differs from ev.start.
-let anchor = null;
+        // Default: anchor cards to the MIDDLE of the interval bar (start–end).
+        // Override ONLY if ev.anchor is provided AND differs from ev.start.
+        let anchor = null;
 
-// If anchor exists but is the same as start, treat it as redundant
-const hasOverrideAnchor =
-  (ev.anchor != null) &&
-  (String(ev.anchor).trim() !== String(ev.start).trim());
+        // If anchor exists but is the same as start, treat it as redundant
+        const hasOverrideAnchor =
+          (ev.anchor != null) &&
+          (String(ev.anchor).trim() !== String(ev.start).trim());
 
-if (hasOverrideAnchor) {
-  anchor = parseFlexibleDate(ev.anchor, "anchor", ev);
-} else {
-  const s = parseFlexibleDate(ev.start, "start", ev);
-  const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
-  if (s && e) {
-    // Use midpoint; add +0.5 day so we land visually closer to the true center
-    const midDays = Math.floor(daysBetween(s, e) / 2);
-    anchor = addDays(s, midDays);
-  }
-}
+        if (hasOverrideAnchor) {
+          anchor = parseFlexibleDate(ev.anchor, "anchor", ev);
+        } else {
+          const s = parseFlexibleDate(ev.start, "start", ev);
+          const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
+          if (s && e) {
+            // Use midpoint; add +0.5 day so we land visually closer to the true center
+            const midDays = Math.floor(daysBetween(s, e) / 2);
+            anchor = addDays(s, midDays);
+          }
+        }
 
-if (!anchor) return;
+        if (!anchor) return;
 
-// Nudge by half a day so the anchor matches the visual "center" of an inclusive bar
-const x = dateToX(anchor, pxPerDay) + (pxPerDay / 2);
+        // Nudge by half a day so the anchor matches the visual "center" of an inclusive bar
+        const x = dateToX(anchor, pxPerDay) + (pxPerDay / 2);
 
         const laneClass = (ev.side === "below") ? "laneBelow" : "laneAbove";
 
@@ -375,7 +431,7 @@ const x = dateToX(anchor, pxPerDay) + (pxPerDay / 2);
         card.className = `eventCard ${laneClass}` + (ev.isContextCard ? " contextCard" : "");
         card.href = resolveAsset(ev.href || "#");
         card.style.left = x + "px";
-	card.dataset.eid = String(ev.id || "");
+        card.dataset.eid = String(ev.id || "");
         card.title = ev.label || "";
         card.setAttribute("aria-label", ev.label ? `Open page for ${ev.label}` : "Open event");
 
@@ -425,13 +481,13 @@ const x = dateToX(anchor, pxPerDay) + (pxPerDay / 2);
         const connector = document.createElement("div");
         connector.className = "connector";
 
-card.appendChild(stack);
-canvas.appendChild(card);
+        card.appendChild(stack);
+        canvas.appendChild(card);
 
-// Put connector on the canvas so it can reach the interval lanes/spine precisely
-connector.dataset.eid = String(ev.id || "");
-connector.classList.add(laneClass); // laneAbove / laneBelow for styling if needed
-canvas.appendChild(connector);
+        // Put connector on the canvas so it can reach the interval lanes/spine precisely
+        connector.dataset.eid = String(ev.id || "");
+        connector.classList.add(laneClass); // laneAbove / laneBelow for styling if needed
+        canvas.appendChild(connector);
 
         // Active highlight
         if (ev.id && String(ev.id) === String(window.TIMELINE_ACTIVE_ID || "")){
@@ -443,102 +499,97 @@ canvas.appendChild(connector);
 
     /* ----------------- LAYOUT HELPERS ----------------- */
 
+    function positionLanesSymmetrically(){
+      const root = document.querySelector(".timeline-embed");
+      const cs = getComputedStyle(root);
 
-function positionLanesSymmetrically(){
-  const root = document.querySelector(".timeline-embed");
-  const cs = getComputedStyle(root);
+      const gap = parseFloat(cs.getPropertyValue("--gapToPortraitEdge")) || 120;
+      const avatarH = parseFloat(cs.getPropertyValue("--avatar")) || 110;
 
-  const gap = parseFloat(cs.getPropertyValue("--gapToPortraitEdge")) || 120;
-  const avatarH = parseFloat(cs.getPropertyValue("--avatar")) || 110;
+      // NEW: keep cards from getting clipped at the top
+      const safeTop = parseFloat(cs.getPropertyValue("--safeTop")) || 12;
 
-  // NEW: keep cards from getting clipped at the top
-  const safeTop = parseFloat(cs.getPropertyValue("--safeTop")) || 12;
+      // barCenterY is now the central timeline (ticks) midline
+      const barCenterY = getBarCenterY();
 
-  // barCenterY is now the central timeline (ticks) midline
-  const barCenterY = getBarCenterY();
+      const sampleAbove = canvas.querySelector(".eventCard.laneAbove .avatarWrap");
+      const sampleBelow = canvas.querySelector(".eventCard.laneBelow .avatarWrap");
 
-  const sampleAbove = canvas.querySelector(".eventCard.laneAbove .avatarWrap");
-  const sampleBelow = canvas.querySelector(".eventCard.laneBelow .avatarWrap");
+      const aboveAvatarOffsetTop = sampleAbove ? sampleAbove.offsetTop : 0;
+      const belowAvatarOffsetTop = sampleBelow ? sampleBelow.offsetTop : 0;
 
-  const aboveAvatarOffsetTop = sampleAbove ? sampleAbove.offsetTop : 0;
-  const belowAvatarOffsetTop = sampleBelow ? sampleBelow.offsetTop : 0;
+      let aboveLaneTop = (barCenterY - gap) - (aboveAvatarOffsetTop + avatarH);
+      const belowLaneTop = (barCenterY + gap) - (belowAvatarOffsetTop);
 
-  let aboveLaneTop = (barCenterY - gap) - (aboveAvatarOffsetTop + avatarH);
-  const belowLaneTop = (barCenterY + gap) - (belowAvatarOffsetTop);
+      // Clamp the above lane so it never starts above the safe top
+      if (aboveLaneTop < safeTop) aboveLaneTop = safeTop;
 
-  // Clamp the above lane so it never starts above the safe top
-  if (aboveLaneTop < safeTop) aboveLaneTop = safeTop;
+      canvas.querySelectorAll(".eventCard.laneAbove").forEach(el => el.style.top = aboveLaneTop + "px");
+      canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
+    }
 
-  canvas.querySelectorAll(".eventCard.laneAbove").forEach(el => el.style.top = aboveLaneTop + "px");
-  canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
-}
+    function adjustConnectors(){
+      const root = document.querySelector(".timeline-embed");
+      const cs = getComputedStyle(root);
 
+      // Timeline spine centerline (ticks center)
+      const spineY = getBarCenterY();
 
-function adjustConnectors(){
-  const root = document.querySelector(".timeline-embed");
-  const cs = getComputedStyle(root);
+      // Interval lane Y targets (center of the bar inside each lane)
+      // IMPORTANT: use actual DOM offsets (more reliable than CSS var parsing)
+      const barsTopEl = canvas.querySelector(".barsTop");
+      const barsBottomEl = canvas.querySelector(".barsBottom");
 
-  // Timeline spine centerline (ticks center)
-  const spineY = getBarCenterY();
+      const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars")) || 0;
+      const barH = parseFloat(cs.getPropertyValue("--barH")) || 0;
 
-  // Interval lane Y targets (center of the bar inside each lane)
-  // IMPORTANT: use actual DOM offsets (more reliable than CSS var parsing)
-  const barsTopEl = canvas.querySelector(".barsTop");
-  const barsBottomEl = canvas.querySelector(".barsBottom");
+      const barsTopY = barsTopEl ? barsTopEl.offsetTop : 0;
+      const barsBottomY = barsBottomEl ? barsBottomEl.offsetTop : 0;
 
-  const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars")) || 0;
-  const barH = parseFloat(cs.getPropertyValue("--barH")) || 0;
+      const intervalYTop = barsTopY + barTopInBars + (barH / 2);
+      const intervalYBottom = barsBottomY + barTopInBars + (barH / 2);
 
-  const barsTopY = barsTopEl ? barsTopEl.offsetTop : 0;
-  const barsBottomY = barsBottomEl ? barsBottomEl.offsetTop : 0;
+      const events = Array.isArray(cfg.events) ? cfg.events : [];
+      const cards = canvas.querySelectorAll(".eventCard");
 
-  const intervalYTop = barsTopY + barTopInBars + (barH / 2);
-  const intervalYBottom = barsBottomY + barTopInBars + (barH / 2);
+      cards.forEach(card => {
+        const eid = (card.dataset.eid || "").toString();
+        const ev = events.find(e => String(e.id || "") === eid);
 
+        const isAbove = card.classList.contains("laneAbove");
 
+        const showInterval = ev
+          ? (ev.showInterval !== undefined
+              ? !!ev.showInterval
+              : (ev.showBar !== undefined ? !!ev.showBar : true))
+          : true;
 
-  const events = Array.isArray(cfg.events) ? cfg.events : [];
-  const cards = canvas.querySelectorAll(".eventCard");
+        const targetY = showInterval
+          ? (isAbove ? intervalYTop : intervalYBottom)
+          : spineY;
 
-  cards.forEach(card => {
-    const eid = (card.dataset.eid || "").toString();
-    const ev = events.find(e => String(e.id || "") === eid);
+        // Find the connector that matches this event id (now on canvas)
+        const connector = canvas.querySelector(`.connector[data-eid="${CSS.escape(eid)}"]`);
+        const avatar = card.querySelector(".avatarWrap");
+        if (!connector || !avatar) return;
 
-    const isAbove = card.classList.contains("laneAbove");
+        // Compute portrait edge in CANVAS coordinates
+        const cardTop = card.offsetTop;
+        const avatarTop = cardTop + avatar.offsetTop;
+        const avatarBottom = avatarTop + avatar.offsetHeight;
+        const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
 
-    const showInterval = ev
-      ? (ev.showInterval !== undefined
-          ? !!ev.showInterval
-          : (ev.showBar !== undefined ? !!ev.showBar : true))
-      : true;
+        const minY = Math.min(portraitEdgeY, targetY);
+        const maxY = Math.max(portraitEdgeY, targetY);
 
-    const targetY = showInterval
-      ? (isAbove ? intervalYTop : intervalYBottom)
-      : spineY;
+        // Place connector at the card’s X center (same as card itself)
+        connector.style.left = card.style.left; // x position in px already set on the card
+        connector.style.top = minY + "px";
+        connector.style.height = Math.max(0, maxY - minY) + "px";
 
-    // Find the connector that matches this event id (now on canvas)
-    const connector = canvas.querySelector(`.connector[data-eid="${CSS.escape(eid)}"]`);
-    const avatar = card.querySelector(".avatarWrap");
-    if (!connector || !avatar) return;
-
-    // Compute portrait edge in CANVAS coordinates
-    const cardTop = card.offsetTop;
-    const avatarTop = cardTop + avatar.offsetTop;
-    const avatarBottom = avatarTop + avatar.offsetHeight;
-    const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
-
-    const minY = Math.min(portraitEdgeY, targetY);
-    const maxY = Math.max(portraitEdgeY, targetY);
-
-    // Place connector at the card’s X center (same as card itself)
-    connector.style.left = card.style.left; // x position in px already set on the card
-    connector.style.top = minY + "px";
-    connector.style.height = Math.max(0, maxY - minY) + "px";
-
-    connector.classList.toggle("dotTop", !isAbove);
-  });
-}
-
+        connector.classList.toggle("dotTop", !isAbove);
+      });
+    }
 
     // UPDATED:
     // This now returns the "timeline centerline" (ticks center), if available.
@@ -588,6 +639,7 @@ function adjustConnectors(){
     function centerOn(id){
       if (id === "__begin__"){
         viewport.scrollLeft = 0;
+        currentCenterDate = rangeBegin;
         syncMiniWindow();
         updateReadout();
         return;
@@ -597,22 +649,20 @@ function adjustConnectors(){
       const ev = events.find(e => String(e.id || "") === String(id));
       if (!ev) return;
 
-      const zoomLevel = zoomSelect.value;
-      const pxPerDay = (zoomLevel === "fit") ? computeFitPxPerDay() : (pxPerDayMap[zoomLevel] ?? 0.12);
-
       const anchor = parseFlexibleDate(ev.anchor ?? ev.start, "anchor", ev);
       if (!anchor) return;
+
+      const zoomLevel = zoomSelect.value;
+      const pxPerDay = getPxPerDayForView(zoomLevel, anchor);
 
       const centerX = dateToX(anchor, pxPerDay);
       viewport.scrollLeft = clamp(centerX - (viewport.clientWidth / 2), 0, viewport.scrollWidth);
 
+      currentCenterDate = anchor;
+
       syncMiniWindow();
       updateReadout();
-    }
-
-    function computeFitPxPerDay(){
-      const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
-      return Math.max(0.008, (viewport.clientWidth - 40) / totalDays);
+      render(); // ensure scale aligns to the new center
     }
 
     function syncMiniWindow(){
@@ -677,11 +727,13 @@ function adjustConnectors(){
 
     function updateReadout(){
       const zoomLevel = zoomSelect.value;
-      const pxPerDay = (zoomLevel === "fit") ? computeFitPxPerDay() : (pxPerDayMap[zoomLevel] ?? 0.12);
+      const pxPerDay = getPxPerDayForView(zoomLevel, currentCenterDate);
 
       const centerCanvasX = viewport.scrollLeft + (viewport.clientWidth/2);
       const dayIndex = Math.round(centerCanvasX / pxPerDay);
       const d = addDays(rangeBegin, dayIndex);
+
+      currentCenterDate = d;
 
       readout.textContent = `Center date: ${formatISO(d)}`;
       syncMiniWindow();
@@ -818,48 +870,47 @@ function adjustConnectors(){
       return daysBetween(rangeBegin, date) * pxPerDay;
     }
 
+    function buildIntervalSpans(begin, end, interval){
+      const spans = [];
+      let cur = new Date(begin.getTime());
 
+      while (cur <= end) {
+        const start = new Date(cur.getTime());
+        let last;
 
-function buildIntervalSpans(begin, end, interval){
-  const spans = [];
-  let cur = new Date(begin.getTime());
+        if (interval === "day") {
+          last = new Date(start.getTime());
 
-  while (cur <= end) {
-    const start = new Date(cur.getTime());
-    let last;
+        } else if (interval === "month") {
+          // End of month: compute last day, but construct via makeUTCDate to avoid year 0–99 bug
+          const y = start.getUTCFullYear();
+          const m = start.getUTCMonth(); // 0–11
+          const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(); // safe for day count
+          last = makeUTCDate(y, m, lastDay);
 
-    if (interval === "day") {
-      last = new Date(start.getTime());
+        } else if (interval === "year") {
+          const y = start.getUTCFullYear();
+          last = makeUTCDate(y, 11, 31);
 
-    } else if (interval === "month") {
-      // End of month: compute last day, but construct via makeUTCDate to avoid year 0–99 bug
-      const y = start.getUTCFullYear();
-      const m = start.getUTCMonth(); // 0–11
-      const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(); // safe for day count
-      last = makeUTCDate(y, m, lastDay);
+        } else if (interval === "decade") {
+          const y = start.getUTCFullYear();
+          const y0 = Math.floor(y / 10) * 10;
+          last = makeUTCDate(y0 + 9, 11, 31);
 
-    } else if (interval === "year") {
-      const y = start.getUTCFullYear();
-      last = makeUTCDate(y, 11, 31);
+        } else { // century
+          const y = start.getUTCFullYear();
+          const y0 = Math.floor(y / 100) * 100;
+          last = makeUTCDate(y0 + 99, 11, 31);
+        }
 
-    } else if (interval === "decade") {
-      const y = start.getUTCFullYear();
-      const y0 = Math.floor(y / 10) * 10;
-      last = makeUTCDate(y0 + 9, 11, 31);
+        const endSpan = (last > end) ? end : last;
+        spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
+        cur = addDays(endSpan, 1);
+      }
 
-    } else { // century
-      const y = start.getUTCFullYear();
-      const y0 = Math.floor(y / 100) * 100;
-      last = makeUTCDate(y0 + 99, 11, 31);
+      return spans;
     }
 
-    const endSpan = (last > end) ? end : last;
-    spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
-    cur = addDays(endSpan, 1);
-  }
-
-  return spans;
-}
     function buildTickMarks(begin, end, interval){
       const spans = buildIntervalSpans(begin, end, interval);
       const marks = [];
@@ -902,18 +953,18 @@ function buildIntervalSpans(begin, end, interval){
           : `${histY}`;
       }
 
-if (interval === "decade"){
-  const d0 = Math.floor(histY/10)*10;
-  return (d0 < 0)
-    ? `${Math.abs(d0)} BCE`
-    : `${d0}`;
-}
+      if (interval === "decade"){
+        const d0 = Math.floor(histY/10)*10;
+        return (d0 < 0)
+          ? `${Math.abs(d0)} BCE`
+          : `${d0}`;
+      }
 
-// Century label
-const c0 = Math.floor(histY/100) * 100;
-return (c0 < 0)
-  ? `${Math.abs(c0)} BCE`
-  : `${c0}`;
+      // Century label
+      const c0 = Math.floor(histY/100) * 100;
+      return (c0 < 0)
+        ? `${Math.abs(c0)} BCE`
+        : `${c0}`;
     }
   }
 
