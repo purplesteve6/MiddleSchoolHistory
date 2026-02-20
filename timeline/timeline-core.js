@@ -33,9 +33,9 @@
             <select id="zoomSelect" aria-label="Zoom level"></select>
           </div>
 
-          <div class="controlPill" title="Interval boxes shown at the top">
-            <label for="intervalSelect">Interval</label>
-            <select id="intervalSelect" aria-label="Interval"></select>
+          <div class="controlPill" title="Controls how often tick labels appear">
+            <label for="intervalSelect">Ticks</label>
+            <select id="intervalSelect" aria-label="Tick interval"></select>
           </div>
 
           <div class="controlPill" title="Jump the timeline to an event">
@@ -160,16 +160,25 @@
       const width = Math.max(900, Math.floor(totalDays * pxPerDay));
       canvas.style.width = width + "px";
 
-      // Interval boxes row (alternating)
-      renderIntervalBoxes(interval, pxPerDay);
+      // NOTE:
+      // We no longer render "interval boxes" at the top.
+      // The ticks are the single date indicator, and are positioned via CSS in the middle.
 
-      // Ticks
-      renderTicks(interval, pxPerDay);
+      // Bars container (TOP)
+      const barsTop = document.createElement("div");
+      barsTop.className = "bars barsTop";
+      canvas.appendChild(barsTop);
 
-      // Bars container (colored reign bars)
-      const bars = document.createElement("div");
-      bars.className = "bars";
-      canvas.appendChild(bars);
+      // Ticks (MIDDLE)
+      const ticksEl = document.createElement("div");
+      ticksEl.className = "ticks";
+      canvas.appendChild(ticksEl);
+      renderTicks(ticksEl, interval, pxPerDay);
+
+      // Bars container (BOTTOM)
+      const barsBottom = document.createElement("div");
+      barsBottom.className = "bars barsBottom";
+      canvas.appendChild(barsBottom);
 
       // Span boxes (translucent duplicates) — disabled intentionally:
       // renderSpanBoxes(pxPerDay);
@@ -177,8 +186,9 @@
       // Context events (tags + dotted lines)
       renderContext(pxPerDay);
 
-      // Event bars + event cards
-      renderEventBars(bars, pxPerDay);
+      // Event bars (draw twice: above and below ticks) + event cards
+      renderEventBars(barsTop, pxPerDay);
+      renderEventBars(barsBottom, pxPerDay);
       renderEvents(pxPerDay);
 
       // Lane positions + connectors
@@ -190,6 +200,7 @@
       });
     }
 
+    // Left in place (not called) in case you ever want it back.
     function renderIntervalBoxes(interval, pxPerDay){
       const row = document.createElement("div");
       row.className = "intervalRow";
@@ -211,10 +222,9 @@
       });
     }
 
-    function renderTicks(interval, pxPerDay){
-      const ticks = document.createElement("div");
-      ticks.className = "ticks";
-      canvas.appendChild(ticks);
+    // UPDATED: render ticks into a provided container (so we can position it between the two bar lanes)
+    function renderTicks(containerEl, interval, pxPerDay){
+      containerEl.innerHTML = "";
 
       const marks = buildTickMarks(rangeBegin, rangeEnd, interval);
       for (const m of marks){
@@ -223,14 +233,14 @@
         const t = document.createElement("div");
         t.className = "tick " + (m.big ? "big" : "small");
         t.style.left = x + "px";
-        ticks.appendChild(t);
+        containerEl.appendChild(t);
 
         if (m.big){
           const lbl = document.createElement("div");
           lbl.className = "tickLabel";
           lbl.style.left = x + "px";
           lbl.textContent = m.label;
-          ticks.appendChild(lbl);
+          containerEl.appendChild(lbl);
         }
       }
     }
@@ -270,6 +280,7 @@
         const line = document.createElement("div");
         line.className = "contextLine";
         line.style.left = x + "px";
+        // Anchor context lines to the timeline centerline (ticks center)
         line.style.height = (getBarCenterY() - 26) + "px";
         canvas.appendChild(line);
       }
@@ -389,7 +400,7 @@
 
       const gap = parseFloat(cs.getPropertyValue("--gapToPortraitEdge")) || 120;
       const avatarH = parseFloat(cs.getPropertyValue("--avatar")) || 110;
-      const barCenterY = getBarCenterY();
+      const barCenterY = getBarCenterY(); // now represents the central timeline (ticks) midline
 
       const sampleAbove = canvas.querySelector(".eventCard.laneAbove .avatarWrap");
       const sampleBelow = canvas.querySelector(".eventCard.laneBelow .avatarWrap");
@@ -405,7 +416,7 @@
     }
 
     function adjustConnectors(){
-      // Pin connectors to the CENTER of the reign bar row:
+      // Pin connectors to the CENTER of the timeline spine (ticks centerline)
       const barMidY = getBarCenterY();
       const cards = canvas.querySelectorAll(".eventCard");
 
@@ -434,9 +445,22 @@
       });
     }
 
+    // UPDATED:
+    // This now returns the "timeline centerline" (ticks center), if available.
+    // Fallbacks keep older CSS from breaking.
     function getBarCenterY(){
       const root = document.querySelector(".timeline-embed");
       const cs = getComputedStyle(root);
+
+      // Preferred: explicit midline variable in CSS
+      const mid = parseFloat(cs.getPropertyValue("--timelineMidY"));
+      if (Number.isFinite(mid)) return mid;
+
+      // Next-best: derive from ticksTop + half the tick band height (ticks band is 55px in CSS)
+      const ticksTop = parseFloat(cs.getPropertyValue("--ticksTop"));
+      if (Number.isFinite(ticksTop)) return ticksTop + (55 / 2);
+
+      // Legacy fallback: old single-bars-row center
       const barsTop = parseFloat(cs.getPropertyValue("--barsTop")) || 310;
       const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars")) || 11;
       const barH = parseFloat(cs.getPropertyValue("--barH")) || 18;

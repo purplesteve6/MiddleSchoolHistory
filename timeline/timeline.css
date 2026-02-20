@@ -22,7 +22,7 @@
   --focus: 0 0 0 4px rgba(255,216,74,.40);
   --markerText: rgba(255,216,74,.95);
 
-  /* Alternating interval boxes */
+  /* Alternating interval boxes (legacy; not currently rendered by core) */
   --intervalA: rgba(255,216,74,.18);
   --intervalB: rgba(179,18,42,.18);
   --intervalStroke: rgba(255,255,255,.14);
@@ -30,10 +30,16 @@
   /* ===== GEOMETRY ===== */
   --canvasH: 620px;
 
-  --ticksTop: 18px;
-  --intervalTop: 78px;
+  /* Center the ticks vertically (they are now the main timeline) */
+  --ticksTop: 285px; /* top of the ticks band (band height is 55px) */
+  --timelineMidY: calc(var(--ticksTop) + 27.5px); /* JS anchors connectors/cards to this */
 
-  --barsTop: 310px;
+  /* Two interval-bar lanes (above + below the tick spine) */
+  --barsGap: 14px;
+  --barsLaneH: 40px; /* keep in sync with .bars height */
+  --barsTop: calc(var(--ticksTop) - var(--barsGap) - var(--barsLaneH));
+  --barsBottomTop: calc(var(--ticksTop) + var(--barsGap));
+
   --barTopInBars: 11px;
   --barH: 18px;
 
@@ -42,8 +48,8 @@
   --stackGap: 10px;
   --metaH: 44px;
 
-  /* Day-span boxes */
-  --dayBoxTop: calc(var(--barsTop) + 34px);
+  /* Day-span boxes (legacy; not currently rendered by core) */
+  --dayBoxTop: calc(var(--barsBottomTop) + 34px);
   --dayBoxH: 16px;
   --dayStroke: rgba(255,255,255,.14);
 }
@@ -152,7 +158,7 @@ body{
   min-width: 900px;
 }
 
-/* Interval boxes row */
+/* Interval boxes row (legacy; not currently rendered by core) */
 .intervalRow{
   position:absolute;
   left:0; right:0;
@@ -177,8 +183,14 @@ body{
   white-space:nowrap;
 }
 
-/* ticks */
-.ticks{ position:absolute; left:0; right:0; top: var(--ticksTop); height: 55px; pointer-events:none; }
+/* ticks (now the central timeline spine) */
+.ticks{
+  position:absolute;
+  left:0; right:0;
+  top: var(--ticksTop);
+  height: 55px;
+  pointer-events:none;
+}
 .tick{ position:absolute; top:0; width:1px; background: rgba(255,255,255,.18); }
 .tick.small{ height: 16px; top: 22px; opacity:.6; }
 .tick.big{ height: 34px; top: 8px; opacity:.9; }
@@ -200,14 +212,20 @@ body{
   height:2px;
   background: rgba(255,255,255,.14);
   pointer-events:none;
+
+  /* align the line with the centered tick spine */
+  top: var(--timelineMidY);
 }
 
 .bars{
   position:absolute;
   left:0; right:0;
-  top: var(--barsTop);
-  height: 40px;
+  height: var(--barsLaneH);
 }
+
+/* NEW: two bars lanes (above + below ticks) */
+.barsTop{ top: var(--barsTop); }
+.barsBottom{ top: var(--barsBottomTop); }
 
 .bar{
   position:absolute;
@@ -222,7 +240,7 @@ body{
 .bar:hover{ transform: translateY(-1px); filter: brightness(1.06); }
 .bar:focus{ outline:none; box-shadow: var(--focus); }
 
-/* span/day boxes (for event time periods) */
+/* span/day boxes (legacy; not currently rendered by core) */
 .spanBox{
   position:absolute;
   top: var(--dayBoxTop);
