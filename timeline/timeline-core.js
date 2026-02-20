@@ -359,6 +359,7 @@ const x = dateToX(anchor, pxPerDay) + (pxPerDay / 2);
         card.className = `eventCard ${laneClass}` + (ev.isContextCard ? " contextCard" : "");
         card.href = resolveAsset(ev.href || "#");
         card.style.left = x + "px";
+	card.dataset.eid = String(ev.id || "");
         card.title = ev.label || "";
         card.setAttribute("aria-label", ev.label ? `Open page for ${ev.label}` : "Open event");
 
@@ -452,35 +453,68 @@ function positionLanesSymmetrically(){
   canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
 }
 
-    function adjustConnectors(){
-      // Pin connectors to the CENTER of the timeline spine (ticks centerline)
-      const barMidY = getBarCenterY();
-      const cards = canvas.querySelectorAll(".eventCard");
+function adjustConnectors(){
+  const root = document.querySelector(".timeline-embed");
+  const cs = getComputedStyle(root);
 
-      cards.forEach(card => {
-        const avatar = card.querySelector(".avatarWrap");
-        const connector = card.querySelector(".connector");
-        if (!avatar || !connector) return;
+  // Timeline spine centerline (ticks center)
+  const spineY = getBarCenterY();
 
-        const cardTop = card.offsetTop;
-        const avatarTop = cardTop + avatar.offsetTop;
-        const avatarBottom = avatarTop + avatar.offsetHeight;
+  // Interval lane Y targets (center of the bar inside each lane)
+  const barsTop = parseFloat(cs.getPropertyValue("--barsTop")) || 0;
+  const barsBottomTop = parseFloat(cs.getPropertyValue("--barsBottomTop")) || 0;
+  const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars")) || 0;
+  const barH = parseFloat(cs.getPropertyValue("--barH")) || 0;
 
-        const isAbove = card.classList.contains("laneAbove");
-        const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
+  const intervalYTop = barsTop + barTopInBars + (barH / 2);
+  const intervalYBottom = barsBottomTop + barTopInBars + (barH / 2);
 
-        const minY = Math.min(portraitEdgeY, barMidY);
-        const maxY = Math.max(portraitEdgeY, barMidY);
-        const height = Math.max(0, maxY - minY);
+  const events = Array.isArray(cfg.events) ? cfg.events : [];
+  const cards = canvas.querySelectorAll(".eventCard");
 
-        connector.style.left = "50%";
-        connector.style.top = (minY - cardTop) + "px";
-        connector.style.height = height + "px";
+  cards.forEach(card => {
+    const avatar = card.querySelector(".avatarWrap");
+    const connector = card.querySelector(".connector");
+    if (!avatar || !connector) return;
 
-        // If card is below, dot should be at the top; if above, dot at bottom.
-        connector.classList.toggle("dotTop", !isAbove);
-      });
-    }
+    const eid = (card.dataset.eid || "").toString();
+    const ev = events.find(e => String(e.id || "") === eid);
+
+    const isAbove = card.classList.contains("laneAbove");
+
+    // showInterval is the new flag; showBar is legacy fallback; default true.
+    const showInterval = ev
+      ? (ev.showInterval !== undefined
+          ? !!ev.showInterval
+          : (ev.showBar !== undefined ? !!ev.showBar : true))
+      : true;
+
+    // Target:
+    // - if no interval, connector goes to spine
+    // - if interval exists, connector goes to the interval bar lane on SAME side
+    const targetY = showInterval
+      ? (isAbove ? intervalYTop : intervalYBottom)
+      : spineY;
+
+    const cardTop = card.offsetTop;
+    const avatarTop = cardTop + avatar.offsetTop;
+    const avatarBottom = avatarTop + avatar.offsetHeight;
+
+    const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
+
+    const minY = Math.min(portraitEdgeY, targetY);
+    const maxY = Math.max(portraitEdgeY, targetY);
+    const height = Math.max(0, maxY - minY);
+
+    connector.style.left = "50%";
+    connector.style.top = (minY - cardTop) + "px";
+    connector.style.height = height + "px";
+
+    // If card is below, dot should be at the top; if above, dot at bottom.
+    connector.classList.toggle("dotTop", !isAbove);
+  });
+}
+
 
     // UPDATED:
     // This now returns the "timeline centerline" (ticks center), if available.
