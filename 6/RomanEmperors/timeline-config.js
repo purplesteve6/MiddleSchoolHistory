@@ -141,8 +141,8 @@ window.TIMELINE_CONFIG = {
       start:     "-0044-03-15",
       end:       "-0044-03-15",
       anchor:    "-0044-03-15",
-      image:     "images/timeline/JuliusCaesar_timeline.jpg",
-      href:      "emperors/caesar-assassination.html",
+      image:     "images/timeline/juliuscaesar_timeline.jpg",
+      href:      "index.html",
       side:      "above",
       showBar:   false
     },
@@ -154,7 +154,7 @@ window.TIMELINE_CONFIG = {
       start:     "-0027-01-16",
       end:       "0014-08-19",
       anchor:    "-0027-01-16",
-      image:     "images/timeline/Augustus_timeline.jpg",
+      image:     "images/timeline/augustus_timeline.jpg",
       href:      "emperors/augustus.html",
       side:      "above",
       showBar:   true
@@ -167,7 +167,7 @@ window.TIMELINE_CONFIG = {
       start:     "0014-09-17",
       end:       "0037-03-16",
       anchor:    "0014-09-17",
-      image:     "images/timeline/Tiberius_timeline.jpg",
+      image:     "images/timeline/tiberius_timeline.jpg",
       href:      "emperors/tiberius.html",
       side:      "below",
       showBar:   true
@@ -180,7 +180,7 @@ window.TIMELINE_CONFIG = {
       start:     "0037-03-16",
       end:       "0041-01-24",
       anchor:    "0037-03-16",
-      image:     "images/timeline/Caligula_timeline.jpg",
+      image:     "images/timeline/caligula_timeline.jpg",
       href:      "emperors/caligula.html",
       side:      "above",
       showBar:   true
@@ -193,7 +193,7 @@ window.TIMELINE_CONFIG = {
       start:     "0041-01-24",
       end:       "0054-10-13",
       anchor:    "0041-01-24",
-      image:     "images/timeline/Claudius_timeline.jpg",
+      image:     "images/timeline/claudius_timeline.jpg",
       href:      "emperors/claudius.html",
       side:      "below",
       showBar:   true
@@ -206,7 +206,7 @@ window.TIMELINE_CONFIG = {
       start:     "0054-10-13",
       end:       "0068-06-09",
       anchor:    "0054-10-13",
-      image:     "images/timeline/Nero_timeline.jpg",
+      image:     "images/timeline/nero_timeline.jpg",
       href:      "emperors/nero.html",
       side:      "above",
       showBar:   true
@@ -219,7 +219,7 @@ window.TIMELINE_CONFIG = {
       start:     "0098-01-28",
       end:       "0117-08-09",
       anchor:    "0098-01-28",
-      image:     "images/timeline/Trajan_timeline.jpg",
+      image:     "images/timeline/trajan_timeline.jpg",
       href:      "emperors/trajan.html",
       side:      "below",
       showBar:   true
@@ -232,7 +232,7 @@ window.TIMELINE_CONFIG = {
       start:     "0117-08-11",
       end:       "0138-07-10",
       anchor:    "0117-08-11",
-      image:     "images/timeline/Hadrian_timeline.jpg",
+      image:     "images/timeline/hadrian_timeline.jpg",
       href:      "emperors/hadrian.html",
       side:      "above",
       showBar:   true
@@ -245,7 +245,7 @@ window.TIMELINE_CONFIG = {
       start:     "0161-03-07",
       end:       "0180-03-17",
       anchor:    "0161-03-07",
-      image:     "images/timeline/MarcusAurelius_timeline.jpg",
+      image:     "images/timeline/marcusAurelius_timeline.jpg",
       href:      "emperors/marcus-aurelius.html",
       side:      "below",
       showBar:   true
@@ -259,7 +259,7 @@ window.TIMELINE_CONFIG = {
       start:     "0180-03-17",
       end:       "0192-12-31",
       anchor:    "0180-03-17",
-      image:     "images/timeline/Commodus_timeline.jpg",
+      image:     "images/timeline/commodus_timeline.jpg",
       href:      "emperors/commodus.html",
       side:      "above",
       showBar:   true
@@ -272,7 +272,7 @@ window.TIMELINE_CONFIG = {
       start:     "0284-11-20",
       end:       "0305-05-01",
       anchor:    "0284-11-20",
-      image:     "images/timeline/Diocletian_timeline.jpg",
+      image:     "images/timeline/diocletian_timeline.jpg",
       href:      "emperors/diocletian.html",
       side:      "below",
       showBar:   true
@@ -285,7 +285,7 @@ window.TIMELINE_CONFIG = {
       start:     "0306-07-25",
       end:       "0337-05-22",
       anchor:    "0306-07-25",
-      image:     "images/timeline/Constantine_timeline.jpg",
+      image:     "images/timeline/constantine_timeline.jpg",
       href:      "emperors/constantine.html",
       side:      "above",
       showBar:   true
@@ -298,7 +298,7 @@ window.TIMELINE_CONFIG = {
       start:     "0379-01-19",
       end:       "0395-01-17",
       anchor:    "0379-01-19",
-      image:     "images/timeline/TheodosiusI_timeline.jpg",
+      image:     "images/timeline/theodosiusI_timeline.jpg",
       href:      "emperors/theodosius.html",
       side:      "below",
       showBar:   true
@@ -311,7 +311,7 @@ window.TIMELINE_CONFIG = {
       start:     "0475-10-31",
       end:       "0476-09-04",
       anchor:    "0475-10-31",
-      image:     "images/timeline/RomulusAugustulus_timeline.jpg",
+      image:     "images/timeline/romulusAugustulus_timeline.jpg",
       href:      "emperors/romulus-augustulus.html",
       side:      "above",
       showBar:   true
