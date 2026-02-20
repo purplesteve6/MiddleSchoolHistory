@@ -625,9 +625,9 @@ if (laneClass === "laneAbove"){
      *   - "anchor"/"point": numeric years become Jan 1 of that year
      *
      * Config option:
-     *   cfg.numericYearEndMode:
-     *     - "startOfYear" (default): end: 476 -> 476-01-01
-     *     - "endOfYear":             end: 476 -> 476-12-31
+ *   cfg.numericYearEndMode:
+ *     - "startOfYear": end: 476 -> 476-01-01
+ *     - "endOfYear" (default): end: 476 -> 476-12-31
      */
  
 
@@ -762,10 +762,15 @@ if (laneClass === "laneAbove"){
       if (interval === "day") return `${histY}-${String(mo).padStart(2,"0")}-${String(da).padStart(2,"0")}`;
       if (interval === "month") return `${histY}-${String(mo).padStart(2,"0")}`;
       if (interval === "year") return `${histY}`;
-      if (interval === "decade"){
-        const d0 = Math.floor(histY/10)*10;
-        return `${d0}s`;
-      }
+if (interval === "decade"){
+  const d0 = Math.floor(histY/10)*10;
+  return `${d0}s`;
+}
+
+// Century label (100s, 200s, -300s, etc.)
+const c0 = Math.floor(histY/100) * 100;
+return `${c0}s`;
+
       const c0 = Math.floor(histY/100)+1;
       return `${c0}00s`;
     }
