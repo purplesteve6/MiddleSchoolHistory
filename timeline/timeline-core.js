@@ -106,8 +106,7 @@
 
     function syncIntervalToZoom(){
       const z = zoomSelect.value;
-      const derived = tickForZoom(z);
-      intervalSelect.value = derived;
+      intervalSelect.value = tickForZoom(z);
     }
 
     intervalSelect.disabled = true;
@@ -173,7 +172,7 @@
 
       const ay = a.getUTCFullYear();              // astronomical
       const histY = (ay <= 0) ? (ay - 1) : ay;    // historical
-      const m = a.getUTCMonth();                  // 0–11
+      const m = a.getUTCMonth();
 
       if (zoom === "day"){
         const dd = a.getUTCDate();
@@ -229,7 +228,11 @@
       const zoomLevel = zoomSelect.value;
       const pxPerDay = getPxPerDayForView(zoomLevel, d);
       const centerX = dateToX(d, pxPerDay);
-      viewport.scrollLeft = clamp(centerX - (viewport.clientWidth / 2), 0, Math.max(0, viewport.scrollWidth - viewport.clientWidth));
+      viewport.scrollLeft = clamp(
+        centerX - (viewport.clientWidth / 2),
+        0,
+        Math.max(0, viewport.scrollWidth - viewport.clientWidth)
+      );
       syncMiniWindow();
       updateReadout();
     }
@@ -286,102 +289,82 @@
 
       const zoomLevel = zoomSelect.value;
 
-      const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
-      const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay)));
+      // IMPORTANT:
+      // Month zoom: we render ONLY the aligned month span (prevents “day 1 of neighbor month” drifting into mid-month).
+      // Year zoom: we still render within visible range, but spans are aligned to true month boundaries.
+      let visBegin, visEnd;
 
-      const leftIndex = clamp(Math.floor(viewport.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
-      const rightIndex = clamp(Math.ceil((viewport.scrollLeft + viewport.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
+      if (zoomLevel === "month" && interval === "day"){
+        const span = zoomSpanAligned(currentCenterDate, "month");
+        visBegin = span.start;
+        visEnd = span.end;
+      } else {
+        // Visible day index range (with padding)
+        const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
+        const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay)));
+        const leftIndex = clamp(Math.floor(viewport.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
+        const rightIndex = clamp(Math.ceil((viewport.scrollLeft + viewport.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
+        visBegin = addDays(rangeBegin, leftIndex);
+        visEnd = addDays(rangeBegin, rightIndex);
+      }
 
-      const visBegin = addDays(rangeBegin, leftIndex);
-      const visEnd = addDays(rangeBegin, rightIndex);
-
-      // Special handling for day ticks:
-      // - Month zoom: label even-numbered days; day 1 gets Month+Year label + full-height dotted line
-      // - Day zoom: full date label on each tick
+      // Build marks
       let marks;
       if (interval === "day"){
         if (zoomLevel === "month"){
-          marks = buildDayMarksMonthView(visBegin, visEnd);
+          marks = buildDayMarksMonthView(visBegin, visEnd); // even days labeled, day 1 unlabeled tick
         } else if (zoomLevel === "day"){
-          marks = buildDayMarksDayView(visBegin, visEnd);
+          marks = buildDayMarksDayView(visBegin, visEnd);   // full date on each tick
         } else {
-          // fallback (shouldn't usually happen with our mapping)
           marks = buildDayMarksMonthView(visBegin, visEnd);
         }
       } else {
-        marks = buildTickMarks(visBegin, visEnd, interval);
+        // Use ALIGNED interval spans so month ticks always start on the 1st
+        marks = buildTickMarksAligned(visBegin, visEnd, interval);
       }
 
+      // Draw ticks + boundary lines/labels
+      // We also de-dupe boundary lines by using a set of day indices.
+      const boundaryKey = new Set();
 
       for (const m of marks){
         const x = dateToX(m.date, pxPerDay);
 
-        // Month view: show month boundary line + gold labels (top + bottom) on day 1
-        const isMonthBoundary =
-          (zoomLevel === "month") &&
-          (m.date.getUTCDate() === 1);
+        const isMonthBoundary = (zoomLevel === "month" && interval === "day" && m.date.getUTCDate() === 1);
 
-        // Year view: show year boundary line + gold labels (top + bottom) on Jan 1
         const isYearBoundary =
-          (zoomLevel === "year") &&
-          (interval === "month") &&
-          (m.date.getUTCMonth() === 0) &&
-          (m.date.getUTCDate() === 1);
+          (zoomLevel === "year" && interval === "month" && m.date.getUTCMonth() === 0 && m.date.getUTCDate() === 1);
 
         if (isMonthBoundary || isYearBoundary){
-          const line = document.createElement("div");
-          line.style.position = "absolute";
-          line.style.left = x + "px";
-          line.style.top = "0";
-          line.style.bottom = "0";
-          line.style.width = "0";
-          line.style.borderLeft = "2px dotted rgba(255,216,74,0.85)";
-          line.style.zIndex = "8";
-          line.style.pointerEvents = "none";
-          canvas.appendChild(line);
+          const key = daysBetween(rangeBegin, m.date); // stable unique key
+          if (!boundaryKey.has(key)){
+            boundaryKey.add(key);
 
-          let topText = "";
-          if (isMonthBoundary){
-            topText = formatMonthYear(m.date); // e.g., "Mar 180 CE"
-          } else {
-            // Year boundary: just the year (calendar-aware BCE/CE)
-            const histY = toHistoricalYear(m.date);
-            topText = (histY < 0) ? `${Math.abs(histY)} BCE` : `${histY} CE`;
+            // dotted full-height line
+            const line = document.createElement("div");
+            line.style.position = "absolute";
+            line.style.left = x + "px";
+            line.style.top = "0";
+            line.style.bottom = "0";
+            line.style.width = "0";
+            line.style.borderLeft = "2px dotted rgba(255,216,74,0.85)";
+            line.style.zIndex = "8";
+            line.style.pointerEvents = "none";
+            canvas.appendChild(line);
+
+            // label text
+            const labelText = isMonthBoundary ? formatMonthYear(m.date) : formatYearOnly(m.date);
+
+            // top label
+            const topLbl = boundaryPill(labelText, x);
+            topLbl.style.top = "6px";
+            canvas.appendChild(topLbl);
+
+            // bottom label
+            const bottomLbl = boundaryPill(labelText, x);
+            bottomLbl.style.bottom = "6px";
+            canvas.appendChild(bottomLbl);
           }
-
-          const topLbl = document.createElement("div");
-          topLbl.textContent = topText;
-          topLbl.style.position = "absolute";
-          topLbl.style.left = x + "px";
-          topLbl.style.top = "6px";
-          topLbl.style.transform = "translateX(-50%)";
-          topLbl.style.padding = "2px 8px";
-          topLbl.style.borderRadius = "999px";
-          topLbl.style.background = "rgba(0,0,0,0.55)";
-          topLbl.style.border = "1px solid rgba(255,216,74,0.45)";
-          topLbl.style.color = "rgba(255,216,74,0.98)";
-          topLbl.style.fontWeight = "900";
-          topLbl.style.fontSize = "12px";
-          topLbl.style.zIndex = "9";
-          topLbl.style.pointerEvents = "none";
-          canvas.appendChild(topLbl);
-
-          const bottomLbl = document.createElement("div");
-          bottomLbl.textContent = topText;
-          bottomLbl.style.position = "absolute";
-          bottomLbl.style.left = x + "px";
-          bottomLbl.style.bottom = "6px";
-          bottomLbl.style.transform = "translateX(-50%)";
-          bottomLbl.style.padding = "2px 8px";
-          bottomLbl.style.borderRadius = "999px";
-          bottomLbl.style.background = "rgba(0,0,0,0.55)";
-          bottomLbl.style.border = "1px solid rgba(255,216,74,0.45)";
-          bottomLbl.style.color = "rgba(255,216,74,0.98)";
-          bottomLbl.style.fontWeight = "900";
-          bottomLbl.style.fontSize = "12px";
-          bottomLbl.style.zIndex = "9";
-          bottomLbl.style.pointerEvents = "none";
-          canvas.appendChild(bottomLbl);
         }
 
         const t = document.createElement("div");
@@ -389,7 +372,6 @@
         t.style.left = x + "px";
         containerEl.appendChild(t);
 
-        // Only render a visible label if we actually have label text
         if (m.big && m.label){
           const lbl = document.createElement("div");
           lbl.className = "tickLabel";
@@ -398,9 +380,25 @@
           containerEl.appendChild(lbl);
         }
       }
-
     }
 
+    function boundaryPill(text, x){
+      const el = document.createElement("div");
+      el.textContent = text;
+      el.style.position = "absolute";
+      el.style.left = x + "px";
+      el.style.transform = "translateX(-50%)";
+      el.style.padding = "2px 8px";
+      el.style.borderRadius = "999px";
+      el.style.background = "rgba(0,0,0,0.55)";
+      el.style.border = "1px solid rgba(255,216,74,0.45)";
+      el.style.color = "rgba(255,216,74,0.98)";
+      el.style.fontWeight = "900";
+      el.style.fontSize = "12px";
+      el.style.zIndex = "9";
+      el.style.pointerEvents = "none";
+      return el;
+    }
 
     function buildDayMarksMonthView(begin, end){
       const marks = [];
@@ -411,24 +409,11 @@
         const isFirst = (dayNum === 1);
 
         if (isFirst){
-          // Day 1: keep a tick (unlabeled), and let the renderer draw the gold top/bottom labels + dotted line.
-          marks.push({
-            date: new Date(cur.getTime()),
-            big: false,
-            label: "",
-            monthStart: true,
-            monthStartLine: true
-          });
+          // day 1 tick exists, label handled by boundary pills
+          marks.push({ date: new Date(cur.getTime()), big:false, label:"" });
         } else {
-          // Even-numbered days only (2,4,6...) so 31 won't sit next to 1 with no gap weirdness.
           const even = (dayNum % 2 === 0);
-          marks.push({
-            date: new Date(cur.getTime()),
-            big: even,
-            label: even ? String(dayNum) : "",
-            monthStart: false,
-            monthStartLine: false
-          });
+          marks.push({ date: new Date(cur.getTime()), big: even, label: even ? String(dayNum) : "" });
         }
 
         cur = addDays(cur, 1);
@@ -437,24 +422,94 @@
       return marks;
     }
 
-
     function buildDayMarksDayView(begin, end){
       const marks = [];
       let cur = new Date(begin.getTime());
 
       while (cur <= end){
-        marks.push({
-          date: new Date(cur.getTime()),
-          big: true,
-          label: formatFullDate(cur),
-          monthStart: false,
-          monthStartLine: false
-        });
+        marks.push({ date: new Date(cur.getTime()), big:true, label: formatFullDate(cur) });
         cur = addDays(cur, 1);
       }
 
       return marks;
     }
+
+    /* ----------------- TICK SPANS (ALIGNED) ----------------- */
+
+    function buildTickMarksAligned(begin, end, interval){
+      const spans = buildIntervalSpansAligned(begin, end, interval);
+      const marks = [];
+      for (const sp of spans){
+        marks.push({ date: sp.start, big:true, label: sp.label });
+        if (interval !== "day"){
+          const mid = addDays(sp.start, Math.floor(daysBetween(sp.start, sp.end) / 2));
+          marks.push({ date: mid, big:false, label:"" });
+        }
+      }
+      marks.sort((a,b) => a.date - b.date);
+      return marks;
+    }
+
+    function buildIntervalSpansAligned(begin, end, interval){
+      // Snap "cur" to the natural boundary that CONTAINS begin.
+      let cur = snapToBoundary(begin, interval);
+      const spans = [];
+
+      while (cur <= end){
+        const start = new Date(cur.getTime());
+        const last = intervalEnd(start, interval);
+        const endSpan = (last > end) ? end : last;
+        spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
+        cur = addDays(endSpan, 1);
+      }
+
+      return spans;
+    }
+
+    function snapToBoundary(d, interval){
+      const y = d.getUTCFullYear();
+      const m = d.getUTCMonth();
+      const day = d.getUTCDate();
+
+      if (interval === "month"){
+        return makeUTCDate(y, m, 1);
+      }
+      if (interval === "year"){
+        return makeUTCDate(y, 0, 1);
+      }
+      if (interval === "decade"){
+        const y0 = Math.floor(y / 10) * 10;
+        return makeUTCDate(y0, 0, 1);
+      }
+      if (interval === "century"){
+        const y0 = Math.floor(y / 100) * 100;
+        return makeUTCDate(y0, 0, 1);
+      }
+      // day
+      return makeUTCDate(y, m, day);
+    }
+
+    function intervalEnd(start, interval){
+      const y = start.getUTCFullYear();
+      const m = start.getUTCMonth();
+
+      if (interval === "month"){
+        const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+        return makeUTCDate(y, m, lastDay);
+      }
+      if (interval === "year"){
+        return makeUTCDate(y, 11, 31);
+      }
+      if (interval === "decade"){
+        const y0 = Math.floor(y / 10) * 10;
+        return makeUTCDate(y0 + 9, 11, 31);
+      }
+      // century
+      const y0 = Math.floor(y / 100) * 100;
+      return makeUTCDate(y0 + 99, 11, 31);
+    }
+
+    /* ----------------- CONTEXT + EVENTS ----------------- */
 
     function renderContext(pxPerDay){
       const ctx = Array.isArray(cfg.contextEvents) ? cfg.contextEvents : [];
@@ -601,11 +656,6 @@
         connector.dataset.eid = String(ev.id || "");
         connector.classList.add(laneClass);
         canvas.appendChild(connector);
-
-        if (ev.id && String(ev.id) === String(window.TIMELINE_ACTIVE_ID || "")){
-          nm.style.textDecoration = "underline";
-          avatarWrap.style.boxShadow = "0 0 0 4px rgba(255,216,74,.14), 0 16px 34px rgba(0,0,0,.45)";
-        }
       });
     }
 
@@ -878,6 +928,16 @@
       return d;
     }
 
+    function toHistoricalYear(d){
+      const y = d.getUTCFullYear(); // astronomical
+      return (y <= 0) ? (y - 1) : y;
+    }
+
+    function formatYearOnly(d){
+      const histY = toHistoricalYear(d);
+      return (histY < 0) ? `${Math.abs(histY)} BCE` : `${histY}`;
+    }
+
     function parseFlexibleDate(v, kind = "anchor", ev = null){
       if (v === null || v === undefined) return null;
 
@@ -914,7 +974,7 @@
     }
 
     function formatISO(d){
-      const y = d.getUTCFullYear(); // astronomical
+      const y = d.getUTCFullYear();
       const m = String(d.getUTCMonth()+1).padStart(2,"0");
       const day = String(d.getUTCDate()).padStart(2,"0");
 
@@ -925,8 +985,7 @@
 
     function formatMonthYear(d){
       const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-      const y = d.getUTCFullYear();
-      const histY = (y <= 0) ? (y - 1) : y;
+      const histY = toHistoricalYear(d);
       const suffix = (histY < 0) ? " BCE" : "";
       const shownYear = (histY < 0) ? Math.abs(histY) : histY;
       return `${months[d.getUTCMonth()]} ${shownYear}${suffix}`;
@@ -934,8 +993,7 @@
 
     function formatFullDate(d){
       const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-      const y = d.getUTCFullYear();
-      const histY = (y <= 0) ? (y - 1) : y;
+      const histY = toHistoricalYear(d);
       const suffix = (histY < 0) ? " BCE" : "";
       const shownYear = (histY < 0) ? Math.abs(histY) : histY;
       const dd = String(d.getUTCDate()).padStart(2, "0");
@@ -957,66 +1015,8 @@
       return daysBetween(rangeBegin, date) * pxPerDay;
     }
 
-    function buildIntervalSpans(begin, end, interval){
-      const spans = [];
-      let cur = new Date(begin.getTime());
-
-      while (cur <= end) {
-        const start = new Date(cur.getTime());
-        let last;
-
-        if (interval === "day") {
-          last = new Date(start.getTime());
-
-        } else if (interval === "month") {
-          const y = start.getUTCFullYear();
-          const m = start.getUTCMonth();
-          const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
-          last = makeUTCDate(y, m, lastDay);
-
-        } else if (interval === "year") {
-          const y = start.getUTCFullYear();
-          last = makeUTCDate(y, 11, 31);
-
-        } else if (interval === "decade") {
-          const y = start.getUTCFullYear();
-          const y0 = Math.floor(y / 10) * 10;
-          last = makeUTCDate(y0 + 9, 11, 31);
-
-        } else {
-          const y = start.getUTCFullYear();
-          const y0 = Math.floor(y / 100) * 100;
-          last = makeUTCDate(y0 + 99, 11, 31);
-        }
-
-        const endSpan = (last > end) ? end : last;
-        spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
-        cur = addDays(endSpan, 1);
-      }
-
-      return spans;
-    }
-
-    function buildTickMarks(begin, end, interval){
-      const spans = buildIntervalSpans(begin, end, interval);
-      const marks = [];
-
-      for (const sp of spans){
-        marks.push({ date: sp.start, big:true, label: sp.label });
-
-        if (interval !== "day"){
-          const mid = addDays(sp.start, Math.floor(daysBetween(sp.start, sp.end) / 2));
-          marks.push({ date: mid, big:false, label:"" });
-        }
-      }
-
-      marks.sort((a,b) => a.date - b.date);
-      return marks;
-    }
-
     function intervalLabel(d, interval){
-      const y = d.getUTCFullYear();
-      const histY = (y <= 0) ? (y - 1) : y;
+      const histY = toHistoricalYear(d);
 
       if (interval === "month"){
         const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
