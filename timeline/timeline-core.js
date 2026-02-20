@@ -800,6 +800,21 @@ function intervalLabel(d, interval){
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
-    init();
+
+try {
+  init();
+} catch (err) {
+  const mount = document.getElementById("timelineMount");
+  if (mount){
+    mount.innerHTML = `
+      <div style="padding:.75rem; font-weight:900; color:#ffd84a; background:rgba(0,0,0,.65); border:2px solid rgba(255,216,74,.35); border-radius:12px;">
+        Timeline error: <span style="color:#fff;">${String(err && err.message ? err.message : err)}</span>
+      </div>
+    `;
+  }
+  console.error("Timeline error:", err);
+}
+
+
   }
 })();
