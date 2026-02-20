@@ -273,9 +273,17 @@
     }
 
     function scrollToCenterDate(d){
+
       const zoomLevel = zoomSelect.value;
-      const pxPerDay = getPxPerDayForView(zoomLevel, d);
+
+      const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
+      const MAX_CANVAS_WIDTH = 8_000_000;
+      const maxPxPerDay = MAX_CANVAS_WIDTH / Math.max(1, totalDays);
+
+      const pxPerDay = Math.min(getPxPerDayForView(zoomLevel, d), maxPxPerDay);
       const centerX = dateToX(d, pxPerDay);
+
+
       viewport.scrollLeft = clamp(
         centerX - (viewport.clientWidth / 2),
         0,
@@ -294,8 +302,6 @@
       const tickInterval = tickForZoom(zoomLevel);
       intervalSelect.value = tickInterval;
 
-      const pxPerDay = getPxPerDayForView(zoomLevel, currentCenterDate);
-
 
       const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
 
@@ -303,9 +309,11 @@
       const MAX_CANVAS_WIDTH = 8_000_000; // 8 million px is generally safe; adjust if needed.
       const maxPxPerDay = MAX_CANVAS_WIDTH / Math.max(1, totalDays);
 
-      const effectivePxPerDay = Math.min(pxPerDay, maxPxPerDay);
+      // Use ONE consistent scale for width AND positioning.
+      const idealPxPerDay = getPxPerDayForView(zoomLevel, currentCenterDate);
+      const pxPerDay = Math.min(idealPxPerDay, maxPxPerDay);
 
-      const width = Math.max(900, Math.floor(totalDays * effectivePxPerDay));
+      const width = Math.max(900, Math.floor(totalDays * pxPerDay));
       canvas.style.width = width + "px";
 
 
