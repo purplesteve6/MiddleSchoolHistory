@@ -634,10 +634,11 @@ function makeUTCDate(fullYear, monthIndex, day){
      *   - "anchor"/"point": numeric years become Jan 1 of that year
      *
      * Config option:
- *   cfg.numericYearEndMode:
- *     - "startOfYear": end: 476 -> 476-01-01
- *     - "endOfYear" (default): end: 476 -> 476-12-31
+     *   cfg.numericYearEndMode:
+     *     - "startOfYear": end: 476 -> 476-01-01
+     *     - "endOfYear" (default): end: 476 -> 476-12-31
      */
+
  
 
     function parseFlexibleDate(v, kind = "anchor", ev = null){
