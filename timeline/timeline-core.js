@@ -169,6 +169,11 @@
       barsTop.className = "bars barsTop";
       canvas.appendChild(barsTop);
 
+	// Horizontal center line (timeline spine)
+	const spine = document.createElement("div");
+	spine.className = "timelineLine";
+	canvas.appendChild(spine);
+
       // Ticks (MIDDLE)
       const ticksEl = document.createElement("div");
       ticksEl.className = "ticks";

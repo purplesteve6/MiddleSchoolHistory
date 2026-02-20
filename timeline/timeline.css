@@ -236,12 +236,24 @@ body{
 /* main line + bars */
 .timelineLine{
   position:absolute;
-  left:0; right:0;
+  left:0;
+  right:0;
+
   height:2px;
-  background: rgba(255,255,255,.14);
+
+  /* Stronger gold tone so it visually connects ticks + bars */
+  background: linear-gradient(
+    90deg,
+    rgba(255,216,74,.35),
+    rgba(255,216,74,.85),
+    rgba(255,216,74,.35)
+  );
+
+  box-shadow: 0 0 8px rgba(255,216,74,.35);
+
   pointer-events:none;
 
-  /* align the line with the centered tick spine */
+  /* Exact center of tick band */
   top: var(--timelineMidY);
 }
 
