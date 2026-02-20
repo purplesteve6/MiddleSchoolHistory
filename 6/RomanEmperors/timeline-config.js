@@ -136,8 +136,8 @@ window.TIMELINE_CONFIG = {
 
     {
       id:        "caesar_assassinated",
-      label:     "Julius Caesar",
-      dateLabel: "44 BCE (assassinated)",
+      label:     "Julius Caesar Assassinated",
+      dateLabel: "44 BCE",
       start:     "-0044-03-15",
       end:       "-0044-03-15",
       anchor:    "-0044-03-15",
