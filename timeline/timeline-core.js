@@ -771,8 +771,6 @@ if (interval === "decade"){
 const c0 = Math.floor(histY/100) * 100;
 return `${c0}s`;
 
-      const c0 = Math.floor(histY/100)+1;
-      return `${c0}00s`;
     }
   }
 
