@@ -296,8 +296,11 @@
       const palette = cfg.barColors || ["var(--gold)", "var(--red)", "var(--gold2)", "var(--red2)"];
 
       events.forEach((ev, idx) => {
-        if (ev.showBar === false) return;
+const showInterval = (ev.showInterval !== undefined)
+  ? !!ev.showInterval
+  : (ev.showBar !== undefined ? !!ev.showBar : true);
 
+if (!showInterval) return;
         const s = parseFlexibleDate(ev.start, "start", ev);
         const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
         if (!s || !e) return;
@@ -409,9 +412,13 @@ const x = dateToX(anchor, pxPerDay) + (pxPerDay / 2);
         const connector = document.createElement("div");
         connector.className = "connector";
 
-        card.appendChild(stack);
-        card.appendChild(connector);
-        canvas.appendChild(card);
+card.appendChild(stack);
+canvas.appendChild(card);
+
+// Put connector on the canvas so it can reach the interval lanes/spine precisely
+connector.dataset.eid = String(ev.id || "");
+connector.classList.add(laneClass); // laneAbove / laneBelow for styling if needed
+canvas.appendChild(connector);
 
         // Active highlight
         if (ev.id && String(ev.id) === String(window.TIMELINE_ACTIVE_ID || "")){
@@ -453,6 +460,7 @@ function positionLanesSymmetrically(){
   canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
 }
 
+
 function adjustConnectors(){
   const root = document.querySelector(".timeline-embed");
   const cs = getComputedStyle(root);
@@ -473,44 +481,40 @@ function adjustConnectors(){
   const cards = canvas.querySelectorAll(".eventCard");
 
   cards.forEach(card => {
-    const avatar = card.querySelector(".avatarWrap");
-    const connector = card.querySelector(".connector");
-    if (!avatar || !connector) return;
-
     const eid = (card.dataset.eid || "").toString();
     const ev = events.find(e => String(e.id || "") === eid);
 
     const isAbove = card.classList.contains("laneAbove");
 
-    // showInterval is the new flag; showBar is legacy fallback; default true.
     const showInterval = ev
       ? (ev.showInterval !== undefined
           ? !!ev.showInterval
           : (ev.showBar !== undefined ? !!ev.showBar : true))
       : true;
 
-    // Target:
-    // - if no interval, connector goes to spine
-    // - if interval exists, connector goes to the interval bar lane on SAME side
     const targetY = showInterval
       ? (isAbove ? intervalYTop : intervalYBottom)
       : spineY;
 
+    // Find the connector that matches this event id (now on canvas)
+    const connector = canvas.querySelector(`.connector[data-eid="${CSS.escape(eid)}"]`);
+    const avatar = card.querySelector(".avatarWrap");
+    if (!connector || !avatar) return;
+
+    // Compute portrait edge in CANVAS coordinates
     const cardTop = card.offsetTop;
     const avatarTop = cardTop + avatar.offsetTop;
     const avatarBottom = avatarTop + avatar.offsetHeight;
-
     const portraitEdgeY = isAbove ? avatarBottom : avatarTop;
 
     const minY = Math.min(portraitEdgeY, targetY);
     const maxY = Math.max(portraitEdgeY, targetY);
-    const height = Math.max(0, maxY - minY);
 
-    connector.style.left = "50%";
-    connector.style.top = (minY - cardTop) + "px";
-    connector.style.height = height + "px";
+    // Place connector at the card’s X center (same as card itself)
+    connector.style.left = card.style.left; // x position in px already set on the card
+    connector.style.top = minY + "px";
+    connector.style.height = Math.max(0, maxY - minY) + "px";
 
-    // If card is below, dot should be at the top; if above, dot at bottom.
     connector.classList.toggle("dotTop", !isAbove);
   });
 }
@@ -794,46 +798,7 @@ function adjustConnectors(){
       return daysBetween(rangeBegin, date) * pxPerDay;
     }
 
-function buildIntervalSpans(begin, end, interval){
-  const spans = [];
-  let cur = new Date(begin.getTime());
 
-  while (cur <= end) {
-    const start = new Date(cur.getTime());
-    let last;
-
-    if (interval === "day") {
-      last = new Date(start.getTime());
-
-    } else if (interval === "month") {
-      // End of month: compute last day, but construct via makeUTCDate to avoid year 0–99 bug
-      const y = start.getUTCFullYear();
-      const m = start.getUTCMonth(); // 0–11
-      const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(); // safe for day count
-      last = makeUTCDate(y, m, lastDay);
-
-    } else if (interval === "year") {
-      const y = start.getUTCFullYear();
-      last = makeUTCDate(y, 11, 31);
-
-    } else if (interval === "decade") {
-      const y = start.getUTCFullYear();
-      const y0 = Math.floor(y / 10) * 10;
-      last = makeUTCDate(y0 + 9, 11, 31);
-
-    } else { // century
-      const y = start.getUTCFullYear();
-      const y0 = Math.floor(y / 100) * 100;
-      last = makeUTCDate(y0 + 99, 11, 31);
-    }
-
-    const endSpan = (last > end) ? end : last;
-    spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
-    cur = addDays(endSpan, 1);
-  }
-
-  return spans;
-}
 
 function buildIntervalSpans(begin, end, interval){
   const spans = [];
