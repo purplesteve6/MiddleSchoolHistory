@@ -152,7 +152,7 @@ window.TIMELINE_CONFIG = {
     {
       id:    "empire_begins",
       // aligned to Augustus accession date (exact)
-      date:  "-0027-01-16",
+      date:  "-0027-01-01",
       label: "27 BCE — Empire Begins"
     },
 
