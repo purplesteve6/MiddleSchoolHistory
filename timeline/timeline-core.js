@@ -884,19 +884,36 @@
       });
     }
 
+
     function updateReadout(){
       const zoomLevel = zoomSelect.value;
+
+      // 1) Estimate center date using the current scale (may be stale if we crossed into a new month)
+      const pxPerDayEstimate = getPxPerDayForView(zoomLevel, currentCenterDate);
+
+      const centerCanvasX = viewport.scrollLeft + (viewport.clientWidth / 2);
+      const dayIndex = Math.round(centerCanvasX / pxPerDayEstimate);
+      const d = clampDateToRange(addDays(rangeBegin, dayIndex));
+
+      // 2) Update the true center date
+      currentCenterDate = d;
+
+      // 3) Recompute the correct scale for the NEW center date
       const pxPerDay = getPxPerDayForView(zoomLevel, currentCenterDate);
-
-      const centerCanvasX = viewport.scrollLeft + (viewport.clientWidth/2);
-      const dayIndex = Math.round(centerCanvasX / pxPerDay);
-      const d = addDays(rangeBegin, dayIndex);
-
-      currentCenterDate = clampDateToRange(d);
 
       readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
       syncMiniWindow();
 
+      // 4) In month/day zoom, the scale is "one unit in view", so when center changes
+      // (especially crossing month boundaries), we should re-render the canvas to avoid dropouts.
+      if (zoomLevel === "month" || zoomLevel === "day"){
+        render();
+        // Keep the current center date in the middle after re-render so the view doesn't jump.
+        scrollToCenterDate(currentCenterDate);
+        return;
+      }
+
+      // Otherwise, just redraw visible ticks/overlays with the correct scale.
       const ticksEl = canvas.querySelector(".ticks");
       const tickInterval = intervalSelect.value;
       if (ticksEl) renderTicksVisible(ticksEl, tickInterval, pxPerDay);
