@@ -79,12 +79,25 @@
 
     // If the timeline span is very large, "day" zoom becomes unusable (massive px-per-day / huge scroll surface).
     // Threshold is in YEARS; adjust later or move into timeline-config.js if you want.
+
     const spanYears = Math.abs(toHistoricalYear(rangeEnd) - toHistoricalYear(rangeBegin)) + 1;
+
     const MAX_YEARS_FOR_DAY_ZOOM = 200;
+    const MAX_YEARS_FOR_MONTH_ZOOM = 800;
+
     const allowDayZoom = spanYears <= MAX_YEARS_FOR_DAY_ZOOM;
+    const allowMonthZoom = spanYears <= MAX_YEARS_FOR_MONTH_ZOOM;
+
+
 
     const zoomLevelsRaw = cfg.zoomLevels || ["day","month","year","decade","century","fit"];
-    const zoomLevels = allowDayZoom ? zoomLevelsRaw : zoomLevelsRaw.filter(z => z !== "day");
+
+    const zoomLevels = zoomLevelsRaw.filter(z => {
+      if (z === "day") return allowDayZoom;
+      if (z === "month") return allowMonthZoom;
+      return true;
+    });
+
     const intervalLevels = ["day","month","year","decade","century"]; // UI list only
     const defaultInterval = cfg.defaultInterval || "decade";
     const defaultZoom = cfg.defaultZoom || defaultInterval;
@@ -108,7 +121,13 @@
       intervalSelect.appendChild(o);
     }
 
-    zoomSelect.value = (allowDayZoom ? defaultZoom : (defaultZoom === "day" ? "month" : defaultZoom));
+    const safeDefaultZoom =
+      (!allowDayZoom && defaultZoom === "day") ? (allowMonthZoom ? "month" : "year") :
+      (!allowMonthZoom && defaultZoom === "month") ? "year" :
+      defaultZoom;
+
+    zoomSelect.value = safeDefaultZoom;
+
     intervalSelect.value = defaultInterval;
 
     populateCenterDropdown();
@@ -123,12 +142,17 @@
 
     zoomSelect.addEventListener("change", () => {
       if (!allowDayZoom && zoomSelect.value === "day"){
-        zoomSelect.value = "month";
+        zoomSelect.value = allowMonthZoom ? "month" : "year";
       }
+      if (!allowMonthZoom && zoomSelect.value === "month"){
+        zoomSelect.value = "year";
+      }
+
       syncIntervalToZoom();
       render();
       scrollToCenterDate(currentCenterDate);
     });
+
 
 
     centerSelect.addEventListener("change", () => centerOn(centerSelect.value));
