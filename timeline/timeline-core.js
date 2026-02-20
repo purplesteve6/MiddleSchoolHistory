@@ -399,26 +399,35 @@
 
     /* ----------------- LAYOUT HELPERS ----------------- */
 
-    function positionLanesSymmetrically(){
-      const root = document.querySelector(".timeline-embed");
-      const cs = getComputedStyle(root);
 
-      const gap = parseFloat(cs.getPropertyValue("--gapToPortraitEdge")) || 120;
-      const avatarH = parseFloat(cs.getPropertyValue("--avatar")) || 110;
-      const barCenterY = getBarCenterY(); // now represents the central timeline (ticks) midline
+function positionLanesSymmetrically(){
+  const root = document.querySelector(".timeline-embed");
+  const cs = getComputedStyle(root);
 
-      const sampleAbove = canvas.querySelector(".eventCard.laneAbove .avatarWrap");
-      const sampleBelow = canvas.querySelector(".eventCard.laneBelow .avatarWrap");
+  const gap = parseFloat(cs.getPropertyValue("--gapToPortraitEdge")) || 120;
+  const avatarH = parseFloat(cs.getPropertyValue("--avatar")) || 110;
 
-      const aboveAvatarOffsetTop = sampleAbove ? sampleAbove.offsetTop : 0;
-      const belowAvatarOffsetTop = sampleBelow ? sampleBelow.offsetTop : 0;
+  // NEW: keep cards from getting clipped at the top
+  const safeTop = parseFloat(cs.getPropertyValue("--safeTop")) || 12;
 
-      const aboveLaneTop = (barCenterY - gap) - (aboveAvatarOffsetTop + avatarH);
-      const belowLaneTop = (barCenterY + gap) - (belowAvatarOffsetTop);
+  // barCenterY is now the central timeline (ticks) midline
+  const barCenterY = getBarCenterY();
 
-      canvas.querySelectorAll(".eventCard.laneAbove").forEach(el => el.style.top = aboveLaneTop + "px");
-      canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
-    }
+  const sampleAbove = canvas.querySelector(".eventCard.laneAbove .avatarWrap");
+  const sampleBelow = canvas.querySelector(".eventCard.laneBelow .avatarWrap");
+
+  const aboveAvatarOffsetTop = sampleAbove ? sampleAbove.offsetTop : 0;
+  const belowAvatarOffsetTop = sampleBelow ? sampleBelow.offsetTop : 0;
+
+  let aboveLaneTop = (barCenterY - gap) - (aboveAvatarOffsetTop + avatarH);
+  const belowLaneTop = (barCenterY + gap) - (belowAvatarOffsetTop);
+
+  // Clamp the above lane so it never starts above the safe top
+  if (aboveLaneTop < safeTop) aboveLaneTop = safeTop;
+
+  canvas.querySelectorAll(".eventCard.laneAbove").forEach(el => el.style.top = aboveLaneTop + "px");
+  canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
+}
 
     function adjustConnectors(){
       // Pin connectors to the CENTER of the timeline spine (ticks centerline)
