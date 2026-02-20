@@ -326,10 +326,26 @@
     function renderEvents(pxPerDay){
       const events = Array.isArray(cfg.events) ? cfg.events : [];
       events.forEach((ev) => {
-        const anchor = parseFlexibleDate(ev.anchor ?? ev.start, "anchor", ev);
-        if (!anchor) return;
 
-        const x = dateToX(anchor, pxPerDay);
+// Anchor cards to the MIDDLE of the interval bar (start–end),
+// unless an explicit ev.anchor is provided.
+let anchor = null;
+
+if (ev.anchor != null) {
+  anchor = parseFlexibleDate(ev.anchor, "anchor", ev);
+} else {
+  const s = parseFlexibleDate(ev.start, "start", ev);
+  const e = parseFlexibleDate(ev.end ?? ev.start, "end", ev);
+  if (s && e) {
+    const midDays = Math.floor(daysBetween(s, e) / 2);
+    anchor = addDays(s, midDays);
+  }
+}
+
+if (!anchor) return;
+
+const x = dateToX(anchor, pxPerDay);
+
         const laneClass = (ev.side === "below") ? "laneBelow" : "laneAbove";
 
         const card = document.createElement("a");
