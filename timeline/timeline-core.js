@@ -851,18 +851,18 @@ function buildIntervalSpans(begin, end, interval){
           : `${histY}`;
       }
 
-      if (interval === "decade"){
-        const d0 = Math.floor(histY/10)*10;
-        return (d0 < 0)
-          ? `${Math.abs(d0)}s BCE`
-          : `${d0}s`;
-      }
+if (interval === "decade"){
+  const d0 = Math.floor(histY/10)*10;
+  return (d0 < 0)
+    ? `${Math.abs(d0)} BCE`
+    : `${d0}`;
+}
 
-      // Century label
-      const c0 = Math.floor(histY/100) * 100;
-      return (c0 < 0)
-        ? `${Math.abs(c0)}s BCE`
-        : `${c0}s`;
+// Century label
+const c0 = Math.floor(histY/100) * 100;
+return (c0 < 0)
+  ? `${Math.abs(c0)} BCE`
+  : `${c0}`;
     }
   }
 
