@@ -245,7 +245,7 @@ window.TIMELINE_CONFIG = {
       start:     "0161-03-07",
       end:       "0180-03-17",
       anchor:    "0161-03-07",
-      image:     "images/timeline/marcusAurelius_timeline.jpg",
+      image:     "images/timeline/marcusaurelius_timeline.jpg",
       href:      "emperors/marcus-aurelius.html",
       side:      "above",
       showBar:   true
@@ -298,7 +298,7 @@ window.TIMELINE_CONFIG = {
       start:     "0379-01-19",
       end:       "0395-01-17",
       anchor:    "0379-01-19",
-      image:     "images/timeline/theodosiusI_timeline.jpg",
+      image:     "images/timeline/theodosiusi_timeline.jpg",
       href:      "emperors/theodosius.html",
       side:      "above",
       showBar:   true
@@ -311,7 +311,7 @@ window.TIMELINE_CONFIG = {
       start:     "0475-10-31",
       end:       "0476-09-04",
       anchor:    "0475-10-31",
-      image:     "images/timeline/romulusAugustulus_timeline.jpg",
+      image:     "images/timeline/romulusaugustulus_timeline.jpg",
       href:      "emperors/romulus-augustulus.html",
       side:      "below",
       showBar:   true
