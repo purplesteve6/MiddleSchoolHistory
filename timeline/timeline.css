@@ -31,16 +31,16 @@
   --canvasH: 620px;
 
   /* Central tick band (now the main timeline) */
-  --ticksH: 55px;
-  --ticksTop: 265px; /* moved UP (was 285px) */
+  --ticksH: 52px;           /* slightly tighter than 55 */
+  --ticksTop: 260px;        /* adjust overall vertical position */
   --timelineMidY: calc(var(--ticksTop) + (var(--ticksH) / 2)); /* JS anchors connectors/cards to this */
 
   /* Two interval-bar lanes (above + below the tick spine) */
-  --barsGap: 8px;          /* reduced gap (was 14px) */
-  --barsLaneH: 40px;       /* keep in sync with .bars height */
+  --barsGap: 0px;           /* IMPORTANT: bars TOUCH ticks */
+  --barsLaneH: 40px;        /* keep in sync with .bars height */
 
   --barsTop: calc(var(--ticksTop) - var(--barsGap) - var(--barsLaneH));
-  /* IMPORTANT: bottom bars start AFTER the ticks band */
+  /* IMPORTANT: bottom bars start immediately after tick band */
   --barsBottomTop: calc(var(--ticksTop) + var(--ticksH) + var(--barsGap));
 
   --barTopInBars: 11px;
@@ -194,18 +194,43 @@ body{
   height: var(--ticksH);
   pointer-events:none;
 }
-.tick{ position:absolute; top:0; width:1px; background: rgba(255,255,255,.18); }
-.tick.small{ height: 16px; top: 22px; opacity:.6; }
-.tick.big{ height: 34px; top: 8px; opacity:.9; }
+
+/* Centered, symmetrical tick marks: extend above AND below the labels */
+.tick{
+  position:absolute;
+  left:0;
+  width:1px;
+  background: rgba(255,255,255,.18);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tick.small{
+  height: 18px;          /* short tick, centered */
+  opacity:.55;
+}
+
+.tick.big{
+  height: 44px;          /* tall tick, centered */
+  opacity:.9;
+}
+
+/* Put labels in the middle of the tick band, between top/bottom tick segments */
 .tickLabel{
   position:absolute;
-  top:0;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   color: rgba(255,246,229,.78);
   font-weight:1000;
   font-size:.86rem;
   white-space:nowrap;
   text-shadow: 0 2px 10px rgba(0,0,0,.55);
+
+  /* Tiny background to keep ticks from visually slicing through text */
+  padding: .06rem .30rem;
+  border-radius: 8px;
+  background: rgba(14,6,8,.55);
+  border: 1px solid rgba(255,255,255,.10);
 }
 
 /* main line + bars */
