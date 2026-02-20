@@ -150,15 +150,10 @@
       // Ticks
       renderTicks(interval, pxPerDay);
 
-      // Main timeline line + bars container (for event span bars)
-      const line = document.createElement("div");
-      line.className = "timelineLine";
-      line.style.top = getBarCenterY() + "px";
-      canvas.appendChild(line);
-
-      const bars = document.createElement("div");
-      bars.className = "bars";
-      canvas.appendChild(bars);
+// Bars container (for event span bars)
+const bars = document.createElement("div");
+bars.className = "bars";
+canvas.appendChild(bars);
 
       // Span boxes (event time periods)
       renderSpanBoxes(pxPerDay);
