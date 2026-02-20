@@ -942,9 +942,8 @@
       }
 
       if (interval === "month"){
-        return (histY < 0)
-          ? `${Math.abs(histY)}-${String(mo).padStart(2,"0")} BCE`
-          : `${histY}-${String(mo).padStart(2,"0")}`;
+        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        return months[d.getUTCMonth()];
       }
 
       if (interval === "year"){
