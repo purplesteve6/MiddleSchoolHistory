@@ -512,7 +512,21 @@
 
     /* ----------------- TICK SPANS (ALIGNED) ----------------- */
 
-    function buildTickMarksAligned(begin, end, interval){
+    // Year conversion helpers:
+    // JS Date uses astronomical years (..., -2, -1, 0, 1, 2, ...)
+    // Historical BCE/CE has NO year 0 (..., 2 BCE, 1 BCE, 1 CE, 2 CE, ...)
+    function astroYearToHist(ay){
+      return (ay <= 0) ? (ay - 1) : ay;
+    }
+
+    function histYearToAstro(hy){
+      // hy is historical year (e.g., -27 = 27 BCE, -1 = 1 BCE, 1 = 1 CE)
+      return (hy <= -1) ? (hy + 1) : hy;
+    }
+
+    
+
+function buildTickMarksAligned(begin, end, interval){
       const spans = buildIntervalSpansAligned(begin, end, interval);
       const marks = [];
       for (const sp of spans){
@@ -545,56 +559,60 @@
 
 
     function snapToBoundary(d, interval){
-      const ay = d.getUTCFullYear();     // astronomical year
+      const ay = d.getUTCFullYear();          // astronomical year from JS Date
+      const histY = astroYearToHist(ay);      // historical year (no year 0)
       const m = d.getUTCMonth();
       const day = d.getUTCDate();
 
       if (interval === "month"){
         return makeUTCDate(ay, m, 1);
       }
-
       if (interval === "year"){
         return makeUTCDate(ay, 0, 1);
       }
-
-      // For decade/century boundaries, use HISTORICAL years so BCE alignment is correct.
-      const histY = toHistoricalYear(d);
-
       if (interval === "decade"){
-        const h0 = Math.floor(histY / 10) * 10;
-        const y0 = histYearToAstro(h0);
-        return makeUTCDate(y0, 0, 1);
+        const startHist = Math.floor(histY / 10) * 10;
+        const startAstro = histYearToAstro(startHist);
+        return makeUTCDate(startAstro, 0, 1);
       }
-
       if (interval === "century"){
-        const h0 = Math.floor(histY / 100) * 100;
-        const y0 = histYearToAstro(h0);
-        return makeUTCDate(y0, 0, 1);
+        const startHist = Math.floor(histY / 100) * 100;
+        const startAstro = histYearToAstro(startHist);
+        return makeUTCDate(startAstro, 0, 1);
       }
 
       // day
       return makeUTCDate(ay, m, day);
     }
 
+
+
     function intervalEnd(start, interval){
-      const y = start.getUTCFullYear();
+      const ay = start.getUTCFullYear();      // astronomical year
+      const histY = astroYearToHist(ay);      // historical year (no year 0)
       const m = start.getUTCMonth();
 
       if (interval === "month"){
-        const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
-        return makeUTCDate(y, m, lastDay);
+        const lastDay = new Date(Date.UTC(ay, m + 1, 0)).getUTCDate();
+        return makeUTCDate(ay, m, lastDay);
       }
       if (interval === "year"){
-        return makeUTCDate(y, 11, 31);
+        return makeUTCDate(ay, 11, 31);
       }
       if (interval === "decade"){
-        const y0 = Math.floor(y / 10) * 10;
-        return makeUTCDate(y0 + 9, 11, 31);
+        const startHist = Math.floor(histY / 10) * 10;
+        const endHist = startHist + 9;
+        const endAstro = histYearToAstro(endHist);
+        return makeUTCDate(endAstro, 11, 31);
       }
+
       // century
-      const y0 = Math.floor(y / 100) * 100;
-      return makeUTCDate(y0 + 99, 11, 31);
+      const startHist = Math.floor(histY / 100) * 100;
+      const endHist = startHist + 99;
+      const endAstro = histYearToAstro(endHist);
+      return makeUTCDate(endAstro, 11, 31);
     }
+
 
     /* ----------------- CONTEXT + EVENTS ----------------- */
 
