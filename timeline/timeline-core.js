@@ -70,12 +70,6 @@
     const miniWindow = document.getElementById("miniWindow");
 
 
-    const zoomLevelsRaw = cfg.zoomLevels || ["day","month","year","decade","century","fit"];
-    const zoomLevels = allowDayZoom ? zoomLevelsRaw : zoomLevelsRaw.filter(z => z !== "day");
-    const intervalLevels = ["day","month","year","decade","century"]; // UI list only
-    const defaultInterval = cfg.defaultInterval || "decade";
-    const defaultZoom = cfg.defaultZoom || defaultInterval;
-
     const rangeBegin = parseFlexibleDate(cfg.range?.begin ?? "0001-01-01", "start");
     const rangeEnd = parseFlexibleDate(cfg.range?.end ?? "0100-12-31", "end");
     if (!rangeBegin || !rangeEnd){
@@ -87,8 +81,14 @@
     // Threshold is in YEARS; adjust later or move into timeline-config.js if you want.
     const spanYears = Math.abs(toHistoricalYear(rangeEnd) - toHistoricalYear(rangeBegin)) + 1;
     const MAX_YEARS_FOR_DAY_ZOOM = 200;
-
     const allowDayZoom = spanYears <= MAX_YEARS_FOR_DAY_ZOOM;
+
+    const zoomLevelsRaw = cfg.zoomLevels || ["day","month","year","decade","century","fit"];
+    const zoomLevels = allowDayZoom ? zoomLevelsRaw : zoomLevelsRaw.filter(z => z !== "day");
+    const intervalLevels = ["day","month","year","decade","century"]; // UI list only
+    const defaultInterval = cfg.defaultInterval || "decade";
+    const defaultZoom = cfg.defaultZoom || defaultInterval;
+
 
     let currentCenterDate = rangeBegin;
 
