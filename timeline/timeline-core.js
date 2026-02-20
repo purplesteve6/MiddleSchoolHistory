@@ -344,16 +344,18 @@
           avatarWrap.innerHTML = `<div class="ph">No<br/>Image</div>`;
         }
 
-        // Your rule:
-        // - Above timeline: text ABOVE picture
-        // - Below timeline: text BELOW picture
-        if (laneClass === "laneAbove"){
-          stack.appendChild(avatarWrap);
-          stack.appendChild(meta);
-        } else {
-          stack.appendChild(meta);
-          stack.appendChild(avatarWrap);
-        }
+// Your rule:
+// - Above timeline: text ABOVE picture
+// - Below timeline: text BELOW picture
+if (laneClass === "laneAbove"){
+  // Text first, then portrait
+  stack.appendChild(meta);
+  stack.appendChild(avatarWrap);
+} else {
+  // Portrait first, then text
+  stack.appendChild(avatarWrap);
+  stack.appendChild(meta);
+}
 
         const connector = document.createElement("div");
         connector.className = "connector";
