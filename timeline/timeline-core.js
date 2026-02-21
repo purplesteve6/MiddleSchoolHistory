@@ -1010,56 +1010,59 @@ function buildTickMarksAligned(begin, end, interval){
     }
 
 
-    function updateReadout(){
-      if (isUpdatingReadout) return;
-      isUpdatingReadout = true;
-      try {
-        const zoomLevel = zoomSelect.value;
 
-      // 1) Estimate center date using the current scale (may be stale if we crossed into a new zoom span)
-      const pxPerDayEstimate = getEffectivePxPerDay(zoomLevel, currentCenterDate);
+function updateReadout(){
+  if (isUpdatingReadout) return;
+  isUpdatingReadout = true;
+  try {
+    const zoomLevel = zoomSelect.value;
 
-      const centerCanvasX = viewport.scrollLeft + (viewport.clientWidth / 2);
-      const dayIndex = Math.floor(centerCanvasX / pxPerDayEstimate);
-      const d = clampDateToRange(addDays(rangeBegin, dayIndex));
+    // Use the SAME scale the canvas was rendered with when possible.
+    // This prevents date math from drifting when "fit-one-unit" zooms (year/century) change spans.
+    const pxPerDayEstimate =
+      (lastRender && lastRender.pxPerDay)
+        ? lastRender.pxPerDay
+        : getEffectivePxPerDay(zoomLevel, currentCenterDate);
 
-      // 2) Update the true center date
-      currentCenterDate = d;
+    const centerCanvasX = viewport.scrollLeft + (viewport.clientWidth / 2);
 
-      readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
-      syncMiniWindow();
+    // Floor avoids boundary jitter.
+    const dayIndex = Math.floor(centerCanvasX / Math.max(0.000001, pxPerDayEstimate));
+    const d = clampDateToRange(addDays(rangeBegin, dayIndex));
 
-      // If the aligned span for the current zoom changes (e.g., we cross into a new century),
-      // we MUST re-render so ticks + bars are built with the same pxPerDay/canvas width.
+    currentCenterDate = d;
 
+    readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
+    syncMiniWindow();
 
-      const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
+    // For "fit-one-unit" zooms, the scale MUST change when the aligned span changes.
+    // Century was your original case; Year has the same requirement (especially at BCE/CE).
+    const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
+    const needsSpanRerender = (zoomLevel === "century" || zoomLevel === "year");
 
-      // Only Century zoom requires forced re-render on span change.
-      // Doing this in Year view causes a feedback loop at the BCE/CE boundary.
-      if (zoomLevel === "century" && newSpanKey !== lastRender.spanKey){
-        render();
-        return;
-      }
-
-
-      // Month/day zoom: re-render, but DO NOT call scrollToCenterDate() here
-      // (it causes recursion via scrollToCenterDate -> updateReadout).
-      if (zoomLevel === "month" || zoomLevel === "day"){
-        render();
-        return;
-      }
-
-
-      // Otherwise, just redraw visible ticks/overlays using the SAME scale as the last full render.
-      const ticksEl = canvas.querySelector(".ticks");
-      const tickInterval = intervalSelect.value;
-      const pxPerDay = lastRender.pxPerDay ?? getEffectivePxPerDay(zoomLevel, currentCenterDate);
-      if (ticksEl) renderTicksVisible(ticksEl, tickInterval, pxPerDay);
-      } finally {
-        isUpdatingReadout = false;
-      }
+    if (needsSpanRerender && newSpanKey !== lastRender.spanKey){
+      render();
+      return;
     }
+
+    // Month/day zoom: keep your behavior (full re-render avoids dropouts).
+    if (zoomLevel === "month" || zoomLevel === "day"){
+      render();
+      return;
+    }
+
+    // Otherwise, just redraw visible ticks/overlays using the SAME scale as the last full render.
+    const ticksEl = canvas.querySelector(".ticks");
+    const tickInterval = intervalSelect.value;
+    const pxPerDay = lastRender.pxPerDay ?? getEffectivePxPerDay(zoomLevel, currentCenterDate);
+    if (ticksEl) renderTicksVisible(ticksEl, tickInterval, pxPerDay);
+
+  } finally {
+    isUpdatingReadout = false;
+  }
+}
+
+
 
 
 
