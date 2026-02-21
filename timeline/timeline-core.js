@@ -462,7 +462,7 @@
 
         // Sticky buffered window: render ±5 years, but only SHIFT the window when we get near its edge.
         // This prevents a full tick rebuild every single year boundary.
-        const BUFFER = 10;          // years behind/ahead
+        const BUFFER = 8;          // years behind/ahead
         const EDGE = 4;            // shift window when within 2 years of an edge
 
         if (!yearTickWindow){
