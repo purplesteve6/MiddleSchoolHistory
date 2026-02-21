@@ -693,13 +693,33 @@
       let cur = snapToBoundary(begin, interval);
       const spans = [];
 
+
+      // Safety guard: prevents rare date-math edge cases from freezing the page
+      // (e.g., if cur fails to advance for some boundary condition).
+      let safety = 0;
+
       while (cur <= end){
+        if (++safety > 5000){
+          console.warn("Timeline: interval span loop safety-break", { interval, begin, end, cur });
+          break;
+        }
+
         const start = new Date(cur.getTime());
         const last = intervalEnd(start, interval);
         const endSpan = (last > end) ? end : last;
         spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
-        cur = addDays(endSpan, 1);
+
+        const next = addDays(endSpan, 1);
+
+        // Extra safety: if date didn't advance, break to avoid infinite loop.
+        if (next.getTime() === cur.getTime()){
+          console.warn("Timeline: interval span did not advance", { interval, cur, endSpan });
+          break;
+        }
+
+        cur = next;
       }
+
 
       return spans;
     }
