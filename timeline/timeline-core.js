@@ -1017,13 +1017,15 @@ function buildTickMarksAligned(begin, end, interval){
 
       // If the aligned span for the current zoom changes (e.g., we cross into a new century),
       // we MUST re-render so ticks + bars are built with the same pxPerDay/canvas width.
+
       const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
       if (newSpanKey !== lastRender.spanKey){
         render();
-        // Keep the current center date in the middle after re-render so the view doesn't jump.
-        scrollToCenterDate(currentCenterDate);
+        // IMPORTANT: do NOT call scrollToCenterDate() here.
+        // That causes updateReadout() recursion and can freeze near BCE/CE boundaries.
         return;
       }
+
 
       // Month/day zoom still benefits from always re-rendering when center changes (prevents dropouts).
       if (zoomLevel === "month" || zoomLevel === "day"){
