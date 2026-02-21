@@ -1012,9 +1012,7 @@
       centerSelect.value = hasActive ? active : "__begin__";
     }
 
-    function centerOn(id){
-      if (id === "__begin__"){
-        currentCenterDate = rangeBegin;
+  
 
     function centerOn(id){
       // Start of timeline (no event card to center on)
@@ -1029,19 +1027,16 @@
       const ev = events.find(e => String(e.id || "") === String(id));
       if (!ev) return;
 
-      // Use the event's anchor if provided; otherwise fall back to start
       const anchor = parseFlexibleDate(ev.anchor ?? ev.start, "anchor", ev);
       if (!anchor) return;
 
       currentCenterDate = anchor;
       render();
 
-      // Center on the actual card (which visually centers on the portrait).
-      // Wait one frame so DOM + layout are ready after render().
+      // Center on the portrait/card, not just the date.
       requestAnimationFrame(() => {
         const ok = scrollToCenterCardById(ev.id || id);
         if (!ok){
-          // Fallback: center on the date if the card can't be found
           scrollToCenterDate(currentCenterDate);
         }
       });
