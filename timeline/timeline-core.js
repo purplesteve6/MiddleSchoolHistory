@@ -1131,23 +1131,16 @@ function updateReadout(){
     syncMiniWindow();
 
 
-    // YEAR needs the "span rerender" rule.
-    // Century must scroll smoothly without re-rendering + re-centering mid-scroll.
-    const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
-    const needsSpanRerender = (zoomLevel === "year");
 
-    // FIX A: if a span-based rerender happens during scrolling, immediately re-center after render
-    // to prevent spanKey flip/flop thrash (especially across BCE/CE).
-    if (needsSpanRerender && newSpanKey !== lastRender.spanKey){
-      const keep = currentCenterDate;
-      // Reset tick cache because we're going to rebuild
-      lastTickKey = "";
-      render();
-      requestAnimationFrame(() => {
-        scrollToCenterDate(keep);
-      });
-      return;
-    }
+    // OPTION 1: Never full-rerender on scroll in year view.
+    // Intervals (bars) and cards (pictures) are already rendered across the whole canvas;
+    // while scrolling we only need to update ticks + readout.
+    const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
+    const needsSpanRerender = false;
+
+    // (Intentionally disabled) span-based rerender while scrolling:
+    // if (needsSpanRerender && newSpanKey !== lastRender.spanKey){ ... }
+
 
 
     // Month/day zoom: keep your behavior (full re-render avoids dropouts).
