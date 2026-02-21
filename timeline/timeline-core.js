@@ -1355,17 +1355,19 @@ function updateReadout(){
       }
 
 
-      // Decade/Century hashes should be labeled like 0,10,20...
-      // BUT suppress visible label for 0 (there was no year 0).
+      // Decade/Century labels: show numbers for CE, and "BCE" for negative years.
+      // There is no historical year 0, so label the boundary bucket as "1" (not blank).
       if (interval === "decade"){
         const d0 = Math.floor(histY / 10) * 10;
-        if (d0 === 0) return ""; // hide "0"
+        if (d0 === 0) return "1";
         return (d0 < 0) ? `${Math.abs(d0)} BCE` : `${d0}`;
       }
 
       const c0 = Math.floor(histY / 100) * 100;
-      if (c0 === 0) return ""; // hide "0"
+      if (c0 === 0) return "1";
       return (c0 < 0) ? `${Math.abs(c0)} BCE` : `${c0}`;
+
+
     }
 
 
