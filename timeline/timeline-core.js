@@ -285,7 +285,7 @@
       const start = makeUTCDate(startAstro, 0, 1);
       const end = makeUTCDate(endAstro, 11, 31);
       return { start: clampDateToRange(start), end: clampDateToRange(end) };
-
+ }
 
 
     function computeFitPxPerDay(){
