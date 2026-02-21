@@ -453,10 +453,19 @@
 
       } else if (zoomLevel === "year" && interval === "month"){
         const span = zoomSpanAligned(currentCenterDate, "year");
-        visBegin = span.start;
-        visEnd = span.end;
+
+        // Buffer year view ticks so fast scrolling doesn't outrun rendering.
+        // Render 5 years behind and 5 years ahead of the current aligned year.
+        const ay = span.start.getUTCFullYear(); // astronomical year
+        const beginBuf = clampDateToRange(makeUTCDate(ay - 5, 0, 1));
+        const endBuf   = clampDateToRange(makeUTCDate(ay + 5, 11, 31));
+
+        visBegin = beginBuf;
+        visEnd = endBuf;
+
         cacheBeginKey = String(visBegin.getTime());
         cacheEndKey = String(visEnd.getTime());
+
 
       } else {
         // Visible day index range (with padding)
@@ -1003,6 +1012,9 @@
       centerSelect.value = hasActive ? active : "__begin__";
     }
 
+    function centerOn(id){
+      if (id === "__begin__"){
+        currentCenterDate = rangeBegin;
 
     function centerOn(id){
       // Start of timeline (no event card to center on)
