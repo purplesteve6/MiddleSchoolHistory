@@ -273,10 +273,12 @@
 
       if (zoom === "month"){
         const start = makeUTCDate(ay, m, 1);
-        const lastDay = new Date(Date.UTC(ay, m + 1, 0)).getUTCDate();
+        const lastDay = makeUTCDate(ay, m + 1, 0).getUTCDate();
         const end = makeUTCDate(ay, m, lastDay);
         return { start: clampDateToRange(start), end: clampDateToRange(end) };
       }
+
+
 
       if (zoom === "year"){
         const start = makeUTCDate(ay, 0, 1);
@@ -765,9 +767,10 @@ function computeZoomPxPerDay(zoom, anchorDate){
       const m = start.getUTCMonth();
 
       if (interval === "month"){
-        const lastDay = new Date(Date.UTC(ay, m + 1, 0)).getUTCDate();
+        const lastDay = makeUTCDate(ay, m + 1, 0).getUTCDate();
         return makeUTCDate(ay, m, lastDay);
       }
+
       if (interval === "year"){
         return makeUTCDate(ay, 11, 31);
       }
