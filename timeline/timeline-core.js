@@ -192,8 +192,12 @@
     }, { passive:false });
 
     // Keep ticks/overlays correct even when scrolling via scrollbar drag, touch, or inertia.
+
     let scrollRAF = 0;
+    let internalScroll = false;
+
     viewport.addEventListener("scroll", () => {
+      if (internalScroll) return;
       if (scrollRAF) cancelAnimationFrame(scrollRAF);
       scrollRAF = requestAnimationFrame(() => {
         syncMiniWindow();
@@ -310,13 +314,18 @@
       const centerX = dateToX(d, pxPerDay);
 
 
+      internalScroll = true;
       viewport.scrollLeft = clamp(
         centerX - (viewport.clientWidth / 2),
         0,
         Math.max(0, viewport.scrollWidth - viewport.clientWidth)
       );
+      internalScroll = false;
+
       syncMiniWindow();
       updateReadout();
+
+
     }
 
     /* ----------------- RENDER ----------------- */
@@ -997,7 +1006,7 @@ function buildTickMarksAligned(begin, end, interval){
       const pxPerDayEstimate = getEffectivePxPerDay(zoomLevel, currentCenterDate);
 
       const centerCanvasX = viewport.scrollLeft + (viewport.clientWidth / 2);
-      const dayIndex = Math.round(centerCanvasX / pxPerDayEstimate);
+      const dayIndex = Math.floor(centerCanvasX / pxPerDayEstimate);
       const d = clampDateToRange(addDays(rangeBegin, dayIndex));
 
       // 2) Update the true center date
