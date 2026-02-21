@@ -801,11 +801,11 @@ function computeZoomPxPerDay(zoom, anchorDate){
 
     function renderContext(pxPerDay){
       const ctx = Array.isArray(cfg.contextEvents) ? cfg.contextEvents : [];
-      // Keep context tags INSIDE the viewport (overflow-y is hidden),
-      // and instead reserve space above cards via --safeTop in CSS.
-      const TAG_TOP = 6;     // px
-      const LINE_TOP = 6;    // px
 
+      // Keep context tags INSIDE the viewport (overflow-y is hidden),
+      // and reserve space above cards via --safeTop in CSS.
+      const TAG_TOP = 6; // px
+      const GAP_BELOW_TAG = 4; // px
 
       for (const c of ctx){
         const d = parseFlexibleDate(c.date, "anchor");
@@ -821,15 +821,20 @@ function computeZoomPxPerDay(zoom, anchorDate){
         tag.textContent = c.label || "";
         canvas.appendChild(tag);
 
+        // Start the dotted line at the BOTTOM of the label pill (not through it)
+        const lineTop = tag.offsetTop + tag.offsetHeight + GAP_BELOW_TAG;
+
         const line = document.createElement("div");
         line.className = "contextLine";
         line.style.left = x + "px";
-        line.style.top = LINE_TOP + "px";
-        line.style.height = Math.max(0, (getBarCenterY() - LINE_TOP)) + "px";
+        line.style.top = lineTop + "px";
+        line.style.height = Math.max(0, (getBarCenterY() - lineTop)) + "px";
         line.style.zIndex = "11";
         canvas.appendChild(line);
       }
     }
+
+
 
 
     function renderEventBars(barsEl, pxPerDay, laneSide){
