@@ -288,13 +288,13 @@
       const endAstro = histYearToAstro(c0 + 99);
       const start = makeUTCDate(startAstro, 0, 1);
       const end = makeUTCDate(endAstro, 11, 31);
+
       return { start: clampDateToRange(start), end: clampDateToRange(end) };
-
-
- }
+    }
 
 
     function computeFitPxPerDay(){
+
       const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
       return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, totalDays));
     }
@@ -400,10 +400,19 @@
       // Year zoom: we still render within visible range, but spans are aligned to true month boundaries.
       let visBegin, visEnd;
 
+
       if (zoomLevel === "month" && interval === "day"){
         const span = zoomSpanAligned(currentCenterDate, "month");
         visBegin = span.start;
         visEnd = span.end;
+
+      } else if (zoomLevel === "year" && interval === "month"){
+        // IMPORTANT: In year zoom, only render month ticks for the aligned year span.
+        // This prevents huge mark generation/freezes near the BCE/CE boundary.
+        const span = zoomSpanAligned(currentCenterDate, "year");
+        visBegin = span.start;
+        visEnd = span.end;
+
       } else {
         // Visible day index range (with padding)
         const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
