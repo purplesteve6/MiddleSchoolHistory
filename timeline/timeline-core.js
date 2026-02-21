@@ -702,6 +702,7 @@ function computeZoomPxPerDay(zoom, anchorDate){
       // (e.g., if cur fails to advance for some boundary condition).
       let safety = 0;
 
+
       while (cur <= end){
         if (++safety > 5000){
           console.warn("Timeline: interval span loop safety-break", { interval, begin, end, cur });
@@ -710,20 +711,26 @@ function computeZoomPxPerDay(zoom, anchorDate){
 
         const start = new Date(cur.getTime());
         const last = intervalEnd(start, interval);
-        const endSpan = (last > end) ? end : last;
 
-        spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
+        // If the natural interval end is beyond the requested window,
+        // emit ONE truncated span and stop (prevents duplicate "Feb", etc.).
+        if (last > end){
+          spans.push({ start, end, label: intervalLabel(start, interval) });
+          break;
+        }
 
-        const next = addDays(endSpan, 1);
+        // Normal full span
+        spans.push({ start, end: last, label: intervalLabel(start, interval) });
+
+        const next = addDays(last, 1);
 
         // Extra safety: if date didn't advance, break to avoid infinite loop.
         if (next.getTime() === cur.getTime()){
-          console.warn("Timeline: interval span did not advance", { interval, cur, endSpan });
+          console.warn("Timeline: interval span did not advance", { interval, cur, endSpan: last });
           break;
         }
 
         cur = next;
-
       }
 
 
