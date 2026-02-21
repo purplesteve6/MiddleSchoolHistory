@@ -308,19 +308,23 @@
       return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, totalDays));
     }
 
+
     function computeZoomPxPerDay(zoom, anchorDate){
       const span = zoomSpanAligned(anchorDate, zoom);
 
-      // FIX C: Keep year scale stable (avoid leap-year jitter that can cause rerender thrash)
-      // We intentionally treat all years as 365 days for pxPerDay calculations.
-      // (The *positions* still use real dates; this only stabilizes the viewing scale.)
+      // Keep year/century scale stable (prevents jitter during fast scroll + boundary crossings)
+      // Year: fixed 365 days. Century: fixed 100 * 365.25 days.
+      // (Positions still use real dates; only the viewing scale is stabilized.)
       const days =
         (zoom === "year")
           ? 365
-          : (daysBetween(span.start, span.end) + 1);
+          : (zoom === "century")
+            ? 36525
+            : (daysBetween(span.start, span.end) + 1);
 
       return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, days));
     }
+
 
     function getPxPerDayForView(zoom, anchorDate){
       return (zoom === "fit") ? computeFitPxPerDay() : computeZoomPxPerDay(zoom, anchorDate);
@@ -1082,10 +1086,11 @@ function updateReadout(){
     readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
     syncMiniWindow();
 
-    // For "fit-one-unit" zooms, the scale MUST change when the aligned span changes.
-    // Century was your original case; Year has the same requirement (especially at BCE/CE).
+
+    // YEAR needs the "span rerender" rule.
+    // Century must scroll smoothly without re-rendering + re-centering mid-scroll.
     const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
-    const needsSpanRerender = (zoomLevel === "century" || zoomLevel === "year");
+    const needsSpanRerender = (zoomLevel === "year");
 
     // FIX A: if a span-based rerender happens during scrolling, immediately re-center after render
     // to prevent spanKey flip/flop thrash (especially across BCE/CE).
@@ -1099,6 +1104,7 @@ function updateReadout(){
       });
       return;
     }
+
 
     // Month/day zoom: keep your behavior (full re-render avoids dropouts).
     if (zoomLevel === "month" || zoomLevel === "day"){
