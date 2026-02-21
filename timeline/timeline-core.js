@@ -265,10 +265,9 @@
         return { start: clampDateToRange(start), end: clampDateToRange(end) };
       }
 
+
       if (zoom === "decade"){
-        const y0 = (histY > 0)
-          ? (Math.floor((histY - 1) / 10) * 10 + 1)
-          : (Math.floor(histY / 10) * 10);
+        const y0 = Math.floor(histY / 10) * 10;
         const startAstro = histYearToAstro(y0);
         const endAstro = histYearToAstro(y0 + 9);
         const start = makeUTCDate(startAstro, 0, 1);
@@ -277,14 +276,15 @@
       }
 
 
-      const c0 = (histY > 0)
-        ? (Math.floor((histY - 1) / 100) * 100 + 1)
-        : (Math.floor(histY / 100) * 100);
+
+      const c0 = Math.floor(histY / 100) * 100;
       const startAstro = histYearToAstro(c0);
       const endAstro = histYearToAstro(c0 + 99);
       const start = makeUTCDate(startAstro, 0, 1);
       const end = makeUTCDate(endAstro, 11, 31);
       return { start: clampDateToRange(start), end: clampDateToRange(end) };
+
+
  }
 
 
@@ -1180,21 +1180,16 @@ function buildTickMarksAligned(begin, end, interval){
         return (histY < 0) ? `${Math.abs(histY)} BCE` : `${histY}`;
       }
 
-      // Historical convention: no year 0.
-      // CE decades: 1–10, 11–20, 21–30, ...
-      // BCE decades can remain aligned by simple flooring (e.g., 10–1 BCE).
+
+      // Decade/Century hashes should be labeled like 0,10,20... (the "0s/10s/20s" style).
       if (interval === "decade"){
-        const d0 = (histY > 0)
-          ? (Math.floor((histY - 1) / 10) * 10 + 1)
-          : (Math.floor(histY / 10) * 10);
+        const d0 = Math.floor(histY / 10) * 10;
         return (d0 < 0) ? `${Math.abs(d0)} BCE` : `${d0}`;
       }
 
-      // CE centuries: 1–100, 101–200, 201–300, ...
-      const c0 = (histY > 0)
-        ? (Math.floor((histY - 1) / 100) * 100 + 1)
-        : (Math.floor(histY / 100) * 100);
+      const c0 = Math.floor(histY / 100) * 100;
       return (c0 < 0) ? `${Math.abs(c0)} BCE` : `${c0}`;
+
     }
 
 
