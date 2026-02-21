@@ -49,7 +49,7 @@
   --avatar: 110px;
   --gapToPortraitEdge: 120px;
 
-  /* Keep only a minimal safety clamp so the top lane spacing is not compressed */
+  /* Minimal clamp only (do NOT use this to solve context overlap) */
   --safeTop: 12px;
 
   --stackGap: 10px;
@@ -149,8 +149,11 @@ body{
     radial-gradient(900px 260px at 80% 20%, rgba(255,216,74,.10), transparent 55%),
     rgba(14,6,8,.35);
 
-  overflow-x:auto;
-  overflow-y:hidden;
+  /* Column layout: context band on top, scroll area below */
+  display:flex;
+  flex-direction:column;
+
+  overflow:hidden;
 
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -158,6 +161,39 @@ body{
   height: 640px;
 }
 .timelineViewport::-webkit-scrollbar{ display:none; }
+
+/* Fixed top band for context tags (no overlap with cards) */
+.contextBand{
+  position:relative;
+  height: 54px;
+  flex: 0 0 54px;
+
+  overflow-x:auto;
+  overflow-y:hidden;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.contextBand::-webkit-scrollbar{ display:none; }
+
+.contextInner{
+  position:relative;
+  height:100%;
+  min-width: 900px;
+}
+
+/* Scroll area for the main canvas */
+.canvasScroll{
+  position:relative;
+  flex: 1 1 auto;
+
+  overflow-x:auto;
+  overflow-y:hidden;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.canvasScroll::-webkit-scrollbar{ display:none; }
 
 .timelineCanvas{
   position:relative;
@@ -296,10 +332,9 @@ body{
   pointer-events:none;
 }
 
-/* context tags (dotted line + pill tag) */
+/* context tags (pill tag lives in band; dotted line lives in canvas) */
 .contextTag{
   position:absolute;
-  top: 6px;
   transform: translateX(-50%);
   padding: .22rem .6rem;
   border-radius: 999px;
@@ -312,10 +347,10 @@ body{
 }
 .contextLine{
   position:absolute;
-  top: 26px;
   width:0;
   border-left: 2px dotted rgba(255,216,74,.45);
   pointer-events:none;
+  z-index: 2;
 }
 
 /* event cards */
@@ -327,6 +362,7 @@ body{
   cursor:pointer;
   user-select:none;
   text-decoration:none;
+  z-index: 5;
 }
 .eventCard:focus{ outline:none; box-shadow: var(--focus); border-radius: 14px; }
 
@@ -386,6 +422,7 @@ body{
   border-left: 2px solid rgba(255,255,255,.18);
   filter: drop-shadow(0 4px 10px rgba(0,0,0,.45));
   pointer-events:none;
+  z-index: 3;
 }
 
 .connector::after{

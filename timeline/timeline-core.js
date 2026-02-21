@@ -1,4 +1,3 @@
-
 (function(){
   function safeInit(){
     try {
@@ -47,7 +46,12 @@
       </div>
 
       <div class="timelineViewport" id="viewport" tabindex="0" aria-label="Timeline viewport (scroll horizontally)">
-        <div class="timelineCanvas" id="canvas"></div>
+        <div class="contextBand" id="contextBand" aria-label="Context markers">
+          <div class="contextInner" id="contextInner"></div>
+        </div>
+        <div class="canvasScroll" id="canvasScroll" aria-label="Timeline scroll area">
+          <div class="timelineCanvas" id="canvas"></div>
+        </div>
       </div>
 
       <div class="scrubber" aria-label="Timeline mini map scrubber">
@@ -62,14 +66,17 @@
     applyTheme(cfg.theme || {});
 
     const viewport = document.getElementById("viewport");
+    const canvasScroll = document.getElementById("canvasScroll");
     const canvas = document.getElementById("canvas");
+    const contextBand = document.getElementById("contextBand");
+    const contextInner = document.getElementById("contextInner");
+
     const zoomSelect = document.getElementById("zoomSelect");
     const intervalSelect = document.getElementById("intervalSelect");
     const centerSelect = document.getElementById("centerSelect");
     const readout = document.getElementById("readout");
     const miniTrack = document.getElementById("miniTrack");
     const miniWindow = document.getElementById("miniWindow");
-
 
     const rangeBegin = parseFlexibleDate(cfg.range?.begin ?? "0001-01-01", "start");
     const rangeEnd = parseFlexibleDate(cfg.range?.end ?? "0100-12-31", "end");
@@ -80,16 +87,13 @@
 
     // If the timeline span is very large, "day" zoom becomes unusable (massive px-per-day / huge scroll surface).
     // Threshold is in YEARS; adjust later or move into timeline-config.js if you want.
-
     const spanYears = Math.abs(toHistoricalYear(rangeEnd) - toHistoricalYear(rangeBegin)) + 1;
 
     const MAX_YEARS_FOR_DAY_ZOOM = 200;
     const MAX_YEARS_FOR_MONTH_ZOOM = 200;
 
-
     const allowDayZoom = spanYears <= MAX_YEARS_FOR_DAY_ZOOM;
     const allowMonthZoom = spanYears <= MAX_YEARS_FOR_MONTH_ZOOM;
-
 
     // Use one consistent px-per-day everywhere (rendering + scrolling + tick redraw).
     const TOTAL_DAYS = daysBetween(rangeBegin, rangeEnd) + 1;
@@ -99,8 +103,6 @@
     function getEffectivePxPerDay(zoom, anchorDate){
       return Math.min(getPxPerDayForView(zoom, anchorDate), MAX_PX_PER_DAY);
     }
-
-
 
     const zoomLevelsRaw = cfg.zoomLevels || ["day","month","year","decade","century","fit"];
 
@@ -113,7 +115,6 @@
     const intervalLevels = ["day","month","year","decade","century"]; // UI list only
     const defaultInterval = cfg.defaultInterval || "decade";
     const defaultZoom = cfg.defaultZoom || defaultInterval;
-
 
     let currentCenterDate = rangeBegin;
     // Track the scale/span used by the most recent full render().
@@ -134,10 +135,6 @@
     let lastTickKey = "";
     let lastTickBeginIndex = -1;
     let lastTickEndIndex = -1;
-
-    // Sticky window for year-view month ticks (prevents rebuilding every time you cross a year boundary)
-
-
 
     zoomSelect.innerHTML = "";
     for (const z of zoomLevels){
@@ -161,7 +158,6 @@
       defaultZoom;
 
     zoomSelect.value = safeDefaultZoom;
-
     intervalSelect.value = defaultInterval;
 
     populateCenterDropdown();
@@ -189,35 +185,37 @@
       scrollToCenterDate(currentCenterDate);
     });
 
-
-
     centerSelect.addEventListener("change", () => centerOn(centerSelect.value));
 
-    viewport.addEventListener("wheel", (e) => {
-      if (viewport.scrollWidth > viewport.clientWidth){
+    // Wheel scrolling applies to the scroll area
+    canvasScroll.addEventListener("wheel", (e) => {
+      if (canvasScroll.scrollWidth > canvasScroll.clientWidth){
         e.preventDefault();
-        viewport.scrollLeft += (e.deltaY + e.deltaX);
+        canvasScroll.scrollLeft += (e.deltaY + e.deltaX);
+        // Keep context band aligned
+        contextBand.scrollLeft = canvasScroll.scrollLeft;
         syncMiniWindow();
         updateReadout();
       }
     }, { passive:false });
 
     // Keep ticks/overlays correct even when scrolling via scrollbar drag, touch, or inertia.
-
     let scrollRAF = 0;
     let internalScroll = false;
     let isUpdatingReadout = false;
 
-
-    viewport.addEventListener("scroll", () => {
+    canvasScroll.addEventListener("scroll", () => {
       if (internalScroll) return;
       if (scrollRAF) cancelAnimationFrame(scrollRAF);
       scrollRAF = requestAnimationFrame(() => {
+        // Keep context band aligned
+        if (contextBand.scrollLeft !== canvasScroll.scrollLeft){
+          contextBand.scrollLeft = canvasScroll.scrollLeft;
+        }
         syncMiniWindow();
         updateReadout();
       });
     }, { passive:true });
-
 
     makeMiniMapDraggable();
 
@@ -278,14 +276,11 @@
         return { start: clampDateToRange(start), end: clampDateToRange(end) };
       }
 
-
-
       if (zoom === "year"){
         const start = makeUTCDate(ay, 0, 1);
         const end = makeUTCDate(ay, 11, 31);
         return { start: clampDateToRange(start), end: clampDateToRange(end) };
       }
-
 
       if (zoom === "decade"){
         const y0 = Math.floor(histY / 10) * 10;
@@ -296,8 +291,6 @@
         return { start: clampDateToRange(start), end: clampDateToRange(end) };
       }
 
-
-
       const c0 = Math.floor(histY / 100) * 100;
       const startAstro = histYearToAstro(c0);
       const endAstro = histYearToAstro(c0 + 99);
@@ -307,57 +300,48 @@
       return { start: clampDateToRange(start), end: clampDateToRange(end) };
     }
 
-
     function computeFitPxPerDay(){
-
       const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
-      return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, totalDays));
+      return Math.max(0.008, (canvasScroll.clientWidth - 40) / Math.max(1, totalDays));
     }
 
+    function computeZoomPxPerDay(zoom, anchorDate){
+      const span = zoomSpanAligned(anchorDate, zoom);
 
-function computeZoomPxPerDay(zoom, anchorDate){
-  const span = zoomSpanAligned(anchorDate, zoom);
+      // Use actual day count for year zoom so BCE year 0 (1 BCE)
+      // correctly handles leap-year behavior and prevents month gaps
+      const days =
+        (zoom === "year")
+          ? (daysBetween(span.start, span.end) + 1)
+          : (zoom === "century")
+            ? 36525
+            : (daysBetween(span.start, span.end) + 1);
 
-  // Use actual day count for year zoom so BCE year 0 (1 BCE)
-  // correctly handles leap-year behavior and prevents month gaps
-  const days =
-    (zoom === "year")
-      ? (daysBetween(span.start, span.end) + 1)
-      : (zoom === "century")
-        ? 36525
-        : (daysBetween(span.start, span.end) + 1);
-
-  return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, days));
-}
-
-
-
+      return Math.max(0.008, (canvasScroll.clientWidth - 40) / Math.max(1, days));
+    }
 
     function getPxPerDayForView(zoom, anchorDate){
       return (zoom === "fit") ? computeFitPxPerDay() : computeZoomPxPerDay(zoom, anchorDate);
     }
 
     function scrollToCenterDate(d){
-
       const zoomLevel = zoomSelect.value;
       const pxPerDay = getEffectivePxPerDay(zoomLevel, d);
       const centerX = dateToX(d, pxPerDay);
 
-
       internalScroll = true;
-      viewport.scrollLeft = clamp(
-        centerX - (viewport.clientWidth / 2),
+      canvasScroll.scrollLeft = clamp(
+        centerX - (canvasScroll.clientWidth / 2),
         0,
-        Math.max(0, viewport.scrollWidth - viewport.clientWidth)
+        Math.max(0, canvasScroll.scrollWidth - canvasScroll.clientWidth)
       );
+      contextBand.scrollLeft = canvasScroll.scrollLeft;
       internalScroll = false;
 
       syncMiniWindow();
       // Avoid direct recursion loops (updateReadout -> render -> scrollToCenterDate -> updateReadout).
       requestAnimationFrame(() => updateReadout());
-
     }
-
 
     function scrollToCenterCardById(eid){
       const card = canvas.querySelector(`.eventCard[data-eid="${CSS.escape(String(eid))}"]`);
@@ -368,11 +352,12 @@ function computeZoomPxPerDay(zoom, anchorDate){
       const cardCenterX = card.offsetLeft + (card.offsetWidth / 2);
 
       internalScroll = true;
-      viewport.scrollLeft = clamp(
-        cardCenterX - (viewport.clientWidth / 2),
+      canvasScroll.scrollLeft = clamp(
+        cardCenterX - (canvasScroll.clientWidth / 2),
         0,
-        Math.max(0, viewport.scrollWidth - viewport.clientWidth)
+        Math.max(0, canvasScroll.scrollWidth - canvasScroll.clientWidth)
       );
+      contextBand.scrollLeft = canvasScroll.scrollLeft;
       internalScroll = false;
 
       syncMiniWindow();
@@ -380,11 +365,11 @@ function computeZoomPxPerDay(zoom, anchorDate){
       return true;
     }
 
-
     /* ----------------- RENDER ----------------- */
 
     function render(){
       canvas.innerHTML = "";
+      contextInner.innerHTML = "";
 
       const zoomLevel = zoomSelect.value;
       const tickInterval = tickForZoom(zoomLevel);
@@ -404,8 +389,7 @@ function computeZoomPxPerDay(zoom, anchorDate){
 
       const width = Math.max(900, Math.floor(TOTAL_DAYS * pxPerDay));
       canvas.style.width = width + "px";
-
-
+      contextInner.style.width = width + "px";
 
       const barsTop = document.createElement("div");
       barsTop.className = "bars barsTop";
@@ -458,15 +442,12 @@ function computeZoomPxPerDay(zoom, anchorDate){
         cacheBeginKey = String(visBegin.getTime());
         cacheEndKey = String(visEnd.getTime());
 
-
-
       } else if (zoomLevel === "year" && interval === "month"){
         // Year view: virtualize month ticks (visible range + padding).
-        // Avoid building a huge multi-year tick DOM up front, which can freeze when switching to Year.
         const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
         const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay)));
-        const leftIndex = clamp(Math.floor(viewport.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
-        const rightIndex = clamp(Math.ceil((viewport.scrollLeft + viewport.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
+        const leftIndex = clamp(Math.floor(canvasScroll.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
+        const rightIndex = clamp(Math.ceil((canvasScroll.scrollLeft + canvasScroll.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
 
         visBegin = addDays(rangeBegin, leftIndex);
         visEnd = addDays(rangeBegin, rightIndex);
@@ -482,25 +463,19 @@ function computeZoomPxPerDay(zoom, anchorDate){
         lastTickEndIndex = rightIndex;
 
       } else {
-
-
-
-
         // Visible day index range (with padding)
         const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
         const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay)));
-        const leftIndex = clamp(Math.floor(viewport.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
-        const rightIndex = clamp(Math.ceil((viewport.scrollLeft + viewport.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
+        const leftIndex = clamp(Math.floor(canvasScroll.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
+        const rightIndex = clamp(Math.ceil((canvasScroll.scrollLeft + canvasScroll.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
 
         visBegin = addDays(rangeBegin, leftIndex);
         visEnd = addDays(rangeBegin, rightIndex);
 
-        // FIX B: cache by day-index window (robust against small float differences)
         cacheBeginKey = String(leftIndex);
         cacheEndKey = String(rightIndex);
 
         // If we haven't moved the window meaningfully, skip redraw.
-        // This makes scrolling smoother and prevents blank gaps from DOM churn.
         if (leftIndex === lastTickBeginIndex && rightIndex === lastTickEndIndex){
           return;
         }
@@ -508,7 +483,6 @@ function computeZoomPxPerDay(zoom, anchorDate){
         lastTickEndIndex = rightIndex;
       }
 
-      // FIX B: a single unified key that covers all special cases
       // pxPerDay is rounded so tiny float differences don't blow the cache.
       const pxKey = String(Math.round(pxPerDay * 1000));
       const spanKey = (lastRender && lastRender.spanKey) ? lastRender.spanKey : "";
@@ -522,18 +496,17 @@ function computeZoomPxPerDay(zoom, anchorDate){
       // Now we actually redraw:
       containerEl.innerHTML = "";
 
-      // IMPORTANT: boundary overlays (dotted lines + top/bottom pills) are appended to `canvas`,
-      // not to the ticks container. When ticks redraw during scrolling, we must remove old overlays
-      // or they "stack up" and appear in random places.
+      // Boundary overlays (dotted lines + top/bottom pills) are appended to `canvas`.
+      // When ticks redraw during scrolling, remove old overlays or they stack.
       canvas.querySelectorAll(".boundaryOverlay").forEach(el => el.remove());
 
       // Build marks
       let marks;
       if (interval === "day"){
         if (zoomLevel === "month"){
-          marks = buildDayMarksMonthView(visBegin, visEnd); // even days labeled, day 1 unlabeled tick
+          marks = buildDayMarksMonthView(visBegin, visEnd);
         } else if (zoomLevel === "day"){
-          marks = buildDayMarksDayView(visBegin, visEnd);   // full date on each tick
+          marks = buildDayMarksDayView(visBegin, visEnd);
         } else {
           marks = buildDayMarksMonthView(visBegin, visEnd);
         }
@@ -543,7 +516,6 @@ function computeZoomPxPerDay(zoom, anchorDate){
       }
 
       // Draw ticks + boundary lines/labels
-      // We also de-dupe boundary lines by using a set of day indices.
       const boundaryKey = new Set();
 
       for (const m of marks){
@@ -555,7 +527,7 @@ function computeZoomPxPerDay(zoom, anchorDate){
           (zoomLevel === "year" && interval === "month" && m.date.getUTCMonth() === 0 && m.date.getUTCDate() === 1);
 
         if (isMonthBoundary || isYearBoundary){
-          const key = daysBetween(rangeBegin, m.date); // stable unique key
+          const key = daysBetween(rangeBegin, m.date);
           if (!boundaryKey.has(key)){
             boundaryKey.add(key);
 
@@ -579,14 +551,12 @@ function computeZoomPxPerDay(zoom, anchorDate){
             // top label
             const topLbl = boundaryPill(labelText, x);
             topLbl.classList.add("boundaryOverlay");
-
             topLbl.style.top = "6px";
             canvas.appendChild(topLbl);
 
             // bottom label
             const bottomLbl = boundaryPill(labelText, x);
             bottomLbl.classList.add("boundaryOverlay");
-
             bottomLbl.style.bottom = "6px";
             canvas.appendChild(bottomLbl);
           }
@@ -634,7 +604,6 @@ function computeZoomPxPerDay(zoom, anchorDate){
         const isFirst = (dayNum === 1);
 
         if (isFirst){
-          // day 1 tick exists, label handled by boundary pills
           marks.push({ date: new Date(cur.getTime()), big:false, label:"" });
         } else {
           const even = (dayNum % 2 === 0);
@@ -668,25 +637,19 @@ function computeZoomPxPerDay(zoom, anchorDate){
       return (ay <= 0) ? (ay - 1) : ay;
     }
 
-
     function buildTickMarksAligned(begin, end, interval){
       const spans = buildIntervalSpansAligned(begin, end, interval);
       const marks = [];
 
-
-
-
       for (const sp of spans){
         marks.push({ date: sp.start, big:true, label: sp.label });
 
-        // Month ticks already have dense boundaries; the extra mid-tick doubles DOM cost.
         // Keep mid ticks for year/decade/century, but NOT for month.
         if (interval !== "day" && interval !== "month"){
           const mid = addDays(sp.start, Math.floor(daysBetween(sp.start, sp.end) / 2));
           marks.push({ date: mid, big:false, label:"" });
         }
       }
-
 
       marks.sort((a,b) => a.date - b.date);
       return marks;
@@ -697,11 +660,8 @@ function computeZoomPxPerDay(zoom, anchorDate){
       let cur = snapToBoundary(begin, interval);
       const spans = [];
 
-
-      // Safety guard: prevents rare date-math edge cases from freezing the page
-      // (e.g., if cur fails to advance for some boundary condition).
+      // Safety guard
       let safety = 0;
-
 
       while (cur <= end){
         if (++safety > 5000){
@@ -713,7 +673,7 @@ function computeZoomPxPerDay(zoom, anchorDate){
         const last = intervalEnd(start, interval);
 
         // If the natural interval end is beyond the requested window,
-        // emit ONE truncated span and stop (prevents duplicate "Feb", etc.).
+        // emit ONE truncated span and stop.
         if (last > end){
           spans.push({ start, end, label: intervalLabel(start, interval) });
           break;
@@ -724,7 +684,6 @@ function computeZoomPxPerDay(zoom, anchorDate){
 
         const next = addDays(last, 1);
 
-        // Extra safety: if date didn't advance, break to avoid infinite loop.
         if (next.getTime() === cur.getTime()){
           console.warn("Timeline: interval span did not advance", { interval, cur, endSpan: last });
           break;
@@ -733,15 +692,12 @@ function computeZoomPxPerDay(zoom, anchorDate){
         cur = next;
       }
 
-
       return spans;
     }
 
-
-
     function snapToBoundary(d, interval){
-      const ay = d.getUTCFullYear();          // astronomical year from JS Date
-      const histY = astroYearToHist(ay);      // historical year (no year 0)
+      const ay = d.getUTCFullYear();
+      const histY = astroYearToHist(ay);
       const m = d.getUTCMonth();
       const day = d.getUTCDate();
 
@@ -762,15 +718,12 @@ function computeZoomPxPerDay(zoom, anchorDate){
         return makeUTCDate(startAstro, 0, 1);
       }
 
-      // day
       return makeUTCDate(ay, m, day);
     }
 
-
-
     function intervalEnd(start, interval){
-      const ay = start.getUTCFullYear();      // astronomical year
-      const histY = astroYearToHist(ay);      // historical year (no year 0)
+      const ay = start.getUTCFullYear();
+      const histY = astroYearToHist(ay);
       const m = start.getUTCMonth();
 
       if (interval === "month"){
@@ -788,24 +741,16 @@ function computeZoomPxPerDay(zoom, anchorDate){
         return makeUTCDate(endAstro, 11, 31);
       }
 
-      // century
       const startHist = Math.floor(histY / 100) * 100;
       const endHist = startHist + 99;
       const endAstro = histYearToAstro(endHist);
       return makeUTCDate(endAstro, 11, 31);
     }
 
-
     /* ----------------- CONTEXT + EVENTS ----------------- */
-
 
     function renderContext(pxPerDay){
       const ctx = Array.isArray(cfg.contextEvents) ? cfg.contextEvents : [];
-
-      // Keep context tags INSIDE the viewport (overflow-y is hidden),
-      // and reserve space above cards via --safeTop in CSS.
-      const TAG_TOP = 6; // px
-      const GAP_BELOW_TAG = 4; // px
 
       for (const c of ctx){
         const d = parseFlexibleDate(c.date, "anchor");
@@ -813,29 +758,30 @@ function computeZoomPxPerDay(zoom, anchorDate){
 
         const x = dateToX(d, pxPerDay);
 
+        // Tag in context band
         const tag = document.createElement("div");
         tag.className = "contextTag";
         tag.style.left = x + "px";
-        tag.style.top = TAG_TOP + "px";
-        tag.style.zIndex = "2";
         tag.textContent = c.label || "";
-        canvas.appendChild(tag);
+        contextInner.appendChild(tag);
 
-        // Start the dotted line at the BOTTOM of the label pill (not through it)
-        const lineTop = tag.offsetTop + tag.offsetHeight + GAP_BELOW_TAG;
+        // Place tag so its bottom sits near the bottom of the band
+        // (so the dotted line begins directly below the pill visually)
+        const padBottom = 6;
+        const top = Math.max(6, contextBand.clientHeight - tag.offsetHeight - padBottom);
+        tag.style.top = top + "px";
+
+        // Dotted line in canvas: starts at top of scroll area (just below band)
+        const lineTop = 0;
 
         const line = document.createElement("div");
         line.className = "contextLine";
         line.style.left = x + "px";
         line.style.top = lineTop + "px";
         line.style.height = Math.max(0, (getBarCenterY() - lineTop)) + "px";
-        line.style.zIndex = "1";
         canvas.appendChild(line);
       }
     }
-
-
-
 
     function renderEventBars(barsEl, pxPerDay, laneSide){
       const events = Array.isArray(cfg.events) ? cfg.events : [];
@@ -1086,10 +1032,7 @@ function computeZoomPxPerDay(zoom, anchorDate){
       centerSelect.value = hasActive ? active : "__begin__";
     }
 
-  
-
     function centerOn(id){
-      // Start of timeline (no event card to center on)
       if (id === "__begin__"){
         currentCenterDate = rangeBegin;
         render();
@@ -1107,7 +1050,6 @@ function computeZoomPxPerDay(zoom, anchorDate){
       currentCenterDate = anchor;
       render();
 
-      // Center on the portrait/card, not just the date.
       requestAnimationFrame(() => {
         const ok = scrollToCenterCardById(ev.id || id);
         if (!ok){
@@ -1116,12 +1058,10 @@ function computeZoomPxPerDay(zoom, anchorDate){
       });
     }
 
-
-
     function syncMiniWindow(){
-      const total = Math.max(1, viewport.scrollWidth - viewport.clientWidth);
-      const pLeft = (total === 0) ? 0 : (viewport.scrollLeft / total);
-      const pW = viewport.clientWidth / Math.max(1, viewport.scrollWidth);
+      const total = Math.max(1, canvasScroll.scrollWidth - canvasScroll.clientWidth);
+      const pLeft = (total === 0) ? 0 : (canvasScroll.scrollLeft / total);
+      const pW = canvasScroll.clientWidth / Math.max(1, canvasScroll.scrollWidth);
 
       const trackW = miniTrack.clientWidth;
       miniWindow.style.left = (pLeft * trackW) + "px";
@@ -1152,8 +1092,12 @@ function computeZoomPxPerDay(zoom, anchorDate){
         miniWindow.style.left = left + "px";
 
         const p = (trackW - w) <= 0 ? 0 : (left / (trackW - w));
-        const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-        viewport.scrollLeft = p * maxScroll;
+        const maxScroll = Math.max(0, canvasScroll.scrollWidth - canvasScroll.clientWidth);
+
+        internalScroll = true;
+        canvasScroll.scrollLeft = p * maxScroll;
+        contextBand.scrollLeft = canvasScroll.scrollLeft;
+        internalScroll = false;
 
         updateReadout();
       });
@@ -1170,73 +1114,57 @@ function computeZoomPxPerDay(zoom, anchorDate){
         miniWindow.style.left = left + "px";
 
         const p = (miniTrack.clientWidth - w) <= 0 ? 0 : (left / (miniTrack.clientWidth - w));
-        const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-        viewport.scrollLeft = p * maxScroll;
+        const maxScroll = Math.max(0, canvasScroll.scrollWidth - canvasScroll.clientWidth);
+
+        internalScroll = true;
+        canvasScroll.scrollLeft = p * maxScroll;
+        contextBand.scrollLeft = canvasScroll.scrollLeft;
+        internalScroll = false;
 
         syncMiniWindow();
         updateReadout();
       });
     }
 
+    function updateReadout(){
+      if (isUpdatingReadout) return;
+      isUpdatingReadout = true;
+      try {
+        const zoomLevel = zoomSelect.value;
 
+        const pxPerDayEstimate =
+          (lastRender && lastRender.pxPerDay)
+            ? lastRender.pxPerDay
+            : getEffectivePxPerDay(zoomLevel, currentCenterDate);
 
-function updateReadout(){
-  if (isUpdatingReadout) return;
-  isUpdatingReadout = true;
-  try {
-    const zoomLevel = zoomSelect.value;
+        const centerCanvasX = canvasScroll.scrollLeft + (canvasScroll.clientWidth / 2);
 
-    // Use the SAME scale the canvas was rendered with when possible.
-    // This prevents date math from drifting when "fit-one-unit" zooms (year/century) change spans.
-    const pxPerDayEstimate =
-      (lastRender && lastRender.pxPerDay)
-        ? lastRender.pxPerDay
-        : getEffectivePxPerDay(zoomLevel, currentCenterDate);
+        const dayIndex = Math.floor(centerCanvasX / Math.max(0.000001, pxPerDayEstimate));
+        const d = clampDateToRange(addDays(rangeBegin, dayIndex));
 
-    const centerCanvasX = viewport.scrollLeft + (viewport.clientWidth / 2);
+        currentCenterDate = d;
 
-    // Floor avoids boundary jitter.
-    const dayIndex = Math.floor(centerCanvasX / Math.max(0.000001, pxPerDayEstimate));
-    const d = clampDateToRange(addDays(rangeBegin, dayIndex));
+        readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
+        syncMiniWindow();
 
-    currentCenterDate = d;
+        const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
+        const needsSpanRerender = false;
 
-    readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
-    syncMiniWindow();
+        if (zoomLevel === "month" || zoomLevel === "day"){
+          lastTickKey = "";
+          render();
+          return;
+        }
 
+        const ticksEl = canvas.querySelector(".ticks");
+        const tickInterval = intervalSelect.value;
+        const pxPerDay = lastRender.pxPerDay ?? getEffectivePxPerDay(zoomLevel, currentCenterDate);
+        if (ticksEl) renderTicksVisible(ticksEl, tickInterval, pxPerDay);
 
-
-    // OPTION 1: Never full-rerender on scroll in year view.
-    // Intervals (bars) and cards (pictures) are already rendered across the whole canvas;
-    // while scrolling we only need to update ticks + readout.
-    const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
-    const needsSpanRerender = false;
-
-    // (Intentionally disabled) span-based rerender while scrolling:
-    // if (needsSpanRerender && newSpanKey !== lastRender.spanKey){ ... }
-
-
-
-    // Month/day zoom: keep your behavior (full re-render avoids dropouts).
-    if (zoomLevel === "month" || zoomLevel === "day"){
-      // Reset tick cache because we're going to rebuild
-      lastTickKey = "";
-      render();
-      return;
+      } finally {
+        isUpdatingReadout = false;
+      }
     }
-
-    // Otherwise, just redraw visible ticks/overlays using the SAME scale as the last full render.
-    const ticksEl = canvas.querySelector(".ticks");
-    const tickInterval = intervalSelect.value;
-    const pxPerDay = lastRender.pxPerDay ?? getEffectivePxPerDay(zoomLevel, currentCenterDate);
-    if (ticksEl) renderTicksVisible(ticksEl, tickInterval, pxPerDay);
-
-  } finally {
-    isUpdatingReadout = false;
-  }
-}
-
-
 
     /* ----------------- UTILITIES ----------------- */
 
@@ -1280,18 +1208,16 @@ function updateReadout(){
       return (y <= -1) ? (y + 1) : y;
     }
 
-
-function makeUTCDate(fullYear, monthIndex, day){
-  // Build from a stable base, then set year/month/day explicitly.
-  // This avoids JS Date's 0..99 => 1900..1999 behavior and fixes day=0 month-end math
-  // (critical around astronomical year 0 = 1 BCE).
-  const d = new Date(Date.UTC(0, 0, 1)); // Jan 1, 1900
-  d.setUTCFullYear(fullYear);
-  d.setUTCMonth(monthIndex); // handles overflow (e.g., monthIndex = 12)
-  d.setUTCDate(day);         // day=0 correctly becomes last day of previous month
-  return d;
-}
-
+    function makeUTCDate(fullYear, monthIndex, day){
+      // Build from a stable base, then set year/month/day explicitly.
+      // This avoids JS Date's 0..99 => 1900..1999 behavior and fixes day=0 month-end math
+      // (critical around astronomical year 0 = 1 BCE).
+      const d = new Date(Date.UTC(0, 0, 1)); // Jan 1, 1900
+      d.setUTCFullYear(fullYear);
+      d.setUTCMonth(monthIndex); // handles overflow (e.g., monthIndex = 12)
+      d.setUTCDate(day);         // day=0 correctly becomes last day of previous month
+      return d;
+    }
 
     function toHistoricalYear(d){
       const y = d.getUTCFullYear(); // astronomical
@@ -1392,9 +1318,6 @@ function makeUTCDate(fullYear, monthIndex, day){
         return (histY < 0) ? `${Math.abs(histY)} BCE` : `${histY}`;
       }
 
-
-      // Decade/Century hashes should be labeled like 0,10,20...
-      // BUT suppress visible label for 0 (there was no year 0).
       if (interval === "decade"){
         const d0 = Math.floor(histY / 10) * 10;
         if (d0 === 0) return ""; // hide "0"
@@ -1405,8 +1328,6 @@ function makeUTCDate(fullYear, monthIndex, day){
       if (c0 === 0) return ""; // hide "0"
       return (c0 < 0) ? `${Math.abs(c0)} BCE` : `${c0}`;
     }
-
-
   }
 
   if (document.readyState === "loading") {
