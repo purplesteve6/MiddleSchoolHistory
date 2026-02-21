@@ -694,8 +694,8 @@
       const spans = [];
 
 
-      // Safety guard: prevents rare date-math edge cases from freezing the page
-      // (e.g., if cur fails to advance for some boundary condition).
+      // Build spans in a way that always advances across astronomical year 0.
+      // Month spans advance by month boundaries (not by adding days), which prevents BCE/CE gaps.
       let safety = 0;
 
       while (cur <= end){
@@ -709,9 +709,18 @@
         const endSpan = (last > end) ? end : last;
         spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
 
-        const next = addDays(endSpan, 1);
+        let next;
 
-        // Extra safety: if date didn't advance, break to avoid infinite loop.
+        if (interval === "month"){
+          // Step to the first day of the next month in UTC (handles year 0 cleanly).
+          const y = start.getUTCFullYear();
+          const m = start.getUTCMonth();
+          next = makeUTCDate(y, m + 1, 1);
+        } else {
+          // For year/decade/century, day stepping is fine.
+          next = addDays(endSpan, 1);
+        }
+
         if (next.getTime() === cur.getTime()){
           console.warn("Timeline: interval span did not advance", { interval, cur, endSpan });
           break;
@@ -719,6 +728,7 @@
 
         cur = next;
       }
+
 
 
       return spans;
