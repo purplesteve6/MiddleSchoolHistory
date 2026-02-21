@@ -497,8 +497,11 @@
       containerEl.innerHTML = "";
 
       // Boundary overlays (dotted lines + top/bottom pills) are appended to `canvas`.
+      // Boundary vertical lines are ALSO appended to `contextInner` so they reach the top of the viewport.
       // When ticks redraw during scrolling, remove old overlays or they stack.
       canvas.querySelectorAll(".boundaryOverlay").forEach(el => el.remove());
+      contextInner.querySelectorAll(".boundaryOverlay").forEach(el => el.remove());
+
 
       // Build marks
       let marks;
@@ -531,10 +534,25 @@
           if (!boundaryKey.has(key)){
             boundaryKey.add(key);
 
-            // dotted full-height line
+
+            // dotted full-height line (split across context band + canvas so it reaches top of viewport)
+
+            // 1) Context-band segment
+            const lineTop = document.createElement("div");
+            lineTop.className = "boundaryOverlay";
+            lineTop.style.position = "absolute";
+            lineTop.style.left = x + "px";
+            lineTop.style.top = "0";
+            lineTop.style.bottom = "0";
+            lineTop.style.width = "0";
+            lineTop.style.borderLeft = "2px dotted rgba(255,216,74,0.85)";
+            lineTop.style.zIndex = "8";
+            lineTop.style.pointerEvents = "none";
+            contextInner.appendChild(lineTop);
+
+            // 2) Canvas segment
             const line = document.createElement("div");
             line.className = "boundaryOverlay";
-
             line.style.position = "absolute";
             line.style.left = x + "px";
             line.style.top = "0";
