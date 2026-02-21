@@ -351,6 +351,29 @@
 
     }
 
+
+    function scrollToCenterCardById(eid){
+      const card = canvas.querySelector(`.eventCard[data-eid="${CSS.escape(String(eid))}"]`);
+      if (!card) return false;
+
+      // card.offsetLeft is the element's left edge within the canvas.
+      // card.offsetWidth centers on the visual card (and therefore the portrait).
+      const cardCenterX = card.offsetLeft + (card.offsetWidth / 2);
+
+      internalScroll = true;
+      viewport.scrollLeft = clamp(
+        cardCenterX - (viewport.clientWidth / 2),
+        0,
+        Math.max(0, viewport.scrollWidth - viewport.clientWidth)
+      );
+      internalScroll = false;
+
+      syncMiniWindow();
+      requestAnimationFrame(() => updateReadout());
+      return true;
+    }
+
+
     /* ----------------- RENDER ----------------- */
 
     function render(){
@@ -983,8 +1006,20 @@
     function centerOn(id){
       if (id === "__begin__"){
         currentCenterDate = rangeBegin;
-        render();
-        scrollToCenterDate(currentCenterDate);
+
+      currentCenterDate = anchor;
+      render();
+
+      // Center on the actual card (portrait), not merely the anchor date.
+      // Wait one frame so the DOM exists and layout has computed offsets.
+      requestAnimationFrame(() => {
+        const ok = scrollToCenterCardById(ev.id || id);
+        if (!ok){
+          // Fallback if card not found for any reason
+          scrollToCenterDate(currentCenterDate);
+        }
+      });
+
         return;
       }
 
