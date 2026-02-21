@@ -1181,14 +1181,19 @@ function buildTickMarksAligned(begin, end, interval){
       }
 
 
-      // Decade/Century hashes should be labeled like 0,10,20... (the "0s/10s/20s" style).
+      // Decade/Century hashes should be labeled like 0,10,20...
+      // BUT suppress visible label for 0 (there was no year 0).
       if (interval === "decade"){
         const d0 = Math.floor(histY / 10) * 10;
+        if (d0 === 0) return ""; // hide "0"
         return (d0 < 0) ? `${Math.abs(d0)} BCE` : `${d0}`;
       }
 
       const c0 = Math.floor(histY / 100) * 100;
+      if (c0 === 0) return ""; // hide "0"
       return (c0 < 0) ? `${Math.abs(c0)} BCE` : `${c0}`;
+ 
+
 
     }
 
