@@ -721,6 +721,8 @@
 
         cur = next;
 
+      }
+
 
       return spans;
     }
