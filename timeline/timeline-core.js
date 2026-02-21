@@ -195,6 +195,8 @@
 
     let scrollRAF = 0;
     let internalScroll = false;
+    let isUpdatingReadout = false;
+
 
     viewport.addEventListener("scroll", () => {
       if (internalScroll) return;
@@ -1000,7 +1002,10 @@ function buildTickMarksAligned(begin, end, interval){
 
 
     function updateReadout(){
-      const zoomLevel = zoomSelect.value;
+      if (isUpdatingReadout) return;
+      isUpdatingReadout = true;
+      try {
+        const zoomLevel = zoomSelect.value;
 
       // 1) Estimate center date using the current scale (may be stale if we crossed into a new zoom span)
       const pxPerDayEstimate = getEffectivePxPerDay(zoomLevel, currentCenterDate);
@@ -1042,7 +1047,11 @@ function buildTickMarksAligned(begin, end, interval){
       const tickInterval = intervalSelect.value;
       const pxPerDay = lastRender.pxPerDay ?? getEffectivePxPerDay(zoomLevel, currentCenterDate);
       if (ticksEl) renderTicksVisible(ticksEl, tickInterval, pxPerDay);
+      } finally {
+        isUpdatingReadout = false;
+      }
     }
+
 
 
 
