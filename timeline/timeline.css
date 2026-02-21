@@ -49,8 +49,8 @@
   --avatar: 110px;
   --gapToPortraitEdge: 120px;
 
-  /* Prevent top-lane cards from entering the top “context label” band */
-  --safeTop: 62px;
+  /* Keep only a minimal safety clamp so the top lane spacing is not compressed */
+  --safeTop: 12px;
 
   --stackGap: 10px;
   --metaH: 44px;

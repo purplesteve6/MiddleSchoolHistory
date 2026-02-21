@@ -817,7 +817,7 @@ function computeZoomPxPerDay(zoom, anchorDate){
         tag.className = "contextTag";
         tag.style.left = x + "px";
         tag.style.top = TAG_TOP + "px";
-        tag.style.zIndex = "12";
+        tag.style.zIndex = "2";
         tag.textContent = c.label || "";
         canvas.appendChild(tag);
 
@@ -829,7 +829,7 @@ function computeZoomPxPerDay(zoom, anchorDate){
         line.style.left = x + "px";
         line.style.top = lineTop + "px";
         line.style.height = Math.max(0, (getBarCenterY() - lineTop)) + "px";
-        line.style.zIndex = "11";
+        line.style.zIndex = "1";
         canvas.appendChild(line);
       }
     }
