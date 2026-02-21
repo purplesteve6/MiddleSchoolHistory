@@ -129,6 +129,11 @@
       return `${sp.start.getTime()}-${sp.end.getTime()}`;
     }
 
+    // Tick render caching (prevents heavy DOM churn on small scroll deltas)
+    let lastTickKey = "";
+    let lastTickBeginIndex = -1;
+    let lastTickEndIndex = -1;
+
 
     zoomSelect.innerHTML = "";
     for (const z of zoomLevels){
@@ -174,6 +179,8 @@
       }
 
       syncIntervalToZoom();
+      // Reset tick cache because scale/span changes
+      lastTickKey = "";
       render();
       scrollToCenterDate(currentCenterDate);
     });
@@ -211,6 +218,8 @@
     makeMiniMapDraggable();
 
     window.addEventListener("resize", () => {
+      // Reset tick cache because viewport width affects pxPerDay
+      lastTickKey = "";
       render();
       scrollToCenterDate(currentCenterDate);
       requestAnimationFrame(() => {
@@ -301,7 +310,15 @@
 
     function computeZoomPxPerDay(zoom, anchorDate){
       const span = zoomSpanAligned(anchorDate, zoom);
-      const days = daysBetween(span.start, span.end) + 1;
+
+      // FIX C: Keep year scale stable (avoid leap-year jitter that can cause rerender thrash)
+      // We intentionally treat all years as 365 days for pxPerDay calculations.
+      // (The *positions* still use real dates; this only stabilizes the viewing scale.)
+      const days =
+        (zoom === "year")
+          ? 365
+          : (daysBetween(span.start, span.end) + 1);
+
       return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, days));
     }
 
@@ -339,15 +356,17 @@
       const tickInterval = tickForZoom(zoomLevel);
       intervalSelect.value = tickInterval;
 
-
-
       const pxPerDay = getEffectivePxPerDay(zoomLevel, currentCenterDate);
 
       // Record the scale/span used for this render so scroll tick redraws stay aligned.
       lastRender.zoom = zoomLevel;
       lastRender.spanKey = spanKeyFor(zoomLevel, currentCenterDate);
-      lastRender.pxPerDay = pxPerDay; 
+      lastRender.pxPerDay = pxPerDay;
 
+      // Reset tick cache because we rebuilt the whole canvas
+      lastTickKey = "";
+      lastTickBeginIndex = -1;
+      lastTickEndIndex = -1;
 
       const width = Math.max(900, Math.floor(TOTAL_DAYS * pxPerDay));
       canvas.style.width = width + "px";
@@ -387,31 +406,30 @@
     }
 
     function renderTicksVisible(containerEl, interval, pxPerDay){
-      containerEl.innerHTML = "";
-
-      // IMPORTANT: boundary overlays (dotted lines + top/bottom pills) are appended to `canvas`,
-      // not to the ticks container. When ticks redraw during scrolling, we must remove old overlays
-      // or they "stack up" and appear in random places.
-      canvas.querySelectorAll(".boundaryOverlay").forEach(el => el.remove());
       const zoomLevel = zoomSelect.value;
 
       // IMPORTANT:
-      // Month zoom: we render ONLY the aligned month span (prevents “day 1 of neighbor month” drifting into mid-month).
-      // Year zoom: we still render within visible range, but spans are aligned to true month boundaries.
+      // Month zoom: render ONLY aligned month span.
+      // Year zoom: render ONLY aligned year span for month ticks.
       let visBegin, visEnd;
 
+      // For caching, track a stable begin/end key.
+      let cacheBeginKey = "";
+      let cacheEndKey = "";
 
       if (zoomLevel === "month" && interval === "day"){
         const span = zoomSpanAligned(currentCenterDate, "month");
         visBegin = span.start;
         visEnd = span.end;
+        cacheBeginKey = String(visBegin.getTime());
+        cacheEndKey = String(visEnd.getTime());
 
       } else if (zoomLevel === "year" && interval === "month"){
-        // IMPORTANT: In year zoom, only render month ticks for the aligned year span.
-        // This prevents huge mark generation/freezes near the BCE/CE boundary.
         const span = zoomSpanAligned(currentCenterDate, "year");
         visBegin = span.start;
         visEnd = span.end;
+        cacheBeginKey = String(visBegin.getTime());
+        cacheEndKey = String(visEnd.getTime());
 
       } else {
         // Visible day index range (with padding)
@@ -419,9 +437,41 @@
         const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay)));
         const leftIndex = clamp(Math.floor(viewport.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
         const rightIndex = clamp(Math.ceil((viewport.scrollLeft + viewport.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
+
         visBegin = addDays(rangeBegin, leftIndex);
         visEnd = addDays(rangeBegin, rightIndex);
+
+        // FIX B: cache by day-index window (robust against small float differences)
+        cacheBeginKey = String(leftIndex);
+        cacheEndKey = String(rightIndex);
+
+        // If we haven't moved the window meaningfully, skip redraw.
+        // This makes scrolling smoother and prevents blank gaps from DOM churn.
+        if (leftIndex === lastTickBeginIndex && rightIndex === lastTickEndIndex){
+          return;
+        }
+        lastTickBeginIndex = leftIndex;
+        lastTickEndIndex = rightIndex;
       }
+
+      // FIX B: a single unified key that covers all special cases
+      // pxPerDay is rounded so tiny float differences don't blow the cache.
+      const pxKey = String(Math.round(pxPerDay * 1000));
+      const spanKey = (lastRender && lastRender.spanKey) ? lastRender.spanKey : "";
+      const tickKey = `${zoomLevel}|${interval}|${pxKey}|${spanKey}|${cacheBeginKey}|${cacheEndKey}`;
+
+      if (tickKey === lastTickKey){
+        return;
+      }
+      lastTickKey = tickKey;
+
+      // Now we actually redraw:
+      containerEl.innerHTML = "";
+
+      // IMPORTANT: boundary overlays (dotted lines + top/bottom pills) are appended to `canvas`,
+      // not to the ticks container. When ticks redraw during scrolling, we must remove old overlays
+      // or they "stack up" and appear in random places.
+      canvas.querySelectorAll(".boundaryOverlay").forEach(el => el.remove());
 
       // Build marks
       let marks;
@@ -456,7 +506,6 @@
             boundaryKey.add(key);
 
             // dotted full-height line
-
             const line = document.createElement("div");
             line.className = "boundaryOverlay";
 
@@ -566,9 +615,7 @@
     }
 
 
-    
-
-function buildTickMarksAligned(begin, end, interval){
+    function buildTickMarksAligned(begin, end, interval){
       const spans = buildIntervalSpansAligned(begin, end, interval);
       const marks = [];
       for (const sp of spans){
@@ -1040,13 +1087,23 @@ function updateReadout(){
     const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
     const needsSpanRerender = (zoomLevel === "century" || zoomLevel === "year");
 
+    // FIX A: if a span-based rerender happens during scrolling, immediately re-center after render
+    // to prevent spanKey flip/flop thrash (especially across BCE/CE).
     if (needsSpanRerender && newSpanKey !== lastRender.spanKey){
+      const keep = currentCenterDate;
+      // Reset tick cache because we're going to rebuild
+      lastTickKey = "";
       render();
+      requestAnimationFrame(() => {
+        scrollToCenterDate(keep);
+      });
       return;
     }
 
     // Month/day zoom: keep your behavior (full re-render avoids dropouts).
     if (zoomLevel === "month" || zoomLevel === "day"){
+      // Reset tick cache because we're going to rebuild
+      lastTickKey = "";
       render();
       return;
     }
@@ -1061,9 +1118,6 @@ function updateReadout(){
     isUpdatingReadout = false;
   }
 }
-
-
-
 
 
 
@@ -1226,9 +1280,6 @@ function updateReadout(){
       const c0 = Math.floor(histY / 100) * 100;
       if (c0 === 0) return ""; // hide "0"
       return (c0 < 0) ? `${Math.abs(c0)} BCE` : `${c0}`;
- 
-
-
     }
 
 
