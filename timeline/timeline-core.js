@@ -798,8 +798,15 @@ function computeZoomPxPerDay(zoom, anchorDate){
 
     /* ----------------- CONTEXT + EVENTS ----------------- */
 
+
     function renderContext(pxPerDay){
       const ctx = Array.isArray(cfg.contextEvents) ? cfg.contextEvents : [];
+
+      // Move context tags UP so they don't collide with top-lane event text.
+      // Also start the dotted line higher so it becomes longer.
+      const TAG_TOP = -18;   // px
+      const LINE_TOP = 6;    // px
+
       for (const c of ctx){
         const d = parseFlexibleDate(c.date, "anchor");
         if (!d) continue;
@@ -809,16 +816,21 @@ function computeZoomPxPerDay(zoom, anchorDate){
         const tag = document.createElement("div");
         tag.className = "contextTag";
         tag.style.left = x + "px";
+        tag.style.top = TAG_TOP + "px";
+        tag.style.zIndex = "12";
         tag.textContent = c.label || "";
         canvas.appendChild(tag);
 
         const line = document.createElement("div");
         line.className = "contextLine";
         line.style.left = x + "px";
-        line.style.height = (getBarCenterY() - 26) + "px";
+        line.style.top = LINE_TOP + "px";
+        line.style.height = Math.max(0, (getBarCenterY() - LINE_TOP)) + "px";
+        line.style.zIndex = "11";
         canvas.appendChild(line);
       }
     }
+
 
     function renderEventBars(barsEl, pxPerDay, laneSide){
       const events = Array.isArray(cfg.events) ? cfg.events : [];
