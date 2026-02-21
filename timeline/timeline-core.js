@@ -1263,17 +1263,11 @@ function updateReadout(){
       return (y <= -1) ? (y + 1) : y;
     }
 
-
-function makeUTCDate(fullYear, monthIndex, day){
-  // Build from a stable base, then set year/month/day explicitly.
-  // This avoids JS Date's 0..99 => 1900..1999 behavior and fixes day=0 month-end math
-  // (critical around astronomical year 0 = 1 BCE).
-  const d = new Date(Date.UTC(0, 0, 1)); // Jan 1, 1900
-  d.setUTCFullYear(fullYear);
-  d.setUTCMonth(monthIndex); // handles overflow (e.g., monthIndex = 12)
-  d.setUTCDate(day);         // day=0 correctly becomes last day of previous month
-  return d;
-}
+    function makeUTCDate(fullYear, monthIndex, day){
+      const d = new Date(Date.UTC(0, monthIndex, day));
+      d.setUTCFullYear(fullYear);
+      return d;
+    }
 
 
     function toHistoricalYear(d){
