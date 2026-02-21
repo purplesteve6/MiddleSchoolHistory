@@ -134,6 +134,9 @@
     let lastTickBeginIndex = -1;
     let lastTickEndIndex = -1;
 
+    // Sticky window for year-view month ticks (prevents rebuilding every time you cross a year boundary)
+    let yearTickWindow = null; // { startAy: number, endAy: number }
+
 
     zoomSelect.innerHTML = "";
     for (const z of zoomLevels){
@@ -451,23 +454,37 @@
         cacheBeginKey = String(visBegin.getTime());
         cacheEndKey = String(visEnd.getTime());
 
+
+
       } else if (zoomLevel === "year" && interval === "month"){
         const span = zoomSpanAligned(currentCenterDate, "year");
-
-        // Buffer year view ticks so fast scrolling doesn't outrun rendering.
-        // Render 5 years behind and 5 years ahead of the current aligned year.
         const ay = span.start.getUTCFullYear(); // astronomical year
-        const beginBuf = clampDateToRange(makeUTCDate(ay - 5, 0, 1));
-        const endBuf   = clampDateToRange(makeUTCDate(ay + 5, 11, 31));
+
+        // Sticky buffered window: render ±5 years, but only SHIFT the window when we get near its edge.
+        // This prevents a full tick rebuild every single year boundary.
+        const BUFFER = 5;          // years behind/ahead
+        const EDGE = 2;            // shift window when within 2 years of an edge
+
+        if (!yearTickWindow){
+          yearTickWindow = { startAy: ay - BUFFER, endAy: ay + BUFFER };
+        } else if (ay < (yearTickWindow.startAy + EDGE) || ay > (yearTickWindow.endAy - EDGE)){
+          yearTickWindow = { startAy: ay - BUFFER, endAy: ay + BUFFER };
+        }
+
+        const beginBuf = clampDateToRange(makeUTCDate(yearTickWindow.startAy, 0, 1));
+        const endBuf   = clampDateToRange(makeUTCDate(yearTickWindow.endAy, 11, 31));
 
         visBegin = beginBuf;
         visEnd = endBuf;
 
-        cacheBeginKey = String(visBegin.getTime());
-        cacheEndKey = String(visEnd.getTime());
-
+        // Cache keys should be based on the WINDOW, not the current year, so we don't rebuild constantly.
+        cacheBeginKey = `YWIN:${yearTickWindow.startAy}`;
+        cacheEndKey   = `YWIN:${yearTickWindow.endAy}`;
 
       } else {
+
+
+
         // Visible day index range (with padding)
         const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
         const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay)));
