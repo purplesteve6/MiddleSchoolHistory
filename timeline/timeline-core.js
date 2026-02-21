@@ -708,8 +708,8 @@
         const start = new Date(cur.getTime());
         const last = intervalEnd(start, interval);
         const endSpan = (last > end) ? end : last;
+
         spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
-        cur = addDays(endSpan, 1);
 
         const next = addDays(endSpan, 1);
 
@@ -720,7 +720,6 @@
         }
 
         cur = next;
-      }
 
 
       return spans;
