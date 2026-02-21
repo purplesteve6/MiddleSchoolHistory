@@ -1,4 +1,4 @@
-@ -1,1362 +1,1359 @@
+
 (function(){
   function safeInit(){
     try {
@@ -136,7 +136,6 @@
     let lastTickEndIndex = -1;
 
     // Sticky window for year-view month ticks (prevents rebuilding every time you cross a year boundary)
-    let yearTickWindow = null; // { startAy: number, endAy: number }
 
 
 
@@ -459,19 +458,6 @@
 
 
       } else if (zoomLevel === "year" && interval === "month"){
-        const span = zoomSpanAligned(currentCenterDate, "year");
-        const ay = span.start.getUTCFullYear(); // astronomical year
-
-        // Sticky buffered window: render ±5 years, but only SHIFT the window when we get near its edge.
-        // This prevents a full tick rebuild every single year boundary.
-        const BUFFER = 5;          // years behind/ahead
-        const EDGE = 2;            // shift window when within 2 years of an edge
-
-        if (!yearTickWindow){
-          yearTickWindow = { startAy: ay - BUFFER, endAy: ay + BUFFER };
-        } else if (ay < (yearTickWindow.startAy + EDGE) || ay > (yearTickWindow.endAy - EDGE)){
-          yearTickWindow = { startAy: ay - BUFFER, endAy: ay + BUFFER };
-        }
         // Year view: virtualize month ticks (visible range + padding).
         // Avoid building a huge multi-year tick DOM up front, which can freeze when switching to Year.
         const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
@@ -479,19 +465,12 @@
         const leftIndex = clamp(Math.floor(viewport.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
         const rightIndex = clamp(Math.ceil((viewport.scrollLeft + viewport.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
 
-        const beginBuf = clampDateToRange(makeUTCDate(yearTickWindow.startAy, 0, 1));
-        const endBuf   = clampDateToRange(makeUTCDate(yearTickWindow.endAy, 11, 31));
         visBegin = addDays(rangeBegin, leftIndex);
         visEnd = addDays(rangeBegin, rightIndex);
 
-        visBegin = beginBuf;
-        visEnd = endBuf;
         cacheBeginKey = String(leftIndex);
         cacheEndKey = String(rightIndex);
 
-        // Cache keys should be based on the WINDOW, not the current year, so we don't rebuild constantly.
-        cacheBeginKey = `YWIN:${yearTickWindow.startAy}`;
-        cacheEndKey   = `YWIN:${yearTickWindow.endAy}`;
         // If we haven't moved the window meaningfully, skip redraw.
         if (leftIndex === lastTickBeginIndex && rightIndex === lastTickEndIndex){
           return;
@@ -715,13 +694,34 @@
       let cur = snapToBoundary(begin, interval);
       const spans = [];
 
+
+      // Safety guard: prevents rare date-math edge cases from freezing the page
+      // (e.g., if cur fails to advance for some boundary condition).
+      let safety = 0;
+
       while (cur <= end){
+        if (++safety > 5000){
+          console.warn("Timeline: interval span loop safety-break", { interval, begin, end, cur });
+          break;
+        }
+
         const start = new Date(cur.getTime());
         const last = intervalEnd(start, interval);
         const endSpan = (last > end) ? end : last;
         spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
         cur = addDays(endSpan, 1);
+
+        const next = addDays(endSpan, 1);
+
+        // Extra safety: if date didn't advance, break to avoid infinite loop.
+        if (next.getTime() === cur.getTime()){
+          console.warn("Timeline: interval span did not advance", { interval, cur, endSpan });
+          break;
+        }
+
+        cur = next;
       }
+
 
       return spans;
     }
