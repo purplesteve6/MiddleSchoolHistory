@@ -1003,9 +1003,6 @@
       centerSelect.value = hasActive ? active : "__begin__";
     }
 
-    function centerOn(id){
-      if (id === "__begin__"){
-        currentCenterDate = rangeBegin;
 
     function centerOn(id){
       // Start of timeline (no event card to center on)
