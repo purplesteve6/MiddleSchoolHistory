@@ -801,11 +801,11 @@ function computeZoomPxPerDay(zoom, anchorDate){
 
     function renderContext(pxPerDay){
       const ctx = Array.isArray(cfg.contextEvents) ? cfg.contextEvents : [];
-
-      // Move context tags UP so they don't collide with top-lane event text.
-      // Also start the dotted line higher so it becomes longer.
-      const TAG_TOP = -18;   // px
+      // Keep context tags INSIDE the viewport (overflow-y is hidden),
+      // and instead reserve space above cards via --safeTop in CSS.
+      const TAG_TOP = 6;     // px
       const LINE_TOP = 6;    // px
+
 
       for (const c of ctx){
         const d = parseFlexibleDate(c.date, "anchor");
