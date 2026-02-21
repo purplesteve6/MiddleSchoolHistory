@@ -1,3 +1,4 @@
+@ -1,1359 +1,1379 @@
 (function(){
   function safeInit(){
     try {
@@ -688,50 +689,14 @@
       return marks;
     }
 
-
     function buildIntervalSpansAligned(begin, end, interval){
       // Snap "cur" to the natural boundary that CONTAINS begin.
       let cur = snapToBoundary(begin, interval);
       const spans = [];
 
-      // IMPORTANT: Month spans must step by month boundaries (not by adding days),
-      // otherwise rare boundary cases (notably around astronomical year 0) can
-      // cause the loop to stall and/or truncate, creating visible "gaps".
-      if (interval === "month"){
-        let safety = 0;
 
-        while (cur <= end){
-          if (++safety > 5000){
-            console.warn("Timeline: month span loop safety-break", { begin, end, cur });
-            break;
-          }
-
-          const start = new Date(cur.getTime());
-          const ay = start.getUTCFullYear();
-          const m = start.getUTCMonth();
-
-          // End of this month
-          const lastDay = new Date(Date.UTC(ay, m + 1, 0)).getUTCDate();
-          const last = makeUTCDate(ay, m, lastDay);
-          const endSpan = (last > end) ? end : last;
-
-          spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
-
-          // Next month (first day)
-          const next = makeUTCDate(ay, m + 1, 1);
-
-          if (next.getTime() === cur.getTime()){
-            console.warn("Timeline: month span did not advance", { cur, start });
-            break;
-          }
-
-          cur = next;
-        }
-
-        return spans;
-      }
-
-      // Default path (year/decade/century/day): day-step is OK, but keep the safety guard
+      // Safety guard: prevents rare date-math edge cases from freezing the page
+      // (e.g., if cur fails to advance for some boundary condition).
       let safety = 0;
 
       while (cur <= end){
@@ -744,6 +709,7 @@
         const last = intervalEnd(start, interval);
         const endSpan = (last > end) ? end : last;
         spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
+        cur = addDays(endSpan, 1);
 
         const next = addDays(endSpan, 1);
 
@@ -755,6 +721,7 @@
 
         cur = next;
       }
+
 
       return spans;
     }
@@ -1390,7 +1357,7 @@ function updateReadout(){
       }
 
 
-        // Decade/Century hashes should be labeled like 0,10,20...
+      // Decade/Century hashes should be labeled like 0,10,20...
       // BUT suppress visible label for 0 (there was no year 0).
       if (interval === "decade"){
         const d0 = Math.floor(histY / 10) * 10;
@@ -1401,8 +1368,6 @@ function updateReadout(){
       const c0 = Math.floor(histY / 100) * 100;
       if (c0 === 0) return ""; // hide "0"
       return (c0 < 0) ? `${Math.abs(c0)} BCE` : `${c0}`;
-
-
     }
 
 
