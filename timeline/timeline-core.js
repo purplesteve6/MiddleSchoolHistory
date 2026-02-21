@@ -323,8 +323,8 @@
       internalScroll = false;
 
       syncMiniWindow();
-      updateReadout();
-
+      // Avoid direct recursion loops (updateReadout -> render -> scrollToCenterDate -> updateReadout).
+      requestAnimationFrame(() => updateReadout());
 
     }
 
@@ -1029,13 +1029,13 @@ function buildTickMarksAligned(begin, end, interval){
       }
 
 
-      // Month/day zoom still benefits from always re-rendering when center changes (prevents dropouts).
+      // Month/day zoom: re-render, but DO NOT call scrollToCenterDate() here
+      // (it causes recursion via scrollToCenterDate -> updateReadout).
       if (zoomLevel === "month" || zoomLevel === "day"){
         render();
-        // Keep the current center date in the middle after re-render so the view doesn't jump.
-        scrollToCenterDate(currentCenterDate);
         return;
       }
+
 
       // Otherwise, just redraw visible ticks/overlays using the SAME scale as the last full render.
       const ticksEl = canvas.querySelector(".ticks");
