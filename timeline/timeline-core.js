@@ -671,13 +671,22 @@
     function buildTickMarksAligned(begin, end, interval){
       const spans = buildIntervalSpansAligned(begin, end, interval);
       const marks = [];
+
+
+
+
       for (const sp of spans){
         marks.push({ date: sp.start, big:true, label: sp.label });
-        if (interval !== "day"){
+
+        // Month ticks already have dense boundaries; the extra mid-tick doubles DOM cost.
+        // Keep mid ticks for year/decade/century, but NOT for month.
+        if (interval !== "day" && interval !== "month"){
           const mid = addDays(sp.start, Math.floor(daysBetween(sp.start, sp.end) / 2));
           marks.push({ date: mid, big:false, label:"" });
         }
       }
+
+
       marks.sort((a,b) => a.date - b.date);
       return marks;
     }
