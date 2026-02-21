@@ -313,21 +313,22 @@
     }
 
 
-    function computeZoomPxPerDay(zoom, anchorDate){
-      const span = zoomSpanAligned(anchorDate, zoom);
+function computeZoomPxPerDay(zoom, anchorDate){
+  const span = zoomSpanAligned(anchorDate, zoom);
 
-      // Keep year/century scale stable (prevents jitter during fast scroll + boundary crossings)
-      // Year: fixed 365 days. Century: fixed 100 * 365.25 days.
-      // (Positions still use real dates; only the viewing scale is stabilized.)
-      const days =
-        (zoom === "year")
-          ? 365
-          : (zoom === "century")
-            ? 36525
-            : (daysBetween(span.start, span.end) + 1);
+  // Use actual day count for year zoom so BCE year 0 (1 BCE)
+  // correctly handles leap-year behavior and prevents month gaps
+  const days =
+    (zoom === "year")
+      ? (daysBetween(span.start, span.end) + 1)
+      : (zoom === "century")
+        ? 36525
+        : (daysBetween(span.start, span.end) + 1);
 
-      return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, days));
-    }
+  return Math.max(0.008, (viewport.clientWidth - 40) / Math.max(1, days));
+}
+
+
 
 
     function getPxPerDayForView(zoom, anchorDate){
