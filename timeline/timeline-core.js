@@ -694,8 +694,9 @@
       const spans = [];
 
 
-      // Build spans in a way that always advances across astronomical year 0.
-      // Month spans advance by month boundaries (not by adding days), which prevents BCE/CE gaps.
+
+      // Safety guard: prevents rare date-math edge cases from freezing the page
+      // (e.g., if cur fails to advance for some boundary condition).
       let safety = 0;
 
       while (cur <= end){
@@ -709,18 +710,9 @@
         const endSpan = (last > end) ? end : last;
         spans.push({ start, end: endSpan, label: intervalLabel(start, interval) });
 
-        let next;
+        const next = addDays(endSpan, 1);
 
-        if (interval === "month"){
-          // Step to the first day of the next month in UTC (handles year 0 cleanly).
-          const y = start.getUTCFullYear();
-          const m = start.getUTCMonth();
-          next = makeUTCDate(y, m + 1, 1);
-        } else {
-          // For year/decade/century, day stepping is fine.
-          next = addDays(endSpan, 1);
-        }
-
+        // Extra safety: if date didn't advance, break to avoid infinite loop.
         if (next.getTime() === cur.getTime()){
           console.warn("Timeline: interval span did not advance", { interval, cur, endSpan });
           break;
@@ -1365,16 +1357,16 @@ function updateReadout(){
       }
 
 
-      // Decade/Century labels: show numbers for CE, and "BCE" for negative years.
-      // There is no historical year 0, so label the boundary bucket as "1" (not blank).
+        // Decade/Century hashes should be labeled like 0,10,20...
+      // BUT suppress visible label for 0 (there was no year 0).
       if (interval === "decade"){
         const d0 = Math.floor(histY / 10) * 10;
-        if (d0 === 0) return "1";
+        if (d0 === 0) return ""; // hide "0"
         return (d0 < 0) ? `${Math.abs(d0)} BCE` : `${d0}`;
       }
 
       const c0 = Math.floor(histY / 100) * 100;
-      if (c0 === 0) return "1";
+      if (c0 === 0) return ""; // hide "0"
       return (c0 < 0) ? `${Math.abs(c0)} BCE` : `${c0}`;
 
 
