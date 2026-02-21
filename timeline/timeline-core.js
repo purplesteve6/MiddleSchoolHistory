@@ -135,7 +135,7 @@
     let lastTickEndIndex = -1;
 
     // Sticky window for year-view month ticks (prevents rebuilding every time you cross a year boundary)
-    let yearTickWindow = null; // { startAy: number, endAy: number }
+
 
 
     zoomSelect.innerHTML = "";
@@ -457,31 +457,28 @@
 
 
       } else if (zoomLevel === "year" && interval === "month"){
-        const span = zoomSpanAligned(currentCenterDate, "year");
-        const ay = span.start.getUTCFullYear(); // astronomical year
+        // Year view: virtualize month ticks (visible range + padding).
+        // Avoid building a huge multi-year tick DOM up front, which can freeze when switching to Year.
+        const totalDays = daysBetween(rangeBegin, rangeEnd) + 1;
+        const padDays = Math.max(2, Math.ceil(30 / Math.max(0.01, pxPerDay)));
+        const leftIndex = clamp(Math.floor(viewport.scrollLeft / pxPerDay) - padDays, 0, totalDays - 1);
+        const rightIndex = clamp(Math.ceil((viewport.scrollLeft + viewport.clientWidth) / pxPerDay) + padDays, 0, totalDays - 1);
 
-        // Sticky buffered window: render ±5 years, but only SHIFT the window when we get near its edge.
-        // This prevents a full tick rebuild every single year boundary.
-        const BUFFER = 5;          // years behind/ahead
-        const EDGE = 2;            // shift window when within 2 years of an edge
+        visBegin = addDays(rangeBegin, leftIndex);
+        visEnd = addDays(rangeBegin, rightIndex);
 
-        if (!yearTickWindow){
-          yearTickWindow = { startAy: ay - BUFFER, endAy: ay + BUFFER };
-        } else if (ay < (yearTickWindow.startAy + EDGE) || ay > (yearTickWindow.endAy - EDGE)){
-          yearTickWindow = { startAy: ay - BUFFER, endAy: ay + BUFFER };
+        cacheBeginKey = String(leftIndex);
+        cacheEndKey = String(rightIndex);
+
+        // If we haven't moved the window meaningfully, skip redraw.
+        if (leftIndex === lastTickBeginIndex && rightIndex === lastTickEndIndex){
+          return;
         }
-
-        const beginBuf = clampDateToRange(makeUTCDate(yearTickWindow.startAy, 0, 1));
-        const endBuf   = clampDateToRange(makeUTCDate(yearTickWindow.endAy, 11, 31));
-
-        visBegin = beginBuf;
-        visEnd = endBuf;
-
-        // Cache keys should be based on the WINDOW, not the current year, so we don't rebuild constantly.
-        cacheBeginKey = `YWIN:${yearTickWindow.startAy}`;
-        cacheEndKey   = `YWIN:${yearTickWindow.endAy}`;
+        lastTickBeginIndex = leftIndex;
+        lastTickEndIndex = rightIndex;
 
       } else {
+
 
 
 
