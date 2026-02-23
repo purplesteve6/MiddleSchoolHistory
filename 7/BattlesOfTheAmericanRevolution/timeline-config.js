@@ -112,7 +112,7 @@ window.TIMELINE_CONFIG = {
   // (decade → year, century → decade, year → month, month → day)
   hasDefault: true,
   defaultInterval: "decade",
-  defaultIntervalAmount: .5,
+  defaultIntervalAmount: .3,
 
   // If hasDefault is true, you can set this to "default" to start in that view.
   // If hasDefault is false, use "day/month/year/decade/century/fit" like before.
@@ -199,7 +199,7 @@ window.TIMELINE_CONFIG = {
       // Caesar is a single-day event, so we do NOT show an interval bar.
       showInterval: false,
       intervalColor:"default",
-      lineLength:   .5
+      lineLength:   null
     },
 
     {
