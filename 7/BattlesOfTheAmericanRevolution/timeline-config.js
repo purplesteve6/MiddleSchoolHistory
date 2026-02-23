@@ -187,7 +187,7 @@ window.TIMELINE_CONFIG = {
     {
       id:           "lexington_concord",
       label:        "Lexington & Concord",
-      dateLabel:    "April 19-20, 1775",
+      dateLabel:    "April 19, 1775",
       start:        "1775-04-19",
       end:          "1775-04-20",
       anchor:       "1775-04-19",
@@ -203,30 +203,94 @@ window.TIMELINE_CONFIG = {
     },
 
     {
-      id:           "augustus",
-      label:        "Augustus",
-      dateLabel:    "27 BCE–14 CE",
-      start:        "-0027-01-16",
-      end:          "0014-08-19",
-      anchor:       "-0027-01-16",
-      image:        "images/timeline/augustus_timeline.jpg",
-      href:         "emperors/augustus.html",
+      id:           "bunker_hill",
+      label:        "Bunker Hill",
+      dateLabel:    "June 17, 1775",
+      start:        "1775-06-17",
+      end:          "1775-06-18",
+      anchor:       "1175-06-17",
+      image:        "images/bunkerhill_timeline.webp",
+      href:         "battles/bunker-hill.html",
       side:         "below",
 
-      showInterval: true,
+      showInterval: false,
       intervalColor:"default",
       lineLength:   null
     },
 
     {
-      id:           "tiberius",
-      label:        "Tiberius",
-      dateLabel:    "14–37 CE",
-      start:        "0014-09-17",
-      end:          "0037-03-16",
-      anchor:       "0014-09-17",
-      image:        "images/timeline/tiberius_timeline.jpg",
-      href:         "emperors/tiberius.html",
+      id:           "fort_ticonderoga",
+      label:        "Fort Ticonderoga",
+      dateLabel:    "May 10, 1775",
+      start:        "1775-05-10",
+      end:          "1775-05-10",
+      anchor:       "1775-05-10",
+      image:        "images/ticonderoga_timeline.webp",
+      href:         "battles/fort-ticonderoga.html",
+      side:         "above",
+
+      showInterval: false,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "long_island",
+      label:        "Long Island",
+      dateLabel:    "Aug. 27, 1776",
+      start:        "1776-08-27",
+      end:          "1776-08-27",
+      anchor:       "1776-08-27",
+      image:        "images/longisland_timeline.webp",
+      href:         "battles/long-island.html",
+      side:         "below",
+
+      showInterval: false,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "harlem_heights",
+      label:        "Harlem Heights",
+      dateLabel:    "Sept. 16, 1776",
+      start:        "1776-09-16",
+      end:          "1776-09-16",
+      anchor:       "1776-09-16",
+      image:        "images/harlemheights_timeline.webp",
+      href:         "battles/harlem-heights.html",
+      side:         "above",
+
+      showInterval: false,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "trenton",
+      label:        "Trenton",
+      dateLabel:    "Dec. 26, 1776",
+      start:        "1776-12-26",
+      end:          "1776-12-26",
+      anchor:       "1776-12-26",
+      image:        "images/trenton_timeline.webp",
+      href:         "battles/trenton.html",
+      side:         "below",
+
+      showInterval: false,
+      intervalColor:"default",
+      lineLength:   null
+    },
+
+    {
+      id:           "saratoga",
+      label:        "Saratoga",
+      dateLabel:    "Sep. 19-Oct. 14, 1777",
+      start:        "1777-09-19",
+      end:          "1777-10-14",
+      anchor:       "1777-10-03",
+      image:        "images/saratoga_timeline.webp",
+      href:         "battles/saratoga.html",
       side:         "above",
 
       showInterval: true,
@@ -235,14 +299,14 @@ window.TIMELINE_CONFIG = {
     },
 
     {
-      id:           "caligula",
-      label:        "Caligula",
-      dateLabel:    "37–41 CE",
-      start:        "0037-03-16",
-      end:          "0041-01-24",
-      anchor:       "0037-03-16",
-      image:        "images/timeline/caligula_timeline.jpg",
-      href:         "emperors/caligula.html",
+      id:           "yorktown",
+      label:        "Yorktown",
+      dateLabel:    "Sep. 28-Oct. 19, 1781",
+      start:        "1781-09-28",
+      end:          "1781-10-19",
+      anchor:       "1781-10-09",
+      image:        "images/yorktown_timeline.webp",
+      href:         "battles/yorktown.html",
       side:         "below",
 
       showInterval: true,
@@ -250,166 +314,7 @@ window.TIMELINE_CONFIG = {
       lineLength:   null
     },
 
-    {
-      id:           "claudius",
-      label:        "Claudius",
-      dateLabel:    "41–54 CE",
-      start:        "0041-01-24",
-      end:          "0054-10-13",
-      anchor:       "0041-01-24",
-      image:        "images/timeline/claudius_timeline.jpg",
-      href:         "emperors/claudius.html",
-      side:         "above",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    },
-
-    {
-      id:           "nero",
-      label:        "Nero",
-      dateLabel:    "54–68 CE",
-      start:        "0054-10-13",
-      end:          "0068-06-09",
-      anchor:       "0054-10-13",
-      image:        "images/timeline/nero_timeline.jpg",
-      href:         "emperors/nero.html",
-      side:         "below",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    },
-
-    {
-      id:           "trajan",
-      label:        "Trajan",
-      dateLabel:    "98–117 CE",
-      start:        "0098-01-28",
-      end:          "0117-08-09",
-      anchor:       "0098-01-28",
-      image:        "images/timeline/trajan_timeline.jpg",
-      href:         "emperors/trajan.html",
-      side:         "above",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    },
-
-    {
-      id:           "hadrian",
-      label:        "Hadrian",
-      dateLabel:    "117–138 CE",
-      start:        "0117-08-11",
-      end:          "0138-07-10",
-      anchor:       "0117-08-11",
-      image:        "images/timeline/hadrian_timeline.jpg",
-      href:         "emperors/hadrian.html",
-      side:         "below",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    },
-
-    {
-      id:           "marcus_aurelius",
-      label:        "Marcus Aurelius",
-      dateLabel:    "161–180 CE",
-      start:        "0161-03-07",
-      end:          "0180-03-17",
-      anchor:       "0161-03-07",
-      image:        "images/timeline/marcusaurelius_timeline.jpg",
-      href:         "emperors/marcus-aurelius.html",
-      side:         "above",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    },
-
-    {
-      id:           "commodus",
-      label:        "Commodus",
-      dateLabel:    "180–192 CE",
-      // Using sole reign start (after Marcus Aurelius' death)
-      start:        "0180-03-17",
-      end:          "0192-12-31",
-      anchor:       "0180-03-17",
-      image:        "images/timeline/commodus_timeline.jpg",
-      href:         "emperors/commodus.html",
-      side:         "below",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    },
-
-    {
-      id:           "diocletian",
-      label:        "Diocletian",
-      dateLabel:    "284–305 CE",
-      start:        "0284-11-20",
-      end:          "0305-05-01",
-      anchor:       "0284-11-20",
-      image:        "images/timeline/diocletian_timeline.jpg",
-      href:         "emperors/diocletian.html",
-      side:         "above",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    },
-
-    {
-      id:           "constantine",
-      label:        "Constantine",
-      dateLabel:    "306–337 CE",
-      start:        "0306-07-25",
-      end:          "0337-05-22",
-      anchor:       "0306-07-25",
-      image:        "images/timeline/constantine_timeline.jpg",
-      href:         "emperors/constantine.html",
-      side:         "below",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    },
-
-    {
-      id:           "theodosius",
-      label:        "Theodosius I",
-      dateLabel:    "379–395 CE",
-      start:        "0379-01-19",
-      end:          "0395-01-17",
-      anchor:       "0379-01-19",
-      image:        "images/timeline/theodosiusi_timeline.jpg",
-      href:         "emperors/theodosius.html",
-      side:         "above",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    },
-
-    {
-      id:           "romulus_augustulus",
-      label:        "Romulus Augustulus",
-      dateLabel:    "475–476 CE",
-      start:        "0475-10-31",
-      end:          "0476-09-04",
-      anchor:       "0475-10-31",
-      image:        "images/timeline/romulusaugustulus_timeline.jpg",
-      href:         "emperors/romulus-augustulus.html",
-      side:         "below",
-
-      showInterval: true,
-      intervalColor:"default",
-      lineLength:   null
-    }
+   
 
   ]
 };
