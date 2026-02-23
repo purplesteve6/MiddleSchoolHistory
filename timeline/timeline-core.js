@@ -32,7 +32,7 @@
             <label for="zoomSelect">Timeline View:</label>
             <select id="zoomSelect" aria-label="Zoom level"></select>
           </div>
-
+          <select id="intervalSelect" aria-hidden="true" tabindex="-1" style="display:none"></select>
 
           <div class="controlPill" title="Jump the timeline to an event">
             <label for="centerSelect">Jump to:</label>
@@ -54,7 +54,6 @@
         <div class="miniTrack" id="miniTrack">
           <div class="miniWindow" id="miniWindow" title="Drag to jump"></div>
         </div>
-        <div class="tiny" id="readout">Center date: —</div>
       </div>
     `;
 
@@ -69,7 +68,7 @@
     const zoomSelect = document.getElementById("zoomSelect");
     const intervalSelect = document.getElementById("intervalSelect");
     const centerSelect = document.getElementById("centerSelect");
-    const readout = document.getElementById("readout");
+    const readout = null;
     const miniTrack = document.getElementById("miniTrack");
     const miniWindow = document.getElementById("miniWindow");
 
@@ -1158,8 +1157,7 @@ function scrollToCenterCardById(eid){
 
         currentCenterDate = d;
 
-        readout.textContent = `Center date: ${formatISO(currentCenterDate)}`;
-        syncMiniWindow();
+          syncMiniWindow();
 
         const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
         const needsSpanRerender = false;
