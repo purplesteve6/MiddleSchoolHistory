@@ -199,7 +199,7 @@ window.TIMELINE_CONFIG = {
       // Caesar is a single-day event, so we do NOT show an interval bar.
       showInterval: false,
       intervalColor:"default",
-      lineLength:   null
+      lineLength:   .5
     },
 
     {
@@ -208,7 +208,7 @@ window.TIMELINE_CONFIG = {
       dateLabel:    "June 17, 1775",
       start:        "1775-06-17",
       end:          "1775-06-18",
-      anchor:       "1175-06-17",
+      anchor:       "1775-06-17",
       image:        "images/bunkerhill_timeline.webp",
       href:         "battles/bunker-hill.html",
       side:         "below",
