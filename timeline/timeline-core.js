@@ -974,6 +974,7 @@
 
     /* ----------------- LAYOUT HELPERS ----------------- */
 
+
     function positionLanesSymmetrically(){
       const root = document.querySelector(".timeline-embed");
       const cs = getComputedStyle(root);
@@ -982,7 +983,19 @@
       const avatarH = parseFloat(cs.getPropertyValue("--avatar")) || 110;
       const safeTop = parseFloat(cs.getPropertyValue("--safeTop")) || 12;
 
-      const barCenterY = getBarCenterY();
+      const spineY = getBarCenterY();
+
+      const barsTopEl = canvas.querySelector(".barsTop");
+      const barsBottomEl = canvas.querySelector(".barsBottom");
+
+      const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars")) || 0;
+      const barH = parseFloat(cs.getPropertyValue("--barH")) || 0;
+
+      const barsTopY = barsTopEl ? barsTopEl.offsetTop : 0;
+      const barsBottomY = barsBottomEl ? barsBottomEl.offsetTop : 0;
+
+      const intervalYTop = barsTopY + barTopInBars + (barH / 2);
+      const intervalYBottom = barsBottomY + barTopInBars + (barH / 2);
 
       const sampleAbove = canvas.querySelector(".eventCard.laneAbove .avatarWrap");
       const sampleBelow = canvas.querySelector(".eventCard.laneBelow .avatarWrap");
@@ -990,14 +1003,60 @@
       const aboveAvatarOffsetTop = sampleAbove ? sampleAbove.offsetTop : 0;
       const belowAvatarOffsetTop = sampleBelow ? sampleBelow.offsetTop : 0;
 
-      let aboveLaneTop = (barCenterY - gap) - (aboveAvatarOffsetTop + avatarH);
-      const belowLaneTop = (barCenterY + gap) - (belowAvatarOffsetTop);
+      let aboveLaneTop = (spineY - gap) - (aboveAvatarOffsetTop + avatarH);
+      const belowLaneTop = (spineY + gap) - (belowAvatarOffsetTop);
 
       if (aboveLaneTop < safeTop) aboveLaneTop = safeTop;
 
+      // Base lane placement (current look)
       canvas.querySelectorAll(".eventCard.laneAbove").forEach(el => el.style.top = aboveLaneTop + "px");
       canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
+
+      // Per-event override:
+      // lineLength = exact distance (px) from portrait edge to the timeline target
+      // If lineLength is null/undefined/non-numeric => keep base placement.
+      const events = Array.isArray(cfg.events) ? cfg.events : [];
+      const cards = canvas.querySelectorAll(".eventCard");
+
+      cards.forEach(card => {
+        const eid = (card.dataset.eid || "").toString();
+        const ev = events.find(e => String(e.id || "") === eid);
+        if (!ev) return;
+
+        const L = Number(ev.lineLength);
+        if (!Number.isFinite(L)) return;
+
+        const isAbove = card.classList.contains("laneAbove");
+
+        const showInterval = (ev.showInterval !== undefined)
+          ? !!ev.showInterval
+          : (ev.showBar !== undefined ? !!ev.showBar : true);
+
+        const targetY = showInterval
+          ? (isAbove ? intervalYTop : intervalYBottom)
+          : spineY;
+
+        const avatar = card.querySelector(".avatarWrap");
+        if (!avatar) return;
+
+        const avatarOffsetTop = avatar.offsetTop;
+
+        // Reposition the whole card so the portrait edge is exactly L px from targetY.
+        if (isAbove){
+          // portraitEdgeY is avatarBottom => cardTop + avatarOffsetTop + avatarH
+          const desiredPortraitEdgeY = targetY - L;
+          let newTop = desiredPortraitEdgeY - (avatarOffsetTop + avatarH);
+          if (newTop < safeTop) newTop = safeTop;
+          card.style.top = newTop + "px";
+        } else {
+          // portraitEdgeY is avatarTop => cardTop + avatarOffsetTop
+          const desiredPortraitEdgeY = targetY + L;
+          const newTop = desiredPortraitEdgeY - avatarOffsetTop;
+          card.style.top = newTop + "px";
+        }
+      });
     }
+
 
     function adjustConnectors(){
       const root = document.querySelector(".timeline-embed");

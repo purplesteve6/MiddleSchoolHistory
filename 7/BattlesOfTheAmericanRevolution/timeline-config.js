@@ -70,19 +70,36 @@
  *                    - "rgba(...)"
  *                    - "var(--gold)" etc.
  *
- *   lineLength     → OPTIONAL connector length override (pixels)
- *                    - null means "use the default spacing"
+ *   lineLength     → OPTIONAL portrait spacing override (pixels)
  *
- *                    Reasonable values (pixels):
- *                      100–115  subtle shorter line
- *                      120      recommended default baseline
- *                      130–150  slightly longer
- *                      160–200  strong stagger (use sparingly)
+ *                    Controls the distance between the portrait
+ *                    and the timeline (or reign bar).
+ *
+ *                    IMPORTANT:
+ *                    This does NOT directly change the connector line.
+ *                    Instead, it repositions the portrait so that the
+ *                    connector becomes exactly this length.
+ *
+ *                    How it works:
+ *                      Above lane  → portrait bottom sits L pixels ABOVE timeline
+ *                      Below lane  → portrait top sits L pixels BELOW timeline
+ *
+ *                    Default behavior:
+ *                      null / undefined → uses standard CSS spacing
+ *                      (the normal symmetrical layout)
+ *
+ *                    Example values:
+ *                      90   = closer to timeline
+ *                      120  = standard default look
+ *                      150  = farther from timeline
+ *                      180+ = dramatic stagger (use sparingly)
  *
  *                    Avoid:
- *                      < 80   (crowded)
- *                      > 240  (detached)
+ *                      < 60   (crowded look)
+ *                      > 240  (detached look)
  *
+ *                    Example usage:
+ *                      lineLength: 150
  * ------------------------------------------------------------
  * CONTEXT EVENTS
  * ------------------------------------------------------------
@@ -199,7 +216,7 @@ window.TIMELINE_CONFIG = {
       // Caesar is a single-day event, so we do NOT show an interval bar.
       showInterval: false,
       intervalColor:"default",
-      lineLength:   100
+      lineLength:   null
     },
 
     {
@@ -215,7 +232,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: false,
       intervalColor:"default",
-      lineLength:   130
+      lineLength:   null
     },
 
     {
