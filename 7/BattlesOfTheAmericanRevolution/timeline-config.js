@@ -110,13 +110,13 @@ window.TIMELINE_CONFIG = {
   //
   // Ticks follow existing logic: one step smaller than the interval.
   // (decade → year, century → decade, year → month, month → day)
-  hasDefault: true,
+  hasDefault: false,
   defaultInterval: "decade",
   defaultIntervalAmount: .1,
 
   // If hasDefault is true, you can set this to "default" to start in that view.
   // If hasDefault is false, use "day/month/year/decade/century/fit" like before.
-  defaultZoom: "default",
+  defaultZoom: "yeart",
 
   // If an END date is written as a year-only number (example: end: 476),
   // choose what day of that year it means.
@@ -131,8 +131,7 @@ window.TIMELINE_CONFIG = {
   // NOTE: We removed "fit" here because you asked to replace the Full Timeline option with "(default)".
   // If you ever want "Full Timeline" back for a topic, add "fit" here.
   zoomLevels: [
-    	"month",
-	"year",
+    	"year",
  	"decade"
   ],
 
