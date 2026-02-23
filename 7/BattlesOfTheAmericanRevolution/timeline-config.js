@@ -123,19 +123,17 @@ window.TIMELINE_CONFIG = {
   numericYearEndMode: "endOfYear",
 
   range: {
-    begin: "-0060-01-01",
-    end:   "0484-12-31"
+    begin: "1769-01-01",
+    end:   "1784-12-31"
   },
 
   // Timeline View options shown to the user (in this topic).
   // NOTE: We removed "fit" here because you asked to replace the Full Timeline option with "(default)".
   // If you ever want "Full Timeline" back for a topic, add "fit" here.
   zoomLevels: [
-    "day",
     "month",
     "year",
-    "decade",
-    "century"
+    "decade"
   ],
 
   pxPerDay: {
@@ -171,38 +169,31 @@ window.TIMELINE_CONFIG = {
   contextEvents: [
 
     {
-      id:    "empire_begins",
-      // aligned to Augustus accession date (exact)
-      date:  "-0027-01-01",
-      label: "27 BCE — Empire Begins"
+      id:    "declaration_of_independence",
+      date:  "1776-07-04",
+      label: "Declaration of Independence July 4, 1776"
     },
 
     {
-      id:    "byzantine_established",
-      date:  "0330-01-01",
-      label: "330 CE — Byzantine Empire Established"
+      id:    "treaty_of_paris",
+      date:  "1783-09-03",
+      label: "Treaty of Paris Signed - September 3, 1783"
     },
 
-    {
-      id:    "west_falls",
-      // aligned to Romulus Augustulus deposition date (exact)
-      date:  "0476-09-04",
-      label: "476 CE — Western Empire Falls"
-    }
-
+    
   ],
 
   events: [
 
     {
-      id:           "caesar_assassinated",
-      label:        "Julius Caesar Assassinated",
-      dateLabel:    "44 BCE",
-      start:        "-0044-03-15",
-      end:          "-0044-03-15",
-      anchor:       "-0044-03-15",
-      image:        "images/timeline/juliuscaesar_timeline.jpg",
-      href:         "index.html",
+      id:           "lexington_concord",
+      label:        "Lexington & Concord",
+      dateLabel:    "April 19-20, 1775",
+      start:        "1775-04-19",
+      end:          "1775-04-20",
+      anchor:       "1775-04-19",
+      image:        "../images/lexcon_timeline.webp",
+      href:         "../battles/lexington-concord.html",
       side:         "above",
 
       // New per-event options:
