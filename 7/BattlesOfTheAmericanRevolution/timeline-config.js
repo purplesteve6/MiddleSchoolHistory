@@ -131,7 +131,6 @@ window.TIMELINE_CONFIG = {
   // NOTE: We removed "fit" here because you asked to replace the Full Timeline option with "(default)".
   // If you ever want "Full Timeline" back for a topic, add "fit" here.
   zoomLevels: [
-    "month",
     "year",
     "decade"
   ],
@@ -192,8 +191,8 @@ window.TIMELINE_CONFIG = {
       start:        "1775-04-19",
       end:          "1775-04-20",
       anchor:       "1775-04-19",
-      image:        "../images/lexcon_timeline.webp",
-      href:         "../battles/lexington-concord.html",
+      image:        "images/lexcon_timeline.webp",
+      href:         "battles/lexington-concord.html",
       side:         "above",
 
       // New per-event options:
