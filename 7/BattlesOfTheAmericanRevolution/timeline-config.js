@@ -211,7 +211,7 @@ window.TIMELINE_CONFIG = {
       anchor:       "1775-06-17",
       image:        "images/bunkerhill_timeline.webp",
       href:         "battles/bunker-hill.html",
-      side:         "below",
+      side:         "above",
 
       showInterval: false,
       intervalColor:"default",
@@ -227,7 +227,7 @@ window.TIMELINE_CONFIG = {
       anchor:       "1775-05-10",
       image:        "images/ticonderoga_timeline.webp",
       href:         "battles/fort-ticonderoga.html",
-      side:         "above",
+      side:         "below",
 
       showInterval: false,
       intervalColor:"default",
