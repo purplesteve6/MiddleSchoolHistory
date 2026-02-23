@@ -98,21 +98,37 @@
     const MAX_CANVAS_WIDTH = 8_000_000;
     const MAX_PX_PER_DAY = MAX_CANVAS_WIDTH / Math.max(1, TOTAL_DAYS);
 
+    // ---------------- DEFAULT VIEW CONFIG ----------------
+    const DEFAULT_VIEW_KEY = "default";
+
+    const hasDefault = cfg.hasDefault === true;
+    const defaultInterval = (cfg.defaultInterval || "decade").toString();
+
+    const defaultIntervalAmountRaw = (cfg.defaultIntervalAmount ?? 1);
+    const defaultIntervalAmount =
+      (typeof defaultIntervalAmountRaw === "number" && Number.isFinite(defaultIntervalAmountRaw) && defaultIntervalAmountRaw > 0)
+        ? defaultIntervalAmountRaw
+        : 1;
+
     function getEffectivePxPerDay(zoom, anchorDate){
       return Math.min(getPxPerDayForView(zoom, anchorDate), MAX_PX_PER_DAY);
     }
 
     const zoomLevelsRaw = cfg.zoomLevels || ["day","month","year","decade","century","fit"];
 
-    const zoomLevels = zoomLevelsRaw.filter(z => {
+    const zoomLevelsFiltered = zoomLevelsRaw.filter(z => {
       if (z === "day") return allowDayZoom;
       if (z === "month") return allowMonthZoom;
       return true;
     });
 
+    const zoomLevels = hasDefault
+      ? [DEFAULT_VIEW_KEY, ...zoomLevelsFiltered.filter(z => z !== DEFAULT_VIEW_KEY)]
+      : zoomLevelsFiltered;
+
     const intervalLevels = ["day","month","year","decade","century"]; // UI list only
-    const defaultInterval = cfg.defaultInterval || "decade";
-    const defaultZoom = cfg.defaultZoom || defaultInterval;
+
+    const defaultZoom = cfg.defaultZoom || (hasDefault ? DEFAULT_VIEW_KEY : defaultInterval);
 
     let currentCenterDate = rangeBegin;
     // Track the scale/span used by the most recent full render().
@@ -125,6 +141,12 @@
 
     function spanKeyFor(zoom, centerDate){
       if (zoom === "fit") return "fit";
+
+      if (zoom === DEFAULT_VIEW_KEY){
+        const sp = zoomSpanAligned(centerDate, defaultInterval);
+        return `default:${defaultInterval}:${defaultIntervalAmount}:${sp.start.getTime()}-${sp.end.getTime()}`;
+      }
+
       const sp = zoomSpanAligned(centerDate, zoom);
       return `${sp.start.getTime()}-${sp.end.getTime()}`;
     }
@@ -138,7 +160,15 @@
     for (const z of zoomLevels){
       const o = document.createElement("option");
       o.value = z;
-      o.textContent = (z === "fit") ? "Fit (full timeline)" : cap(z);
+
+      if (z === DEFAULT_VIEW_KEY){
+        o.textContent = "(default)";
+      } else if (z === "fit"){
+        o.textContent = "Full Timeline";
+      } else {
+        o.textContent = cap(z);
+      }
+
       zoomSelect.appendChild(o);
     }
 
@@ -155,7 +185,7 @@
       (!allowMonthZoom && defaultZoom === "month") ? "year" :
       defaultZoom;
 
-    zoomSelect.value = safeDefaultZoom;
+    zoomSelect.value = zoomLevels.includes(safeDefaultZoom) ? safeDefaultZoom : zoomLevels[0];
     intervalSelect.value = defaultInterval;
 
     populateCenterDropdown();
@@ -234,6 +264,11 @@
     /* ----------------- ZOOM/TICKS RULES ----------------- */
 
     function tickForZoom(z){
+      // Default view: ticks are one step smaller than defaultInterval
+      if (z === DEFAULT_VIEW_KEY){
+        z = defaultInterval;
+      }
+
       switch(z){
         case "century": return "decade";
         case "decade":  return "year";
@@ -319,7 +354,18 @@
     }
 
     function getPxPerDayForView(zoom, anchorDate){
-      return (zoom === "fit") ? computeFitPxPerDay() : computeZoomPxPerDay(zoom, anchorDate);
+      if (zoom === "fit") return computeFitPxPerDay();
+
+      if (zoom === DEFAULT_VIEW_KEY){
+        // Use aligned interval containing anchorDate as the “unit”
+        const unitSpan = zoomSpanAligned(anchorDate, defaultInterval);
+        const unitDays = (daysBetween(unitSpan.start, unitSpan.end) + 1);
+
+        const desiredDays = Math.max(1, unitDays * defaultIntervalAmount);
+        return Math.max(0.008, (canvasScroll.clientWidth - 40) / desiredDays);
+      }
+
+      return computeZoomPxPerDay(zoom, anchorDate);
     }
 
     function scrollToCenterDate(d){
@@ -341,28 +387,28 @@
       requestAnimationFrame(() => updateReadout());
     }
 
-function scrollToCenterCardById(eid){
-  const card = canvas.querySelector(`.eventCard[data-eid="${CSS.escape(String(eid))}"]`);
-  if (!card) return false;
+    function scrollToCenterCardById(eid){
+      const card = canvas.querySelector(`.eventCard[data-eid="${CSS.escape(String(eid))}"]`);
+      if (!card) return false;
 
-  const rect = card.getBoundingClientRect();
-  const canvasRect = canvas.getBoundingClientRect();
+      const rect = card.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
 
-  const cardCenterX = (rect.left - canvasRect.left) + (rect.width / 2);
+      const cardCenterX = (rect.left - canvasRect.left) + (rect.width / 2);
 
-  internalScroll = true;
-  canvasScroll.scrollLeft = clamp(
-    cardCenterX - (canvasScroll.clientWidth / 2),
-    0,
-    Math.max(0, canvasScroll.scrollWidth - canvasScroll.clientWidth)
-  );
-  contextBand.scrollLeft = canvasScroll.scrollLeft;
-  internalScroll = false;
+      internalScroll = true;
+      canvasScroll.scrollLeft = clamp(
+        cardCenterX - (canvasScroll.clientWidth / 2),
+        0,
+        Math.max(0, canvasScroll.scrollWidth - canvasScroll.clientWidth)
+      );
+      contextBand.scrollLeft = canvasScroll.scrollLeft;
+      internalScroll = false;
 
-  syncMiniWindow();
-  requestAnimationFrame(() => updateReadout());
-  return true;
-}
+      syncMiniWindow();
+      requestAnimationFrame(() => updateReadout());
+      return true;
+    }
 
     /* ----------------- RENDER ----------------- */
 
@@ -1161,7 +1207,7 @@ function scrollToCenterCardById(eid){
 
         currentCenterDate = d;
 
-          syncMiniWindow();
+        syncMiniWindow();
 
         const newSpanKey = spanKeyFor(zoomLevel, currentCenterDate);
         const needsSpanRerender = false;

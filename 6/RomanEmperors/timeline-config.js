@@ -96,8 +96,27 @@
 
 window.TIMELINE_CONFIG = {
 
+  // ============================================================
+  // DESIGNER DEFAULT VIEW (OPTIONAL)
+  // ============================================================
+  // If hasDefault is true, the Timeline View dropdown includes "(default)" as the FIRST option.
+  // That "(default)" view shows:
+  //    defaultIntervalAmount × defaultInterval
+  //
+  // Example:
+  //   defaultInterval: "decade"
+  //   defaultIntervalAmount: 1.5
+  // → field of view is ~15 years.
+  //
+  // Ticks follow existing logic: one step smaller than the interval.
+  // (decade → year, century → decade, year → month, month → day)
+  hasDefault: true,
   defaultInterval: "decade",
-  defaultZoom: "century",
+  defaultIntervalAmount: 1.5,
+
+  // If hasDefault is true, you can set this to "default" to start in that view.
+  // If hasDefault is false, use "day/month/year/decade/century/fit" like before.
+  defaultZoom: "default",
 
   // If an END date is written as a year-only number (example: end: 476),
   // choose what day of that year it means.
@@ -108,13 +127,15 @@ window.TIMELINE_CONFIG = {
     end:   "0476-12-31"
   },
 
+  // Timeline View options shown to the user (in this topic).
+  // NOTE: We removed "fit" here because you asked to replace the Full Timeline option with "(default)".
+  // If you ever want "Full Timeline" back for a topic, add "fit" here.
   zoomLevels: [
     "day",
     "month",
     "year",
     "decade",
-    "century",
-    "fit"
+    "century"
   ],
 
   pxPerDay: {
