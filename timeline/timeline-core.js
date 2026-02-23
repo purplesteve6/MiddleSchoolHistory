@@ -1086,14 +1086,26 @@
       };
 
       add("__begin__", "Start of timeline");
+
+      // Track the first real event so we can default to it on load
+      let firstEventValue = null;
+
       for (const ev of events){
-        add(ev.id || ev.label || String(Math.random()), `${ev.label || "Event"} ${ev.dateLabel ? `(${ev.dateLabel})` : ""}`.trim());
+        const v = ev.id || ev.label || String(Math.random());
+        if (firstEventValue === null) firstEventValue = v;
+        add(v, `${ev.label || "Event"} ${ev.dateLabel ? `(${ev.dateLabel})` : ""}`.trim());
       }
 
       const active = (window.TIMELINE_ACTIVE_ID || "").toString();
       const hasActive = events.some(e => (e.id || "") === active);
-      centerSelect.value = hasActive ? active : "__begin__";
+
+      // Default behavior:
+      // 1) If an active ID is provided, use it
+      // 2) Otherwise, center on the first event (not the start of range)
+      // 3) If there are no events, fall back to start of timeline
+      centerSelect.value = hasActive ? active : (firstEventValue ?? "__begin__");
     }
+
 
     function centerOn(id){
       if (id === "__begin__"){
