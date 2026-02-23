@@ -112,7 +112,7 @@ window.TIMELINE_CONFIG = {
   // (decade → year, century → decade, year → month, month → day)
   hasDefault: true,
   defaultInterval: "decade",
-  defaultIntervalAmount: 1.5,
+  defaultIntervalAmount: .5,
 
   // If hasDefault is true, you can set this to "default" to start in that view.
   // If hasDefault is false, use "day/month/year/decade/century/fit" like before.
