@@ -28,15 +28,19 @@
     mount.innerHTML = `
       <div class="timeline-head">
         <div class="timeline-controls">
-          <div class="controlPill" title="Zoom changes the field of view of the timeline">
-            <label for="zoomSelect">Timeline View:</label>
-            <select id="zoomSelect" aria-label="Zoom level"></select>
+          <div class="controlsLeft">
+            <div class="controlPill" title="Zoom changes the field of view of the timeline">
+              <label for="zoomSelect">Timeline View:</label>
+              <select id="zoomSelect" aria-label="Zoom level"></select>
+            </div>
+            <select id="intervalSelect" aria-hidden="true" tabindex="-1" style="display:none"></select>
           </div>
-          <select id="intervalSelect" aria-hidden="true" tabindex="-1" style="display:none"></select>
 
-          <div class="controlPill" title="Jump the timeline to an event">
-            <label for="centerSelect">Jump to:</label>
-            <select id="centerSelect" aria-label="Center timeline on an event"></select>
+          <div class="controlsRight">
+            <div class="controlPill" title="Jump the timeline to an event">
+              <label for="centerSelect">Jump to:</label>
+              <select id="centerSelect" aria-label="Center timeline on an event"></select>
+            </div>
           </div>
         </div>
       </div>

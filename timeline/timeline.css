@@ -107,9 +107,23 @@ body{
 
 .timeline-controls{
   display:flex;
-  gap:.55rem;
-  flex-wrap:wrap;
   align-items:center;
+  justify-content:space-between;
+  gap:.55rem;
+  width:100%;
+  flex-wrap:nowrap;
+}
+
+.controlsLeft{
+  display:flex;
+  align-items:center;
+  gap:.55rem;
+}
+
+.controlsRight{
+  display:flex;
+  align-items:center;
+  gap:.55rem;
 }
 
 .controlPill{
