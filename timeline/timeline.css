@@ -99,7 +99,7 @@ body{
 .timeline-head{
   display:flex;
   align-items:flex-end;
-  justify-content:flex-end;
+  justify-content:flex-start;
   gap: 1rem;
   flex-wrap:wrap;
   margin-bottom:.35rem;
@@ -447,15 +447,17 @@ body{
 /* mini map */
 .scrubber{
   margin-top:.75rem;
-  padding:.55rem .7rem;
+  padding:.55rem 0;
   border-radius: 16px;
   border:1px solid rgba(255,255,255,.12);
   background: rgba(255,255,255,.05);
   display:flex;
   align-items:center;
   gap:.8rem;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;
+  width:100%;
 }
+
 .miniTrack{
   position:relative;
   height: 10px;

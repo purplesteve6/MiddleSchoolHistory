@@ -29,17 +29,13 @@
       <div class="timeline-head">
         <div class="timeline-controls">
           <div class="controlPill" title="Zoom changes the field of view of the timeline">
-            <label for="zoomSelect">Zoom</label>
+            <label for="zoomSelect">Timeline View:</label>
             <select id="zoomSelect" aria-label="Zoom level"></select>
           </div>
 
-          <div class="controlPill" title="Ticks are automatically derived from zoom">
-            <label for="intervalSelect">Ticks</label>
-            <select id="intervalSelect" aria-label="Tick interval"></select>
-          </div>
 
           <div class="controlPill" title="Jump the timeline to an event">
-            <label for="centerSelect">Center on:</label>
+            <label for="centerSelect">Jump to:</label>
             <select id="centerSelect" aria-label="Center timeline on an event"></select>
           </div>
         </div>
@@ -55,7 +51,6 @@
       </div>
 
       <div class="scrubber" aria-label="Timeline mini map scrubber">
-        <div class="tiny"><b>Mini-map:</b> drag the gold window to jump through time</div>
         <div class="miniTrack" id="miniTrack">
           <div class="miniWindow" id="miniWindow" title="Drag to jump"></div>
         </div>
@@ -343,27 +338,28 @@
       requestAnimationFrame(() => updateReadout());
     }
 
-    function scrollToCenterCardById(eid){
-      const card = canvas.querySelector(`.eventCard[data-eid="${CSS.escape(String(eid))}"]`);
-      if (!card) return false;
+function scrollToCenterCardById(eid){
+  const card = canvas.querySelector(`.eventCard[data-eid="${CSS.escape(String(eid))}"]`);
+  if (!card) return false;
 
-      // card.offsetLeft is the element's left edge within the canvas.
-      // card.offsetWidth centers on the visual card (and therefore the portrait).
-      const cardCenterX = card.offsetLeft + (card.offsetWidth / 2);
+  const rect = card.getBoundingClientRect();
+  const canvasRect = canvas.getBoundingClientRect();
 
-      internalScroll = true;
-      canvasScroll.scrollLeft = clamp(
-        cardCenterX - (canvasScroll.clientWidth / 2),
-        0,
-        Math.max(0, canvasScroll.scrollWidth - canvasScroll.clientWidth)
-      );
-      contextBand.scrollLeft = canvasScroll.scrollLeft;
-      internalScroll = false;
+  const cardCenterX = (rect.left - canvasRect.left) + (rect.width / 2);
 
-      syncMiniWindow();
-      requestAnimationFrame(() => updateReadout());
-      return true;
-    }
+  internalScroll = true;
+  canvasScroll.scrollLeft = clamp(
+    cardCenterX - (canvasScroll.clientWidth / 2),
+    0,
+    Math.max(0, canvasScroll.scrollWidth - canvasScroll.clientWidth)
+  );
+  contextBand.scrollLeft = canvasScroll.scrollLeft;
+  internalScroll = false;
+
+  syncMiniWindow();
+  requestAnimationFrame(() => updateReadout());
+  return true;
+}
 
     /* ----------------- RENDER ----------------- */
 
