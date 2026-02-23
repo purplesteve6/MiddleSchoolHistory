@@ -215,7 +215,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: false,
       intervalColor:"default",
-      lineLength:   null
+      lineLength:   130
     },
 
     {
@@ -231,7 +231,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: false,
       intervalColor:"default",
-      lineLength:   130
+      lineLength:   null
     },
 
     {
