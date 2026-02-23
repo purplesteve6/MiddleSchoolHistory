@@ -131,8 +131,9 @@ window.TIMELINE_CONFIG = {
   // NOTE: We removed "fit" here because you asked to replace the Full Timeline option with "(default)".
   // If you ever want "Full Timeline" back for a topic, add "fit" here.
   zoomLevels: [
-    "year",
-    "decade"
+    	"month",
+	"year",
+ 	"decade"
   ],
 
   pxPerDay: {
@@ -288,7 +289,7 @@ window.TIMELINE_CONFIG = {
       dateLabel:    "Sep. 19-Oct. 14, 1777",
       start:        "1777-09-19",
       end:          "1777-10-14",
-      anchor:       "1777-10-03",
+      anchor:       "1777-10-01",
       image:        "images/saratoga_timeline.webp",
       href:         "battles/saratoga.html",
       side:         "above",
@@ -304,7 +305,7 @@ window.TIMELINE_CONFIG = {
       dateLabel:    "Sep. 28-Oct. 19, 1781",
       start:        "1781-09-28",
       end:          "1781-10-19",
-      anchor:       "1781-10-09",
+      anchor:       "1781-10-08",
       image:        "images/yorktown_timeline.webp",
       href:         "battles/yorktown.html",
       side:         "below",
