@@ -124,7 +124,7 @@ window.TIMELINE_CONFIG = {
 
   range: {
     begin: "-0060-01-01",
-    end:   "0500-12-31"
+    end:   "0484-12-31"
   },
 
   // Timeline View options shown to the user (in this topic).
