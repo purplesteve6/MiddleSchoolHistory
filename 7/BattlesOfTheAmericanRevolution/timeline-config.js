@@ -216,7 +216,7 @@ window.TIMELINE_CONFIG = {
       // Caesar is a single-day event, so we do NOT show an interval bar.
       showInterval: false,
       intervalColor:"default",
-      lineLength:   null
+      lineLength:   90
     },
 
     {

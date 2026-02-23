@@ -1024,7 +1024,7 @@
         if (!ev) return;
 
         const L = Number(ev.lineLength);
-        if (!Number.isFinite(L)) return;
+        if (!Number.isFinite(L)) return;   // Only adjust cards that explicitly define lineLength
 
         const isAbove = card.classList.contains("laneAbove");
 
@@ -1039,22 +1039,22 @@
         const avatar = card.querySelector(".avatarWrap");
         if (!avatar) return;
 
-        const avatarOffsetTop = avatar.offsetTop;
+        // CURRENT portrait edge position (after base layout applied)
+        const cardTop = card.offsetTop;
+        const avatarTop = cardTop + avatar.offsetTop;
+        const avatarBottom = avatarTop + avatar.offsetHeight;
+        const currentPortraitEdgeY = isAbove ? avatarBottom : avatarTop;
 
-        // Reposition the whole card so the portrait edge is exactly L px from targetY.
-        if (isAbove){
-          // portraitEdgeY is avatarBottom => cardTop + avatarOffsetTop + avatarH
-          const desiredPortraitEdgeY = targetY - L;
-          let newTop = desiredPortraitEdgeY - (avatarOffsetTop + avatarH);
-          if (newTop < safeTop) newTop = safeTop;
-          card.style.top = newTop + "px";
-        } else {
-          // portraitEdgeY is avatarTop => cardTop + avatarOffsetTop
-          const desiredPortraitEdgeY = targetY + L;
-          const newTop = desiredPortraitEdgeY - avatarOffsetTop;
-          card.style.top = newTop + "px";
-        }
+        // We want portraitEdgeY to be exactly L px from the target
+        const desiredPortraitEdgeY = isAbove
+          ? targetY - L
+          : targetY + L;
+
+        // Shift card by the difference
+        const delta = desiredPortraitEdgeY - currentPortraitEdgeY;
+        card.style.top = (cardTop + delta) + "px";
       });
+
     }
 
 
