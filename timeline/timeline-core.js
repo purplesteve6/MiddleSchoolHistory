@@ -466,7 +466,7 @@
         autoFitViewportHeight();
         syncMiniWindow();
         updateReadout();
-      });      
+      });   
 
     }
 
@@ -976,6 +976,8 @@
 
     /* ----------------- LAYOUT HELPERS ----------------- */
 
+    let __baseTicksTop = null;
+    let __baseCanvasH = null;
 
     function positionLanesSymmetrically(){
       const root = document.querySelector(".timeline-embed");
@@ -986,18 +988,6 @@
       const safeTop = parseFloat(cs.getPropertyValue("--safeTop")) || 12;
 
       const spineY = getBarCenterY();
-
-      const barsTopEl = canvas.querySelector(".barsTop");
-      const barsBottomEl = canvas.querySelector(".barsBottom");
-
-      const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars")) || 0;
-      const barH = parseFloat(cs.getPropertyValue("--barH")) || 0;
-
-      const barsTopY = barsTopEl ? barsTopEl.offsetTop : 0;
-      const barsBottomY = barsBottomEl ? barsBottomEl.offsetTop : 0;
-
-      const intervalYTop = barsTopY + barTopInBars + (barH / 2);
-      const intervalYBottom = barsBottomY + barTopInBars + (barH / 2);
 
       const sampleAbove = canvas.querySelector(".eventCard.laneAbove .avatarWrap");
       const sampleBelow = canvas.querySelector(".eventCard.laneBelow .avatarWrap");
@@ -1015,7 +1005,8 @@
       canvas.querySelectorAll(".eventCard.laneBelow").forEach(el => el.style.top = belowLaneTop + "px");
 
       // Per-event override:
-      // lineLength = exact distance (px) from portrait edge to the timeline target
+      // lineLength = exact distance (px) from portrait edge to the SPINE (always),
+      // so the same value means the same spacing above and below.
       // If lineLength is null/undefined/non-numeric => keep base placement.
       const events = Array.isArray(cfg.events) ? cfg.events : [];
       const cards = canvas.querySelectorAll(".eventCard");
@@ -1026,17 +1017,9 @@
         if (!ev) return;
 
         const L = Number(ev.lineLength);
-        if (!Number.isFinite(L)) return;   // Only adjust cards that explicitly define lineLength
+        if (!Number.isFinite(L)) return;
 
         const isAbove = card.classList.contains("laneAbove");
-
-        const showInterval = (ev.showInterval !== undefined)
-          ? !!ev.showInterval
-          : (ev.showBar !== undefined ? !!ev.showBar : true);
-
-        const targetY = showInterval
-          ? (isAbove ? intervalYTop : intervalYBottom)
-          : spineY;
 
         const avatar = card.querySelector(".avatarWrap");
         if (!avatar) return;
@@ -1047,16 +1030,14 @@
         const avatarBottom = avatarTop + avatar.offsetHeight;
         const currentPortraitEdgeY = isAbove ? avatarBottom : avatarTop;
 
-        // We want portraitEdgeY to be exactly L px from the target
+        // Desired portrait edge position measured ONLY from the spine:
         const desiredPortraitEdgeY = isAbove
-          ? targetY - L
-          : targetY + L;
+          ? (spineY - L)
+          : (spineY + L);
 
-        // Shift card by the difference
         const delta = desiredPortraitEdgeY - currentPortraitEdgeY;
         card.style.top = (cardTop + delta) + "px";
       });
-
     }
 
 
@@ -1093,9 +1074,14 @@
               : (ev.showBar !== undefined ? !!ev.showBar : true))
           : true;
 
-        const targetY = showInterval
-          ? (isAbove ? intervalYTop : intervalYBottom)
-          : spineY;
+        const hasLineLen = ev && Number.isFinite(Number(ev.lineLength));
+
+        const targetY = hasLineLen
+          ? spineY
+          : (showInterval
+              ? (isAbove ? intervalYTop : intervalYBottom)
+              : spineY);
+
 
         const connector = canvas.querySelector(`.connector[data-eid="${CSS.escape(eid)}"]`);
         const avatar = card.querySelector(".avatarWrap");
@@ -1117,66 +1103,79 @@
       });
     }
 
+
     function autoFitViewportHeight(){
-      // Expands the canvas + viewport to prevent cards/text from being clipped
-      // when lineLength pushes portraits farther up/down.
+      // Expands the timeline viewport so cards/text never clip.
+      // IMPORTANT: We shift the SPINE (via --ticksTop), not the cards,
+      // so spine-based lineLength remains accurate.
 
       const root = document.querySelector(".timeline-embed");
       if (!root) return;
 
       const cs = getComputedStyle(root);
 
-      const extraPad = 26; // breathing room (px)
-      const minCanvasH = parseFloat(cs.getPropertyValue("--canvasH")) || 620;
-
-      // Measure event cards (and their text) in canvas coordinates
-      const cards = canvas.querySelectorAll(".eventCard");
-      if (!cards.length){
-        root.style.setProperty("--canvasH", minCanvasH + "px");
-        // viewport = contextBand + canvasScroll, so just keep it aligned
-        viewport.style.height = (54 + minCanvasH) + "px";
-        return;
+      if (__baseTicksTop === null){
+        __baseTicksTop = parseFloat(cs.getPropertyValue("--ticksTop")) || 260;
       }
+      if (__baseCanvasH === null){
+        __baseCanvasH = parseFloat(cs.getPropertyValue("--canvasH")) || 620;
+      }
+
+      const pad = 16;
+
+      // Reset to baseline each run (prevents "ratcheting" bigger forever)
+      root.style.setProperty("--ticksTop", __baseTicksTop + "px");
+      root.style.setProperty("--canvasH", __baseCanvasH + "px");
+      if (viewport) viewport.style.height = "";
+
+      // Re-apply layout at baseline so measurements are honest
+      positionLanesSymmetrically();
+      adjustConnectors();
+
+      const cards = Array.from(canvas.querySelectorAll(".eventCard"));
+      if (cards.length === 0) return;
 
       let topMost = Infinity;
       let bottomMost = -Infinity;
 
-      cards.forEach(card => {
-        const top = card.offsetTop;
-        const bottom = top + card.offsetHeight;
-        topMost = Math.min(topMost, top);
-        bottomMost = Math.max(bottomMost, bottom);
-      });
-
-      // If something went above 0, push ALL cards down equally so top fits.
-      // (This preserves the relative spacing you designed.)
-      if (topMost < extraPad){
-        const shiftDown = (extraPad - topMost);
-
-        cards.forEach(card => {
-          const curTop = card.offsetTop;
-          card.style.top = (curTop + shiftDown) + "px";
-        });
-
-        // Recompute extremes after shifting
-        topMost += shiftDown;
-        bottomMost += shiftDown;
-
-        // Connectors must update after we move cards
-        adjustConnectors();
+      for (const c of cards){
+        topMost = Math.min(topMost, c.offsetTop);
+        bottomMost = Math.max(bottomMost, c.offsetTop + c.offsetHeight);
       }
 
-      // Required canvas height so bottom fits too
-      const neededCanvasH = Math.max(minCanvasH, Math.ceil(bottomMost + extraPad));
+      // If any content is above the top, push the SPINE down by increasing --ticksTop.
+      // Then we re-layout so lineLength stays correct relative to the spine.
+      let ticksShift = 0;
+      if (topMost < pad){
+        ticksShift = (pad - topMost);
+      }
 
-      // Apply new canvas height
+      const newTicksTop = __baseTicksTop + ticksShift;
+      root.style.setProperty("--ticksTop", newTicksTop + "px");
+
+      // Re-layout after spine shift
+      positionLanesSymmetrically();
+      adjustConnectors();
+
+      // Recompute bounds after shift
+      topMost = Infinity;
+      bottomMost = -Infinity;
+      for (const c of cards){
+        topMost = Math.min(topMost, c.offsetTop);
+        bottomMost = Math.max(bottomMost, c.offsetTop + c.offsetHeight);
+      }
+
+      // Ensure canvas height fits bottom-most card
+      const neededCanvasH = Math.max(__baseCanvasH + ticksShift, Math.ceil(bottomMost + pad));
       root.style.setProperty("--canvasH", neededCanvasH + "px");
 
-      // Keep viewport height in sync:
-      // context band is fixed 54px (from CSS), canvasScroll uses the rest
-      const contextH = 54;
-      viewport.style.height = (contextH + neededCanvasH) + "px";
+      // Match viewport height to (context band + canvas height)
+      const contextH = contextBand ? contextBand.offsetHeight : 54;
+      if (viewport){
+        viewport.style.height = (contextH + neededCanvasH) + "px";
+      }
     }
+
 
     function getBarCenterY(){
       const root = document.querySelector(".timeline-embed");
