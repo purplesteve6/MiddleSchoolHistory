@@ -163,7 +163,7 @@ window.TIMELINE_CONFIG = {
   theme: {
     bg:        "#001338",
     bg2:       "#000b22",
-    gold:      "#FFD84A",
+    gold:      "#4676f6",
     gold2:     "#f2c94c",
     red:       "#b3122a",
     red2:      "#7b0b1d",
@@ -174,11 +174,11 @@ window.TIMELINE_CONFIG = {
 
   // Default bar color palette (used when intervalColor === "default")
   barColors: [
-    "#FFD84A",
+    "#4676f6",
     "#B3122A",
-    "#F2C94C",
+    "#f2c94c",
     "#7B0B1D",
-    "#E9B949",
+    "#3834c6",
     "#9E0F26"
   ],
 
