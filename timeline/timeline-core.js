@@ -1425,37 +1425,49 @@ function getBarCenterY(){
 
     /* ----------------- UTILITIES ----------------- */
 
-    function applyTheme(theme){
-      const root = document.querySelector(".timeline-embed");
-      if (!root) return;
+ 
+function applyTheme(theme){
+  // IMPORTANT:
+  // The “oval glow” backgrounds are painted on <body> in timeline.css,
+  // so the variables MUST exist on :root/html (or body). If we only set them
+  // on .timeline-embed, <body> cannot “see” them and the ovals won’t render.
+  const embed = document.querySelector(".timeline-embed");
 
+  // Apply vars at the document root so they affect <body> + everything inside.
+  // Also apply to .timeline-embed (harmless, and keeps scoping flexible later).
+  const targets = [document.documentElement, embed].filter(Boolean);
+  if (targets.length === 0) return;
 
-      const map = {
-        bg: "--bg",
-        bg2: "--bg2",
-        text: "--text",
-        muted: "--muted",
-        gold: "--gold",
-        gold2: "--gold2",
-        red: "--red",
-        red2: "--red2",
+  const map = {
+    bg: "--bg",
+    bg2: "--bg2",
+    text: "--text",
+    muted: "--muted",
+    gold: "--gold",
+    gold2: "--gold2",
+    red: "--red",
+    red2: "--red2",
 
-        // Background “oval glow” colors (page + viewport)
-        bgOvalA: "--bgOvalA",
-        bgOvalB: "--bgOvalB",
-        vpOvalA: "--vpOvalA",
-        vpOvalB: "--vpOvalB",
+    // Background “oval glow” colors:
+    // - bgOvalA/bgOvalB affect the PAGE background (body)
+    // - vpOvalA/vpOvalB affect the VIEWPORT background (inside the timeline viewport)
+    bgOvalA: "--bgOvalA",
+    bgOvalB: "--bgOvalB",
+    vpOvalA: "--vpOvalA",
+    vpOvalB: "--vpOvalB",
 
-        intervalA: "--intervalA",
-        intervalB: "--intervalB",
-        markerText: "--markerText"
-      };
+    intervalA: "--intervalA",
+    intervalB: "--intervalB",
+    markerText: "--markerText"
+  };
 
-      for (const [k, v] of Object.entries(theme)){
-        if (!map[k]) continue;
-        root.style.setProperty(map[k], String(v));
-      }
+  for (const [k, v] of Object.entries(theme)){
+    if (!map[k]) continue;
+    for (const t of targets){
+      t.style.setProperty(map[k], String(v));
     }
+  }
+}
 
     function resolveAsset(path){
       if (!path) return path;
