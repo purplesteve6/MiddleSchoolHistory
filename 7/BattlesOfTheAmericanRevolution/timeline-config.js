@@ -85,7 +85,7 @@
  *                      Below lane  → portrait top sits L pixels BELOW timeline
  *
  *                    Default behavior:
- *                      null / undefined → uses standard CSS spacing
+ *                      90 / undefined → uses standard CSS spacing
  *                      (the normal symmetrical layout)
  *
  *                    Example values:
@@ -232,7 +232,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: false,
       intervalColor:"default",
-      lineLength:   null
+      lineLength:   90
     },
 
     {
@@ -264,7 +264,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: false,
       intervalColor:"default",
-      lineLength:   null
+      lineLength:   90
     },
 
     {
@@ -280,7 +280,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: false,
       intervalColor:"default",
-      lineLength:   null
+      lineLength:   90
     },
 
     {
@@ -296,7 +296,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: false,
       intervalColor:"default",
-      lineLength:   null
+      lineLength:   90
     },
 
     {
@@ -312,7 +312,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: true,
       intervalColor:"default",
-      lineLength:   null
+      lineLength:   90
     },
 
     {
@@ -328,7 +328,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: true,
       intervalColor:"default",
-      lineLength:   null
+      lineLength:   90
     },
 
    
