@@ -857,6 +857,7 @@ requestAnimationFrame(() => {
         contextInner.appendChild(lineTop);
 
         // 2) Canvas segment (from top of scroll area down to the spine)
+const spineY = getBarCenterY();
 const line = document.createElement("div");
 line.className = "contextLine";
 line.dataset.seg = "canvas";
@@ -1218,15 +1219,6 @@ function getBarCenterY(){
   return barsTop + barTopInBars + (barH/2);
 }
 
-
-function adjustContextLinesToSpine(){
-  const spineY = getBarCenterY();
-  canvas.querySelectorAll('.contextLine').forEach(line => {
-    line.style.height = Math.max(0, spineY) + "px";
-  });
-}
-
-/** Re-stretch the "canvas segment" of every context line so it always reaches the spine */
 function adjustContextLinesToSpine(){
   const spineY = getBarCenterY();
   const segs = canvas.querySelectorAll('.contextLine[data-seg="canvas"]');
@@ -1235,18 +1227,6 @@ function adjustContextLinesToSpine(){
   });
 }
 
-
-      const mid = parseFloat(cs.getPropertyValue("--timelineMidY"));
-      if (Number.isFinite(mid)) return mid;
-
-      const ticksTop = parseFloat(cs.getPropertyValue("--ticksTop"));
-      if (Number.isFinite(ticksTop)) return ticksTop + (55 / 2);
-
-      const barsTop = parseFloat(cs.getPropertyValue("--barsTop")) || 310;
-      const barTopInBars = parseFloat(cs.getPropertyValue("--barTopInBars")) || 11;
-      const barH = parseFloat(cs.getPropertyValue("--barH")) || 18;
-      return barsTop + barTopInBars + (barH/2);
-    }
 
     /* ----------------- CENTER + MINIMAP ----------------- */
 
