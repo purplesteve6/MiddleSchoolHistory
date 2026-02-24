@@ -267,100 +267,53 @@
     </section>
 
     <!-- MINI QUIZ (interactive MC) -->
-    <section class="card full" aria-label="Quick quiz" id="quiz">
-      <div class="section">
-        <h2>Quick Quiz</h2>
-        <p style="margin-top:-.25rem; color: var(--muted);">
-          Choose the best answer for each question.
-        </p>
 
-        <div class="quiz" role="group" aria-label="Lexington and Concord quiz">
-          <!-- Q1 -->
-          <div class="q" aria-label="Question 1">
-            <h3>1) What was the British goal in marching to Concord?</h3>
-            <div class="choices" role="radiogroup" aria-label="Question 1 choices">
-              <label class="choice">
-                <input type="radio" name="q1" />
-                <span>To meet French troops and form an alliance</span>
-              </label>
-              <label class="choice">
-                <input type="radio" name="q1" data-correct="1" />
-                <span>To seize military supplies and weaken colonial resistance</span>
-              </label>
-              <label class="choice">
-                <input type="radio" name="q1" />
-                <span>To hold an election for a new colonial government</span>
-              </label>
-              <label class="choice">
-                <input type="radio" name="q1" />
-                <span>To capture New York City</span>
-              </label>
-            </div>
+<section class="card full" aria-label="Quick quiz" id="quiz">
+  <div class="section">
+    <h2>Quick Quiz</h2>
+    <p style="margin-top:-.25rem; color: var(--muted);">
+      Answer one question at a time. Your score appears at the end.
+    </p>
 
-            <div class="feedback" aria-live="polite">
-              <div class="correct">✅ Correct! British leaders wanted to seize weapons and supplies stored around Concord.</div>
-              <div class="incorrect">❌ Not quite. The British march aimed to seize colonial military supplies and stop preparations for war.</div>
-            </div>
-          </div>
+    <div class="quizStepWrap" id="quizApp" aria-live="polite">
+      <!-- Question Card -->
+      <div class="quizCard" id="quizCard">
+        <div class="quizMeta">
+          <span class="quizProgress" id="quizProgress">Question 1 of 3</span>
+        </div>
 
-          <!-- Q2 -->
-          <div class="q" aria-label="Question 2">
-            <h3>2) Why did the fighting spread during the British retreat to Boston?</h3>
-            <div class="choices" role="radiogroup" aria-label="Question 2 choices">
-              <label class="choice">
-                <input type="radio" name="q2" />
-                <span>Because the British stopped to build forts along the road</span>
-              </label>
-              <label class="choice">
-                <input type="radio" name="q2" data-correct="1" />
-                <span>Because militia from many towns attacked the marching column along the route</span>
-              </label>
-              <label class="choice">
-                <input type="radio" name="q2" />
-                <span>Because the British ran out of boats and had to cross a river</span>
-              </label>
-              <label class="choice">
-                <input type="radio" name="q2" />
-                <span>Because both sides agreed to keep fighting until sunset</span>
-              </label>
-            </div>
+        <h3 class="quizQ" id="quizQuestion">Loading…</h3>
 
-            <div class="feedback" aria-live="polite">
-              <div class="correct">✅ Correct! As the alarm spread, more militia arrived and attacked from the countryside.</div>
-              <div class="incorrect">❌ Not quite. The retreat became dangerous because militia from many towns attacked the British column.</div>
-            </div>
-          </div>
+        <div class="quizChoices" id="quizChoices" role="radiogroup" aria-label="Quiz choices">
+          <!-- choices injected here -->
+        </div>
 
-          <!-- Q3 -->
-          <div class="q" aria-label="Question 3">
-            <h3>3) What did Lexington &amp; Concord convince many colonists of?</h3>
-            <div class="choices" role="radiogroup" aria-label="Question 3 choices">
-              <label class="choice">
-                <input type="radio" name="q3" />
-                <span>That the colonies could win without any more battles</span>
-              </label>
-              <label class="choice">
-                <input type="radio" name="q3" />
-                <span>That Britain would immediately grant independence</span>
-              </label>
-              <label class="choice">
-                <input type="radio" name="q3" data-correct="1" />
-                <span>That protests had turned into open war and more fighting was coming</span>
-              </label>
-              <label class="choice">
-                <input type="radio" name="q3" />
-                <span>That the war would stay only in Massachusetts</span>
-              </label>
-            </div>
+        <div class="quizActions">
+          <button class="quizBtn" id="quizNext" disabled>Next ➡️</button>
+        </div>
 
-            <div class="feedback" aria-live="polite">
-              <div class="correct">✅ Correct! After April 19, many people believed war had begun and would spread.</div>
-              <div class="incorrect">❌ Not quite. The battles convinced many colonists that the crisis had become open war.</div>
-            </div>
-          </div>
+        <div class="quizHint" id="quizHint" aria-hidden="true">
+          Choose an answer to continue.
         </div>
       </div>
-    </section>
+
+      <!-- Results Card -->
+      <div class="quizCard is-hidden" id="quizResults" aria-label="Quiz results">
+        <h3 class="quizQ">Results</h3>
+        <div class="factsList" style="margin-top:.6rem;">
+          <div class="factItem" id="quizScoreLine"><b>Score:</b> —</div>
+          <div class="factItem" id="quizTimeLine"><b>Completed:</b> —</div>
+        </div>
+
+        <div class="quizActions" style="margin-top: .9rem;">
+          <button class="quizBtn" id="quizRetake">🔁 Retake Quiz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
     <!-- TIMELINE (same embed as main page) -->
     <section class="timeline-embed" aria-label="Timeline" id="timeline">
