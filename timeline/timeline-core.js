@@ -1429,6 +1429,7 @@ function getBarCenterY(){
       const root = document.querySelector(".timeline-embed");
       if (!root) return;
 
+
       const map = {
         bg: "--bg",
         bg2: "--bg2",

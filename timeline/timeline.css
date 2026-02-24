@@ -14,10 +14,11 @@
   --red2:#7b0b1d;
 
   /* Background “oval glow” colors (overrideable by timeline-config.js theme) */
-  --bgOvalA: rgba(179,18,42,32);     /* left/page glow */
-  --bgOvalB: rgba(255,216,74,18);    /* right/page glow */
-  --vpOvalA: rgba(179,18,42,18);     /* left/viewport glow */
-  --vpOvalB: rgba(255,216,74,10);    /* right/viewport glow */
+  --bgOvalA: rgba(179,18,42,0.32);     /* left/page glow */
+  --bgOvalB: rgba(255,216,74,0.18);    /* right/page glow */
+  --vpOvalA: rgba(179,18,42,0.18);     /* left/viewport glow */
+  --vpOvalB: rgba(255,216,74,0.10);    /* right/viewport glow */ 
+
   --panel: rgba(255,255,255,.055);
   --panel2: rgba(255,255,255,.032);
   --shadow: 0 14px 40px rgba(0,0,0,.45);
