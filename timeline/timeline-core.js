@@ -593,7 +593,7 @@
             lineTop.style.bottom = "0";
             lineTop.style.width = "0";
             lineTop.style.borderLeft = "2px dotted rgba(255,216,74,0.85)";
-            lineTop.style.zIndex = "8";
+            lineTop.style.zIndex = "1";
             lineTop.style.pointerEvents = "none";
             contextInner.appendChild(lineTop);
 
@@ -606,7 +606,7 @@
             line.style.bottom = "0";
             line.style.width = "0";
             line.style.borderLeft = "2px dotted rgba(255,216,74,0.85)";
-            line.style.zIndex = "8";
+            line.style.zIndex = "1";
             line.style.pointerEvents = "none";
             canvas.appendChild(line);
 
@@ -655,9 +655,12 @@
       el.style.color = "rgba(255,216,74,0.98)";
       el.style.fontWeight = "900";
       el.style.fontSize = "12px";
-      el.style.zIndex = "9";
+      el.style.whiteSpace = "nowrap";
+      el.style.textShadow = "0 1px 0 rgba(0,0,0,0.8)";
+      el.style.zIndex = "6"; // keep the text pills above cards/images
       el.style.pointerEvents = "none";
       return el;
+
     }
 
     function buildDayMarksMonthView(begin, end){
@@ -836,17 +839,35 @@
         const top = Math.max(6, contextBand.clientHeight - tag.offsetHeight - padBottom);
         tag.style.top = top + "px";
 
-        // Dotted line in canvas: starts at top of scroll area (just below band)
-        const lineTop = 0;
+        // We want the dotted line to reach the spine.
+        // Do this the same way month/year boundary lines do it:
+        //   1) a segment inside the context band
+        //   2) a full-height segment inside the scroll canvas
+        const tagBottom = top + tag.offsetHeight;
 
+        // 1) Context-band segment (from under the tag down to bottom of the context band)
+        const lineTop = document.createElement("div");
+        lineTop.className = "contextLine";
+        lineTop.style.left = x + "px";
+        lineTop.style.top = tagBottom + "px";
+        lineTop.style.height = Math.max(0, (contextBand.clientHeight - tagBottom)) + "px";
+        lineTop.style.zIndex = "1";
+        lineTop.style.pointerEvents = "none";
+        contextInner.appendChild(lineTop);
+
+        // 2) Canvas segment (from top of scroll area down to the spine)
         const line = document.createElement("div");
         line.className = "contextLine";
         line.style.left = x + "px";
-        line.style.top = lineTop + "px";
-        line.style.height = Math.max(0, (getBarCenterY() - lineTop)) + "px";
+        line.style.top = "0";
+        const spineY = getBarCenterY();
+        line.style.height = Math.max(0, spineY) + "px";
+        line.style.zIndex = "1";
+        line.style.pointerEvents = "none";
         canvas.appendChild(line);
       }
     }
+
 
     function renderEventBars(barsEl, pxPerDay, laneSide){
       const events = Array.isArray(cfg.events) ? cfg.events : [];
@@ -1074,13 +1095,11 @@
               : (ev.showBar !== undefined ? !!ev.showBar : true))
           : true;
 
-        const hasLineLen = ev && Number.isFinite(Number(ev.lineLength));
-
-        const targetY = hasLineLen
-          ? spineY
-          : (showInterval
-              ? (isAbove ? intervalYTop : intervalYBottom)
-              : spineY);
+               // Connectors should attach to interval bars when an interval exists.
+        // (Card spacing can still be controlled by lineLength from the spine.)
+        const targetY = showInterval
+          ? (isAbove ? intervalYTop : intervalYBottom)
+          : spineY;
 
 
         const connector = canvas.querySelector(`.connector[data-eid="${CSS.escape(eid)}"]`);
