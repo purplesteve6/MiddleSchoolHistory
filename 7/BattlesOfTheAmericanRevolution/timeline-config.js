@@ -133,7 +133,7 @@ window.TIMELINE_CONFIG = {
 
   // If hasDefault is true, you can set this to "default" to start in that view.
   // If hasDefault is false, use "day/month/year/decade/century/fit" like before.
-  defaultZoom: "year",
+  defaultZoom: "default",
 
   // If an END date is written as a year-only number (example: end: 476),
   // choose what day of that year it means.
