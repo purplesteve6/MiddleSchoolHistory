@@ -127,13 +127,13 @@ window.TIMELINE_CONFIG = {
   //
   // Ticks follow existing logic: one step smaller than the interval.
   // (decade → year, century → decade, year → month, month → day)
-  hasDefault: false,
+  hasDefault: true,
   defaultInterval: "decade",
   defaultIntervalAmount: .1,
 
   // If hasDefault is true, you can set this to "default" to start in that view.
   // If hasDefault is false, use "day/month/year/decade/century/fit" like before.
-  defaultZoom: "yeart",
+  defaultZoom: "year",
 
   // If an END date is written as a year-only number (example: end: 476),
   // choose what day of that year it means.
@@ -232,7 +232,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: false,
       intervalColor:"default",
-      lineLength:   120
+      lineLength:   150
     },
 
     {
