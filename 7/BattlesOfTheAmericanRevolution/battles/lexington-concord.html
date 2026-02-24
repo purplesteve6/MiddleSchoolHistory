@@ -358,14 +358,7 @@
     width="200"
     height="78"
   />
-  <div>
-    // <h2 style="margin:.15rem 0 .35rem;">Quick Quiz</h2>
-    <p style="margin-top:-.15rem; color: var(--muted);">
-      Answer one question at a time. Your score appears at the end.
-    </p>
-  </div>
 </div>
-
 
     <div class="quizStepWrap" id="quizApp" aria-live="polite">
       <!-- Question Card -->
@@ -384,9 +377,7 @@
           <button class="quizBtn" id="quizNext" disabled>Next ➡️</button>
         </div>
 
-        <div class="quizHint" id="quizHint" aria-hidden="true">
-          // Choose an answer to continue.
-        </div>
+        <div class="quizHint" id="quizHint" aria-hidden="true"></div>
       </div>
 
       <!-- Results Card -->
@@ -509,8 +500,6 @@ document.addEventListener("DOMContentLoaded", () => {
       input.addEventListener("change", () => {
         selectedIndex = idx;
         nextBtn.disabled = false;
-        hintEl.style.display = "none";
-        hintEl.setAttribute("aria-hidden", "true");
       });
 
       const span = document.createElement("span");
