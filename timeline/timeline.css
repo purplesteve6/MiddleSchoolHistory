@@ -155,13 +155,14 @@ body{
 .controlPill select:focus{ box-shadow: var(--focus); }
 
 /* viewport */
+
 .timelineViewport{
   border-radius: 16px;
-  border:1px solid rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,12);
   background:
-    radial-gradient(900px 260px at 20% 0%, rgba(179,18,42,.18), transparent 55%),
-    radial-gradient(900px 260px at 80% 20%, rgba(255,216,74,.10), transparent 55%),
-    rgba(14,6,8,.35);
+    radial-gradient(900px 260px at 20% 0%, rgba(179,18,42,18), transparent 55%),
+    radial-gradient(900px 260px at 80% 20%, rgba(255,216,74,10), transparent 55%),
+    rgba(14,6,8,35);
 
   /* Column layout: context band on top, scroll area below */
   display:flex;
@@ -172,8 +173,11 @@ body{
   scrollbar-width: none;
   -ms-overflow-style: none;
 
-  height: 640px;
+  /* IMPORTANT: allow JS to grow this without CSS fighting it */
+  min-height: 640px;
+  height: auto;
 }
+
 .timelineViewport::-webkit-scrollbar{ display:none; }
 
 /* Fixed top band for context tags (no overlap with cards) */
