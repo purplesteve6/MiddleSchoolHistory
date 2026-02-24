@@ -66,6 +66,72 @@
       justify-content:center;
       margin-top: .9rem;
     }
+
+  /* ===== STEP QUIZ STYLES ===== */
+
+  .quizStepWrap { margin-top: .6rem; }
+
+  .quizCard{
+    padding: 1rem 1rem .95rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.04);
+  }
+  .quizCard.is-hidden{ display:none; }
+
+  .quizMeta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:.35rem;
+    color: rgba(247,243,230,.78);
+    font-weight: 900;
+    font-size: .92rem;
+  }
+
+  .quizQ{ margin: .35rem 0 .7rem; font-size: 1.1rem; }
+
+  .quizChoices{ display:grid; gap: .55rem; }
+
+  .quizChoice{
+    display:flex;
+    gap:.6rem;
+    align-items:flex-start;
+    padding:.6rem .65rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.04);
+    cursor:pointer;
+  }
+  .quizChoice:hover{
+    background: rgba(255,255,255,.07);
+    border-color: rgba(255,255,255,.22);
+  }
+  .quizChoice input{ margin-top:.2rem; }
+
+  .quizActions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:.85rem;
+  }
+
+  .quizBtn{
+    appearance:none;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.06);
+    color: rgba(247,243,230,.95);
+    font-weight: 1000;
+    border-radius: 999px;
+    padding: .55rem .9rem;
+    cursor:pointer;
+  }
+
+  .quizHint{
+    margin-top:.55rem;
+    color: rgba(247,243,230,.74);
+    font-size: .92rem;
+  }
+
   </style>
 </head>
 
@@ -342,5 +408,140 @@
   <!-- IMPORTANT: this page is inside /battles/, so config must be ../config.js -->
   <script src="../config.js"></script>
   <script src="/include.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const quiz = [
+    {
+      q: "What was the British goal in marching to Concord?",
+      choices: [
+        "To meet French troops and form an alliance",
+        "To seize military supplies and weaken colonial resistance",
+        "To hold an election for a new colonial government",
+        "To capture New York City"
+      ],
+      correctIndex: 1
+    },
+    {
+      q: "Why did the fighting spread during the British retreat to Boston?",
+      choices: [
+        "Because the British stopped to build forts along the road",
+        "Because militia from many towns attacked the marching column along the route",
+        "Because the British ran out of boats and had to cross a river",
+        "Because both sides agreed to keep fighting until sunset"
+      ],
+      correctIndex: 1
+    },
+    {
+      q: "What did Lexington & Concord convince many colonists of?",
+      choices: [
+        "That the colonies could win without any more battles",
+        "That Britain would immediately grant independence",
+        "That protests had turned into open war and more fighting was coming",
+        "That the war would stay only in Massachusetts"
+      ],
+      correctIndex: 2
+    }
+  ];
+
+  const card = document.getElementById("quizCard");
+  const results = document.getElementById("quizResults");
+  const progress = document.getElementById("quizProgress");
+  const questionEl = document.getElementById("quizQuestion");
+  const choicesEl = document.getElementById("quizChoices");
+  const nextBtn = document.getElementById("quizNext");
+  const hintEl = document.getElementById("quizHint");
+
+  const scoreLine = document.getElementById("quizScoreLine");
+  const timeLine = document.getElementById("quizTimeLine");
+  const retakeBtn = document.getElementById("quizRetake");
+
+  // Safety check (prevents silent failure)
+  if (!card || !results || !progress || !questionEl || !choicesEl || !nextBtn || !hintEl || !scoreLine || !timeLine || !retakeBtn) {
+    console.error("[Quiz] Missing one or more quiz elements. Check IDs in the HTML.");
+    if (questionEl) questionEl.textContent = "Quiz error: missing elements.";
+    return;
+  }
+
+  let i = 0;
+  let score = 0;
+  let selectedIndex = null;
+
+  function renderQuestion() {
+    const item = quiz[i];
+    selectedIndex = null;
+
+    progress.textContent = `Question ${i + 1} of ${quiz.length}`;
+    questionEl.textContent = item.q;
+
+    choicesEl.innerHTML = "";
+    item.choices.forEach((text, idx) => {
+      const label = document.createElement("label");
+      label.className = "quizChoice";
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "quizQ";
+      input.value = String(idx);
+
+      input.addEventListener("change", () => {
+        selectedIndex = idx;
+        nextBtn.disabled = false;
+        hintEl.style.display = "none";
+        hintEl.setAttribute("aria-hidden", "true");
+      });
+
+      const span = document.createElement("span");
+      span.textContent = text;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      choicesEl.appendChild(label);
+    });
+
+    nextBtn.textContent = (i === quiz.length - 1) ? "Finish ✅" : "Next ➡️";
+    nextBtn.disabled = true;
+
+    hintEl.style.display = "block";
+    hintEl.setAttribute("aria-hidden", "false");
+  }
+
+  function showResults() {
+    const when = new Date().toLocaleString();
+    scoreLine.innerHTML = `<b>Score:</b> ${score} / ${quiz.length}`;
+    timeLine.innerHTML = `<b>Completed:</b> ${when}`;
+
+    card.classList.add("is-hidden");
+    results.classList.remove("is-hidden");
+  }
+
+  function resetQuiz() {
+    i = 0;
+    score = 0;
+    selectedIndex = null;
+
+    results.classList.add("is-hidden");
+    card.classList.remove("is-hidden");
+    renderQuestion();
+  }
+
+  nextBtn.addEventListener("click", () => {
+    if (selectedIndex === null) return;
+
+    if (selectedIndex === quiz[i].correctIndex) score++;
+
+    i++;
+    if (i >= quiz.length) showResults();
+    else renderQuestion();
+  });
+
+  retakeBtn.addEventListener("click", resetQuiz);
+
+  renderQuestion();
+});
+</script>
+
+
 </body>
 </html>
+
