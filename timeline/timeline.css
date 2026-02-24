@@ -215,6 +215,15 @@ body{
   min-width: 900px;
 }
 
+
+/* Layering: keep guide lines behind cards */
+.timelineLine{ z-index: 1; }
+.ticks{ z-index: 1; }
+.bars{ z-index: 2; }
+.connector{ z-index: 3; }
+.eventCard{ z-index: 5; }
+
+
 /* Interval boxes row (legacy; not currently rendered by core) */
 .intervalRow{
   position:absolute;
@@ -364,7 +373,7 @@ body{
   width:0;
   border-left: 2px dotted rgba(255,216,74,.45);
   pointer-events:none;
-  z-index: 2;
+  z-index: 1; /* behind connectors (3) and cards (5) */
 }
 
 /* event cards */
