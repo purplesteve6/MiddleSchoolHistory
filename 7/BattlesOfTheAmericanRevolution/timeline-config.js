@@ -201,33 +201,43 @@ window.TIMELINE_CONFIG = {
 
 
   theme: {
-    bg:        "#001338",
-    bg2:       "#000b22",
-    gold:      "#4676f6",
-    gold2:     "#f2c94c",
-    red:       "#b3122a",
-    red2:      "#7b0b1d",
+    // Deep navy background (reads “Revolutionary War” + keeps contrast high)
+    bg:        "#0B1F4B",  // navy
+    bg2:       "#071733",  // deeper navy
+
+    // Accents (mapped to CSS vars --gold/--gold2 and --red/--red2)
+    // We’re repurposing "gold" as “Patriot Blue” since the engine expects these slots.
+    gold:      "#2F6FED",  // patriot blue (primary accent)
+    gold2:     "#EAF2FF",  // “white” highlight (light tint for subtle UI emphasis)
+
+    // True reds for contrast accents
+    red:       "#C1121F",  // flag red
+    red2:      "#7A0B16",  // deeper red for depth/shadows
 
     // Background “oval glow” colors (radial-gradient glows)
     // bgOval* affects the full page background; vpOval* affects the rounded viewport panel.
-    bgOvalA:   "rgba(179,18,42,0.32)",  // page background left oval
-    bgOvalB:   "rgba(255,216,74,0.18)", // page background right oval
-    vpOvalA:   "rgba(179,18,42,0.18)",  // viewport background left oval
-    vpOvalB:   "rgba(255,216,74,0.10)", // viewport background right oval
+    bgOvalA:   "rgba(193,18,31,0.26)",  // page left glow (red)
+    bgOvalB:   "rgba(47,111,237,0.20)", // page right glow (blue)
+    vpOvalA:   "rgba(193,18,31,0.14)",  // viewport left glow (red, subtler)
+    vpOvalB:   "rgba(47,111,237,0.12)", // viewport right glow (blue, subtler)
 
-    intervalA: "rgba(255,216,74,0.18)",
-    intervalB: "rgba(179,18,42,0.18)",
-    markerText:"rgba(255,216,74,0.95)"
+    // Legacy interval fills (safe to keep; set to red/blue tints so they match if used)
+    intervalA: "rgba(47,111,237,0.18)", // blue tint
+    intervalB: "rgba(193,18,31,0.18)",  // red tint
+
+    // Date marker label text (near-white for crisp readability)
+    markerText:"rgba(234,242,255,0.95)"
   },
+
 
   // Default bar color palette (used when intervalColor === "default")
   barColors: [
-    "#4676f6",
-    "#B3122A",
-    "#f2c94c",
-    "#7B0B1D",
-    "#3834c6",
-    "#9E0F26"
+    "#2F6FED", // blue
+    "#C1121F", // red
+    "#EAF2FF", // white-ish (very light blue-white so it still shows on dark)
+    "#1E4FBF", // deeper blue
+    "#7A0B16", // deeper red
+    "#9FB9FF"  // pale blue accent
   ],
 
   contextEvents: [
