@@ -463,7 +463,7 @@ requestAnimationFrame(() => {
   positionLanesSymmetrically();
   adjustConnectors();
   autoFitViewportHeight();
-  adjustContextLinesToSpine();   // ← ADD THIS
+  // adjustContextLinesToSpine();   // ← ADD THIS
   syncMiniWindow();
   updateReadout();
 }); 
@@ -1219,13 +1219,7 @@ function getBarCenterY(){
   return barsTop + barTopInBars + (barH/2);
 }
 
-function adjustContextLinesToSpine(){
-  const spineY = getBarCenterY();
-  const segs = canvas.querySelectorAll('.contextLine[data-seg="canvas"]');
-  segs.forEach(line => {
-    line.style.height = Math.max(0, spineY) + "px";
-  });
-}
+
 
 
     /* ----------------- CENTER + MINIMAP ----------------- */
