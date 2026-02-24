@@ -1,5 +1,5 @@
 /* Standalone, embeddable timeline (namespaced) */
-.timeline-embed{
+:root{
   /* ===== THEME (overrideable by config) ===== */
   --bg:#12060a;
   --bg2:#0b0507;
