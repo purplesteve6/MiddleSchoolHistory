@@ -8,6 +8,65 @@
 
   <!-- IMPORTANT: this page is inside /battles/, so CSS must be ../revolution.css -->
   <link rel="stylesheet" href="../revolution.css" />
+
+  <!-- Page-local styles for the quiz + centered back-to-top (kept minimal) -->
+  <style>
+    .quiz { margin-top: .35rem; }
+    .quiz .q {
+      padding: .85rem .9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      margin: .75rem 0;
+    }
+    .quiz .q h3 { margin: 0 0 .55rem; font-size: 1.05rem; }
+    .quiz .choices { display: grid; gap: .45rem; }
+    .quiz label.choice{
+      display: flex;
+      gap: .55rem;
+      align-items: flex-start;
+      padding: .55rem .6rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+    .quiz label.choice:hover{
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .quiz input[type="radio"]{ margin-top: .2rem; }
+
+    /* Feedback text hidden until an answer is selected */
+    .quiz .feedback{
+      display:none;
+      margin:.55rem 0 0;
+      padding: .55rem .65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+    }
+    /* Show feedback if any option selected */
+    .quiz .q:has(input[type="radio"]:checked) .feedback{ display:block; }
+
+    /* Default feedback text, then swap based on correct/incorrect */
+    .quiz .feedback .correct{ display:none; color: rgba(255,216,74,.96); font-weight: 900; }
+    .quiz .feedback .incorrect{ display:none; color: rgba(255,255,255,.92); }
+
+    /* Mark correct answers: input has data-correct="1" */
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .correct{ display:block; }
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .incorrect{ display:none; }
+
+    .quiz .q:has(input[type="radio"]:checked) .feedback .incorrect{ display:block; }
+    .quiz .q:has(input[type="radio"]:checked) .feedback .correct{ display:none; }
+
+    .backTopSolo{
+      display:flex;
+      justify-content:center;
+      margin-top: .9rem;
+    }
+  </style>
 </head>
 
 <body class="topic revolution">
@@ -38,14 +97,6 @@
           <div class="bigIdeaText">
             A small clash can start a big war—especially when trust is already broken and both sides expect the worst.
           </div>
-
-          <!-- Quick “at a glance” facts under Big Idea (matches your style on subpages like Aphrodite) -->
-          <div class="factsList" style="margin-top: .9rem;">
-            <div class="factItem"><b>Date:</b> <em>April 19, 1775</em></div>
-            <div class="factItem"><b>Where:</b> <em>Lexington &amp; Concord, Massachusetts</em></div>
-            <div class="factItem"><b>Who fought:</b> <em>British regulars vs. colonial militia</em></div>
-            <div class="factItem"><b>Outcome:</b> <em>British retreat to Boston; colonial resistance grows</em></div>
-          </div>
         </div>
 
         <div class="pillrow" aria-label="Topic tags">
@@ -64,12 +115,12 @@
           </div>
 
           <div class="portraitButtons" aria-label="Navigation">
-            <a class="pbtn prev" href="../index.html" title="Back to Battles of the American Revolution">
+            <a class="pbtn prev" href="../index.html" title="Back to Battles of the American Revolution overview">
               <div class="pbtnTop">
                 <span class="emoji" aria-hidden="true">⬅️</span>
                 <span class="label">Back</span>
               </div>
-              <div class="pbtnSub">All Battles</div>
+              <div class="pbtnSub">Overview</div>
             </a>
 
             <div class="pbtn spacer" aria-hidden="true"></div>
@@ -121,16 +172,30 @@
       </div>
     </section>
 
+    <!-- BATTLE AT-A-GLANCE (moved out of Big Idea) -->
+    <section class="card full" aria-label="Battle at a glance">
+      <div class="section">
+        <h2>Battle at a Glance</h2>
+        <div class="factsList">
+          <div class="factItem">🗓️ <b>Date:</b> April 19, 1775</div>
+          <div class="factItem">📍 <b>Place:</b> Lexington &amp; Concord, Massachusetts</div>
+          <div class="factItem">👥 <b>Who fought:</b> British regulars vs. colonial militia</div>
+          <div class="factItem">🎯 <b>British goal:</b> seize military supplies in Concord</div>
+          <div class="factItem">🏃 <b>Outcome:</b> British retreat to Boston; colonial resistance grows</div>
+        </div>
+      </div>
+    </section>
+
     <!-- QUICK FACTS + VOCAB -->
     <section class="grid2" aria-label="Quick facts and vocabulary">
       <article class="card section" aria-label="Quick Facts">
         <h2>Quick Facts</h2>
         <div class="factsList">
-          <div class="factItem">🗓️ <b>Date:</b> April 19, 1775</div>
-          <div class="factItem">📍 <b>Place:</b> Lexington &amp; Concord, Massachusetts</div>
-          <div class="factItem">🎯 <b>British goal:</b> seize military supplies in Concord</div>
-          <div class="factItem">🧍 <b>Colonial goal:</b> protect supplies and resist arrests</div>
-          <div class="factItem">🏃 <b>Result:</b> British retreat; militia confidence grows</div>
+          <div class="factItem">🧍 <b>Minute men</b> were militia trained to respond quickly.</div>
+          <div class="factItem">📣 Alarm riders spread warnings from town to town.</div>
+          <div class="factItem">🌉 Fighting at the North Bridge helped push the British back.</div>
+          <div class="factItem">🏘️ Militia attacks during the retreat came from many towns.</div>
+          <div class="factItem">🔥 The day convinced many people war had truly begun.</div>
         </div>
       </article>
 
@@ -141,7 +206,7 @@
           <div class="term"><b>militia</b> — citizen soldiers who could fight when needed.</div>
           <div class="term"><b>minute men</b> — militia members trained to respond quickly.</div>
           <div class="term"><b>armory</b> — a place where weapons and supplies are stored.</div>
-          <div class="term"><b>retreat</b> — to pull back or move away from danger while fighting.</div>
+          <div class="term"><b>retreat</b> — to pull back or move away while fighting.</div>
           <div class="term"><b>escalate</b> — to grow more serious or intense.</div>
         </div>
       </article>
@@ -152,32 +217,31 @@
       <div class="section">
         <h2>What Happened?</h2>
 
-        <h3>1) The British march out of Boston</h3>
+        <h3>The British march out of Boston</h3>
         <p>
           Late on April 18, British troops quietly marched from Boston toward Concord. Their mission was to seize
           <span class="vocabWord" data-def="Weapons and military supplies, like guns, gunpowder, and cannons.">supplies</span>
-          and stop the colonies from preparing for war. British leaders also hoped to prevent the militia from gathering.
+          and stop the colonies from preparing for war.
         </p>
 
-        <h3>2) Lexington: a tense standoff</h3>
+        <h3>Lexington: a tense standoff</h3>
         <p>
           At dawn on April 19, British troops reached Lexington. A small group of militia stood on the town green.
-          No one knows exactly who fired the first shot—often called
+          No one knows exactly who fired first—often remembered as
           <span class="vocabWord" data-def="A nickname for the first shot(s) of the American Revolution, remembered as the moment fighting began.">“the shot heard ’round the world”</span>.
-          But once shooting started, the standoff turned deadly. The militia scattered, and the British continued on toward Concord.
+          Once shooting started, the militia scattered, and the British continued toward Concord.
         </p>
 
-        <h3>3) Concord: the fight spreads</h3>
+        <h3>Concord: the fight spreads</h3>
         <p>
-          In Concord, Patriots had already moved many supplies to safer places. Fighting broke out near the North Bridge when militia members
-          advanced and exchanged fire with British soldiers. This time, many militia units held their ground, and the British began to feel pressure.
+          In Concord, Patriots had already moved many supplies to safer places. Fighting broke out near the North Bridge when militia units advanced
+          and exchanged fire with British soldiers. This time, many militia members held their ground.
         </p>
 
-        <h3>4) The long retreat back to Boston</h3>
+        <h3>The long retreat back to Boston</h3>
         <p>
-          As British troops marched back toward Boston, militia fighters from many towns attacked from behind walls, trees, and hills. The British
-          column suffered heavy losses and struggled to stay organized. By the time the troops reached safety near Boston, it was clear that the conflict
-          had grown beyond a single mission.
+          On the march back, militia fighters from many towns attacked from behind walls, trees, and hills. The British column took heavy losses and
+          struggled to stay organized. By the time the troops reached safety near Boston, it was clear the conflict had grown beyond a single mission.
         </p>
       </div>
     </section>
@@ -197,27 +261,120 @@
           <span class="vocabWord" data-def="A military action in which an area is surrounded to cut off supplies and movement.">siege</span>
           of the city. Many colonists who had hoped the crisis would end peacefully now believed war had already begun.
         </p>
+      </div>
+    </section>
 
-        <div class="bigIdeaWrap" aria-label="Turning point check" style="margin-top: .9rem;">
-          <div class="bigIdeaText" style="color: inherit;">
-            <b>Turning Point Check:</b> This battle didn’t “win” the war—but it changed the situation from protests to open fighting.
+    <!-- MINI QUIZ (interactive MC) -->
+    <section class="card full" aria-label="Quick quiz" id="quiz">
+      <div class="section">
+        <h2>Quick Quiz</h2>
+        <p style="margin-top:-.25rem; color: var(--muted);">
+          Choose the best answer for each question.
+        </p>
+
+        <div class="quiz" role="group" aria-label="Lexington and Concord quiz">
+          <!-- Q1 -->
+          <div class="q" aria-label="Question 1">
+            <h3>1) What was the British goal in marching to Concord?</h3>
+            <div class="choices" role="radiogroup" aria-label="Question 1 choices">
+              <label class="choice">
+                <input type="radio" name="q1" />
+                <span>To meet French troops and form an alliance</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="q1" data-correct="1" />
+                <span>To seize military supplies and weaken colonial resistance</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="q1" />
+                <span>To hold an election for a new colonial government</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="q1" />
+                <span>To capture New York City</span>
+              </label>
+            </div>
+
+            <div class="feedback" aria-live="polite">
+              <div class="correct">✅ Correct! British leaders wanted to seize weapons and supplies stored around Concord.</div>
+              <div class="incorrect">❌ Not quite. The British march aimed to seize colonial military supplies and stop preparations for war.</div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="q" aria-label="Question 2">
+            <h3>2) Why did the fighting spread during the British retreat to Boston?</h3>
+            <div class="choices" role="radiogroup" aria-label="Question 2 choices">
+              <label class="choice">
+                <input type="radio" name="q2" />
+                <span>Because the British stopped to build forts along the road</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="q2" data-correct="1" />
+                <span>Because militia from many towns attacked the marching column along the route</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="q2" />
+                <span>Because the British ran out of boats and had to cross a river</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="q2" />
+                <span>Because both sides agreed to keep fighting until sunset</span>
+              </label>
+            </div>
+
+            <div class="feedback" aria-live="polite">
+              <div class="correct">✅ Correct! As the alarm spread, more militia arrived and attacked from the countryside.</div>
+              <div class="incorrect">❌ Not quite. The retreat became dangerous because militia from many towns attacked the British column.</div>
+            </div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="q" aria-label="Question 3">
+            <h3>3) What did Lexington &amp; Concord convince many colonists of?</h3>
+            <div class="choices" role="radiogroup" aria-label="Question 3 choices">
+              <label class="choice">
+                <input type="radio" name="q3" />
+                <span>That the colonies could win without any more battles</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="q3" />
+                <span>That Britain would immediately grant independence</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="q3" data-correct="1" />
+                <span>That protests had turned into open war and more fighting was coming</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="q3" />
+                <span>That the war would stay only in Massachusetts</span>
+              </label>
+            </div>
+
+            <div class="feedback" aria-live="polite">
+              <div class="correct">✅ Correct! After April 19, many people believed war had begun and would spread.</div>
+              <div class="incorrect">❌ Not quite. The battles convinced many colonists that the crisis had become open war.</div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CHECK YOUR UNDERSTANDING -->
-    <section class="card full" aria-label="Check your understanding" id="check">
-      <div class="section">
-        <h2>Check Your Understanding</h2>
-        <div class="factsList">
-          <div class="factItem"><b>1)</b> What was the British goal in marching to Concord?</div>
-          <div class="factItem"><b>2)</b> Why did the fighting spread during the retreat to Boston?</div>
-          <div class="factItem"><b>3)</b> How did Lexington &amp; Concord change what colonists thought would happen next?</div>
-        </div>
+    <!-- TIMELINE (same embed as main page) -->
+    <section class="timeline-embed" aria-label="Timeline" id="timeline">
+      <iframe
+        src="/timeline/timeline.html?topic=/7/BattlesOfTheAmericanRevolution"
+        class="timeline-frame"
+        loading="lazy"
+        title="Timeline"
+        frameborder="0"
+      ></iframe>
+    </section>
 
-        <div class="jumpRow" style="margin-top:.8rem;">
-          <a class="pill" href="../index.html">⬅️ <span class="u">Back to the Battles List</span></a>
+    <!-- Bottom-only Back to Top (centered) -->
+    <section class="card full" aria-label="Back to top">
+      <div class="section">
+        <div class="backTopSolo">
           <a class="pill" href="#content">⬆️ <span class="u">Back to Top</span></a>
         </div>
       </div>
