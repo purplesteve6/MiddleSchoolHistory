@@ -463,9 +463,11 @@
       requestAnimationFrame(() => {
         positionLanesSymmetrically();
         adjustConnectors();
+        autoFitViewportHeight();
         syncMiniWindow();
         updateReadout();
-      });
+      });      
+
     }
 
     function renderTicksVisible(containerEl, interval, pxPerDay){
@@ -1113,6 +1115,67 @@
 
         connector.classList.toggle("dotTop", !isAbove);
       });
+    }
+
+    function autoFitViewportHeight(){
+      // Expands the canvas + viewport to prevent cards/text from being clipped
+      // when lineLength pushes portraits farther up/down.
+
+      const root = document.querySelector(".timeline-embed");
+      if (!root) return;
+
+      const cs = getComputedStyle(root);
+
+      const extraPad = 26; // breathing room (px)
+      const minCanvasH = parseFloat(cs.getPropertyValue("--canvasH")) || 620;
+
+      // Measure event cards (and their text) in canvas coordinates
+      const cards = canvas.querySelectorAll(".eventCard");
+      if (!cards.length){
+        root.style.setProperty("--canvasH", minCanvasH + "px");
+        // viewport = contextBand + canvasScroll, so just keep it aligned
+        viewport.style.height = (54 + minCanvasH) + "px";
+        return;
+      }
+
+      let topMost = Infinity;
+      let bottomMost = -Infinity;
+
+      cards.forEach(card => {
+        const top = card.offsetTop;
+        const bottom = top + card.offsetHeight;
+        topMost = Math.min(topMost, top);
+        bottomMost = Math.max(bottomMost, bottom);
+      });
+
+      // If something went above 0, push ALL cards down equally so top fits.
+      // (This preserves the relative spacing you designed.)
+      if (topMost < extraPad){
+        const shiftDown = (extraPad - topMost);
+
+        cards.forEach(card => {
+          const curTop = card.offsetTop;
+          card.style.top = (curTop + shiftDown) + "px";
+        });
+
+        // Recompute extremes after shifting
+        topMost += shiftDown;
+        bottomMost += shiftDown;
+
+        // Connectors must update after we move cards
+        adjustConnectors();
+      }
+
+      // Required canvas height so bottom fits too
+      const neededCanvasH = Math.max(minCanvasH, Math.ceil(bottomMost + extraPad));
+
+      // Apply new canvas height
+      root.style.setProperty("--canvasH", neededCanvasH + "px");
+
+      // Keep viewport height in sync:
+      // context band is fixed 54px (from CSS), canvasScroll uses the rest
+      const contextH = 54;
+      viewport.style.height = (contextH + neededCanvasH) + "px";
     }
 
     function getBarCenterY(){
