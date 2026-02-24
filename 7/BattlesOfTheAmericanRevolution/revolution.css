@@ -391,8 +391,17 @@ p{color: rgba(247,243,230,.92)}
   border-radius: 18px;
   box-shadow: var(--shadow);
   background: rgba(255,255,255,.03);
-  height: 820px; /* prevents cutoff like Roman */
+  height: 820px;
   display:block;
+}
+
+/* ===== Consistent Section Spacing (ADD THIS HERE) ===== */
+#content > section {
+  margin-top: 2rem;
+}
+
+#content > section:first-of-type {
+  margin-top: 0;
 }
 
 
