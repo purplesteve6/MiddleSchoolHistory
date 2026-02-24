@@ -1125,8 +1125,37 @@ line.style.height = Math.max(0, spineY) + "px";
     }
 
 
+    function resizeHostIframeToFit(){
+      // If this timeline is embedded in an iframe (same-origin),
+      // resize the iframe so the bottom never clips.
+      try{
+        const fe = window.frameElement; // <iframe> element in the parent document
+        if (!fe) return;
+
+        const wrap = document.querySelector(".wrap");
+        const main = document.querySelector("main.timeline-embed");
+        const targetEl = wrap || main || document.body;
+
+        const h = Math.ceil(
+          Math.max(
+            targetEl.scrollHeight || 0,
+            targetEl.getBoundingClientRect ? targetEl.getBoundingClientRect().height : 0
+          )
+        );
+
+        if (h > 0){
+          fe.style.height = h + "px";
+          fe.style.minHeight = h + "px";
+        }
+      } catch(e){
+        // ignore cross-origin / access errors
+      }
+    }
+
+
     function autoFitViewportHeight(){
       // Expands the timeline viewport so cards/text never clip.
+
       // IMPORTANT: We shift the SPINE (via --ticksTop), not the cards,
       // so spine-based lineLength remains accurate.
 
@@ -1195,11 +1224,15 @@ line.style.height = Math.max(0, spineY) + "px";
       if (viewport){
         viewport.style.height = (contextH + neededCanvasH) + "px";
       }
-// After shifting spine and resizing canvas, re-stretch context lines to the new spine
-const spineY = getBarCenterY();
-canvas.querySelectorAll('.contextLine').forEach(line => {
-  line.style.height = Math.max(0, spineY) + "px";
-});
+
+      // After shifting spine and resizing canvas, re-stretch context lines to the new spine
+      const spineY = getBarCenterY();
+      canvas.querySelectorAll(".contextLine").forEach(line => {
+        line.style.height = Math.max(0, spineY) + "px";
+      });
+
+      // ✅ Critical: also resize the HOST iframe so the bottom never clips
+      requestAnimationFrame(resizeHostIframeToFit);
     }
 
 
