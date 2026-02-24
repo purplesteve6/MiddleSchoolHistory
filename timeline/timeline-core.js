@@ -1438,6 +1438,13 @@ function getBarCenterY(){
         gold2: "--gold2",
         red: "--red",
         red2: "--red2",
+
+        // Background “oval glow” colors (page + viewport)
+        bgOvalA: "--bgOvalA",
+        bgOvalB: "--bgOvalB",
+        vpOvalA: "--vpOvalA",
+        vpOvalB: "--vpOvalB",
+
         intervalA: "--intervalA",
         intervalB: "--intervalB",
         markerText: "--markerText"

@@ -152,13 +152,53 @@ window.TIMELINE_CONFIG = {
  	"decade"
   ],
 
-  pxPerDay: {
+    pxPerDay: {
     day:     18,
     month:   3.0,
     year:    0.55,
     decade:  0.12,
     century: 0.03
   },
+
+ 
+
+  // ============================================================
+  // THEME COLORS (What each one changes)
+  // ============================================================
+  // These values are applied as CSS variables on the timeline embed
+  // (see /timeline/timeline.css for the default variable list).
+  //
+  // “COLORFUL OVALS” (Background glow shapes)
+  // ----------------------------------------
+  // The big soft “ovals” are radial-gradient glow layers.
+  // They are now controlled HERE via these theme keys:
+  //
+  //   bgOvalA / bgOvalB  → the PAGE background glows (behind everything)
+  //   vpOvalA / vpOvalB  → the VIEWPORT glows (inside the rounded timeline panel)
+  //
+  // Tip:
+  // - Use rgba(...) for glows so you can control transparency.
+  // - Alpha must be 0–1 (example: 0.18), not 18.
+  //
+  // What the other theme keys affect:
+  //   bg / bg2:
+  //     • The main dark background gradient behind everything.
+  //
+  //   gold / gold2:
+  //     • Primary accent colors (buttons, highlights, emphasis).
+  //
+  //   red / red2:
+  //     • Secondary accent colors (contrast accents).
+  //
+  //   intervalA / intervalB:
+  //     • Intended for alternating interval box fills.
+  //     • NOTE: labeled “legacy” in timeline.css and may not be used
+  //       by the current core renderer (safe to leave as-is).
+  //
+  //   markerText:
+  //     • Text color for date marker labels (the small marker “tags”).
+  //
+
 
   theme: {
     bg:        "#001338",
@@ -167,9 +207,17 @@ window.TIMELINE_CONFIG = {
     gold2:     "#f2c94c",
     red:       "#b3122a",
     red2:      "#7b0b1d",
-    intervalA: "rgba(255,216,74,18)",
-    intervalB: "rgba(179,18,42,18)",
-    markerText:"rgba(255,216,74,95)"
+
+    // Background “oval glow” colors (radial-gradient glows)
+    // bgOval* affects the full page background; vpOval* affects the rounded viewport panel.
+    bgOvalA:   "rgba(179,18,42,0.32)",  // page background left oval
+    bgOvalB:   "rgba(255,216,74,0.18)", // page background right oval
+    vpOvalA:   "rgba(179,18,42,0.18)",  // viewport background left oval
+    vpOvalB:   "rgba(255,216,74,0.10)", // viewport background right oval
+
+    intervalA: "rgba(255,216,74,0.18)",
+    intervalB: "rgba(179,18,42,0.18)",
+    markerText:"rgba(255,216,74,0.95)"
   },
 
   // Default bar color palette (used when intervalColor === "default")
