@@ -248,7 +248,7 @@ window.TIMELINE_CONFIG = {
 
       showInterval: false,
       intervalColor:"default",
-      lineLength:   default
+      lineLength:   90
     },
 
     {
