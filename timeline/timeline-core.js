@@ -258,7 +258,6 @@
       });
     });
 
-    render();
     centerOn(centerSelect.value || "__begin__");
 
     /* ----------------- ZOOM/TICKS RULES ----------------- */
@@ -1095,7 +1094,7 @@
               : (ev.showBar !== undefined ? !!ev.showBar : true))
           : true;
 
-               // Connectors should attach to interval bars when an interval exists.
+        // Connectors should attach to interval bars when an interval exists.
         // (Card spacing can still be controlled by lineLength from the spine.)
         const targetY = showInterval
           ? (isAbove ? intervalYTop : intervalYBottom)
