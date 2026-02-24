@@ -161,8 +161,8 @@ window.TIMELINE_CONFIG = {
   },
 
   theme: {
-    bg:        "#12060a",
-    bg2:       "#0b0507",
+    bg:        "#001338",
+    bg2:       "#000b22",
     gold:      "#FFD84A",
     gold2:     "#f2c94c",
     red:       "#b3122a",
