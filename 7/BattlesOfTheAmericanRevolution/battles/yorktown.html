@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Yorktown (1781) | Battles of the American Revolution</title>
+  <meta name="description" content="Yorktown: what happened, why it mattered, and key vocabulary for middle school students." />
+
+  <!-- IMPORTANT: this page is inside /battles/, so CSS must be ../revolution.css -->
+  <link rel="stylesheet" href="../revolution.css" />
+
+  <!-- Page-local styles for the quiz + centered back-to-top (kept minimal) -->
+  <style>
+    .quiz { margin-top: .35rem; }
+    .quiz .q {
+      padding: .85rem .9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      margin: .75rem 0;
+    }
+    .quiz .q h3 { margin: 0 0 .55rem; font-size: 1.05rem; }
+    .quiz .choices { display: grid; gap: .45rem; }
+    .quiz label.choice{
+      display: flex;
+      gap: .55rem;
+      align-items: flex-start;
+      padding: .55rem .6rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+    .quiz label.choice:hover{
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .quiz input[type="radio"]{ margin-top: .2rem; }
+
+    /* Feedback text hidden until an answer is selected */
+    .quiz .feedback{
+      display:none;
+      margin:.55rem 0 0;
+      padding: .55rem .65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+    }
+    /* Show feedback if any option selected */
+    .quiz .q:has(input[type="radio"]:checked) .feedback{ display:block; }
+
+    /* Default feedback text, then swap based on correct/incorrect */
+    .quiz .feedback .correct{ display:none; color: rgba(255,216,74,.96); font-weight: 900; }
+    .quiz .feedback .incorrect{ display:none; color: rgba(255,255,255,.92); }
+
+    /* Mark correct answers: input has data-correct="1" */
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .correct{ display:block; }
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .incorrect{ display:none; }
+
+    .quiz .q:has(input[type="radio"]:checked) .feedback .incorrect{ display:block; }
+    .quiz .q:has(input[type="radio"]:checked) .feedback .correct{ display:none; }
+
+    .backTopSolo{
+      display:flex;
+      justify-content:center;
+      margin-top: .9rem;
+    }
+
+    /* ===== CENTERED TWO-LINE KICKER ===== */
+    .kicker{
+      display:block;
+      text-align:center;
+      line-height:1.35;
+    }
+
+    /* ===== CENTER JUMP BUTTON ===== */
+    .jumpRow{
+      display:flex;
+      justify-content:center;
+      margin-top:.6rem;
+    }
+
+  /* ===== STEP QUIZ STYLES ===== */
+
+  .quizStepWrap { margin-top: .6rem; }
+
+  .quizCard{
+    padding: 1rem 1rem .95rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.04);
+  }
+  .quizCard.is-hidden{ display:none; }
+
+  .quizMeta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:.35rem;
+    color: rgba(247,243,230,.78);
+    font-weight: 900;
+    font-size: .92rem;
+  }
+
+  .quizQ{ margin: .35rem 0 .7rem; font-size: 1.1rem; }
+
+  .quizChoices{ display:grid; gap: .55rem; }
+
+  .quizChoice{
+    display:flex;
+    gap:.6rem;
+    align-items:flex-start;
+    padding:.6rem .65rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.04);
+    cursor:pointer;
+  }
+  .quizChoice:hover{
+    background: rgba(255,255,255,.07);
+    border-color: rgba(255,255,255,.22);
+  }
+  .quizChoice input{ margin-top:.2rem; }
+
+  .quizActions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:.85rem;
+  }
+
+  .quizBtn{
+    appearance:none;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.06);
+    color: rgba(247,243,230,.95);
+    font-weight: 1000;
+    border-radius: 999px;
+    padding: .55rem .9rem;
+    cursor:pointer;
+  }
+
+  .quizHint{
+    margin-top:.55rem;
+    color: rgba(247,243,230,.74);
+    font-size: .92rem;
+  }
+
+  /* ===== QUICK QUIZ HEADER (CENTERED + NO DISTORTION) ===== */
+  .quizHeader{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:.8rem;
+  }
+  .quizBadge{
+    width: 200px;
+    height: 103px;
+    object-fit: contain;
+    display:block;
+  }
+
+  /* ===== RESULTS SCREEN (COSMETIC) ===== */
+
+  /* center the contents inside the Results card */
+  #quizResults{
+    text-align:center;
+  }
+
+  /* make the "Results" header bigger */
+  #quizResults .quizResultsTitle{
+    font-size: 1.8rem;
+    margin: .25rem 0 .55rem;
+  }
+
+  /* make the score line bigger */
+  #quizResults .quizScore{
+    font-size: 1.35rem;
+    font-weight: 1000;
+  }
+
+  /* keep completed/date/time the same size as before */
+  #quizResults .quizMetaInfo{
+    font-size: .92rem; /* matches your .quizMeta sizing */
+    font-weight: 900;
+    opacity: .9;
+  }
+
+  /* center the facts list rows (override grid look just for results) */
+  #quizResults .quizResultsFacts{
+    justify-items:center;
+  }
+
+  /* retake button centered, BELOW (outside) results card */
+  .quizRetakeWrap{
+    display:flex;
+    justify-content:center;
+    margin-top: .9rem;
+  }
+
+  /* ===== BACK + NEXT BUTTON ALIGNMENT (PINNED ENDS) ===== */
+
+  /* BACK: emoji LEFT, "Back" RIGHT (same line); subtext RIGHT */
+  .pbtn.prev .pbtnTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+  }
+  .pbtn.prev .pbtnSub{
+    width:100%;
+    text-align:right;
+  }
+
+  /* NEXT styles retained for template consistency (Next button removed from HTML) */
+  .pbtn.next .pbtnTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+  }
+  .pbtn.next .pbtnSub{
+    width:100%;
+    text-align:left;
+  }
+  </style>
+</head>
+
+<body class="topic revolution">
+  <div id="siteHeader"></div>
+
+  <main id="content">
+    <!-- HERO -->
+    <section class="hero" aria-label="Yorktown hero">
+      <div class="card hero-left">
+
+        <span class="kicker">September–October 1781 • Virginia<br>“The Final Blow”</span>
+        <h1>Yorktown</h1>
+
+        <p class="sub">
+          Yorktown was the last major battle of the American Revolution. American and French forces surrounded a British army led by General Cornwallis.
+          With the French navy blocking escape by sea, the British were trapped—and forced to
+          <span class="vocabWord" data-def="To give up to an enemy.">surrender</span>.
+        </p>
+
+        <div class="bigIdeaWrap" aria-label="Big Idea">
+          <div class="bigIdeaGraphic">
+            <img
+              src="/assets/images/ui/bigidea.png"
+              alt="Big Idea graphic"
+              width="150"
+              height="92"
+            />
+          </div>
+          <div class="bigIdeaText">
+            Allies, planning, and control of the sea can decide a war—even more than a single battle.
+          </div>
+        </div>
+
+        <div class="pillrow" aria-label="Topic tags">
+          <span class="pill">🤝 Allies</span>
+          <span class="pill">🚢 French navy</span>
+          <span class="pill">🏰 Siege</span>
+          <span class="pill">🏳️ Surrender</span>
+          <span class="pill">🏁 Endgame</span>
+        </div>
+      </div>
+
+      <aside class="card hero-right" aria-label="Portrait and navigation">
+        <div class="portraitWrap">
+          <div class="portrait" role="img" aria-label="Yorktown scene">
+            <img src="../images/yorktown.webp" alt="Yorktown (1781)" />
+          </div>
+
+          <div class="portraitButtons" aria-label="Navigation">
+            <a class="pbtn prev" href="saratoga.html" title="Back: Saratoga">
+              <div class="pbtnTop">
+                <span class="emoji" aria-hidden="true">⬅️</span>
+                <span class="label">Back</span>
+              </div>
+              <div class="pbtnSub">Saratoga</div>
+            </a>
+
+            <!-- spacer retained to keep layout consistent -->
+            <div class="pbtn spacer" aria-hidden="true"></div>
+
+            <!-- NEXT BUTTON HIDDEN/REMOVED (final battle) -->
+          </div>
+        </div>
+
+        <div class="jumpRow">
+          <a class="pill" href="#timeline" title="Jump to timeline">
+            🗓️ <span class="u">Jump to Timeline</span>
+          </a>
+        </div>
+
+      </aside>
+    </section>
+
+    <!-- BATTLE AT-A-GLANCE -->
+    <section class="card full" aria-label="Battle at a glance">
+      <div class="section">
+        <h2>Battle at a Glance</h2>
+        <div class="factsList">
+          <div class="factItem">🗓️ <b>Date:</b> September 28–October 19, 1781</div>
+          <div class="factItem">📍 <b>Place:</b> Yorktown, Virginia</div>
+          <div class="factItem">👥 <b>Who fought:</b> American &amp; French forces vs. British forces under Cornwallis</div>
+          <div class="factItem">🎯 <b>Allied goal:</b> trap and force the British army to surrender</div>
+          <div class="factItem">🏆 <b>Outcome:</b> British surrender; war moves toward peace</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BACKGROUND -->
+    <section class="card full" aria-label="Background">
+      <div class="section">
+        <h2>Background</h2>
+        <p>
+          By 1781, fighting had lasted for years. Britain still had strong forces, but the war was expensive and difficult to win.
+          The United States had gained a crucial ally: France. French money, troops, and especially the French navy made a huge difference.
+        </p>
+        <p>
+          British General Charles Cornwallis moved his army to Yorktown, Virginia, near the coast. He expected the British navy to protect him and,
+          if necessary, help him escape. American General George Washington and French leaders saw a chance to trap Cornwallis—if the French navy could block the sea.
+        </p>
+      </div>
+    </section>
+
+    <!-- DID YOU KNOW -->
+    <section class="didYouKnow" aria-label="Did you know feature">
+      <div class="dykImg" aria-label="Did you know banner">
+        <img src="/assets/images/ui/didyouknow.png" alt="Did you know" width="200" height="78" />
+      </div>
+      <div class="fact">
+        The French victory at the Battle of the Chesapeake meant British ships could not reach Yorktown—Cornwallis was stuck.
+      </div>
+    </section>
+
+    <!-- QUICK FACTS + VOCAB -->
+    <section class="grid2" aria-label="Quick facts and vocabulary">
+      <article class="card section" aria-label="Quick Facts">
+        <h2>Quick Facts</h2>
+        <div class="factsList">
+          <div class="factItem">🚢 French ships blocked escape by sea.</div>
+          <div class="factItem">🏰 Yorktown was attacked with a long <b>siege</b>.</div>
+          <div class="factItem">🤝 Americans and French coordinated their forces.</div>
+          <div class="factItem">🏳️ Cornwallis surrendered on October 19, 1781.</div>
+          <div class="factItem">🕊️ The surrender pushed Britain toward peace talks.</div>
+        </div>
+      </article>
+
+      <article class="card section" aria-label="Vocabulary">
+        <h2>Vocabulary</h2>
+        <div class="vocab">
+          <div class="term"><b>siege</b> — surrounding an area to cut off supplies and force surrender.</div>
+          <div class="term"><b>allies</b> — partners who work together for a shared goal.</div>
+          <div class="term"><b>blockade</b> — stopping ships or supplies from entering or leaving an area.</div>
+          <div class="term"><b>surrender</b> — to give up to an enemy.</div>
+          <div class="term"><b>artillery</b> — large guns such as cannons.</div>
+          <div class="term"><b>negotiation</b> — talking to reach an agreement.</div>
+        </div>
+      </article>
+    </section>
+
+    <!-- WHAT HAPPENED -->
+    <section class="card full" aria-label="What happened" id="what-happened">
+      <div class="section">
+        <h2>What Happened?</h2>
+
+        <h3>A trap forms</h3>
+        <p>
+          Washington and the French General Rochambeau marched their armies south toward Virginia. At the same time, a French fleet moved to control the waters near Yorktown.
+          The plan was clear: surround Cornwallis on land and block him at sea.
+        </p>
+
+        <h3>The French navy blocks the coast</h3>
+        <p>
+          A key moment happened offshore. When the French navy controlled the Chesapeake area, British ships could not reach Yorktown to rescue Cornwallis.
+          Without naval support, the British position became far more dangerous.
+        </p>
+
+        <h3>The siege and the cannons</h3>
+        <p>
+          American and French forces dug trenches and moved
+          <span class="vocabWord" data-def="Large heavy guns used in battle, such as cannons.">artillery</span>
+          into place. Day after day, cannons fired on British defenses. Over time, Cornwallis’s situation worsened as supplies ran low and defenses were damaged.
+        </p>
+
+        <h3>The surrender</h3>
+        <p>
+          With no easy way out, Cornwallis agreed to surrender on October 19, 1781. The loss was a major shock in Britain.
+          Even though smaller battles continued, Yorktown was the last major battle—and it pushed Britain to negotiate peace.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHY IT MATTERED -->
+    <section class="card full" aria-label="Why it mattered" id="why-it-mattered">
+      <div class="section">
+        <h2>Why Did Yorktown Matter?</h2>
+
+        <p>
+          Yorktown mattered because it effectively ended the war. Britain lost a large army, and many leaders in Britain began to believe the war was no longer worth the cost.
+        </p>
+
+        <p>
+          It also showed the power of alliances. American troops fought bravely, but French help—especially the navy—made the victory possible.
+          After Yorktown, peace talks increased and eventually led to the Treaty of Paris (1783), which recognized American independence.
+        </p>
+      </div>
+    </section>
+
+    <!-- MINI QUIZ (interactive MC) -->
+    <section class="card full" aria-label="Quick quiz" id="quiz">
+      <div class="section">
+
+        <div class="quizHeader" aria-label="Quick Quiz header">
+          <img
+            class="quizBadge"
+            src="/assets/images/ui/quickquiz.png"
+            alt="Quick Quiz"
+            width="200"
+            height="103"
+          />
+        </div>
+
+        <div class="quizStepWrap" id="quizApp" aria-live="polite">
+          <!-- Question Card -->
+          <div class="quizCard" id="quizCard">
+            <div class="quizMeta">
+              <span class="quizProgress" id="quizProgress">Question 1 of 3</span>
+            </div>
+
+            <h3 class="quizQ" id="quizQuestion">Loading…</h3>
+
+            <div class="quizChoices" id="quizChoices" role="radiogroup" aria-label="Quiz choices">
+              <!-- choices injected here -->
+            </div>
+
+            <div class="quizActions">
+              <button class="quizBtn" id="quizNext" disabled>Next ➡️</button>
+            </div>
+
+            <div class="quizHint" id="quizHint" aria-hidden="true"></div>
+          </div>
+
+          <!-- Results Card -->
+          <div class="quizCard is-hidden" id="quizResults" aria-label="Quiz results">
+            <h3 class="quizQ quizResultsTitle">Results</h3>
+
+            <div class="factsList quizResultsFacts" style="margin-top:.6rem;">
+              <div class="factItem quizScore" id="quizScoreLine"><b>Score:</b> —</div>
+              <div class="factItem quizMetaInfo" id="quizTimeLine"><b>Completed:</b> —</div>
+            </div>
+          </div>
+
+          <!-- Retake button OUTSIDE results card -->
+          <div class="quizRetakeWrap">
+            <button class="quizBtn" id="quizRetake">🔁 Retake Quiz</button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE (same embed as main page) -->
+    <section class="timeline-embed" aria-label="Timeline" id="timeline">
+      <iframe
+        src="/timeline/timeline.html?topic=/7/BattlesOfTheAmericanRevolution"
+        class="timeline-frame"
+        loading="lazy"
+        title="Timeline"
+        frameborder="0"
+      ></iframe>
+    </section>
+
+<!-- Bottom-only Back to Top (centered) -->
+<div class="backTopSolo" aria-label="Back to top">
+  <a class="pill" href="#content">⬆️ <span class="u">Back to Top</span></a>
+</div>
+
+  </main>
+
+  <div id="siteFooter"></div>
+
+  <!-- IMPORTANT: this page is inside /battles/, so config must be ../config.js -->
+  <script src="../config.js"></script>
+  <script src="/include.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const quiz = [
+    {
+      q: "What helped trap Cornwallis at Yorktown?",
+      choices: [
+        "A French naval blockade that prevented escape by sea",
+        "A blizzard that froze the Atlantic Ocean",
+        "A British victory in New York",
+        "A secret tunnel under the city"
+      ],
+      correctIndex: 0
+    },
+    {
+      q: "What type of battle was Yorktown mostly known for?",
+      choices: [
+        "A quick raid",
+        "A long siege using trenches and artillery",
+        "A naval chase across the Pacific",
+        "A mountain ambush"
+      ],
+      correctIndex: 1
+    },
+    {
+      q: "Why did Yorktown matter to the outcome of the Revolution?",
+      choices: [
+        "It convinced Britain to move the war to Canada",
+        "It forced France to leave the alliance",
+        "It led Britain toward peace negotiations and recognized independence",
+        "It ended all fighting on the same day everywhere"
+      ],
+      correctIndex: 2
+    }
+  ];
+
+  const card = document.getElementById("quizCard");
+  const results = document.getElementById("quizResults");
+  const progress = document.getElementById("quizProgress");
+  const questionEl = document.getElementById("quizQuestion");
+  const choicesEl = document.getElementById("quizChoices");
+  const nextBtn = document.getElementById("quizNext");
+  const hintEl = document.getElementById("quizHint");
+
+  const scoreLine = document.getElementById("quizScoreLine");
+  const timeLine = document.getElementById("quizTimeLine");
+  const retakeBtn = document.getElementById("quizRetake");
+
+  // Safety check (prevents silent failure)
+  if (!card || !results || !progress || !questionEl || !choicesEl || !nextBtn || !hintEl || !scoreLine || !timeLine || !retakeBtn) {
+    console.error("[Quiz] Missing one or more quiz elements. Check IDs in the HTML.");
+    if (questionEl) questionEl.textContent = "Quiz error: missing elements.";
+    return;
+  }
+
+  let i = 0;
+  let score = 0;
+  let selectedIndex = null;
+
+  function renderQuestion() {
+    const item = quiz[i];
+    selectedIndex = null;
+
+    progress.textContent = `Question ${i + 1} of ${quiz.length}`;
+    questionEl.textContent = item.q;
+
+    choicesEl.innerHTML = "";
+    item.choices.forEach((text, idx) => {
+      const label = document.createElement("label");
+      label.className = "quizChoice";
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "quizQ";
+      input.value = String(idx);
+
+      input.addEventListener("change", () => {
+        selectedIndex = idx;
+        nextBtn.disabled = false;
+      });
+
+      const span = document.createElement("span");
+      span.textContent = text;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      choicesEl.appendChild(label);
+    });
+
+    nextBtn.textContent = (i === quiz.length - 1) ? "Finish ✅" : "Next ➡️";
+    nextBtn.disabled = true;
+
+    hintEl.style.display = "block";
+    hintEl.setAttribute("aria-hidden", "false");
+  }
+
+  function showResults() {
+    const when = new Date().toLocaleString();
+    scoreLine.innerHTML = `<b>Score:</b> ${score} / ${quiz.length}`;
+    timeLine.innerHTML = `<b>Completed:</b> ${when}`;
+
+    card.classList.add("is-hidden");
+    results.classList.remove("is-hidden");
+  }
+
+  function resetQuiz() {
+    i = 0;
+    score = 0;
+    selectedIndex = null;
+
+    results.classList.add("is-hidden");
+    card.classList.remove("is-hidden");
+    renderQuestion();
+  }
+
+  nextBtn.addEventListener("click", () => {
+    if (selectedIndex === null) return;
+
+    if (selectedIndex === quiz[i].correctIndex) score++;
+
+    i++;
+    if (i >= quiz.length) showResults();
+    else renderQuestion();
+  });
+
+  retakeBtn.addEventListener("click", resetQuiz);
+
+  renderQuestion();
+});
+</script>
+
+</body>
+</html>
