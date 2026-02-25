@@ -67,6 +67,14 @@
       margin-top: .9rem;
     }
 
+    /* ===== CENTER JUMP BUTTON ===== */
+    .jumpRow{
+      display:flex;
+      justify-content:center;
+      margin-top:.6rem;
+    }
+
+
   /* ===== STEP QUIZ STYLES ===== */
 
   .quizStepWrap { margin-top: .6rem; }
@@ -185,15 +193,21 @@
   }
 
 
-  /* ===== BACK BUTTON SUBTEXT ALIGNMENT FIX ===== */
+
+  /* ===== BACK BUTTON FULL RIGHT ALIGN FIX ===== */
   .pbtn.prev{
     align-items: flex-end;
-    text-align: right;
+  }
+
+  .pbtn.prev .pbtnTop{
+    display:flex;
+    justify-content:flex-end;
+    width:100%;
   }
 
   .pbtn.prev .pbtnSub{
-    width: 100%;
-    text-align: right;
+    width:100%;
+    text-align:right;
   }
 
 
