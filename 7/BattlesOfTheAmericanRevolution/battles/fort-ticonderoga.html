@@ -9,9 +9,205 @@
   <!-- IMPORTANT: this page is inside /battles/, so CSS must be ../revolution.css -->
   <link rel="stylesheet" href="../revolution.css" />
 
-  <!-- (All original quiz + layout styles unchanged) -->
+  <!-- Page-local styles for the quiz + centered back-to-top (kept minimal) -->
   <style>
-  /* ——— STYLES UNCHANGED FROM TEMPLATE ——— */
+    .quiz { margin-top: .35rem; }
+    .quiz .q {
+      padding: .85rem .9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      margin: .75rem 0;
+    }
+    .quiz .q h3 { margin: 0 0 .55rem; font-size: 1.05rem; }
+    .quiz .choices { display: grid; gap: .45rem; }
+    .quiz label.choice{
+      display: flex;
+      gap: .55rem;
+      align-items: flex-start;
+      padding: .55rem .6rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+    .quiz label.choice:hover{
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .quiz input[type="radio"]{ margin-top: .2rem; }
+
+    /* Feedback text hidden until an answer is selected */
+    .quiz .feedback{
+      display:none;
+      margin:.55rem 0 0;
+      padding: .55rem .65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+    }
+    /* Show feedback if any option selected */
+    .quiz .q:has(input[type="radio"]:checked) .feedback{ display:block; }
+
+    /* Default feedback text, then swap based on correct/incorrect */
+    .quiz .feedback .correct{ display:none; color: rgba(255,216,74,.96); font-weight: 900; }
+    .quiz .feedback .incorrect{ display:none; color: rgba(255,255,255,.92); }
+
+    /* Mark correct answers: input has data-correct="1" */
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .correct{ display:block; }
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .incorrect{ display:none; }
+
+    .quiz .q:has(input[type="radio"]:checked) .feedback .incorrect{ display:block; }
+    .quiz .q:has(input[type="radio"]:checked) .feedback .correct{ display:none; }
+
+    .backTopSolo{
+      display:flex;
+      justify-content:center;
+      margin-top: .9rem;
+    }
+
+    /* ===== CENTERED TWO-LINE KICKER ===== */
+    .kicker{
+      display:block;
+      text-align:center;
+      line-height:1.35;
+    }
+
+    /* ===== CENTER JUMP BUTTON ===== */
+    .jumpRow{
+      display:flex;
+      justify-content:center;
+      margin-top:.6rem;
+    }
+
+    /* ===== STEP QUIZ STYLES ===== */
+    .quizStepWrap { margin-top: .6rem; }
+
+    .quizCard{
+      padding: 1rem 1rem .95rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+    }
+    .quizCard.is-hidden{ display:none; }
+
+    .quizMeta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:.35rem;
+      color: rgba(247,243,230,.78);
+      font-weight: 900;
+      font-size: .92rem;
+    }
+
+    .quizQ{ margin: .35rem 0 .7rem; font-size: 1.1rem; }
+
+    .quizChoices{ display:grid; gap: .55rem; }
+
+    .quizChoice{
+      display:flex;
+      gap:.6rem;
+      align-items:flex-start;
+      padding:.6rem .65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+    }
+    .quizChoice:hover{
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .quizChoice input{ margin-top:.2rem; }
+
+    .quizActions{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:.85rem;
+    }
+
+    .quizBtn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: rgba(247,243,230,.95);
+      font-weight: 1000;
+      border-radius: 999px;
+      padding: .55rem .9rem;
+      cursor:pointer;
+    }
+
+    .quizHint{
+      margin-top:.55rem;
+      color: rgba(247,243,230,.74);
+      font-size: .92rem;
+    }
+
+    /* ===== QUICK QUIZ HEADER (CENTERED + NO DISTORTION) ===== */
+    .quizHeader{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin-bottom:.8rem;
+    }
+    .quizBadge{
+      width: 200px;
+      height: 103px;
+      object-fit: contain;
+      display:block;
+    }
+
+    /* ===== RESULTS SCREEN (COSMETIC) ===== */
+    #quizResults{
+      text-align:center;
+    }
+    #quizResults .quizResultsTitle{
+      font-size: 1.8rem;
+      margin: .25rem 0 .55rem;
+    }
+    #quizResults .quizScore{
+      font-size: 1.35rem;
+      font-weight: 1000;
+    }
+    #quizResults .quizMetaInfo{
+      font-size: .92rem;
+      font-weight: 900;
+      opacity: .9;
+    }
+    #quizResults .quizResultsFacts{
+      justify-items:center;
+    }
+    .quizRetakeWrap{
+      display:flex;
+      justify-content:center;
+      margin-top: .9rem;
+    }
+
+    /* ===== BACK + NEXT BUTTON ALIGNMENT (PINNED ENDS) ===== */
+    .pbtn.prev .pbtnTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      width:100%;
+    }
+    /* CHANGED: battle name on Back button is LEFT-justified (per your requirement) */
+    .pbtn.prev .pbtnSub{
+      width:100%;
+      text-align:left;
+    }
+
+    .pbtn.next .pbtnTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      width:100%;
+    }
+    .pbtn.next .pbtnSub{
+      width:100%;
+      text-align:left;
+    }
   </style>
 </head>
 
@@ -22,57 +218,60 @@
     <!-- HERO -->
     <section class="hero" aria-label="Fort Ticonderoga hero">
       <div class="card hero-left">
-
         <span class="kicker">May 10, 1775 • New York<br>“A Surprise in the North”</span>
         <h1>Fort Ticonderoga</h1>
 
         <p class="sub">
-          Just weeks after Lexington and Concord, colonial fighters launched a daring
-          <span class="vocabWord" data-def="A sudden military attack meant to catch the enemy off guard.">surprise attack</span>
-          on a British fort in upstate New York. Their quick victory gave the Patriots much-needed
+          Fort Ticonderoga was a British fort guarding a key route between Canada and the colonies. In a quick early-morning raid,
+          Patriot forces captured it—along with valuable
           <span class="vocabWord" data-def="Large heavy guns used in battle, such as cannons.">artillery</span>
-          and a powerful boost of confidence.
+          that would soon help force the British out of Boston.
         </p>
 
         <div class="bigIdeaWrap" aria-label="Big Idea">
           <div class="bigIdeaGraphic">
-            <img src="/assets/images/ui/bigidea.png" alt="Big Idea graphic" width="150" height="92"/>
+            <img
+              src="/assets/images/ui/bigidea.png"
+              alt="Big Idea graphic"
+              width="150"
+              height="92"
+            />
           </div>
           <div class="bigIdeaText">
-            Smart planning and bold action can change the direction of a war—sometimes without firing a single shot.
+            Capturing the right resources at the right moment can turn a small victory into a major advantage.
           </div>
         </div>
 
-        <div class="pillrow">
-          <span class="pill">🗺️ Strategic location</span>
+        <div class="pillrow" aria-label="Topic tags">
+          <span class="pill">🗺️ Strategy</span>
+          <span class="pill">😴 Surprise</span>
           <span class="pill">💣 Cannons</span>
-          <span class="pill">😴 Surprise attack</span>
-          <span class="pill">🧭 Lake Champlain</span>
-          <span class="pill">🚚 Henry Knox</span>
+          <span class="pill">🚣 Lake crossing</span>
+          <span class="pill">🚚 Knox’s mission</span>
         </div>
       </div>
 
-      <aside class="card hero-right">
+      <aside class="card hero-right" aria-label="Portrait and navigation">
         <div class="portraitWrap">
-          <div class="portrait" role="img" aria-label="Fort Ticonderoga">
+          <div class="portrait" role="img" aria-label="Fort Ticonderoga scene">
             <img src="../images/ticonderoga.webp" alt="Fort Ticonderoga (1775)" />
           </div>
 
-          <div class="portraitButtons">
+          <div class="portraitButtons" aria-label="Navigation">
             <a class="pbtn prev" href="lexington-concord.html" title="Back: Lexington and Concord">
               <div class="pbtnTop">
-                <span class="emoji">⬅️</span>
+                <span class="emoji" aria-hidden="true">⬅️</span>
                 <span class="label">Back</span>
               </div>
-              <div class="pbtnSub">Lexington & Concord</div>
+              <div class="pbtnSub">Lexington &amp; Concord</div>
             </a>
 
-            <div class="pbtn spacer"></div>
+            <div class="pbtn spacer" aria-hidden="true"></div>
 
             <a class="pbtn next" href="bunker-hill.html" title="Next: Bunker Hill">
               <div class="pbtnTop">
                 <span class="label">Next</span>
-                <span class="emoji">➡️</span>
+                <span class="emoji" aria-hidden="true">➡️</span>
               </div>
               <div class="pbtnSub">Bunker Hill</div>
             </a>
@@ -80,131 +279,337 @@
         </div>
 
         <div class="jumpRow">
-          <a class="pill" href="#timeline">
+          <a class="pill" href="#timeline" title="Jump to timeline">
             🗓️ <span class="u">Jump to Timeline</span>
           </a>
         </div>
       </aside>
     </section>
 
-    <!-- BATTLE AT A GLANCE -->
-    <section class="card full">
+    <!-- BATTLE AT-A-GLANCE -->
+    <section class="card full" aria-label="Battle at a glance">
       <div class="section">
         <h2>Battle at a Glance</h2>
         <div class="factsList">
           <div class="factItem">🗓️ <b>Date:</b> May 10, 1775</div>
           <div class="factItem">📍 <b>Place:</b> Fort Ticonderoga, New York</div>
-          <div class="factItem">👥 <b>Who fought:</b> Green Mountain Boys & colonial militia vs. British garrison</div>
-          <div class="factItem">🎯 <b>Goal:</b> Capture cannons and control the fort</div>
-          <div class="factItem">🏆 <b>Result:</b> American victory</div>
+          <div class="factItem">👥 <b>Who fought:</b> Patriots (including the Green Mountain Boys) vs. a small British garrison</div>
+          <div class="factItem">🎯 <b>Patriot goal:</b> capture the fort and its cannons</div>
+          <div class="factItem">🏆 <b>Outcome:</b> Fort captured quickly with little to no fighting</div>
         </div>
       </div>
     </section>
 
-    <!-- MAIN CONTENT -->
-    <section class="card full">
+    <!-- BACKGROUND -->
+    <section class="card full" aria-label="Background">
       <div class="section">
-        <h2>What Happened?</h2>
-
+        <h2>Background</h2>
         <p>
-          After fighting broke out in Massachusetts, Patriot leaders realized they would need heavy weapons to take on the British army. Fort Ticonderoga, located along Lake Champlain in New York, guarded an important water route between Canada and the colonies. More importantly, it stored dozens of valuable cannons.
+          After Lexington and Concord, Patriot leaders knew the conflict was growing. But there was a big problem:
+          the colonies had plenty of brave militia members, but not enough heavy weapons.
+          Fort Ticonderoga held cannons and controlled an important route along Lake Champlain, connecting the colonies to Canada.
         </p>
-
         <p>
-          A group of fighters known as the 
-          <span class="vocabWord" data-def="A militia group from Vermont led by Ethan Allen.">Green Mountain Boys</span>, 
-          led by Ethan Allen, joined forces with Benedict Arnold to capture the fort. In the early morning hours of May 10, 1775, they crossed the lake quietly and approached the fort while most British soldiers were still asleep.
-        </p>
-
-        <p>
-          The British garrison was small and unprepared. The Patriots demanded surrender, and the surprised British commander gave up the fort without a fight. Not a single person was killed during the takeover.
-        </p>
-
-        <p>
-          The victory may have seemed small, but it gave the Patriots something they desperately needed: artillery. Months later, Henry Knox transported the captured cannons hundreds of miles to Boston. When those cannons were placed on high ground overlooking the city, the British were forced to leave.
-        </p>
-
-        <h2>Why It Matters</h2>
-
-        <p>
-          Fort Ticonderoga provided the Americans with powerful weapons at a critical moment in the war. It also boosted Patriot morale. After Lexington and Concord, colonists were unsure what would happen next. This quick and successful mission showed that colonial forces could defeat British troops through bold action and careful planning.
-        </p>
-
-        <p>
-          The captured cannons later helped drive British forces out of Boston, proving that even a bloodless victory could have huge consequences.
+          Even though the fort was far from Boston, Patriots realized it could help them in two ways:
+          it could keep the British from using the lake route, and it could provide
+          <span class="vocabWord" data-def="Weapons and military supplies, like guns, gunpowder, and cannons.">supplies</span>
+          that the colonies desperately needed.
         </p>
       </div>
     </section>
 
     <!-- DID YOU KNOW -->
-    <section class="didYouKnow">
-      <div class="dykImg">
-        <img src="/assets/images/ui/didyouknow.png" alt="Did you know" width="200" height="78"/>
+    <section class="didYouKnow" aria-label="Did you know feature">
+      <div class="dykImg" aria-label="Did you know banner">
+        <img src="/assets/images/ui/didyouknow.png" alt="Did you know" width="200" height="78" />
       </div>
       <div class="fact">
-        The cannons from Fort Ticonderoga were dragged nearly 300 miles through snow and ice by Henry Knox and his team during the winter of 1775–1776!
+        Fort Ticonderoga was captured so quickly that many British soldiers were still asleep—some Patriots joked it was “the quietest victory” of the early war.
       </div>
     </section>
 
-    <!-- VOCAB + QUICK FACTS -->
-    <section class="grid2">
-      <article class="card section">
+    <!-- QUICK FACTS + VOCAB -->
+    <section class="grid2" aria-label="Quick facts and vocabulary">
+      <article class="card section" aria-label="Quick Facts">
+        <h2>Quick Facts</h2>
+        <div class="factsList">
+          <div class="factItem">🚣 The Patriots crossed the lake before dawn.</div>
+          <div class="factItem">🏰 The British had a small <b>garrison</b> at the fort.</div>
+          <div class="factItem">💣 The fort stored valuable <b>cannons</b>.</div>
+          <div class="factItem">📦 Captured supplies helped later battles.</div>
+          <div class="factItem">🚚 The cannons later traveled to Boston.</div>
+        </div>
+      </article>
+
+      <article class="card section" aria-label="Vocabulary">
         <h2>Vocabulary</h2>
         <div class="vocab">
           <div class="term"><b>garrison</b> — soldiers stationed at a fort.</div>
           <div class="term"><b>artillery</b> — large guns such as cannons.</div>
-          <div class="term"><b>militia</b> — ordinary citizens trained to fight in emergencies.</div>
+          <div class="term"><b>raid</b> — a quick surprise attack.</div>
           <div class="term"><b>surrender</b> — to give up to an enemy.</div>
+          <div class="term"><b>strategy</b> — a plan designed to reach a goal.</div>
           <div class="term"><b>morale</b> — the confidence or spirit of a group.</div>
-        </div>
-      </article>
-
-      <article class="card section">
-        <h2>Quick Facts</h2>
-        <div class="factsList">
-          <div class="factItem">⚔️ The fort was captured without firing a shot.</div>
-          <div class="factItem">🚣 Attackers crossed Lake Champlain at night.</div>
-          <div class="factItem">💣 Cannons were later moved to Boston.</div>
-          <div class="factItem">❄️ The transport happened in winter.</div>
-          <div class="factItem">📦 Victory gave the Patriots needed supplies.</div>
         </div>
       </article>
     </section>
 
-    <!-- QUIZ (structure unchanged) -->
-    <section class="card full">
+    <!-- WHAT HAPPENED -->
+    <section class="card full" aria-label="What happened" id="what-happened">
       <div class="section">
-        <h2>Quick Quiz</h2>
+        <h2>What Happened?</h2>
 
-        <div class="quiz">
-          <div class="q">
-            <h3>Why did the Patriots want Fort Ticonderoga?</h3>
-            <div class="choices">
-              <label class="choice">
-                <input type="radio" name="q1">
-                To capture British leaders
-              </label>
-              <label class="choice">
-                <input type="radio" name="q1" data-correct="1">
-                To seize valuable cannons and supplies
-              </label>
-              <label class="choice">
-                <input type="radio" name="q1">
-                To end the war immediately
-              </label>
+        <h3>Why Fort Ticonderoga mattered</h3>
+        <p>
+          Fort Ticonderoga sat near a narrow point between lakes and rivers, making it a natural “gateway” for travel and trade.
+          In wartime, controlling that route could help block British movement from Canada—and the fort’s cannons could strengthen Patriot defenses.
+        </p>
+
+        <h3>The plan: strike before the British could react</h3>
+        <p>
+          Patriot leaders organized a
+          <span class="vocabWord" data-def="A sudden military attack meant to catch the enemy off guard.">surprise attack</span>
+          instead of a long siege. Fighters from the Green Mountain Boys (led by Ethan Allen) joined with Benedict Arnold.
+          Their goal was simple: get in fast, take control, and capture the weapons.
+        </p>
+
+        <h3>The capture: a fort taken with almost no fighting</h3>
+        <p>
+          Before sunrise on May 10, the Patriots crossed the water and approached the fort quietly. The British garrison was small and unprepared.
+          The commander was forced to
+          <span class="vocabWord" data-def="To give up to an enemy.">surrender</span>,
+          and the fort fell into Patriot hands before the British could organize a defense.
+        </p>
+
+        <h3>The cannons: a “weapon upgrade” for the Patriots</h3>
+        <p>
+          The biggest prize was the artillery. Later, Henry Knox led the effort to move the captured cannons over hundreds of miles—through rough roads and winter conditions.
+          Those cannons would eventually be used to pressure British forces in Boston, helping push them to leave the city.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHY IT MATTERED -->
+    <section class="card full" aria-label="Why it mattered" id="why-it-mattered">
+      <div class="section">
+        <h2>Why Did Fort Ticonderoga Matter?</h2>
+
+        <p>
+          Fort Ticonderoga mattered because it gave the Patriots something they lacked: heavy guns. Early in the war, morale and momentum mattered a lot,
+          and this victory boosted confidence after the uncertainty of the first fighting.
+        </p>
+
+        <p>
+          It also showed that Patriot forces could win through planning and speed—not just by reacting to British actions.
+          A “quiet” victory in the north helped shape what happened next near Boston, where the captured cannons became a major threat.
+        </p>
+      </div>
+    </section>
+
+    <!-- MINI QUIZ (interactive step quiz with results) -->
+    <section class="card full" aria-label="Quick quiz" id="quiz">
+      <div class="section">
+
+        <div class="quizHeader" aria-label="Quick Quiz header">
+          <img
+            class="quizBadge"
+            src="/assets/images/ui/quickquiz.png"
+            alt="Quick Quiz"
+            width="200"
+            height="103"
+          />
+        </div>
+
+        <div class="quizStepWrap" id="quizApp" aria-live="polite">
+          <!-- Question Card -->
+          <div class="quizCard" id="quizCard">
+            <div class="quizMeta">
+              <span class="quizProgress" id="quizProgress">Question 1 of 3</span>
             </div>
-            <div class="feedback">
-              <div class="correct">Correct! The cannons were the main goal.</div>
-              <div class="incorrect">Not quite. Think about what weapons were stored there.</div>
+
+            <h3 class="quizQ" id="quizQuestion">Loading…</h3>
+
+            <div class="quizChoices" id="quizChoices" role="radiogroup" aria-label="Quiz choices">
+              <!-- choices injected here -->
             </div>
+
+            <div class="quizActions">
+              <button class="quizBtn" id="quizNext" disabled>Next ➡️</button>
+            </div>
+
+            <div class="quizHint" id="quizHint" aria-hidden="true"></div>
+          </div>
+
+          <!-- Results Card -->
+          <div class="quizCard is-hidden" id="quizResults" aria-label="Quiz results">
+            <h3 class="quizQ quizResultsTitle">Results</h3>
+
+            <div class="factsList quizResultsFacts" style="margin-top:.6rem;">
+              <div class="factItem quizScore" id="quizScoreLine"><b>Score:</b> —</div>
+              <div class="factItem quizMetaInfo" id="quizTimeLine"><b>Completed:</b> —</div>
+            </div>
+          </div>
+
+          <!-- Retake button OUTSIDE results card -->
+          <div class="quizRetakeWrap">
+            <button class="quizBtn" id="quizRetake">🔁 Retake Quiz</button>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- TIMELINE (same embed as main page) -->
+    <section class="timeline-embed" aria-label="Timeline" id="timeline">
+      <iframe
+        src="/timeline/timeline.html?topic=/7/BattlesOfTheAmericanRevolution"
+        class="timeline-frame"
+        loading="lazy"
+        title="Timeline"
+        frameborder="0"
+      ></iframe>
+    </section>
+
+    <!-- Bottom-only Back to Top (centered) -->
+    <div class="backTopSolo" aria-label="Back to top">
+      <a class="pill" href="#content">⬆️ <span class="u">Back to Top</span></a>
+    </div>
+
   </main>
 
   <div id="siteFooter"></div>
-  <script src="/js/include.js"></script>
+
+  <!-- IMPORTANT: this page is inside /battles/, so config must be ../config.js -->
+  <script src="../config.js"></script>
+  <script src="/include.js"></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const quiz = [
+      {
+        q: "What was the Patriots’ main reason for capturing Fort Ticonderoga?",
+        choices: [
+          "To arrest the British governor in Canada",
+          "To protect Philadelphia from attack",
+          "To capture cannons and other military supplies",
+          "To sign a peace treaty with Britain"
+        ],
+        correctIndex: 2
+      },
+      {
+        q: "How did the Patriots manage to take the fort so quickly?",
+        choices: [
+          "They launched a surprise raid before dawn",
+          "They built a giant siege tower",
+          "They won a long battle that lasted weeks",
+          "They used ships to bombard the fort for days"
+        ],
+        correctIndex: 0
+      },
+      {
+        q: "What happened to many of the cannons captured at Fort Ticonderoga?",
+        choices: [
+          "They were melted down to make coins",
+          "They were moved to Boston and helped pressure the British to leave",
+          "They were shipped to England as prizes",
+          "They were buried so no one could use them"
+        ],
+        correctIndex: 1
+      }
+    ];
+
+    const card = document.getElementById("quizCard");
+    const results = document.getElementById("quizResults");
+    const progress = document.getElementById("quizProgress");
+    const questionEl = document.getElementById("quizQuestion");
+    const choicesEl = document.getElementById("quizChoices");
+    const nextBtn = document.getElementById("quizNext");
+    const hintEl = document.getElementById("quizHint");
+
+    const scoreLine = document.getElementById("quizScoreLine");
+    const timeLine = document.getElementById("quizTimeLine");
+    const retakeBtn = document.getElementById("quizRetake");
+
+    if (!card || !results || !progress || !questionEl || !choicesEl || !nextBtn || !hintEl || !scoreLine || !timeLine || !retakeBtn) {
+      console.error("[Quiz] Missing one or more quiz elements. Check IDs in the HTML.");
+      if (questionEl) questionEl.textContent = "Quiz error: missing elements.";
+      return;
+    }
+
+    let i = 0;
+    let score = 0;
+    let selectedIndex = null;
+
+    function renderQuestion() {
+      const item = quiz[i];
+      selectedIndex = null;
+
+      progress.textContent = `Question ${i + 1} of ${quiz.length}`;
+      questionEl.textContent = item.q;
+
+      choicesEl.innerHTML = "";
+      item.choices.forEach((text, idx) => {
+        const label = document.createElement("label");
+        label.className = "quizChoice";
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "quizQ";
+        input.value = String(idx);
+
+        input.addEventListener("change", () => {
+          selectedIndex = idx;
+          nextBtn.disabled = false;
+        });
+
+        const span = document.createElement("span");
+        span.textContent = text;
+
+        label.appendChild(input);
+        label.appendChild(span);
+        choicesEl.appendChild(label);
+      });
+
+      nextBtn.textContent = (i === quiz.length - 1) ? "Finish ✅" : "Next ➡️";
+      nextBtn.disabled = true;
+
+      hintEl.style.display = "block";
+      hintEl.setAttribute("aria-hidden", "false");
+    }
+
+    function showResults() {
+      const when = new Date().toLocaleString();
+      scoreLine.innerHTML = `<b>Score:</b> ${score} / ${quiz.length}`;
+      timeLine.innerHTML = `<b>Completed:</b> ${when}`;
+
+      card.classList.add("is-hidden");
+      results.classList.remove("is-hidden");
+    }
+
+    function resetQuiz() {
+      i = 0;
+      score = 0;
+      selectedIndex = null;
+
+      results.classList.add("is-hidden");
+      card.classList.remove("is-hidden");
+      renderQuestion();
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (selectedIndex === null) return;
+
+      if (selectedIndex === quiz[i].correctIndex) score++;
+
+      i++;
+      if (i >= quiz.length) showResults();
+      else renderQuestion();
+    });
+
+    retakeBtn.addEventListener("click", resetQuiz);
+
+    renderQuestion();
+  });
+  </script>
+
 </body>
 </html>
