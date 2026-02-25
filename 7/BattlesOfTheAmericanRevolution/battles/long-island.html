@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Long Island (1776) | Battles of the American Revolution</title>
+  <meta name="description" content="Long Island: what happened, why it mattered, and key vocabulary for middle school students." />
+
+  <!-- IMPORTANT: this page is inside /battles/, so CSS must be ../revolution.css -->
+  <link rel="stylesheet" href="../revolution.css" />
+
+  <!-- Page-local styles for the quiz + centered back-to-top (kept minimal) -->
+  <style>
+    .quiz { margin-top: .35rem; }
+    .quiz .q {
+      padding: .85rem .9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      margin: .75rem 0;
+    }
+    .quiz .q h3 { margin: 0 0 .55rem; font-size: 1.05rem; }
+    .quiz .choices { display: grid; gap: .45rem; }
+    .quiz label.choice{
+      display: flex;
+      gap: .55rem;
+      align-items: flex-start;
+      padding: .55rem .6rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+    .quiz label.choice:hover{
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .quiz input[type="radio"]{ margin-top: .2rem; }
+
+    /* Feedback text hidden until an answer is selected */
+    .quiz .feedback{
+      display:none;
+      margin:.55rem 0 0;
+      padding: .55rem .65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+    }
+    /* Show feedback if any option selected */
+    .quiz .q:has(input[type="radio"]:checked) .feedback{ display:block; }
+
+    /* Default feedback text, then swap based on correct/incorrect */
+    .quiz .feedback .correct{ display:none; color: rgba(255,216,74,.96); font-weight: 900; }
+    .quiz .feedback .incorrect{ display:none; color: rgba(255,255,255,.92); }
+
+    /* Mark correct answers: input has data-correct="1" */
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .correct{ display:block; }
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .incorrect{ display:none; }
+
+    .quiz .q:has(input[type="radio"]:checked) .feedback .incorrect{ display:block; }
+    .quiz .q:has(input[type="radio"]:checked) .feedback .correct{ display:none; }
+
+    .backTopSolo{
+      display:flex;
+      justify-content:center;
+      margin-top: .9rem;
+    }
+
+    /* ===== CENTERED TWO-LINE KICKER ===== */
+    .kicker{
+      display:block;
+      text-align:center;
+      line-height:1.35;
+    }
+
+    /* ===== CENTER JUMP BUTTON ===== */
+    .jumpRow{
+      display:flex;
+      justify-content:center;
+      margin-top:.6rem;
+    }
+
+  /* ===== STEP QUIZ STYLES ===== */
+
+  .quizStepWrap { margin-top: .6rem; }
+
+  .quizCard{
+    padding: 1rem 1rem .95rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.04);
+  }
+  .quizCard.is-hidden{ display:none; }
+
+  .quizMeta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:.35rem;
+    color: rgba(247,243,230,.78);
+    font-weight: 900;
+    font-size: .92rem;
+  }
+
+  .quizQ{ margin: .35rem 0 .7rem; font-size: 1.1rem; }
+
+  .quizChoices{ display:grid; gap: .55rem; }
+
+  .quizChoice{
+    display:flex;
+    gap:.6rem;
+    align-items:flex-start;
+    padding:.6rem .65rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.04);
+    cursor:pointer;
+  }
+  .quizChoice:hover{
+    background: rgba(255,255,255,.07);
+    border-color: rgba(255,255,255,.22);
+  }
+  .quizChoice input{ margin-top:.2rem; }
+
+  .quizActions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:.85rem;
+  }
+
+  .quizBtn{
+    appearance:none;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.06);
+    color: rgba(247,243,230,.95);
+    font-weight: 1000;
+    border-radius: 999px;
+    padding: .55rem .9rem;
+    cursor:pointer;
+  }
+
+  .quizHint{
+    margin-top:.55rem;
+    color: rgba(247,243,230,.74);
+    font-size: .92rem;
+  }
+
+  /* ===== QUICK QUIZ HEADER (CENTERED + NO DISTORTION) ===== */
+  .quizHeader{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:.8rem;
+  }
+  .quizBadge{
+    width: 200px;
+    height: 103px;
+    object-fit: contain;
+    display:block;
+  }
+
+  /* ===== RESULTS SCREEN (COSMETIC) ===== */
+
+  /* center the contents inside the Results card */
+  #quizResults{
+    text-align:center;
+  }
+
+  /* make the "Results" header bigger */
+  #quizResults .quizResultsTitle{
+    font-size: 1.8rem;
+    margin: .25rem 0 .55rem;
+  }
+
+  /* make the score line bigger */
+  #quizResults .quizScore{
+    font-size: 1.35rem;
+    font-weight: 1000;
+  }
+
+  /* keep completed/date/time the same size as before */
+  #quizResults .quizMetaInfo{
+    font-size: .92rem; /* matches your .quizMeta sizing */
+    font-weight: 900;
+    opacity: .9;
+  }
+
+  /* center the facts list rows (override grid look just for results) */
+  #quizResults .quizResultsFacts{
+    justify-items:center;
+  }
+
+  /* retake button centered, BELOW (outside) results card */
+  .quizRetakeWrap{
+    display:flex;
+    justify-content:center;
+    margin-top: .9rem;
+  }
+
+  /* ===== BACK + NEXT BUTTON ALIGNMENT (PINNED ENDS) ===== */
+
+  /* BACK: emoji LEFT, "Back" RIGHT (same line); subtext RIGHT */
+  .pbtn.prev .pbtnTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+  }
+  .pbtn.prev .pbtnSub{
+    width:100%;
+    text-align:right;
+  }
+
+  /* NEXT: "Next" LEFT, emoji RIGHT (same line); subtext LEFT */
+  .pbtn.next .pbtnTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+  }
+  .pbtn.next .pbtnSub{
+    width:100%;
+    text-align:left;
+  }
+  </style>
+</head>
+
+<body class="topic revolution">
+  <div id="siteHeader"></div>
+
+  <main id="content">
+    <!-- HERO -->
+    <section class="hero" aria-label="Long Island hero">
+      <div class="card hero-left">
+
+        <span class="kicker">August 27, 1776 • New York<br>“The Battle for New York City”</span>
+        <h1>Long Island</h1>
+
+        <p class="sub">
+          The Battle of Long Island (also called the Battle of Brooklyn) was the first major battle after independence was declared.
+          The British used strong planning and a surprise
+          <span class="vocabWord" data-def="A military move around the side of an enemy to attack from an unexpected direction.">flank</span>
+          to defeat Washington’s army. But the Americans escaped in a daring nighttime
+          <span class="vocabWord" data-def="A planned movement away from danger, often to save an army.">evacuation</span>
+          that kept the war going.
+        </p>
+
+        <div class="bigIdeaWrap" aria-label="Big Idea">
+          <div class="bigIdeaGraphic">
+            <img
+              src="/assets/images/ui/bigidea.png"
+              alt="Big Idea graphic"
+              width="150"
+              height="92"
+            />
+          </div>
+          <div class="bigIdeaText">
+            Sometimes the most important part of a battle is not winning—it’s surviving and learning.
+          </div>
+        </div>
+
+        <div class="pillrow" aria-label="Topic tags">
+          <span class="pill">🗽 New York</span>
+          <span class="pill">🧭 Flanking</span>
+          <span class="pill">🚢 Navy power</span>
+          <span class="pill">🌫️ Night escape</span>
+          <span class="pill">🧑‍✈️ Washington</span>
+        </div>
+      </div>
+
+      <aside class="card hero-right" aria-label="Portrait and navigation">
+        <div class="portraitWrap">
+          <div class="portrait" role="img" aria-label="Long Island scene">
+            <img src="../images/longisland.webp" alt="Long Island (1776)" />
+          </div>
+
+          <div class="portraitButtons" aria-label="Navigation">
+            <a class="pbtn prev" href="bunker-hill.html" title="Back: Bunker Hill">
+              <div class="pbtnTop">
+                <span class="emoji" aria-hidden="true">⬅️</span>
+                <span class="label">Back</span>
+              </div>
+              <div class="pbtnSub">Bunker Hill</div>
+            </a>
+
+            <div class="pbtn spacer" aria-hidden="true"></div>
+
+            <a class="pbtn next" href="harlem-heights.html" title="Next: Harlem Heights">
+              <div class="pbtnTop">
+                <span class="label">Next</span>
+                <span class="emoji" aria-hidden="true">➡️</span>
+              </div>
+              <div class="pbtnSub">Harlem Heights</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="jumpRow">
+          <a class="pill" href="#timeline" title="Jump to timeline">
+            🗓️ <span class="u">Jump to Timeline</span>
+          </a>
+        </div>
+
+      </aside>
+    </section>
+
+    <!-- BATTLE AT-A-GLANCE -->
+    <section class="card full" aria-label="Battle at a glance">
+      <div class="section">
+        <h2>Battle at a Glance</h2>
+        <div class="factsList">
+          <div class="factItem">🗓️ <b>Date:</b> August 27, 1776</div>
+          <div class="factItem">📍 <b>Place:</b> Long Island (Brooklyn), New York</div>
+          <div class="factItem">👥 <b>Who fought:</b> British &amp; Hessian forces vs. the Continental Army</div>
+          <div class="factItem">🎯 <b>British goal:</b> capture New York City and crush the rebellion early</div>
+          <div class="factItem">🏃 <b>Outcome:</b> British victory; Americans retreat and escape to Manhattan</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BACKGROUND -->
+    <section class="card full" aria-label="Background">
+      <div class="section">
+        <h2>Background</h2>
+        <p>
+          In the summer of 1776, the war shifted to New York. The British believed New York City was the perfect place to strike because it had a huge
+          harbor, important trade routes, and many people who still supported Britain. The Americans, led by George Washington, also knew New York was
+          important—but defending it was difficult because it was made up of islands and waterways.
+        </p>
+        <p>
+          The British had a powerful navy and a large army. Washington’s
+          <span class="vocabWord" data-def="The main American army during the Revolution, made up of soldiers from the colonies.">Continental Army</span>
+          had courage, but it was less experienced and often short on supplies. When the British landed troops on Long Island, a major showdown was
+          almost unavoidable.
+        </p>
+      </div>
+    </section>
+
+    <!-- DID YOU KNOW -->
+    <section class="didYouKnow" aria-label="Did you know feature">
+      <div class="dykImg" aria-label="Did you know banner">
+        <img src="/assets/images/ui/didyouknow.png" alt="Did you know" width="200" height="78" />
+      </div>
+      <div class="fact">
+        During the American escape from Brooklyn, thick fog and darkness helped hide the boats—many British soldiers had no idea the Continental Army was slipping away.
+      </div>
+    </section>
+
+    <!-- QUICK FACTS + VOCAB -->
+    <section class="grid2" aria-label="Quick facts and vocabulary">
+      <article class="card section" aria-label="Quick Facts">
+        <h2>Quick Facts</h2>
+        <div class="factsList">
+          <div class="factItem">🚢 Britain used its navy to control the harbor and rivers.</div>
+          <div class="factItem">🧭 British forces used a major <b>flanking</b> move to surprise Americans.</div>
+          <div class="factItem">🧱 Americans built defenses around Brooklyn Heights.</div>
+          <div class="factItem">🌫️ A nighttime evacuation saved Washington’s army.</div>
+          <div class="factItem">🏙️ The British later occupied New York City.</div>
+        </div>
+      </article>
+
+      <article class="card section" aria-label="Vocabulary">
+        <h2>Vocabulary</h2>
+        <div class="vocab">
+          <div class="term"><b>Continental Army</b> — the main American army during the Revolution.</div>
+          <div class="term"><b>Hessians</b> — German soldiers hired by Britain to fight.</div>
+          <div class="term"><b>flank</b> — to attack from the side of an enemy.</div>
+          <div class="term"><b>evacuation</b> — a planned move away from danger to save people or an army.</div>
+          <div class="term"><b>harbor</b> — a sheltered area of water where ships can anchor safely.</div>
+          <div class="term"><b>fortification</b> — a defensive structure built for protection.</div>
+        </div>
+      </article>
+    </section>
+
+    <!-- WHAT HAPPENED -->
+    <section class="card full" aria-label="What happened" id="what-happened">
+      <div class="section">
+        <h2>What Happened?</h2>
+
+        <h3>The British land on Long Island</h3>
+        <p>
+          British forces crossed from Staten Island and landed on Long Island in August 1776. They brought thousands of troops, including
+          <span class="vocabWord" data-def="German soldiers hired by Britain to fight.">Hessians</span>.
+          Washington positioned many Americans behind hills and passes, hoping to slow down the British advance toward Brooklyn.
+        </p>
+
+        <h3>A surprise flanking attack</h3>
+        <p>
+          The Americans expected most fighting to happen at the main roads through the hills. But the British found a less-guarded route.
+          In a major <span class="vocabWord" data-def="To attack from the side of an enemy.">flank</span>,
+          British troops marched at night and attacked from an unexpected direction. Many American units were caught off guard, and the fighting
+          turned into a hard retreat back toward the defenses at Brooklyn Heights.
+        </p>
+
+        <h3>Americans trapped in Brooklyn</h3>
+        <p>
+          After the battle, the Americans were crowded behind their fortifications near the East River. They were exhausted and low on supplies.
+          The British had won the field and could prepare to attack the defenses. If Washington’s army was captured, the Revolution might end quickly.
+        </p>
+
+        <h3>The nighttime evacuation</h3>
+        <p>
+          Washington made a bold decision: escape across the East River to Manhattan. During the night of August 29–30, soldiers were quietly moved
+          onto boats. The operation was risky—if the British discovered it, they could attack the crowded shoreline. But darkness and fog helped hide
+          the evacuation. By morning, most of the Continental Army had crossed safely.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHY IT MATTERED -->
+    <section class="card full" aria-label="Why it mattered" id="why-it-mattered">
+      <div class="section">
+        <h2>Why Did Long Island Matter?</h2>
+
+        <p>
+          Long Island mattered because it showed how powerful the British army and navy could be, especially in a place full of waterways.
+          It also taught Washington important lessons about training, scouting, and defending large cities.
+        </p>
+
+        <p>
+          Most importantly, Washington’s evacuation saved the Continental Army. If that army had been captured in 1776, the Revolution could have
+          ended early. Surviving Long Island allowed the Americans to keep fighting—and to regroup for the next battles in New York.
+        </p>
+      </div>
+    </section>
+
+    <!-- MINI QUIZ (interactive MC) -->
+    <section class="card full" aria-label="Quick quiz" id="quiz">
+      <div class="section">
+
+        <div class="quizHeader" aria-label="Quick Quiz header">
+          <img
+            class="quizBadge"
+            src="/assets/images/ui/quickquiz.png"
+            alt="Quick Quiz"
+            width="200"
+            height="103"
+          />
+        </div>
+
+        <div class="quizStepWrap" id="quizApp" aria-live="polite">
+          <!-- Question Card -->
+          <div class="quizCard" id="quizCard">
+            <div class="quizMeta">
+              <span class="quizProgress" id="quizProgress">Question 1 of 3</span>
+            </div>
+
+            <h3 class="quizQ" id="quizQuestion">Loading…</h3>
+
+            <div class="quizChoices" id="quizChoices" role="radiogroup" aria-label="Quiz choices">
+              <!-- choices injected here -->
+            </div>
+
+            <div class="quizActions">
+              <button class="quizBtn" id="quizNext" disabled>Next ➡️</button>
+            </div>
+
+            <div class="quizHint" id="quizHint" aria-hidden="true"></div>
+          </div>
+
+          <!-- Results Card -->
+          <div class="quizCard is-hidden" id="quizResults" aria-label="Quiz results">
+            <h3 class="quizQ quizResultsTitle">Results</h3>
+
+            <div class="factsList quizResultsFacts" style="margin-top:.6rem;">
+              <div class="factItem quizScore" id="quizScoreLine"><b>Score:</b> —</div>
+              <div class="factItem quizMetaInfo" id="quizTimeLine"><b>Completed:</b> —</div>
+            </div>
+          </div>
+
+          <!-- Retake button OUTSIDE results card -->
+          <div class="quizRetakeWrap">
+            <button class="quizBtn" id="quizRetake">🔁 Retake Quiz</button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE (same embed as main page) -->
+    <section class="timeline-embed" aria-label="Timeline" id="timeline">
+      <iframe
+        src="/timeline/timeline.html?topic=/7/BattlesOfTheAmericanRevolution"
+        class="timeline-frame"
+        loading="lazy"
+        title="Timeline"
+        frameborder="0"
+      ></iframe>
+    </section>
+
+    <!-- Bottom-only Back to Top (centered) -->
+    <div class="backTopSolo" aria-label="Back to top">
+      <a class="pill" href="#content">⬆️ <span class="u">Back to Top</span></a>
+    </div>
+
+  </main>
+
+  <div id="siteFooter"></div>
+
+  <!-- IMPORTANT: this page is inside /battles/, so config must be ../config.js -->
+  <script src="../config.js"></script>
+  <script src="/include.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const quiz = [
+    {
+      q: "Why was New York City such an important target in 1776?",
+      choices: [
+        "It had a major harbor and trade routes, and both sides wanted control",
+        "It was the location of the Continental Congress",
+        "It was where Britain stored all its cannons",
+        "It was the only city with loyalists"
+      ],
+      correctIndex: 0
+    },
+    {
+      q: "What tactic helped the British win the Battle of Long Island?",
+      choices: [
+        "They made a surprise flanking move through a less-guarded route",
+        "They attacked only at night with lanterns",
+        "They used winter weather to freeze the river",
+        "They surrendered to lure Washington into a trap"
+      ],
+      correctIndex: 0
+    },
+    {
+      q: "How did Washington keep the war from ending after the defeat?",
+      choices: [
+        "He captured the British commander",
+        "He evacuated the Continental Army across the East River at night",
+        "He signed a peace treaty immediately",
+        "He moved the army to Canada the same day"
+      ],
+      correctIndex: 1
+    }
+  ];
+
+  const card = document.getElementById("quizCard");
+  const results = document.getElementById("quizResults");
+  const progress = document.getElementById("quizProgress");
+  const questionEl = document.getElementById("quizQuestion");
+  const choicesEl = document.getElementById("quizChoices");
+  const nextBtn = document.getElementById("quizNext");
+  const hintEl = document.getElementById("quizHint");
+
+  const scoreLine = document.getElementById("quizScoreLine");
+  const timeLine = document.getElementById("quizTimeLine");
+  const retakeBtn = document.getElementById("quizRetake");
+
+  // Safety check (prevents silent failure)
+  if (!card || !results || !progress || !questionEl || !choicesEl || !nextBtn || !hintEl || !scoreLine || !timeLine || !retakeBtn) {
+    console.error("[Quiz] Missing one or more quiz elements. Check IDs in the HTML.");
+    if (questionEl) questionEl.textContent = "Quiz error: missing elements.";
+    return;
+  }
+
+  let i = 0;
+  let score = 0;
+  let selectedIndex = null;
+
+  function renderQuestion() {
+    const item = quiz[i];
+    selectedIndex = null;
+
+    progress.textContent = `Question ${i + 1} of ${quiz.length}`;
+    questionEl.textContent = item.q;
+
+    choicesEl.innerHTML = "";
+    item.choices.forEach((text, idx) => {
+      const label = document.createElement("label");
+      label.className = "quizChoice";
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "quizQ";
+      input.value = String(idx);
+
+      input.addEventListener("change", () => {
+        selectedIndex = idx;
+        nextBtn.disabled = false;
+      });
+
+      const span = document.createElement("span");
+      span.textContent = text;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      choicesEl.appendChild(label);
+    });
+
+    nextBtn.textContent = (i === quiz.length - 1) ? "Finish ✅" : "Next ➡️";
+    nextBtn.disabled = true;
+
+    hintEl.style.display = "block";
+    hintEl.setAttribute("aria-hidden", "false");
+  }
+
+  function showResults() {
+    const when = new Date().toLocaleString();
+    scoreLine.innerHTML = `<b>Score:</b> ${score} / ${quiz.length}`;
+    timeLine.innerHTML = `<b>Completed:</b> ${when}`;
+
+    card.classList.add("is-hidden");
+    results.classList.remove("is-hidden");
+  }
+
+  function resetQuiz() {
+    i = 0;
+    score = 0;
+    selectedIndex = null;
+
+    results.classList.add("is-hidden");
+    card.classList.remove("is-hidden");
+    renderQuestion();
+  }
+
+  nextBtn.addEventListener("click", () => {
+    if (selectedIndex === null) return;
+
+    if (selectedIndex === quiz[i].correctIndex) score++;
+
+    i++;
+    if (i >= quiz.length) showResults();
+    else renderQuestion();
+  });
+
+  retakeBtn.addEventListener("click", resetQuiz);
+
+  renderQuestion();
+});
+</script>
+
+</body>
+</html>
