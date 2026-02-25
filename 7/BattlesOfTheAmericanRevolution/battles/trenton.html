@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Harlem Heights (1776) | Battles of the American Revolution</title>
+  <meta name="description" content="Harlem Heights: what happened, why it mattered, and key vocabulary for middle school students." />
+
+  <!-- IMPORTANT: this page is inside /battles/, so CSS must be ../revolution.css -->
+  <link rel="stylesheet" href="../revolution.css" />
+
+  <!-- Page-local styles for the quiz + centered back-to-top (kept minimal) -->
+  <style>
+    .quiz { margin-top: .35rem; }
+    .quiz .q {
+      padding: .85rem .9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      margin: .75rem 0;
+    }
+    .quiz .q h3 { margin: 0 0 .55rem; font-size: 1.05rem; }
+    .quiz .choices { display: grid; gap: .45rem; }
+    .quiz label.choice{
+      display: flex;
+      gap: .55rem;
+      align-items: flex-start;
+      padding: .55rem .6rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+    .quiz label.choice:hover{
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .quiz input[type="radio"]{ margin-top: .2rem; }
+
+    /* Feedback text hidden until an answer is selected */
+    .quiz .feedback{
+      display:none;
+      margin:.55rem 0 0;
+      padding: .55rem .65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+    }
+    /* Show feedback if any option selected */
+    .quiz .q:has(input[type="radio"]:checked) .feedback{ display:block; }
+
+    /* Default feedback text, then swap based on correct/incorrect */
+    .quiz .feedback .correct{ display:none; color: rgba(255,216,74,.96); font-weight: 900; }
+    .quiz .feedback .incorrect{ display:none; color: rgba(255,255,255,.92); }
+
+    /* Mark correct answers: input has data-correct="1" */
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .correct{ display:block; }
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .incorrect{ display:none; }
+
+    .quiz .q:has(input[type="radio"]:checked) .feedback .incorrect{ display:block; }
+    .quiz .q:has(input[type="radio"]:checked) .feedback .correct{ display:none; }
+
+    .backTopSolo{
+      display:flex;
+      justify-content:center;
+      margin-top: .9rem;
+    }
+
+    /* ===== CENTERED TWO-LINE KICKER ===== */
+    .kicker{
+      display:block;
+      text-align:center;
+      line-height:1.35;
+    }
+
+    /* ===== CENTER JUMP BUTTON ===== */
+    .jumpRow{
+      display:flex;
+      justify-content:center;
+      margin-top:.6rem;
+    }
+
+
+  /* ===== STEP QUIZ STYLES ===== */
+
+  .quizStepWrap { margin-top: .6rem; }
+
+  .quizCard{
+    padding: 1rem 1rem .95rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.04);
+  }
+  .quizCard.is-hidden{ display:none; }
+
+  .quizMeta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:.35rem;
+    color: rgba(247,243,230,.78);
+    font-weight: 900;
+    font-size: .92rem;
+  }
+
+  .quizQ{ margin: .35rem 0 .7rem; font-size: 1.1rem; }
+
+  .quizChoices{ display:grid; gap: .55rem; }
+
+  .quizChoice{
+    display:flex;
+    gap:.6rem;
+    align-items:flex-start;
+    padding:.6rem .65rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.04);
+    cursor:pointer;
+  }
+  .quizChoice:hover{
+    background: rgba(255,255,255,.07);
+    border-color: rgba(255,255,255,.22);
+  }
+  .quizChoice input{ margin-top:.2rem; }
+
+  .quizActions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:.85rem;
+  }
+
+  .quizBtn{
+    appearance:none;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.06);
+    color: rgba(247,243,230,.95);
+    font-weight: 1000;
+    border-radius: 999px;
+    padding: .55rem .9rem;
+    cursor:pointer;
+  }
+
+  .quizHint{
+    margin-top:.55rem;
+    color: rgba(247,243,230,.74);
+    font-size: .92rem;
+  }
+
+  /* ===== QUICK QUIZ HEADER (CENTERED + NO DISTORTION) ===== */
+  .quizHeader{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:.8rem;
+  }
+  .quizBadge{
+    width: 200px;
+    height: 103px;
+    object-fit: contain;
+    display:block;
+  }
+
+  /* ===== RESULTS SCREEN (COSMETIC) ===== */
+
+  /* center the contents inside the Results card */
+  #quizResults{
+    text-align:center;
+  }
+
+  /* make the "Results" header bigger */
+  #quizResults .quizResultsTitle{
+    font-size: 1.8rem;
+    margin: .25rem 0 .55rem;
+  }
+
+  /* make the score line bigger */
+  #quizResults .quizScore{
+    font-size: 1.35rem;
+    font-weight: 1000;
+  }
+
+  /* keep completed/date/time the same size as before */
+  #quizResults .quizMetaInfo{
+    font-size: .92rem; /* matches your .quizMeta sizing */
+    font-weight: 900;
+    opacity: .9;
+  }
+
+  /* center the facts list rows (override grid look just for results) */
+  #quizResults .quizResultsFacts{
+    justify-items:center;
+  }
+
+  /* retake button centered, BELOW (outside) results card */
+  .quizRetakeWrap{
+    display:flex;
+    justify-content:center;
+    margin-top: .9rem;
+  }
+
+
+
+  /* ===== BACK + NEXT BUTTON ALIGNMENT (PINNED ENDS) ===== */
+
+  /* BACK: emoji LEFT, "Back" RIGHT (same line); subtext RIGHT */
+  .pbtn.prev .pbtnTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+  }
+  .pbtn.prev .pbtnSub{
+    width:100%;
+    text-align:right;
+  }
+
+  /* NEXT: "Next" LEFT, emoji RIGHT (same line); subtext LEFT */
+  .pbtn.next .pbtnTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+  }
+  .pbtn.next .pbtnSub{
+    width:100%;
+    text-align:left;
+  }
+
+
+
+  </style>
+</head>
+
+<body class="topic revolution">
+  <div id="siteHeader"></div>
+
+  <main id="content">
+    <!-- HERO -->
+    <section class="hero" aria-label="Harlem Heights hero">
+      <div class="card hero-left">
+
+        <span class="kicker">September 16, 1776 • New York<br>“A Confidence Boost After a Retreat”</span>
+        <h1>Harlem Heights</h1>
+
+        <p class="sub">
+          After a tough defeat on Long Island, Washington’s army retreated to Manhattan. At Harlem Heights, American troops stood their ground,
+          pushed British forces back, and gained a much-needed boost in
+          <span class="vocabWord" data-def="Confidence and spirit within a group.">morale</span>.
+        </p>
+
+        <div class="bigIdeaWrap" aria-label="Big Idea">
+          <div class="bigIdeaGraphic">
+            <img
+              src="/assets/images/ui/bigidea.png"
+              alt="Big Idea graphic"
+              width="150"
+              height="92"
+            />
+          </div>
+          <div class="bigIdeaText">
+            Small victories can matter a lot—especially when an army needs confidence to keep fighting.
+          </div>
+        </div>
+
+        <div class="pillrow" aria-label="Topic tags">
+          <span class="pill">🗽 Manhattan</span>
+          <span class="pill">🧭 Retreat</span>
+          <span class="pill">🥁 Morale</span>
+          <span class="pill">⚔️ Skirmish</span>
+          <span class="pill">🧑‍✈️ Washington</span>
+        </div>
+      </div>
+
+      <aside class="card hero-right" aria-label="Portrait and navigation">
+        <div class="portraitWrap">
+          <div class="portrait" role="img" aria-label="Harlem Heights scene">
+            <img src="../images/harlemheights.webp" alt="Harlem Heights (1776)" />
+          </div>
+
+          <div class="portraitButtons" aria-label="Navigation">
+            <a class="pbtn prev" href="long-island.html" title="Back: Long Island">
+              <div class="pbtnTop">
+                <span class="emoji" aria-hidden="true">⬅️</span>
+                <span class="label">Back</span>
+              </div>
+              <div class="pbtnSub">Long Island</div>
+            </a>
+
+            <div class="pbtn spacer" aria-hidden="true"></div>
+
+            <a class="pbtn next" href="trenton.html" title="Next: Trenton">
+              <div class="pbtnTop">
+                <span class="label">Next</span>
+                <span class="emoji" aria-hidden="true">➡️</span>
+              </div>
+              <div class="pbtnSub">Trenton</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="jumpRow">
+          <a class="pill" href="#timeline" title="Jump to timeline">
+            🗓️ <span class="u">Jump to Timeline</span>
+          </a>
+        </div>
+
+      </aside>
+    </section>
+
+    <!-- BATTLE AT-A-GLANCE -->
+    <section class="card full" aria-label="Battle at a glance">
+      <div class="section">
+        <h2>Battle at a Glance</h2>
+        <div class="factsList">
+          <div class="factItem">🗓️ <b>Date:</b> September 16, 1776</div>
+          <div class="factItem">📍 <b>Place:</b> Manhattan (near today’s Harlem), New York</div>
+          <div class="factItem">👥 <b>Who fought:</b> Continental Army vs. British troops (and light infantry)</div>
+          <div class="factItem">🎯 <b>American goal:</b> defend their position and avoid another disaster</div>
+          <div class="factItem">🏆 <b>Outcome:</b> American victory in a sharp skirmish</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BACKGROUND -->
+    <section class="card full" aria-label="Background">
+      <div class="section">
+        <h2>Background</h2>
+        <p>
+          After losing the Battle of Long Island, Washington’s army escaped to Manhattan. But the British still had a strong navy and many troops,
+          and they continued pushing the Americans northward. Washington needed to keep his army together—because losing the main army could end the war.
+        </p>
+        <p>
+          By mid-September, the Americans were positioned on higher ground in northern Manhattan near Harlem Heights. British forces were nearby, and
+          both sides sent out scouts to look for weaknesses. That tension set the stage for a sudden fight.
+        </p>
+      </div>
+    </section>
+
+    <!-- DID YOU KNOW -->
+    <section class="didYouKnow" aria-label="Did you know feature">
+      <div class="dykImg" aria-label="Did you know banner">
+        <img src="/assets/images/ui/didyouknow.png" alt="Did you know" width="200" height="78" />
+      </div>
+      <div class="fact">
+        Harlem Heights is remembered as one of Washington’s first successful battlefield moments in New York—important not because it was huge, but because it restored confidence.
+      </div>
+    </section>
+
+    <!-- QUICK FACTS + VOCAB -->
+    <section class="grid2" aria-label="Quick facts and vocabulary">
+      <article class="card section" aria-label="Quick Facts">
+        <h2>Quick Facts</h2>
+        <div class="factsList">
+          <div class="factItem">🧭 The battle happened during the retreat from New York City.</div>
+          <div class="factItem">🔍 Scouts and patrols triggered the fighting.</div>
+          <div class="factItem">⚔️ It was a <b>skirmish</b>, not a massive set-piece battle.</div>
+          <div class="factItem">🥁 Americans gained much-needed morale.</div>
+          <div class="factItem">🏞️ High ground helped the Americans defend their position.</div>
+        </div>
+      </article>
+
+      <article class="card section" aria-label="Vocabulary">
+        <h2>Vocabulary</h2>
+        <div class="vocab">
+          <div class="term"><b>skirmish</b> — a small fight between groups of soldiers.</div>
+          <div class="term"><b>patrol</b> — a group sent out to scout or guard an area.</div>
+          <div class="term"><b>morale</b> — the confidence or spirit of a group.</div>
+          <div class="term"><b>retreat</b> — to pull back from danger while avoiding capture.</div>
+          <div class="term"><b>position</b> — a place soldiers defend or hold.</div>
+          <div class="term"><b>pursue</b> — to chase an enemy who is moving away.</div>
+        </div>
+      </article>
+    </section>
+
+    <!-- WHAT HAPPENED -->
+    <section class="card full" aria-label="What happened" id="what-happened">
+      <div class="section">
+        <h2>What Happened?</h2>
+
+        <h3>Scouting turns into a clash</h3>
+        <p>
+          Early on September 16, small groups of American troops went out on patrol. They ran into British light infantry and other troops who were also scouting.
+          At first it looked like a small encounter—but soon more soldiers from both sides rushed in.
+        </p>
+
+        <h3>British taunts—and an American response</h3>
+        <p>
+          Some British troops mocked the Americans as they pulled back, acting as if another easy victory was coming. Washington and his officers were frustrated:
+          after Long Island, the army needed proof it could fight back. American troops regrouped and prepared to push forward instead of running.
+        </p>
+
+        <h3>Americans push forward</h3>
+        <p>
+          The fighting moved across fields, rocky ground, and wooded areas. American troops attacked in organized waves, using the higher ground to their advantage.
+          The British were surprised by the determination and discipline the Americans showed in the fight.
+        </p>
+
+        <h3>Holding the field</h3>
+        <p>
+          Eventually, the British pulled back to avoid being drawn too far from their main forces. The Americans did not chase recklessly.
+          Washington’s army stayed in control of the area and proved they could stand and fight—even after earlier defeats.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHY IT MATTERED -->
+    <section class="card full" aria-label="Why it mattered" id="why-it-mattered">
+      <div class="section">
+        <h2>Why Did Harlem Heights Matter?</h2>
+
+        <p>
+          Harlem Heights mattered because it gave Washington’s army a psychological win. After being defeated and forced to retreat, the Continental Army needed confidence.
+          This battle showed the Americans could push back against British troops and fight with discipline.
+        </p>
+
+        <p>
+          It also helped Washington learn something important: survival mattered. He could avoid total destruction, pick smart fights, and keep the army alive.
+          Keeping the Continental Army together would become one of the most important goals of the entire war.
+        </p>
+      </div>
+    </section>
+
+    <!-- MINI QUIZ (interactive MC) -->
+    <section class="card full" aria-label="Quick quiz" id="quiz">
+      <div class="section">
+
+        <div class="quizHeader" aria-label="Quick Quiz header">
+          <img
+            class="quizBadge"
+            src="/assets/images/ui/quickquiz.png"
+            alt="Quick Quiz"
+            width="200"
+            height="103"
+          />
+        </div>
+
+        <div class="quizStepWrap" id="quizApp" aria-live="polite">
+          <!-- Question Card -->
+          <div class="quizCard" id="quizCard">
+            <div class="quizMeta">
+              <span class="quizProgress" id="quizProgress">Question 1 of 3</span>
+            </div>
+
+            <h3 class="quizQ" id="quizQuestion">Loading…</h3>
+
+            <div class="quizChoices" id="quizChoices" role="radiogroup" aria-label="Quiz choices">
+              <!-- choices injected here -->
+            </div>
+
+            <div class="quizActions">
+              <button class="quizBtn" id="quizNext" disabled>Next ➡️</button>
+            </div>
+
+            <div class="quizHint" id="quizHint" aria-hidden="true"></div>
+          </div>
+
+          <!-- Results Card -->
+          <div class="quizCard is-hidden" id="quizResults" aria-label="Quiz results">
+            <h3 class="quizQ quizResultsTitle">Results</h3>
+
+            <div class="factsList quizResultsFacts" style="margin-top:.6rem;">
+              <div class="factItem quizScore" id="quizScoreLine"><b>Score:</b> —</div>
+              <div class="factItem quizMetaInfo" id="quizTimeLine"><b>Completed:</b> —</div>
+            </div>
+          </div>
+
+          <!-- Retake button OUTSIDE results card -->
+          <div class="quizRetakeWrap">
+            <button class="quizBtn" id="quizRetake">🔁 Retake Quiz</button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE (same embed as main page) -->
+    <section class="timeline-embed" aria-label="Timeline" id="timeline">
+      <iframe
+        src="/timeline/timeline.html?topic=/7/BattlesOfTheAmericanRevolution"
+        class="timeline-frame"
+        loading="lazy"
+        title="Timeline"
+        frameborder="0"
+      ></iframe>
+    </section>
+
+<!-- Bottom-only Back to Top (centered) -->
+<div class="backTopSolo" aria-label="Back to top">
+  <a class="pill" href="#content">⬆️ <span class="u">Back to Top</span></a>
+</div>
+
+  </main>
+
+  <div id="siteFooter"></div>
+
+  <!-- IMPORTANT: this page is inside /battles/, so config must be ../config.js -->
+  <script src="../config.js"></script>
+  <script src="/include.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const quiz = [
+    {
+      q: "Why was Harlem Heights important for the Continental Army?",
+      choices: [
+        "It was the first battle fought in Canada",
+        "It boosted morale after earlier defeats in New York",
+        "It ended the war immediately",
+        "It captured the British navy"
+      ],
+      correctIndex: 1
+    },
+    {
+      q: "What kind of battle was Harlem Heights?",
+      choices: [
+        "A naval battle in the harbor",
+        "A small skirmish triggered by scouting and patrols",
+        "A winter raid across a frozen river",
+        "A long siege lasting months"
+      ],
+      correctIndex: 1
+    },
+    {
+      q: "What did Washington learn from battles like Harlem Heights?",
+      choices: [
+        "Keeping the army alive and choosing fights carefully mattered",
+        "The war could be won only by capturing London",
+        "The army should never retreat under any circumstances",
+        "Militia alone would always be enough without training"
+      ],
+      correctIndex: 0
+    }
+  ];
+
+  const card = document.getElementById("quizCard");
+  const results = document.getElementById("quizResults");
+  const progress = document.getElementById("quizProgress");
+  const questionEl = document.getElementById("quizQuestion");
+  const choicesEl = document.getElementById("quizChoices");
+  const nextBtn = document.getElementById("quizNext");
+  const hintEl = document.getElementById("quizHint");
+
+  const scoreLine = document.getElementById("quizScoreLine");
+  const timeLine = document.getElementById("quizTimeLine");
+  const retakeBtn = document.getElementById("quizRetake");
+
+  // Safety check (prevents silent failure)
+  if (!card || !results || !progress || !questionEl || !choicesEl || !nextBtn || !hintEl || !scoreLine || !timeLine || !retakeBtn) {
+    console.error("[Quiz] Missing one or more quiz elements. Check IDs in the HTML.");
+    if (questionEl) questionEl.textContent = "Quiz error: missing elements.";
+    return;
+  }
+
+  let i = 0;
+  let score = 0;
+  let selectedIndex = null;
+
+  function renderQuestion() {
+    const item = quiz[i];
+    selectedIndex = null;
+
+    progress.textContent = `Question ${i + 1} of ${quiz.length}`;
+    questionEl.textContent = item.q;
+
+    choicesEl.innerHTML = "";
+    item.choices.forEach((text, idx) => {
+      const label = document.createElement("label");
+      label.className = "quizChoice";
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "quizQ";
+      input.value = String(idx);
+
+      input.addEventListener("change", () => {
+        selectedIndex = idx;
+        nextBtn.disabled = false;
+      });
+
+      const span = document.createElement("span");
+      span.textContent = text;
+
+      label.appendChild(input);
+      label.appendChild(span);
+      choicesEl.appendChild(label);
+    });
+
+    nextBtn.textContent = (i === quiz.length - 1) ? "Finish ✅" : "Next ➡️";
+    nextBtn.disabled = true;
+
+    hintEl.style.display = "block";
+    hintEl.setAttribute("aria-hidden", "false");
+  }
+
+  function showResults() {
+    const when = new Date().toLocaleString();
+    scoreLine.innerHTML = `<b>Score:</b> ${score} / ${quiz.length}`;
+    timeLine.innerHTML = `<b>Completed:</b> ${when}`;
+
+    card.classList.add("is-hidden");
+    results.classList.remove("is-hidden");
+  }
+
+  function resetQuiz() {
+    i = 0;
+    score = 0;
+    selectedIndex = null;
+
+    results.classList.add("is-hidden");
+    card.classList.remove("is-hidden");
+    renderQuestion();
+  }
+
+  nextBtn.addEventListener("click", () => {
+    if (selectedIndex === null) return;
+
+    if (selectedIndex === quiz[i].correctIndex) score++;
+
+    i++;
+    if (i >= quiz.length) showResults();
+    else renderQuestion();
+  });
+
+  retakeBtn.addEventListener("click", resetQuiz);
+
+  renderQuestion();
+});
+</script>
+
+
+</body>
+</html>
