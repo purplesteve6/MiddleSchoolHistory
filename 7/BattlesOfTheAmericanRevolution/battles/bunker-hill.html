@@ -4,224 +4,622 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bunker Hill (1775) | Battles of the American Revolution</title>
-  <meta name="description" content="The Battle of Bunker Hill: what happened, why it mattered, and key vocabulary for middle school students." />
+  <meta name="description" content="Bunker Hill: what happened, why it mattered, and key vocabulary for middle school students." />
 
+  <!-- IMPORTANT: this page is inside /battles/, so CSS must be ../revolution.css -->
   <link rel="stylesheet" href="../revolution.css" />
 
+  <!-- Page-local styles for the quiz + centered back-to-top (kept minimal) -->
   <style>
-    /* === EXACT SAME STYLE BLOCK AS FORT PAGE — UNCHANGED === */
+    .quiz { margin-top: .35rem; }
+    .quiz .q {
+      padding: .85rem .9rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      margin: .75rem 0;
+    }
+    .quiz .q h3 { margin: 0 0 .55rem; font-size: 1.05rem; }
+    .quiz .choices { display: grid; gap: .45rem; }
+    .quiz label.choice{
+      display: flex;
+      gap: .55rem;
+      align-items: flex-start;
+      padding: .55rem .6rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+    .quiz label.choice:hover{
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .quiz input[type="radio"]{ margin-top: .2rem; }
+
+    /* Feedback text hidden until an answer is selected */
+    .quiz .feedback{
+      display:none;
+      margin:.55rem 0 0;
+      padding: .55rem .65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+    }
+    /* Show feedback if any option selected */
+    .quiz .q:has(input[type="radio"]:checked) .feedback{ display:block; }
+
+    /* Default feedback text, then swap based on correct/incorrect */
+    .quiz .feedback .correct{ display:none; color: rgba(255,216,74,.96); font-weight: 900; }
+    .quiz .feedback .incorrect{ display:none; color: rgba(255,255,255,.92); }
+
+    /* Mark correct answers: input has data-correct="1" */
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .correct{ display:block; }
+    .quiz .q:has(input[type="radio"][data-correct="1"]:checked) .feedback .incorrect{ display:none; }
+
+    .quiz .q:has(input[type="radio"]:checked) .feedback .incorrect{ display:block; }
+    .quiz .q:has(input[type="radio"]:checked) .feedback .correct{ display:none; }
+
+    .backTopSolo{
+      display:flex;
+      justify-content:center;
+      margin-top: .9rem;
+    }
+
+    /* ===== CENTERED TWO-LINE KICKER ===== */
+    .kicker{
+      display:block;
+      text-align:center;
+      line-height:1.35;
+    }
+
+    /* ===== CENTER JUMP BUTTON ===== */
+    .jumpRow{
+      display:flex;
+      justify-content:center;
+      margin-top:.6rem;
+    }
+
+    /* ===== STEP QUIZ STYLES ===== */
+    .quizStepWrap { margin-top: .6rem; }
+
+    .quizCard{
+      padding: 1rem 1rem .95rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+    }
+    .quizCard.is-hidden{ display:none; }
+
+    .quizMeta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:.35rem;
+      color: rgba(247,243,230,.78);
+      font-weight: 900;
+      font-size: .92rem;
+    }
+
+    .quizQ{ margin: .35rem 0 .7rem; font-size: 1.1rem; }
+
+    .quizChoices{ display:grid; gap: .55rem; }
+
+    .quizChoice{
+      display:flex;
+      gap:.6rem;
+      align-items:flex-start;
+      padding:.6rem .65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+    }
+    .quizChoice:hover{
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .quizChoice input{ margin-top:.2rem; }
+
+    .quizActions{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:.85rem;
+    }
+
+    .quizBtn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: rgba(247,243,230,.95);
+      font-weight: 1000;
+      border-radius: 999px;
+      padding: .55rem .9rem;
+      cursor:pointer;
+    }
+
+    .quizHint{
+      margin-top:.55rem;
+      color: rgba(247,243,230,.74);
+      font-size: .92rem;
+    }
+
+    /* ===== QUICK QUIZ HEADER (CENTERED + NO DISTORTION) ===== */
+    .quizHeader{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin-bottom:.8rem;
+    }
+    .quizBadge{
+      width: 200px;
+      height: 103px;
+      object-fit: contain;
+      display:block;
+    }
+
+    /* ===== RESULTS SCREEN (COSMETIC) ===== */
+    #quizResults{
+      text-align:center;
+    }
+    #quizResults .quizResultsTitle{
+      font-size: 1.8rem;
+      margin: .25rem 0 .55rem;
+    }
+    #quizResults .quizScore{
+      font-size: 1.35rem;
+      font-weight: 1000;
+    }
+    #quizResults .quizMetaInfo{
+      font-size: .92rem;
+      font-weight: 900;
+      opacity: .9;
+    }
+    #quizResults .quizResultsFacts{
+      justify-items:center;
+    }
+    .quizRetakeWrap{
+      display:flex;
+      justify-content:center;
+      margin-top: .9rem;
+    }
+
+    /* ===== BACK + NEXT BUTTON ALIGNMENT (PINNED ENDS) ===== */
+    .pbtn.prev .pbtnTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      width:100%;
+    }
+    .pbtn.prev .pbtnSub{
+      width:100%;
+      text-align:right;
+    }
+
+    .pbtn.next .pbtnTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      width:100%;
+    }
+    .pbtn.next .pbtnSub{
+      width:100%;
+      text-align:left;
+    }
   </style>
 </head>
 
 <body class="topic revolution">
-<div id="siteHeader"></div>
+  <div id="siteHeader"></div>
 
-<main id="content">
+  <main id="content">
+    <!-- HERO -->
+    <section class="hero" aria-label="Bunker Hill hero">
+      <div class="card hero-left">
+        <span class="kicker">June 17, 1775 • Massachusetts<br>“A Costly Victory”</span>
+        <h1>Bunker Hill</h1>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="card hero-left">
-    <span class="kicker">June 17, 1775 • Massachusetts<br>“Don’t Fire Until You See the Whites of Their Eyes”</span>
-    <h1>Bunker Hill</h1>
+        <p class="sub">
+          The Battle of Bunker Hill was one of the first big battles near Boston. The British captured the hill, but only after suffering huge
+          <span class="vocabWord" data-def="Soldiers killed or wounded.">casualties</span>.
+          The fight convinced both sides the war would be longer—and harder—than many expected.
+        </p>
 
-    <p class="sub">
-      The Battle of Bunker Hill was one of the first major battles of the American Revolution.
-      Although the British won control of the hill, Patriot forces proved they could stand up to
-      the powerful British army in open battle.
-    </p>
-
-    <div class="bigIdeaWrap">
-      <div class="bigIdeaGraphic">
-        <img src="/assets/images/ui/bigidea.png" width="150" height="92" alt="Big Idea">
-      </div>
-      <div class="bigIdeaText">
-        Even a loss can become a turning point if it proves strength, courage, and determination.
-      </div>
-    </div>
-
-    <div class="pillrow">
-      <span class="pill">⛰️ High ground</span>
-      <span class="pill">🔥 Heavy fighting</span>
-      <span class="pill">🎖️ Costly victory</span>
-      <span class="pill">🧍 Militia courage</span>
-      <span class="pill">⚔️ Early war</span>
-    </div>
-  </div>
-
-  <aside class="card hero-right">
-    <div class="portraitWrap">
-      <div class="portrait">
-        <img src="../images/bunkerhill.webp" alt="Battle of Bunker Hill">
-      </div>
-
-      <div class="portraitButtons">
-        <a class="pbtn prev" href="fort-ticonderoga.html">
-          <div class="pbtnTop">
-            <span class="emoji">⬅️</span>
-            <span class="label">Back</span>
+        <div class="bigIdeaWrap" aria-label="Big Idea">
+          <div class="bigIdeaGraphic">
+            <img
+              src="/assets/images/ui/bigidea.png"
+              alt="Big Idea graphic"
+              width="150"
+              height="92"
+            />
           </div>
-          <div class="pbtnSub">Fort Ticonderoga</div>
-        </a>
-
-        <div class="pbtn spacer"></div>
-
-        <a class="pbtn next" href="long-island.html">
-          <div class="pbtnTop">
-            <span class="label">Next</span>
-            <span class="emoji">➡️</span>
+          <div class="bigIdeaText">
+            A battle can be a “loss” on paper—but still boost confidence and change how the enemy thinks.
           </div>
-          <div class="pbtnSub">Long Island</div>
-        </a>
+        </div>
+
+        <div class="pillrow" aria-label="Topic tags">
+          <span class="pill">⛰️ High ground</span>
+          <span class="pill">🧱 Fortifications</span>
+          <span class="pill">🔥 Charlestown</span>
+          <span class="pill">⚔️ Repeated assaults</span>
+          <span class="pill">📉 Heavy losses</span>
+        </div>
       </div>
+
+      <aside class="card hero-right" aria-label="Portrait and navigation">
+        <div class="portraitWrap">
+          <div class="portrait" role="img" aria-label="Bunker Hill scene">
+            <img src="../images/bunkerhill.webp" alt="Bunker Hill (1775)" />
+          </div>
+
+          <div class="portraitButtons" aria-label="Navigation">
+            <a class="pbtn prev" href="fort-ticonderoga.html" title="Back: Fort Ticonderoga">
+              <div class="pbtnTop">
+                <span class="emoji" aria-hidden="true">⬅️</span>
+                <span class="label">Back</span>
+              </div>
+              <div class="pbtnSub">Fort Ticonderoga</div>
+            </a>
+
+            <div class="pbtn spacer" aria-hidden="true"></div>
+
+            <a class="pbtn next" href="long-island.html" title="Next: Long Island">
+              <div class="pbtnTop">
+                <span class="label">Next</span>
+                <span class="emoji" aria-hidden="true">➡️</span>
+              </div>
+              <div class="pbtnSub">Long Island</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="jumpRow">
+          <a class="pill" href="#timeline" title="Jump to timeline">
+            🗓️ <span class="u">Jump to Timeline</span>
+          </a>
+        </div>
+      </aside>
+    </section>
+
+    <!-- BATTLE AT-A-GLANCE -->
+    <section class="card full" aria-label="Battle at a glance">
+      <div class="section">
+        <h2>Battle at a Glance</h2>
+        <div class="factsList">
+          <div class="factItem">🗓️ <b>Date:</b> June 17, 1775</div>
+          <div class="factItem">📍 <b>Place:</b> Charlestown (near Boston), Massachusetts</div>
+          <div class="factItem">👥 <b>Who fought:</b> British regulars vs. colonial militia</div>
+          <div class="factItem">🎯 <b>British goal:</b> take the high ground and weaken the siege of Boston</div>
+          <div class="factItem">🏆 <b>Outcome:</b> British capture the hill, but with heavy losses</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BACKGROUND -->
+    <section class="card full" aria-label="Background">
+      <div class="section">
+        <h2>Background</h2>
+        <p>
+          After Lexington and Concord, thousands of militia members surrounded Boston, beginning the
+          <span class="vocabWord" data-def="A military action in which an area is surrounded to cut off supplies and movement.">siege</span>
+          of the city. The British still controlled Boston, but the Patriots controlled much of the land around it.
+        </p>
+        <p>
+          Both sides focused on the hills near the city. If the Patriots could place cannons on high ground, they could threaten British ships and
+          troops. If the British controlled the hills, they could break out of Boston more easily. That struggle over high ground led directly to
+          the Battle of Bunker Hill.
+        </p>
+      </div>
+    </section>
+
+    <!-- DID YOU KNOW -->
+    <section class="didYouKnow" aria-label="Did you know feature">
+      <div class="dykImg" aria-label="Did you know banner">
+        <img src="/assets/images/ui/didyouknow.png" alt="Did you know" width="200" height="78" />
+      </div>
+      <div class="fact">
+        Most of the fighting happened on <b>Breed’s Hill</b>, not Bunker Hill—but the battle kept the name “Bunker Hill” anyway.
+      </div>
+    </section>
+
+    <!-- QUICK FACTS + VOCAB -->
+    <section class="grid2" aria-label="Quick facts and vocabulary">
+      <article class="card section" aria-label="Quick Facts">
+        <h2>Quick Facts</h2>
+        <div class="factsList">
+          <div class="factItem">⛰️ Patriots built defenses overnight on Breed’s Hill.</div>
+          <div class="factItem">🚶 British troops attacked in uphill lines—multiple times.</div>
+          <div class="factItem">💥 Patriots had limited ammunition and supplies.</div>
+          <div class="factItem">🔥 Charlestown burned during the battle.</div>
+          <div class="factItem">⚰️ British losses were shockingly high.</div>
+        </div>
+      </article>
+
+      <article class="card section" aria-label="Vocabulary">
+        <h2>Vocabulary</h2>
+        <div class="vocab">
+          <div class="term"><b>fortification</b> — a defensive structure built for protection.</div>
+          <div class="term"><b>redoubt</b> — a small temporary fort, often made of dirt and wood.</div>
+          <div class="term"><b>casualties</b> — soldiers killed or wounded.</div>
+          <div class="term"><b>assault</b> — a strong attack on a position.</div>
+          <div class="term"><b>ammunition</b> — bullets and gunpowder used for weapons.</div>
+          <div class="term"><b>retreat</b> — to pull back from a fight.</div>
+        </div>
+      </article>
+    </section>
+
+    <!-- WHAT HAPPENED -->
+    <section class="card full" aria-label="What happened" id="what-happened">
+      <div class="section">
+        <h2>What Happened?</h2>
+
+        <h3>Patriots dig in on the high ground</h3>
+        <p>
+          On the night of June 16, Patriot forces moved quietly onto the Charlestown peninsula. Under the cover of darkness, they built
+          <span class="vocabWord" data-def="A defensive structure built for protection.">fortifications</span>
+          including a
+          <span class="vocabWord" data-def="A small temporary fort, often made of dirt and wood.">redoubt</span>
+          on Breed’s Hill. By morning, British leaders in Boston could clearly see the new defenses overlooking the city.
+        </p>
+
+        <h3>The British decide to attack</h3>
+        <p>
+          The British could not ignore an enemy position so close to Boston. They planned a direct
+          <span class="vocabWord" data-def="A strong attack on a position.">assault</span>:
+          troops would cross the water, form lines, and march uphill to take the Patriot defenses.
+          It was a bold plan—but it meant British soldiers would be exposed as they climbed.
+        </p>
+
+        <h3>Two attacks fail</h3>
+        <p>
+          As the first British lines moved uphill, Patriots waited until the soldiers were close enough to make their shots count.
+          The British were driven back. The British tried again—and were driven back a second time.
+          The hillside was crowded, loud, and dangerous, and British casualties quickly increased.
+        </p>
+
+        <h3>The third attack succeeds—because Patriots run out of ammunition</h3>
+        <p>
+          Patriots were brave, but they had a major weakness: not enough
+          <span class="vocabWord" data-def="Bullets and gunpowder used for weapons.">ammunition</span>.
+          On the third attack, many Patriot defenders could not fire effectively and were forced to retreat.
+          The British finally captured the hill, but they paid a terrible price in losses.
+        </p>
+
+        <h3>Charlestown burns</h3>
+        <p>
+          During the fighting, Charlestown caught fire (partly from cannon and naval gunfire). Smoke filled the sky, turning the battle into a dramatic
+          scene visible from Boston and the surrounding towns.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHY IT MATTERED -->
+    <section class="card full" aria-label="Why it mattered" id="why-it-mattered">
+      <div class="section">
+        <h2>Why Did Bunker Hill Matter?</h2>
+
+        <p>
+          Bunker Hill mattered because it changed the way both sides understood the war. The British “won” the ground, but their losses were so high
+          that leaders realized the colonists would not be easy to defeat. A victory that costs too much is sometimes called a
+          <span class="vocabWord" data-def="A victory that comes with such heavy losses it may not feel like a true win.">Pyrrhic victory</span>.
+        </p>
+
+        <p>
+          For the Patriots, the battle was a confidence boost. Militia forces had stood up to professional soldiers in a major fight.
+          Even after retreating, many Patriots believed: “We can do this.” That belief helped keep the resistance going.
+        </p>
+      </div>
+    </section>
+
+    <!-- MINI QUIZ (interactive step quiz with results) -->
+    <section class="card full" aria-label="Quick quiz" id="quiz">
+      <div class="section">
+
+        <div class="quizHeader" aria-label="Quick Quiz header">
+          <img
+            class="quizBadge"
+            src="/assets/images/ui/quickquiz.png"
+            alt="Quick Quiz"
+            width="200"
+            height="103"
+          />
+        </div>
+
+        <div class="quizStepWrap" id="quizApp" aria-live="polite">
+          <!-- Question Card -->
+          <div class="quizCard" id="quizCard">
+            <div class="quizMeta">
+              <span class="quizProgress" id="quizProgress">Question 1 of 3</span>
+            </div>
+
+            <h3 class="quizQ" id="quizQuestion">Loading…</h3>
+
+            <div class="quizChoices" id="quizChoices" role="radiogroup" aria-label="Quiz choices">
+              <!-- choices injected here -->
+            </div>
+
+            <div class="quizActions">
+              <button class="quizBtn" id="quizNext" disabled>Next ➡️</button>
+            </div>
+
+            <div class="quizHint" id="quizHint" aria-hidden="true"></div>
+          </div>
+
+          <!-- Results Card -->
+          <div class="quizCard is-hidden" id="quizResults" aria-label="Quiz results">
+            <h3 class="quizQ quizResultsTitle">Results</h3>
+
+            <div class="factsList quizResultsFacts" style="margin-top:.6rem;">
+              <div class="factItem quizScore" id="quizScoreLine"><b>Score:</b> —</div>
+              <div class="factItem quizMetaInfo" id="quizTimeLine"><b>Completed:</b> —</div>
+            </div>
+          </div>
+
+          <!-- Retake button OUTSIDE results card -->
+          <div class="quizRetakeWrap">
+            <button class="quizBtn" id="quizRetake">🔁 Retake Quiz</button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE (same embed as main page) -->
+    <section class="timeline-embed" aria-label="Timeline" id="timeline">
+      <iframe
+        src="/timeline/timeline.html?topic=/7/BattlesOfTheAmericanRevolution"
+        class="timeline-frame"
+        loading="lazy"
+        title="Timeline"
+        frameborder="0"
+      ></iframe>
+    </section>
+
+    <!-- Bottom-only Back to Top (centered) -->
+    <div class="backTopSolo" aria-label="Back to top">
+      <a class="pill" href="#content">⬆️ <span class="u">Back to Top</span></a>
     </div>
 
-    <div class="jumpRow">
-      <a class="pill" href="#timeline">🗓️ <span class="u">Jump to Timeline</span></a>
-    </div>
-  </aside>
-</section>
+  </main>
 
-<!-- AT A GLANCE -->
-<section class="card full">
-  <div class="section">
-    <h2>Battle at a Glance</h2>
-    <div class="factsList">
-      <div class="factItem">🗓️ <b>Date:</b> June 17, 1775</div>
-      <div class="factItem">📍 <b>Place:</b> Charlestown, Massachusetts</div>
-      <div class="factItem">👥 <b>Who fought:</b> British army vs. colonial militia</div>
-      <div class="factItem">🎯 <b>British goal:</b> Break the siege of Boston</div>
-      <div class="factItem">🏆 <b>Outcome:</b> British victory with heavy losses</div>
-    </div>
-  </div>
-</section>
+  <div id="siteFooter"></div>
 
-<!-- BACKGROUND -->
-<section class="card full">
-  <div class="section">
-    <h2>Background</h2>
-    <p>
-      After Lexington and Concord, colonial forces surrounded Boston, trapping British troops inside the city.
-      This was known as the <span class="vocabWord" data-def="A military action in which a city is surrounded to cut off supplies.">siege</span> of Boston.
-    </p>
-    <p>
-      Both sides understood that whoever controlled the high ground around Boston would have a major advantage.
-      Patriot leaders decided to build defenses on nearby hills overlooking the city.
-    </p>
-  </div>
-</section>
+  <!-- IMPORTANT: this page is inside /battles/, so config must be ../config.js -->
+  <script src="../config.js"></script>
+  <script src="/include.js"></script>
 
-<!-- DID YOU KNOW -->
-<section class="didYouKnow">
-  <div class="dykImg">
-    <img src="/assets/images/ui/didyouknow.png" width="200" height="78" alt="Did you know">
-  </div>
-  <div class="fact">
-    The famous phrase “Don’t fire until you see the whites of their eyes” may or may not have actually been said — but it shows how carefully Patriots had to conserve ammunition.
-  </div>
-</section>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const quiz = [
+      {
+        q: "What was the British main goal at Bunker Hill?",
+        choices: [
+          "To take the high ground near Boston and weaken the siege",
+          "To capture Fort Ticonderoga and its cannons",
+          "To convince France to join the war immediately",
+          "To attack Philadelphia and end the rebellion"
+        ],
+        correctIndex: 0
+      },
+      {
+        q: "Why did the Patriots eventually retreat from the hill?",
+        choices: [
+          "They surrendered after the first attack",
+          "They ran out of ammunition during later attacks",
+          "They were ordered to retreat before any fighting began",
+          "They switched sides and joined the British army"
+        ],
+        correctIndex: 1
+      },
+      {
+        q: "What did the battle prove to many Patriots?",
+        choices: [
+          "That the British would never attack again",
+          "That militias could fight professional soldiers in a major battle",
+          "That independence had already been officially declared",
+          "That the war would stay only in New York"
+        ],
+        correctIndex: 1
+      }
+    ];
 
-<!-- QUICK FACTS + VOCAB -->
-<section class="grid2">
-  <article class="card section">
-    <h2>Quick Facts</h2>
-    <div class="factsList">
-      <div class="factItem">⛰️ Most fighting happened on Breed’s Hill.</div>
-      <div class="factItem">🔥 The town of Charlestown was set on fire.</div>
-      <div class="factItem">🧍 Colonial militia held their ground twice.</div>
-      <div class="factItem">💥 Patriots ran low on ammunition.</div>
-      <div class="factItem">⚰️ British casualties were extremely high.</div>
-    </div>
-  </article>
+    const card = document.getElementById("quizCard");
+    const results = document.getElementById("quizResults");
+    const progress = document.getElementById("quizProgress");
+    const questionEl = document.getElementById("quizQuestion");
+    const choicesEl = document.getElementById("quizChoices");
+    const nextBtn = document.getElementById("quizNext");
+    const hintEl = document.getElementById("quizHint");
 
-  <article class="card section">
-    <h2>Vocabulary</h2>
-    <div class="vocab">
-      <div class="term"><b>siege</b> — surrounding a city to cut off supplies.</div>
-      <div class="term"><b>redoubt</b> — a small defensive fortification.</div>
-      <div class="term"><b>casualties</b> — soldiers killed or wounded.</div>
-      <div class="term"><b>retreat</b> — to pull back from fighting.</div>
-      <div class="term"><b>fortification</b> — a defensive military structure.</div>
-    </div>
-  </article>
-</section>
+    const scoreLine = document.getElementById("quizScoreLine");
+    const timeLine = document.getElementById("quizTimeLine");
+    const retakeBtn = document.getElementById("quizRetake");
 
-<!-- WHAT HAPPENED -->
-<section class="card full">
-  <div class="section">
-    <h2>What Happened?</h2>
+    // Safety check (prevents silent failure)
+    if (!card || !results || !progress || !questionEl || !choicesEl || !nextBtn || !hintEl || !scoreLine || !timeLine || !retakeBtn) {
+      console.error("[Quiz] Missing one or more quiz elements. Check IDs in the HTML.");
+      if (questionEl) questionEl.textContent = "Quiz error: missing elements.";
+      return;
+    }
 
-    <h3>Building defenses overnight</h3>
-    <p>
-      On the night of June 16, Patriot forces quietly built a
-      <span class="vocabWord" data-def="A small defensive fort built from earth and wood.">redoubt</span>
-      on Breed’s Hill.
-    </p>
+    let i = 0;
+    let score = 0;
+    let selectedIndex = null;
 
-    <h3>The British attack</h3>
-    <p>
-      The next day, British troops marched uphill in organized lines. Colonial militia waited until the enemy was close before firing.
-      Twice, the British were forced to retreat.
-    </p>
+    function renderQuestion() {
+      const item = quiz[i];
+      selectedIndex = null;
 
-    <h3>A costly victory</h3>
-    <p>
-      On the third attack, the Patriots ran out of ammunition and had to retreat.
-      The British captured the hill — but at a terrible cost.
-      Over 1,000 British soldiers were killed or wounded.
-    </p>
-  </div>
-</section>
+      progress.textContent = `Question ${i + 1} of ${quiz.length}`;
+      questionEl.textContent = item.q;
 
-<!-- WHY IT MATTERED -->
-<section class="card full">
-  <div class="section">
-    <h2>Why Did Bunker Hill Matter?</h2>
-    <p>
-      Although the British won the battlefield, the victory was extremely expensive.
-      The heavy British losses shocked leaders in London.
-    </p>
-    <p>
-      For the Patriots, the battle proved they could stand up to professional soldiers.
-      Confidence and morale grew, even after retreating.
-    </p>
-  </div>
-</section>
+      choicesEl.innerHTML = "";
+      item.choices.forEach((text, idx) => {
+        const label = document.createElement("label");
+        label.className = "quizChoice";
 
-<!-- QUIZ -->
-<section class="card full" id="quiz">
-  <div class="section">
-    <div class="quizHeader">
-      <img class="quizBadge" src="/assets/images/ui/quickquiz.png" width="200" height="103" alt="Quick Quiz">
-    </div>
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "quizQ";
+        input.value = String(idx);
 
-    <div class="quizStepWrap" id="quizApp"></div>
-  </div>
-</section>
+        input.addEventListener("change", () => {
+          selectedIndex = idx;
+          nextBtn.disabled = false;
+        });
 
-<!-- TIMELINE -->
-<section class="timeline-embed" id="timeline">
-  <iframe
-    src="/timeline/timeline.html?topic=/7/BattlesOfTheAmericanRevolution"
-    class="timeline-frame"
-    loading="lazy"
-    title="Timeline"
-    frameborder="0"
-  ></iframe>
-</section>
+        const span = document.createElement("span");
+        span.textContent = text;
 
-<div class="backTopSolo">
-  <a class="pill" href="#content">⬆️ <span class="u">Back to Top</span></a>
-</div>
+        label.appendChild(input);
+        label.appendChild(span);
+        choicesEl.appendChild(label);
+      });
 
-</main>
+      nextBtn.textContent = (i === quiz.length - 1) ? "Finish ✅" : "Next ➡️";
+      nextBtn.disabled = true;
 
-<div id="siteFooter"></div>
-<script src="../config.js"></script>
-<script src="/include.js"></script>
+      hintEl.style.display = "block";
+      hintEl.setAttribute("aria-hidden", "false");
+    }
 
-<script>
-/* EXACT SAME STEP QUIZ SYSTEM — questions swapped */
-</script>
+    function showResults() {
+      const when = new Date().toLocaleString();
+      scoreLine.innerHTML = `<b>Score:</b> ${score} / ${quiz.length}`;
+      timeLine.innerHTML = `<b>Completed:</b> ${when}`;
+
+      card.classList.add("is-hidden");
+      results.classList.remove("is-hidden");
+    }
+
+    function resetQuiz() {
+      i = 0;
+      score = 0;
+      selectedIndex = null;
+
+      results.classList.add("is-hidden");
+      card.classList.remove("is-hidden");
+      renderQuestion();
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (selectedIndex === null) return;
+
+      if (selectedIndex === quiz[i].correctIndex) score++;
+
+      i++;
+      if (i >= quiz.length) showResults();
+      else renderQuestion();
+    });
+
+    retakeBtn.addEventListener("click", resetQuiz);
+
+    renderQuestion();
+  });
+  </script>
 
 </body>
 </html>
