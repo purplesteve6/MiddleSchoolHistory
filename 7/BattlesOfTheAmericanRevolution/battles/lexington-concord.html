@@ -132,6 +132,20 @@
     font-size: .92rem;
   }
 
+  /* ===== QUICK QUIZ HEADER (CENTERED + NO DISTORTION) ===== */
+  .quizHeader{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:.8rem;
+  }
+  .quizBadge{
+    width: 200px;
+    height: 103px;
+    object-fit: contain;
+    display:block;
+  }
+
   /* ===== RESULTS SCREEN (COSMETIC) ===== */
 
   /* center the contents inside the Results card */
@@ -182,16 +196,6 @@
     <section class="hero" aria-label="Lexington and Concord hero">
       <div class="card hero-left">
 
-.quizHeader{
-  text-align:center;
-  margin-bottom:.8rem;
-}
-.quizBadge{
-  width: 200px;
-  max-width: 100%;
-  height: auto;
-  display: inline-block;
-}
 
 
     <span class="kicker">April 19, 1775 • Massachusetts • “The Shot Heard 'Round The World”</span>
@@ -396,7 +400,7 @@
     src="/assets/images/ui/quickquiz.png"
     alt="Quick Quiz"
     width="200"
-    height="78"
+    height="103"
   />
 </div>
 
