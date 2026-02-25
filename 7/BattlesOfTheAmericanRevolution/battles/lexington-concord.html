@@ -194,21 +194,32 @@
 
 
 
-  /* ===== BACK BUTTON FULL RIGHT ALIGN FIX ===== */
-  .pbtn.prev{
-    align-items: flex-end;
-  }
+  /* ===== BACK + NEXT BUTTON ALIGNMENT (PINNED ENDS) ===== */
 
+  /* BACK: emoji LEFT, "Back" RIGHT (same line); subtext RIGHT */
   .pbtn.prev .pbtnTop{
     display:flex;
-    justify-content:flex-end;
+    justify-content:space-between;
+    align-items:center;
     width:100%;
   }
-
   .pbtn.prev .pbtnSub{
     width:100%;
     text-align:right;
   }
+
+  /* NEXT: "Next" LEFT, emoji RIGHT (same line); subtext LEFT */
+  .pbtn.next .pbtnTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+  }
+  .pbtn.next .pbtnSub{
+    width:100%;
+    text-align:left;
+  }
+
 
 
   </style>
