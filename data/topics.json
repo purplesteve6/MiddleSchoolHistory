@@ -26,5 +26,12 @@
     "url": "/7/BattlesOfTheAmericanRevolution/",
     "image": "/assets/images/featured/amrev-battles.webp",
     "description": "From Lexington and Concord to Yorktown—see how key battles changed the course of the revolution."
+  },
+  {
+    "title": "The Western Hemisphere: Four Regions",
+    "grade": 5,
+    "url": "/5/WesternHemisphere/",
+    "image": "/assets/images/featured/western-hemisphere.webp",
+    "description": "Explore the four regions of the Western Hemisphere used in Grade 5 Social Studies."
   }
 ]
