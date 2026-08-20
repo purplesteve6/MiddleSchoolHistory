@@ -2913,76 +2913,185 @@ strong{
 }
 
 
-/* ===== ANDEAN COUNTRIES ===== */
+/* ===== COUNTRIES ALONG THE ANDES ===== */
 
 .andes-countries-panel{
   border-color:rgba(128,185,107,.22);
 }
 
 
-.andes-country-grid{
+.andes-visual-layout{
   display:grid;
 
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:
+    minmax(300px,.9fr)
+    1.1fr;
 
-  gap:.65rem;
+  gap:1.25rem;
 
-  margin:1rem 0;
+  align-items:start;
+
+  margin-top:1rem;
 }
 
 
-.andes-country-chip{
-  min-height:62px;
+/* Tall instructional map */
 
-  padding:.65rem .7rem;
+.andes-vertical-map{
+  margin:0;
 
-  display:flex;
+  overflow:hidden;
 
-  align-items:center;
+  border-radius:16px;
+
+  border:1px solid rgba(128,185,107,.22);
+
+  background:rgba(0,0,0,.13);
+}
+
+
+.andes-vertical-map img{
+  width:100%;
+
+  height:auto;
+
+  display:block;
+
+  object-fit:contain;
+}
+
+
+.andes-vertical-map figcaption{
+  padding:.7rem .8rem;
+
+  color:rgba(248,246,238,.72);
+
+  font-size:.82rem;
+
+  border-top:1px solid rgba(255,255,255,.09);
+
+  background:rgba(0,0,0,.14);
+}
+
+
+/* Visual north-to-south Andes path */
+
+.andes-route{
+  padding:.2rem 0;
+}
+
+
+.andes-route-heading{
+  display:block;
+
+  margin-bottom:.75rem;
+
+  color:var(--subtle);
+
+  font-size:.7rem;
+
+  font-weight:1000;
+
+  letter-spacing:.09em;
+
+  text-transform:uppercase;
+}
+
+
+.andes-spine{
+  position:relative;
+
+  display:grid;
 
   gap:.55rem;
+}
 
-  border-radius:14px;
 
-  border:1px solid rgba(128,185,107,.20);
+/* Vertical line running through mountain markers */
+
+.andes-spine::before{
+  content:"";
+
+  position:absolute;
+
+  left:21px;
+
+  top:22px;
+
+  bottom:22px;
+
+  width:2px;
 
   background:
     linear-gradient(
-      135deg,
-      rgba(128,185,107,.08),
+      180deg,
+      rgba(128,185,107,.20),
+      rgba(128,185,107,.65),
+      rgba(128,185,107,.20)
+    );
+}
+
+
+.andes-route-country{
+  position:relative;
+
+  z-index:1;
+
+  min-height:58px;
+
+  padding:.55rem .7rem;
+
+  display:grid;
+
+  grid-template-columns:44px 1fr;
+
+  gap:.7rem;
+
+  align-items:center;
+
+  border-radius:14px;
+
+  border:1px solid rgba(128,185,107,.18);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(128,185,107,.10),
       rgba(255,255,255,.025)
     );
 }
 
 
-.andes-country-chip > span{
+.andes-route-country strong{
+  font-size:1.02rem;
+}
+
+
+.andes-marker{
   display:grid;
 
   place-items:center;
 
-  width:29px;
-  height:29px;
+  width:42px;
 
-  flex:0 0 29px;
+  height:42px;
 
   border-radius:50%;
 
-  border:1px solid rgba(128,185,107,.28);
+  border:1px solid rgba(128,185,107,.32);
 
-  background:rgba(128,185,107,.10);
+  background:#183927;
 
-  color:rgba(248,246,238,.90);
+  font-size:1.12rem;
 
-  font-size:.76rem;
-
-  font-weight:1000;
+  box-shadow:0 0 0 4px rgba(11,39,55,.92);
 }
 
 
 .andes-bottom{
-  margin-bottom:0;
+  margin:1rem 0 0;
 
-  padding-top:.75rem;
+  padding-top:.8rem;
 
   border-top:1px solid rgba(255,255,255,.09);
 }
@@ -2997,9 +3106,16 @@ strong{
   }
 
 
-  .andes-country-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
+.andes-visual-layout{
+  grid-template-columns:1fr;
+}
+
+
+.andes-vertical-map{
+  width:min(100%,520px);
+
+  margin:0 auto;
+}
 
 }
 
@@ -3023,8 +3139,26 @@ strong{
   }
 
 
-  .andes-country-grid{
-    grid-template-columns:1fr;
-  }
+.andes-vertical-map{
+  width:100%;
+}
+
+
+.andes-route-country{
+  grid-template-columns:40px 1fr;
+}
+
+
+.andes-marker{
+  width:38px;
+
+  height:38px;
+}
+
+
+.andes-spine::before{
+  left:19px;
+}
+
 
 }
