@@ -1933,3 +1933,329 @@ strong{
   }
 
 }
+
+
+/* ========================================================
+   MESOAMERICA PAGE
+   ======================================================== */
+
+
+/* ===== MESOAMERICA ACCENT ===== */
+
+.mesoamerica-page .section-label{
+  color:var(--meso);
+}
+
+
+.mesoamerica-page .country-pill{
+  border-color:rgba(224,184,93,.34);
+
+  background:rgba(224,184,93,.10);
+}
+
+
+.meso-accent-card{
+  border-color:rgba(224,184,93,.20);
+}
+
+
+.meso-big-idea{
+  border-color:rgba(224,184,93,.30);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(224,184,93,.12),
+      rgba(85,199,180,.055)
+    );
+}
+
+
+/* ===== CENTRAL AMERICAN COUNTRY LIST ===== */
+
+.country-list-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap:.65rem;
+
+  margin:1rem 0;
+}
+
+
+.country-chip{
+  min-height:64px;
+
+  padding:.65rem .7rem;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:.55rem;
+
+  border-radius:14px;
+
+  border:1px solid rgba(224,184,93,.20);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(224,184,93,.10),
+      rgba(255,255,255,.025)
+    );
+}
+
+
+.country-number{
+  display:grid;
+
+  place-items:center;
+
+  width:30px;
+  height:30px;
+
+  flex:0 0 30px;
+
+  border-radius:50%;
+
+  border:1px solid rgba(224,184,93,.30);
+
+  background:rgba(224,184,93,.10);
+
+  color:rgba(248,246,238,.90);
+
+  font-size:.8rem;
+
+  font-weight:1000;
+}
+
+
+/* ===== WATER ON BOTH SIDES ===== */
+
+.water-pair{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:.65rem;
+
+  margin-top:1rem;
+}
+
+
+.water-box{
+  padding:.7rem;
+
+  display:grid;
+
+  grid-template-columns:34px 1fr;
+
+  gap:.55rem;
+
+  align-items:center;
+
+  border-radius:14px;
+
+  border:1px solid rgba(78,167,196,.20);
+
+  background:rgba(78,167,196,.075);
+}
+
+
+.water-box > span{
+  font-size:1.2rem;
+}
+
+
+.water-box p{
+  margin:.12rem 0 0;
+
+  color:rgba(248,246,238,.72);
+
+  font-size:.84rem;
+}
+
+
+/* ===== PANAMA ===== */
+
+.panama-intro-grid{
+  display:grid;
+
+  grid-template-columns:1fr 300px;
+
+  gap:1rem;
+
+  align-items:center;
+}
+
+
+.meso-quick-note{
+  border-color:rgba(224,184,93,.24);
+
+  background:rgba(224,184,93,.075);
+}
+
+
+.meso-quick-note .quick-note-icon{
+  background:rgba(224,184,93,.13);
+}
+
+
+/* ===== PANAMA CANAL ===== */
+
+.canal-card{
+  border-color:rgba(224,184,93,.20);
+}
+
+
+.canal-shortcut{
+  margin-top:1rem;
+
+  padding:.8rem;
+
+  border-radius:14px;
+
+  border:1px solid rgba(78,167,196,.20);
+
+  background:rgba(0,0,0,.14);
+}
+
+
+.shortcut-label{
+  display:block;
+
+  margin-bottom:.45rem;
+
+  color:var(--subtle);
+
+  font-size:.68rem;
+
+  font-weight:1000;
+
+  letter-spacing:.08em;
+
+  text-transform:uppercase;
+}
+
+
+.shortcut-row{
+  display:flex;
+
+  flex-wrap:wrap;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:.55rem;
+
+  text-align:center;
+}
+
+
+.shortcut-row strong{
+  padding:.35rem .55rem;
+
+  border-radius:999px;
+
+  border:1px solid rgba(224,184,93,.26);
+
+  background:rgba(224,184,93,.09);
+}
+
+
+/* ===== MAYA PANEL ===== */
+
+.maya-panel{
+  padding:1.05rem 1.2rem 1.15rem;
+
+  border-color:rgba(224,184,93,.24);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(224,184,93,.09),
+      rgba(128,185,107,.055)
+    );
+}
+
+
+.maya-heading{
+  display:flex;
+
+  align-items:center;
+
+  gap:1rem;
+
+  margin-bottom:.65rem;
+}
+
+
+.maya-heading-image{
+  width:155px;
+
+  height:auto;
+
+  flex:0 0 auto;
+}
+
+
+.maya-heading h2{
+  margin-top:.05rem;
+}
+
+
+.maya-bottom{
+  margin-bottom:0;
+
+  padding-top:.7rem;
+
+  border-top:1px solid rgba(255,255,255,.09);
+
+  font-weight:750;
+}
+
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width:900px){
+
+  .country-list-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+
+  .panama-intro-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+
+
+@media (max-width:640px){
+
+  .country-list-grid{
+    grid-template-columns:1fr;
+  }
+
+
+  .water-pair{
+    grid-template-columns:1fr;
+  }
+
+
+  .maya-heading{
+    align-items:flex-start;
+
+    flex-direction:column;
+  }
+
+
+  .maya-heading-image{
+    width:145px;
+  }
+
+}
