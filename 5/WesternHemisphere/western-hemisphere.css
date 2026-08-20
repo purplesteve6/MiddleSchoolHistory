@@ -1,0 +1,407 @@
+:root{
+  --bg: #102b3f;
+  --bg2: #071b2a;
+
+  --text: #f7f5ed;
+  --muted: rgba(247,245,237,.84);
+
+  --accent: #7fc8a9;
+
+  --panel: rgba(255,255,255,.06);
+  --panel2: rgba(255,255,255,.035);
+
+  --shadow: 0 14px 40px rgba(0,0,0,.40);
+  --radius: 18px;
+  --max: 980px;
+
+  --focus: 0 0 0 4px rgba(127,200,169,.30);
+}
+
+
+/* =========================================================
+   UNIVERSAL TOPIC HEADER
+   Uses /partials/header.html
+   ========================================================= */
+
+.topic-header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+
+  overflow: visible;
+
+  backdrop-filter: blur(12px);
+  background: rgba(7,27,42,.72);
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+
+
+/* Large overlapping Middle School History logo */
+
+.topic-header .nav-logo{
+  position: absolute;
+  left: 12px;
+  top: 15px;
+
+  z-index: 999;
+
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.topic-header .nav-logo-img{
+  width: auto;
+  max-width: none;
+  display: block;
+
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  height: 140px;
+}
+
+
+/* Header interior */
+
+.topic-header .nav{
+  max-width: var(--max);
+  margin: 0 auto;
+
+  padding: .8rem 1rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+}
+
+
+/* Grade badge + topic title */
+
+.topic-header .brand{
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+}
+
+.topic-header .columnIcon{
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+  border: 1px solid rgba(127,200,169,.30);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(127,200,169,.20),
+      rgba(255,255,255,.06)
+    );
+
+  box-shadow: 0 10px 22px rgba(0,0,0,.35);
+
+  flex: 0 0 auto;
+}
+
+.topic-header .columnIcon img{
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  display: block;
+}
+
+.topic-header .brandText{
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.topic-header .brandKicker{
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(247,245,237,.72);
+}
+
+.topic-header .brandTitle{
+  font-weight: 1000;
+}
+
+.topic-header .brandSub{
+  margin-top: .08rem;
+
+  font-size: .9rem;
+  font-weight: 500;
+
+  color: rgba(247,245,237,.72);
+}
+
+
+/* Topic home button */
+
+.topic-header .btn{
+  color: inherit;
+  text-decoration: none;
+
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+
+  padding: .55rem .85rem;
+
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.16);
+
+  background: rgba(255,255,255,.06);
+
+  transition:
+    transform .12s ease,
+    background .12s ease,
+    border-color .12s ease;
+
+  white-space: nowrap;
+}
+
+.topic-header .btn:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.09);
+  border-color: rgba(127,200,169,.40);
+}
+
+.topic-header .btn:focus{
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+
+/* =========================================================
+   BASE PAGE
+   ========================================================= */
+
+*{
+  box-sizing: border-box;
+}
+
+html,
+body{
+  min-height: 100%;
+}
+
+body{
+  margin: 0;
+
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  color: var(--text);
+  line-height: 1.5;
+
+  background:
+    radial-gradient(
+      900px 650px at 0% 35%,
+      rgba(127,200,169,.16),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 650px at 100% 55%,
+      rgba(83,145,171,.15),
+      transparent 60%
+    ),
+    linear-gradient(
+      90deg,
+      var(--bg2) 0%,
+      var(--bg) 50%,
+      var(--bg2) 100%
+    );
+
+  background-attachment: fixed;
+}
+
+img{
+  max-width: 100%;
+  display: block;
+}
+
+#content{
+  max-width: var(--max);
+  margin: 0 auto;
+
+  /*
+    Space at top accounts for the fixed topic header.
+  */
+  padding: 110px 1rem 4rem;
+}
+
+
+/* =========================================================
+   TEMPORARY TEST CONTENT
+   This will be replaced when we build the actual page.
+   ========================================================= */
+
+.test-card{
+  padding: 1.4rem 1.5rem;
+
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,.12);
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--panel),
+      var(--panel2)
+    );
+
+  box-shadow: var(--shadow);
+}
+
+.kicker{
+  display: inline-block;
+
+  font-size: .78rem;
+  font-weight: 1000;
+
+  letter-spacing: .08em;
+  text-transform: uppercase;
+
+  color: var(--muted);
+}
+
+h1{
+  margin: .65rem 0 .5rem;
+
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  line-height: 1.08;
+}
+
+p{
+  color: rgba(247,245,237,.92);
+}
+
+.test-note{
+  margin-top: 1.4rem;
+  padding: .9rem 1rem;
+
+  border-radius: 14px;
+  border: 1px solid rgba(127,200,169,.28);
+
+  background: rgba(127,200,169,.08);
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   UNIVERSAL FOOTER
+   Uses /partials/footer.html
+   ========================================================= */
+
+.site-footer{
+  margin-top: 0;
+  padding: 18px 1rem 40px;
+
+  color: rgba(247,245,237,.78);
+}
+
+.footer-rule{
+  border: none;
+
+  height: 1px;
+
+  margin: 0 auto 16px;
+  max-width: var(--max);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.35),
+      transparent
+    );
+}
+
+.footer-inner{
+  max-width: var(--max);
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-brand{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-logo-icon{
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.footer-logo-text{
+  height: 22px;
+  width: auto;
+  display: block;
+  opacity: .9;
+}
+
+.footer-copy{
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.footer-site{
+  font-weight: 900;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 720px){
+
+  .topic-header .nav{
+    padding-left: 190px;
+  }
+
+  .topic-header .nav-logo-img{
+    height: 110px;
+  }
+}
+
+@media (max-width: 640px){
+
+  .footer-inner{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .footer-logo-icon{
+    height: 36px;
+  }
+
+  .footer-logo-text{
+    height: 20px;
+  }
+}
