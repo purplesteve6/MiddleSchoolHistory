@@ -917,13 +917,13 @@ strong{
 
   width:100%;
 
-  height:100%;
+  height:auto;
 
-  min-height:470px;
+  display:block;
 
-  object-fit:cover;
+  object-fit:contain;
 
-  flex:1 1 auto;
+  background:rgba(0,0,0,.12);
 }
 
 
@@ -1486,11 +1486,7 @@ strong{
   }
 
 
-  .region-map-card img{
-
-    min-height:320px;
-  }
-
+ 
 }
 
 
