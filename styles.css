@@ -180,7 +180,7 @@ a{ color: inherit; text-decoration: none; }
   display: flex;
   align-items: stretch;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
   flex-wrap: wrap;
 }
 
@@ -195,14 +195,19 @@ a{ color: inherit; text-decoration: none; }
   justify-items: center;
   gap: 6px;
 
-  min-width: 120px;
-  padding: 10px 14px;
+  min-width: 105px;
+  padding: 10px 10px;
   border-radius: 16px;
 
   color: rgba(255,255,255,0.92);
   text-transform: none;
-  font-size: 13px;
+  font-size: 12px;
 }
+
+.nav-text{
+  white-space: nowrap;
+}
+
 
 /* ===== NAV ICONS (UPDATED FOR PNG ICON FILES) ===== */
 .nav-icon{
