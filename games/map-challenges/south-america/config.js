@@ -58,13 +58,12 @@ window.MAP_CHALLENGE_CONFIG = {
   groups: {
     // example:
     // "warsaw": ["warsaw", "warsaw_label_bg"]
-	venezuela: ["venezuela", "lake_maricaibo"]
   },
+
 
   // Optional extra IDs to clear classes from (usually only used with alias/group setups)
   extraIds: [
     // example: "warsaw_label_bg"
-	"lake_maricaibo",
   ],
 
   // UI text for this specific map
