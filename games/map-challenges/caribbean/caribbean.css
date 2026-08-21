@@ -1,12 +1,12 @@
-/* South America - Map Challenge Overrides
+/* Caribbean - Map Challenge Overrides
    Keep this file minimal: just override :root variables when needed.
 */
 
 :root{
   /* If your SVG is a different aspect ratio, adjust these 3 values */
   --map-w: 960px;
-  --map-h: 762px;
-  --map-ar: 7210 / 5725;
+  --map-h: 700px;
+  --map-ar: 7208 / 5258;
 
   /* Optional: tweak overlay accent colors per map */
   /* --kicker-brown: #7a4b1f; */
