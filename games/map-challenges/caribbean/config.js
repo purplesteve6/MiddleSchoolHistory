@@ -47,10 +47,10 @@ window.MAP_CHALLENGE_CONFIG = {
 	antigua_and_barbuda: "Antigua and Barbuda",
 	the_bahamas: "The Bahamas",
 	dominican_republic: "Dominican Republic",
-	st_kitts_and_nevis: "St. Kitts and Nevis"
-	saint_lucia: "Saint Lucia"
-	saint_vincent_and_the_grenadines" "Saint Vincent and the Grenadines"
-	trinidad_and_tobago: "Trinidad and Tobago"
+	st_kitts_and_nevis: "St. Kitts and Nevis",
+	saint_lucia: "Saint Lucia",
+	saint_vincent_and_the_grenadines" "Saint Vincent and the Grenadines",
+	trinidad_and_tobago: "Trinidad and Tobago",
   },
 
   // Optional aliasing (not needed for this map, but supported)
