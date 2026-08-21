@@ -33,6 +33,7 @@ window.MAP_CHALLENGE_CONFIG = {
 	"saint_lucia",
 	"saint_vincent_and_the_grenadines",
 	"trinidad_and_tobago",
+	"puerto_rico",
 	  ],
 
   // IDs that exist in SVG but should NOT count as wrong / clickable targets
@@ -51,6 +52,7 @@ window.MAP_CHALLENGE_CONFIG = {
 	saint_lucia: "Saint Lucia",
 	saint_vincent_and_the_grenadines: "Saint Vincent and the Grenadines",
 	trinidad_and_tobago: "Trinidad and Tobago",
+	puerto_rico: "Puerto Rico (U.S.)
   },
 
   // Optional aliasing (not needed for this map, but supported)
@@ -89,8 +91,8 @@ window.MAP_CHALLENGE_CONFIG = {
     mapAria: "Caribbean countries map",
 
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "CARIBBEAN",
-    beginMessage: "How fast can you identify the soevereign countries of the Caribbean?",
+    overlayTitle: "THE CARIBBEAN",
+    beginMessage: "How fast can you identify the countries of the Caribbean?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }
