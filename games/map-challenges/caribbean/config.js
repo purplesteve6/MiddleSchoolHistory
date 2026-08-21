@@ -52,7 +52,7 @@ window.MAP_CHALLENGE_CONFIG = {
 	saint_lucia: "Saint Lucia",
 	saint_vincent_and_the_grenadines: "Saint Vincent and the Grenadines",
 	trinidad_and_tobago: "Trinidad and Tobago",
-	puerto_rico: "Puerto Rico (U.S.)
+	puerto_rico: "Puerto Rico (U.S.)",
   },
 
   // Optional aliasing (not needed for this map, but supported)
