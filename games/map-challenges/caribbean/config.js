@@ -28,7 +28,7 @@ window.MAP_CHALLENGE_CONFIG = {
 	"grenada",
 	"haiti",
 	"jamaica",
-	"martinique",
+	"dominica",
 	"st_kitts_and_nevis",
 	"saint_lucia",
 	"saint_vincent_and_the_grenadines",
@@ -49,7 +49,7 @@ window.MAP_CHALLENGE_CONFIG = {
 	dominican_republic: "Dominican Republic",
 	st_kitts_and_nevis: "St. Kitts and Nevis",
 	saint_lucia: "Saint Lucia",
-	saint_vincent_and_the_grenadines" "Saint Vincent and the Grenadines",
+	saint_vincent_and_the_grenadines: "Saint Vincent and the Grenadines",
 	trinidad_and_tobago: "Trinidad and Tobago",
   },
 
