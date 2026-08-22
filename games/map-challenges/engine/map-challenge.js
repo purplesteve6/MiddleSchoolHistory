@@ -592,6 +592,7 @@ function flashWrong(hit) {
 
         <div class="overlay__actions">
           <button class="begin-btn" id="playAgainBtn" type="button">Play Again</button>
+          <a class="map-menu-btn" href="/games/map-challenges/">Map Challenges</a>
         </div>
 
         <img class="overlay__logo" src="${escapeHtml(LOGO_SRC)}" alt="Middle School History logo" />
