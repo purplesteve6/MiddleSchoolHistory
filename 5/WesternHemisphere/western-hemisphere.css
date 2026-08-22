@@ -3243,11 +3243,22 @@ strong{
 }
 
 
+.great-lakes-map-card{
+  align-self:center;
+
+  display:block;
+
+  overflow:hidden;
+}
+
+
 .great-lakes-map-card img{
   width:100%;
   height:auto;
 
   display:block;
+
+  flex:none;
 
   object-fit:contain;
 
