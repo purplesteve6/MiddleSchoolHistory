@@ -34,15 +34,15 @@
 
         <div class="or-divider"><span>or</span></div>
 
-        <label class="field-label" for="csvText">Paste CSV or two columns copied from a spreadsheet</label>
-        <textarea id="csvText" class="csv-text" spellcheck="false" placeholder='term,definition\nGettysburg,"Major 1863 Civil War battle in Pennsylvania."'></textarea>
+        <label class="field-label" for="csvText">Paste CSV or columns copied from a spreadsheet</label>
+        <textarea id="csvText" class="csv-text" spellcheck="false" placeholder='term,definition,subcategory\nGettysburg,"Major 1863 Civil War battle in Pennsylvania.",Key Battles'></textarea>
 
         <div class="input-actions">
           <button class="secondary-button" type="button" id="parseBtn">Load cards</button>
           <button class="ghost-button" type="button" id="clearBtn">Clear</button>
         </div>
 
-        <p class="help-text">Use two columns: <strong>term</strong> first, <strong>definition</strong> second. A header row such as <code>term,definition</code> is detected automatically. Quoted commas are supported.</p>
+        <p class="help-text">Use two required columns: <strong>term</strong> first and <strong>definition</strong> second. An optional third <strong>subcategory</strong> column can vary from card to card. Leave it blank for cards that do not need one. A header row such as <code>term,definition,subcategory</code> is detected automatically. Quoted commas are supported.</p>
       </section>
 
       <section class="tool-panel options-panel" aria-labelledby="options-title">
@@ -59,9 +59,12 @@
             <input id="unitLine" type="text" maxlength="80" placeholder="Civil War" />
           </label>
 
-          <label class="field-block">
-            <span class="field-label">Subcategory line <span class="optional">optional</span></span>
-            <input id="subcategoryLine" type="text" maxlength="80" placeholder="Key Battles" />
+          <label class="field-block checkbox-field">
+            <input id="showSubcategory" type="checkbox" checked />
+            <span>
+              <strong>Show subcategory line</strong>
+              <small>Uses the optional third CSV column. Blank subcategories print nothing.</small>
+            </span>
           </label>
 
           <label class="field-block">

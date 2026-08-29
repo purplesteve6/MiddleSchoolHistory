@@ -10,7 +10,7 @@
     clear: $("clearBtn"),
     demo: $("loadDemoBtn"),
     unit: $("unitLine"),
-    subcategory: $("subcategoryLine"),
+    showSubcategory: $("showSubcategory"),
     duplex: $("duplexMode"),
     cutLines: $("cutLineMode"),
     termFont: $("termFont"),
@@ -23,15 +23,15 @@
   let cards = [];
   let previewSide = "front";
 
-  const demoText = `term,definition
-Abolitionist,A person who wanted to end slavery.
-Secession,The act of withdrawing from the United States.
-Confederacy,The group of Southern states that left the Union.
-Union,The United States and the states that remained loyal to it.
-Gettysburg,A major 1863 battle in Pennsylvania and a turning point in the Civil War.
-Emancipation Proclamation,Lincoln's order declaring enslaved people in Confederate territory to be free.
-Appomattox Court House,The Virginia location where Robert E. Lee surrendered to Ulysses S. Grant in 1865.
-Reconstruction,The period after the Civil War when the nation worked to rebuild and reunite.`;
+  const demoText = `term,definition,subcategory
+Abolitionist,A person who wanted to end slavery.,People & Ideas
+Secession,The act of withdrawing from the United States.,Causes
+Confederacy,The group of Southern states that left the Union.,Sides
+Union,The United States and the states that remained loyal to it.,Sides
+Gettysburg,A major 1863 battle in Pennsylvania and a turning point in the Civil War.,Key Battles
+Emancipation Proclamation,Lincoln's order declaring enslaved people in Confederate territory to be free.,People & Ideas
+Appomattox Court House,The Virginia location where Robert E. Lee surrendered to Ulysses S. Grant in 1865.,Key Battles
+Reconstruction,The period after the Civil War when the nation worked to rebuild and reunite.,`;
 
   function normalizeLineEndings(text) {
     return String(text || "").replace(/\r\n?/g, "\n").replace(/^\uFEFF/, "");
@@ -106,14 +106,22 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
 
   function rowsToCards(rows) {
     const cleaned = rows
-      .map(row => [String(row[0] || "").trim(), String(row[1] || "").trim()])
-      .filter(row => row[0] || row[1]);
+      .map(row => [
+        String(row[0] || "").trim(),
+        String(row[1] || "").trim(),
+        String(row[2] || "").trim()
+      ])
+      .filter(row => row[0] || row[1] || row[2]);
 
     if (looksLikeHeader(cleaned[0])) cleaned.shift();
 
     return cleaned
       .filter(row => row[0] && row[1])
-      .map(row => ({ term: row[0], definition: row[1] }));
+      .map(row => ({
+        term: row[0],
+        definition: row[1],
+        subcategory: row[2] || ""
+      }));
   }
 
   function loadCardsFromText() {
@@ -174,7 +182,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     const showLines = shouldShowCutLines(previewSide);
     const rotate = previewSide === "back" && els.rotateBacks.checked;
     const unit = els.unit.value.trim();
-    const subcategory = els.subcategory.value.trim();
+    const showSubcategory = els.showSubcategory.checked;
 
     els.preview.innerHTML = previewCards.map(card => {
       const classes = ["preview-card"];
@@ -193,7 +201,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
         <div class="preview-definition-wrap">
           <div class="preview-unit">${escapeHtml(unit)}</div>
           <div class="preview-definition">${escapeHtml(card.definition)}</div>
-          <div class="preview-subcategory">${escapeHtml(subcategory)}</div>
+          <div class="preview-subcategory">${showSubcategory ? escapeHtml(card.subcategory) : ""}</div>
         </div>
       </div>`;
     }).join("");
@@ -317,7 +325,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     if (!card) return;
 
     const unit = els.unit.value.trim();
-    const subcategory = els.subcategory.value.trim();
+    const subcategory = els.showSubcategory.checked ? String(card.subcategory || "").trim() : "";
     const rotate = els.rotateBacks.checked;
     const cardCenterY = y + CARD_H / 2;
     const xCenter = x + CARD_W / 2;
@@ -455,7 +463,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     loadCardsFromText();
   });
 
-  [els.unit, els.subcategory, els.duplex, els.cutLines, els.termFont, els.rotateBacks]
+  [els.unit, els.showSubcategory, els.duplex, els.cutLines, els.termFont, els.rotateBacks]
     .forEach(el => el.addEventListener("input", renderPreview));
 
   document.querySelectorAll("[data-preview-side]").forEach(button => {
