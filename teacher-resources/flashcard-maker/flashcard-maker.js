@@ -17,11 +17,15 @@
     rotateBacks: $("rotateBacks"),
     preview: $("sheetPreview"),
     status: $("cardStatus"),
+    prevSheet: $("prevSheetBtn"),
+    nextSheet: $("nextSheetBtn"),
+    previewSheetStatus: $("previewSheetStatus"),
     generate: $("generateBtn")
   };
 
   let cards = [];
   let previewSide = "front";
+  let previewSheetIndex = 0;
 
   const demoText = `term,definition,subcategory
 Abolitionist,A person who wanted to end slavery.,People & Ideas
@@ -134,6 +138,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
 
     const delimiter = detectDelimiter(text);
     cards = rowsToCards(parseDelimited(text, delimiter));
+    previewSheetIndex = 0;
 
     if (!cards.length) {
       updateUI("No complete term/definition pairs were found.");
@@ -147,19 +152,19 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     const g = group.slice(0, 4);
     while (g.length < 4) g.push(null);
 
-    if (mode === "long") return [g[2], g[3], g[0], g[1]];   // swap rows
-    if (mode === "short") return [g[1], g[0], g[3], g[2]];  // swap columns
-    return g;                                                 // same positions
+    if (mode === "long") return [g[2], g[3], g[0], g[1]]; // swap rows
+    return g;                                               // short edge: same positions
   }
 
-  function firstGroup() {
-    const group = cards.slice(0, 4);
+  function previewGroup() {
+    const start = previewSheetIndex * 4;
+    const group = cards.slice(start, start + 4);
     while (group.length < 4) group.push(null);
     return group;
   }
 
   function getPreviewCards() {
-    const group = firstGroup();
+    const group = previewGroup();
     return previewSide === "back" ? reorderBacks(group, els.duplex.value) : group;
   }
 
@@ -197,14 +202,38 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
         return `<div class="${classes.join(" ")}"><div class="preview-term">${escapeHtml(card.term)}</div></div>`;
       }
 
+      const unitMarkup = unit
+        ? `<div class="preview-unit">${escapeHtml(unit)}</div>`
+        : "";
+      const subcategoryMarkup = showSubcategory && card.subcategory
+        ? `<div class="preview-subcategory">${escapeHtml(card.subcategory)}</div>`
+        : "";
+
       return `<div class="${classes.join(" ")}">
         <div class="preview-definition-wrap">
-          <div class="preview-unit">${escapeHtml(unit)}</div>
+          ${unitMarkup}
           <div class="preview-definition">${escapeHtml(card.definition)}</div>
-          <div class="preview-subcategory">${showSubcategory ? escapeHtml(card.subcategory) : ""}</div>
+          ${subcategoryMarkup}
         </div>
       </div>`;
     }).join("");
+  }
+
+  function updatePreviewPager() {
+    const sheets = Math.ceil(cards.length / 4);
+
+    if (!sheets) {
+      previewSheetIndex = 0;
+      els.previewSheetStatus.textContent = "No sheets";
+      els.prevSheet.disabled = true;
+      els.nextSheet.disabled = true;
+      return;
+    }
+
+    previewSheetIndex = Math.max(0, Math.min(previewSheetIndex, sheets - 1));
+    els.previewSheetStatus.textContent = `Sheet ${previewSheetIndex + 1} of ${sheets}`;
+    els.prevSheet.disabled = previewSheetIndex === 0;
+    els.nextSheet.disabled = previewSheetIndex >= sheets - 1;
   }
 
   function updateUI(message = "") {
@@ -221,6 +250,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
       els.generate.disabled = true;
     }
 
+    updatePreviewPager();
     renderPreview();
   }
 
@@ -453,6 +483,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
 
   els.clear.addEventListener("click", () => {
     cards = [];
+    previewSheetIndex = 0;
     els.file.value = "";
     els.text.value = "";
     updateUI();
@@ -476,6 +507,21 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
       });
       renderPreview();
     });
+  });
+
+  els.prevSheet.addEventListener("click", () => {
+    if (previewSheetIndex <= 0) return;
+    previewSheetIndex -= 1;
+    updatePreviewPager();
+    renderPreview();
+  });
+
+  els.nextSheet.addEventListener("click", () => {
+    const sheets = Math.ceil(cards.length / 4);
+    if (previewSheetIndex >= sheets - 1) return;
+    previewSheetIndex += 1;
+    updatePreviewPager();
+    renderPreview();
   });
 
   els.generate.addEventListener("click", generatePdf);

@@ -316,6 +316,14 @@
   line-height: 1.4;
 }
 
+.field-help{
+  display: block;
+  margin-top: 6px;
+  color: rgba(255,255,255,.50);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
 .preview-panel{
   margin-top: 22px;
 }
@@ -340,6 +348,14 @@
   background: rgba(201,168,255,.10);
 }
 
+.preview-controls{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 .preview-tabs{
   display: inline-flex;
   padding: 4px;
@@ -361,6 +377,42 @@
 .preview-tab.is-active{
   background: rgba(201,168,255,.18);
   color: #fff;
+}
+
+.preview-pager{
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.pager-button{
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 9px;
+  background: rgba(255,255,255,.055);
+  color: rgba(255,255,255,.84);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pager-button:hover:not(:disabled){
+  background: rgba(255,255,255,.10);
+}
+
+.pager-button:disabled{
+  opacity: .34;
+  cursor: not-allowed;
+}
+
+.pager-status{
+  min-width: 84px;
+  color: rgba(255,255,255,.66);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
 }
 
 .sheet-preview-wrap{
@@ -414,21 +466,37 @@
 }
 
 .preview-definition-wrap{
+  position: relative;
   width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .preview-unit,
 .preview-subcategory{
-  min-height: 12px;
+  position: absolute;
+  left: 0;
+  right: 0;
   color: #767676;
   font-size: clamp(7px, .7vw, 10px);
   font-weight: 800;
   letter-spacing: .04em;
+  line-height: 1.1;
   text-transform: uppercase;
 }
 
+.preview-unit{
+  top: 0;
+}
+
+.preview-subcategory{
+  bottom: 0;
+}
+
 .preview-definition{
-  margin: 9px auto;
+  margin: 0 auto;
   max-width: 95%;
   font-size: clamp(9px, 1.05vw, 14px);
   line-height: 1.25;
@@ -475,6 +543,13 @@
   }
   .panel-heading{
     gap: 10px;
+  }
+  .preview-controls{
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .preview-pager{
+    justify-content: space-between;
   }
   .generate-row{
     align-items: stretch;
