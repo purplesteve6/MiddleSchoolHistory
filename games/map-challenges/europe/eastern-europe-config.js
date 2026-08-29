@@ -1,11 +1,11 @@
 /* ============================================================
-   Western Europe - Map Challenge Config
+   Eastern Europe - Map Challenge Config
    Reuses the existing Europe SVG, CSS, flags, and shared engine.
-   Countries outside Western Europe remain visible as gray context.
+   Countries outside Eastern Europe remain visible as gray context.
    ============================================================ */
 
 window.MAP_CHALLENGE_CONFIG = {
-  slug: "western-europe",
+  slug: "eastern-europe",
 
   // Reuse the existing Europe SVG.
   svgPath: "./europe-clickable.svg",
@@ -17,12 +17,13 @@ window.MAP_CHALLENGE_CONFIG = {
 
   // Only these countries are part of this regional challenge.
   targets: [
-    "belgium",
-    "france",
-    "ireland",
-    "luxembourg",
-    "netherlands",
-    "united_kingdom",
+    "belarus",
+    "estonia",
+    "latvia",
+    "lithuania",
+    "moldova",
+    "russia",
+    "ukraine",
   ],
 
   // Every country outside this region begins gray.
@@ -35,34 +36,33 @@ window.MAP_CHALLENGE_CONFIG = {
         "albania",
         "andorra",
         "austria",
-        "belarus",
+        "belgium",
         "bosnia_and_herzegovina",
         "bulgaria",
         "croatia",
         "cyprus",
         "czechia",
         "denmark",
-        "estonia",
         "finland",
+        "france",
         "germany",
         "greece",
         "hungary",
         "iceland",
+        "ireland",
         "italy",
         "kosovo",
-        "latvia",
         "liechtenstein",
-        "lithuania",
+        "luxembourg",
         "malta",
-        "moldova",
         "monaco",
         "montenegro",
+        "netherlands",
         "north_macedonia",
         "norway",
         "poland",
         "portugal",
         "romania",
-        "russia",
         "san_marino",
         "serbia",
         "slovakia",
@@ -70,7 +70,7 @@ window.MAP_CHALLENGE_CONFIG = {
         "spain",
         "sweden",
         "switzerland",
-        "ukraine",
+        "united_kingdom",
         "vatican_city",
       ]
     }
@@ -85,7 +85,7 @@ window.MAP_CHALLENGE_CONFIG = {
 
   // Display-name overrides used by the original Europe challenge.
   displayNames: {
-    united_kingdom: "United Kingdom",
+
   },
 
   // Optional engine features not needed for this map.
@@ -95,15 +95,15 @@ window.MAP_CHALLENGE_CONFIG = {
 
   // UI text for this specific challenge.
   ui: {
-    bannerTitle: "WESTERN EUROPE MAP CHALLENGE",
-    bannerAria: "Western European countries map challenge banner",
+    bannerTitle: "EASTERN EUROPE MAP CHALLENGE",
+    bannerAria: "Eastern European countries map challenge banner",
 
-    mainAria: "Western European countries map challenge",
-    mapAria: "Western European countries map",
+    mainAria: "Eastern European countries map challenge",
+    mapAria: "Eastern European countries map",
 
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "WESTERN EUROPE",
-    beginMessage: "How fast can you identify the countries of Western Europe?",
+    overlayTitle: "EASTERN EUROPE",
+    beginMessage: "How fast can you identify the countries of Eastern Europe?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }
