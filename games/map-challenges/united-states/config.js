@@ -36,7 +36,7 @@ window.MAP_CHALLENGE_CONFIG = {
     },
 
 
-
+  ],
 
   // IDs that count as "targets" (must match SVG element IDs)
   targets: [
