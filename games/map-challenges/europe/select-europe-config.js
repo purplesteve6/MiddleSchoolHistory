@@ -95,7 +95,7 @@ window.MAP_CHALLENGE_CONFIG = {
     mapAria: "European countries map",
 
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "SELECT EUROPE",
+    overlayTitle: "SELECT MAP OF EUROPE",
     beginMessage: "How fast can you identify these selected European countries?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
