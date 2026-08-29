@@ -31,7 +31,6 @@ window.MAP_CHALLENGE_CONFIG = {
       color: "#777777",
       ids: [
 // e.g. "hawaii",
-	"new_york",
       ]
     },
 
