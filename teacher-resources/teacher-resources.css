@@ -6,50 +6,65 @@
   font-display: swap;
 }
 
+/* ===== Full-width banner under header ===== */
+
+:root{
+  --teacher-dropdown-menu-h: 84px;
+}
+
 .teacher-band{
   width: 100%;
-  min-height: 168px;
+  height: calc(var(--teacher-dropdown-menu-h) * 2);
+  position: relative;
+  margin: 0;
+  padding: 0;
+  display: block;
+  z-index: 1;
+  background-color: #000;
+}
+
+.teacher-band--image{
+  background-color: #000;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.teacher-band--image::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  pointer-events: none;
+}
+
+/* Keep the title in the lower half so the open nav dropdown can cover the top half. */
+.teacher-band__bottom{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50%;
   display: flex;
-  align-items: flex-end;
-  background:
-    radial-gradient(700px 260px at 15% 20%, rgba(201,168,255,.28), transparent 65%),
-    linear-gradient(135deg, #171125 0%, #3b2262 52%, #24143f 100%);
-  border-bottom: 1px solid rgba(255,255,255,.12);
+  align-items: center;
+  z-index: 2;
 }
 
 .teacher-band__inner{
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 34px clamp(16px, 4vw, 28px) 28px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.teacher-band__icon{
-  width: 70px;
-  height: 70px;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,.32));
-}
-
-.teacher-band__kicker{
-  margin-bottom: 6px;
-  color: rgba(255,255,255,.72);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  padding: 0 clamp(16px, 4vw, 28px);
 }
 
 .teacher-band__title{
   margin: 0;
   font-family: "Lemon Milk", system-ui, sans-serif;
+  color: #fff;
   font-weight: 400;
-  font-size: clamp(30px, 4vw, 48px);
+  font-size: clamp(28px, 4vw, 48px);
   line-height: 1;
-  letter-spacing: .08em;
+  letter-spacing: .10em;
   text-transform: uppercase;
 }
 
@@ -159,12 +174,13 @@
 
 @media (max-width: 640px){
   .teacher-band{
-    min-height: 150px;
+    --teacher-dropdown-menu-h: 70px;
   }
-  .teacher-band__icon{
-    width: 56px;
-    height: 56px;
+
+  .teacher-band__inner{
+    padding: 0 14px;
   }
+
   .resource-card{
     grid-template-rows: 190px auto;
   }
