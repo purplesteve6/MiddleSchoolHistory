@@ -29,6 +29,11 @@
   const IGNORE_IDS = new Set((CFG.ignoreIds || []).map((s) => String(s).toLowerCase()));
   const NO_PAINT_IDS = new Set((CFG.noPaintIds || []).map((s) => String(s).toLowerCase()));
 
+  // Optional starting colors for SVG elements.
+  // Example: startColors: [{ color: "#888888", ids: ["texas", "oklahoma"] }]
+  // If omitted, the SVG keeps its original fills exactly as exported.
+  const START_COLORS = Array.isArray(CFG.startColors) ? CFG.startColors : [];
+
 
   const ALIAS = {};
   if (CFG.alias && typeof CFG.alias === "object") {
@@ -380,6 +385,36 @@ function showCursorTip(text) {
     }
   }
 
+  // Apply optional starting colors after the SVG is injected.
+  // These are visual-only: they do not make an element a target or change click behavior.
+  // GROUPS are honored, so one configured ID can color all SVG pieces in that group.
+  function applyStartColors() {
+    if (!svgRoot || !START_COLORS.length) return;
+
+    for (const entry of START_COLORS) {
+      if (!entry || typeof entry !== "object") continue;
+
+      const color = String(entry.color || "").trim();
+      const ids = Array.isArray(entry.ids) ? entry.ids : [];
+      if (!color || !ids.length) continue;
+
+      for (const rawId of ids) {
+        const id = String(rawId).toLowerCase();
+        let found = false;
+
+        forEachGroupEl(id, (el) => {
+          found = true;
+          el.classList.add("mapStartColor");
+          el.style.setProperty("--map-start-color", color);
+        });
+
+        if (!found) {
+          console.warn(`[map-challenge] startColors ID not found in SVG: ${id}`);
+        }
+      }
+    }
+  }
+
   function clearAllTargetClasses() {
     if (!svgRoot) return;
 
@@ -668,6 +703,10 @@ function flashWrong(hit) {
     // remove titles to avoid revealing answers on hover
     svgRoot.querySelectorAll("title").forEach((t) => t.remove());
     svgRoot.setAttribute("focusable", "false");
+
+    // Optional per-map starting colors. Legacy configs omit startColors,
+    // so their SVG fills remain completely unchanged.
+    applyStartColors();
 
     bindSvgEvents();
 

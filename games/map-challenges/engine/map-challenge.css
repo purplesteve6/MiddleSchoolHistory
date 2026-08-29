@@ -301,6 +301,19 @@ body.is-playing{
 
 
 /* ============================= */
+/* Optional per-map starting colors */
+/* ============================= */
+
+/*
+  Applied by the engine only when config.js defines startColors.
+  This rule intentionally comes BEFORE the feedback rules so
+  correct/wrong colors override the starting color during play.
+*/
+.mapStartColor, .mapStartColor *{
+  fill: var(--map-start-color) !important;
+}
+
+/* ============================= */
 /* Feedback colors */
 /* ============================= */
 
