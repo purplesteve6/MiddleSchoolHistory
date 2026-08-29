@@ -182,12 +182,24 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
       .replace(/'/g, "&#039;");
   }
 
+  function previewTermFontStack() {
+    const stacks = {
+      helvetica: 'Arial, Helvetica, sans-serif',
+      times: '"Times New Roman", Times, serif',
+      courier: '"Courier New", Courier, monospace'
+    };
+    return stacks[els.termFont.value] || stacks.helvetica;
+  }
+
   function renderPreview() {
     const previewCards = getPreviewCards();
     const showLines = shouldShowCutLines(previewSide);
     const rotate = previewSide === "back" && els.rotateBacks.checked;
     const unit = els.unit.value.trim();
     const showSubcategory = els.showSubcategory.checked;
+
+    // Keep the browser preview in sync with the PDF term typeface setting.
+    els.preview.style.setProperty("--preview-term-font", previewTermFontStack());
 
     els.preview.innerHTML = previewCards.map(card => {
       const classes = ["preview-card"];
@@ -494,8 +506,10 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     loadCardsFromText();
   });
 
-  [els.unit, els.showSubcategory, els.duplex, els.cutLines, els.termFont, els.rotateBacks]
+  [els.unit, els.showSubcategory, els.duplex, els.cutLines, els.rotateBacks]
     .forEach(el => el.addEventListener("input", renderPreview));
+
+  els.termFont.addEventListener("change", renderPreview);
 
   document.querySelectorAll("[data-preview-side]").forEach(button => {
     button.addEventListener("click", () => {

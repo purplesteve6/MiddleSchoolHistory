@@ -459,7 +459,7 @@
 }
 
 .preview-term{
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--preview-term-font, Arial, Helvetica, sans-serif);
   font-size: clamp(16px, 2.35vw, 30px);
   font-weight: 900;
   line-height: 1.08;
