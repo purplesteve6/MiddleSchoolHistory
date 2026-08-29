@@ -26,15 +26,15 @@ window.MAP_CHALLENGE_CONFIG = {
 
   startColors: [
 
+
     {
-      color: "#ffffff
+      color: "#777777",
       ids: [
-        "russia",
-        "ukraine",
-        "belarus",
-        "moldova"
+// e.g. "russia",
       ]
     },
+
+
 
   ],
 

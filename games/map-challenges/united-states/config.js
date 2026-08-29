@@ -18,6 +18,26 @@ window.MAP_CHALLENGE_CONFIG = {
  	flagsBase: "/games/map-challenges/united-states/flags/",
 	flagExt: ".webp",
 
+  // Optional starting colors for SVG elements.
+  // These are visual only: the countries below are STILL targets because they
+  // remain listed in targets[]. Remove an ID from targets[] if you want it to
+  // stay on the map as non-playable context for a regional challenge.
+  // If startColors is omitted entirely, the SVG keeps its original colors.
+
+  startColors: [
+
+
+    {
+      color: "#777777",
+      ids: [
+// e.g. "hawaii",
+	"new_york,
+      ]
+    },
+
+
+
+
   // IDs that count as "targets" (must match SVG element IDs)
   targets: [
 	"alabama",
