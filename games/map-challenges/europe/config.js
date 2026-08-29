@@ -23,9 +23,11 @@ window.MAP_CHALLENGE_CONFIG = {
   // remain listed in targets[]. Remove an ID from targets[] if you want it to
   // stay on the map as non-playable context for a regional challenge.
   // If startColors is omitted entirely, the SVG keeps its original colors.
+
   startColors: [
+
     {
-      color: "#777777",
+      color: "#ffffff
       ids: [
         "russia",
         "ukraine",
@@ -33,21 +35,7 @@ window.MAP_CHALLENGE_CONFIG = {
         "moldova"
       ]
     },
-    {
-      color: "#c9b27c",
-      ids: [
-        "spain",
-        "portugal"
-      ]
-    },
-    {
-      color: "#6f91b8",
-      ids: [
-        "norway",
-        "sweden",
-        "finland"
-      ]
-    }
+
   ],
 
   // IDs that count as "targets" (must match SVG element IDs)
