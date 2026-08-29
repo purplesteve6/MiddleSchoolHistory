@@ -1,0 +1,171 @@
+@font-face{
+  font-family: "Lemon Milk";
+  src: url("/assets/fonts/lemonmilk-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.teacher-band{
+  width: 100%;
+  min-height: 168px;
+  display: flex;
+  align-items: flex-end;
+  background:
+    radial-gradient(700px 260px at 15% 20%, rgba(201,168,255,.28), transparent 65%),
+    linear-gradient(135deg, #171125 0%, #3b2262 52%, #24143f 100%);
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+
+.teacher-band__inner{
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 34px clamp(16px, 4vw, 28px) 28px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.teacher-band__icon{
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.32));
+}
+
+.teacher-band__kicker{
+  margin-bottom: 6px;
+  color: rgba(255,255,255,.72);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.teacher-band__title{
+  margin: 0;
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.teacher-page{
+  padding-top: 24px;
+}
+
+.teacher-intro{
+  margin: 0 0 24px;
+  max-width: 70ch;
+  color: rgba(255,255,255,.84);
+  font-size: 17px;
+}
+
+.resource-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 24px;
+}
+
+.resource-card{
+  display: grid;
+  grid-template-rows: 210px auto;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.055);
+  box-shadow: 0 20px 42px rgba(0,0,0,.26);
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.resource-card:hover{
+  transform: translateY(-4px);
+  border-color: rgba(201,168,255,.42);
+  background: rgba(255,255,255,.075);
+}
+
+.resource-card__visual{
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(380px 190px at 50% 30%, rgba(255,255,255,.12), transparent 70%),
+    linear-gradient(145deg, #4c2c78, #211332);
+}
+
+.mini-card{
+  position: absolute;
+  width: 190px;
+  height: 112px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #fbfaf6;
+  color: #222;
+  border: 1px solid rgba(0,0,0,.18);
+  box-shadow: 0 16px 28px rgba(0,0,0,.28);
+}
+
+.mini-card--term{
+  transform: translate(-34px, -10px) rotate(-7deg);
+  z-index: 2;
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  letter-spacing: .06em;
+  font-size: 24px;
+}
+
+.mini-card--definition{
+  transform: translate(42px, 25px) rotate(6deg);
+  color: #67606d;
+  font-size: 17px;
+}
+
+.resource-card__body{
+  padding: 22px;
+}
+
+.resource-card__eyebrow{
+  color: #d8c2ff;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.resource-card__title{
+  margin: 7px 0 8px;
+  font-family: "Lemon Milk", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: .04em;
+}
+
+.resource-card__desc{
+  margin: 0;
+  color: rgba(255,255,255,.78);
+  line-height: 1.55;
+}
+
+.resource-card__cta{
+  display: inline-block;
+  margin-top: 16px;
+  font-weight: 800;
+  color: #e7d9ff;
+}
+
+@media (max-width: 640px){
+  .teacher-band{
+    min-height: 150px;
+  }
+  .teacher-band__icon{
+    width: 56px;
+    height: 56px;
+  }
+  .resource-card{
+    grid-template-rows: 190px auto;
+  }
+}

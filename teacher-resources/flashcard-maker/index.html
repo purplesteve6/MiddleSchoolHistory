@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flashcard Maker | Teacher Resources | Middle School History</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/teacher-resources/flashcard-maker/flashcard-maker.css" />
+</head>
+<body>
+  <div id="siteHeader" data-include="/partials/main-header.html"></div>
+
+  <main class="page flash-page">
+    <div class="tool-heading">
+      <a class="back-link" href="/teacher-resources/">← Teacher Resources</a>
+      <div class="tool-heading__kicker">Printable Utility</div>
+      <h1>Flashcard Maker</h1>
+      <p>Create printable 3×5 flashcards from a CSV file or pasted spreadsheet data. Everything runs in your browser; your card data is not uploaded anywhere.</p>
+    </div>
+
+    <div class="tool-layout">
+      <section class="tool-panel input-panel" aria-labelledby="input-title">
+        <div class="panel-heading">
+          <div>
+            <div class="step-number">1</div>
+            <h2 id="input-title">Add your cards</h2>
+          </div>
+          <button class="text-button" type="button" id="loadDemoBtn">Load demo</button>
+        </div>
+
+        <label class="field-label" for="csvFile">Import a .csv file</label>
+        <input class="file-input" id="csvFile" type="file" accept=".csv,text/csv,text/plain" />
+
+        <div class="or-divider"><span>or</span></div>
+
+        <label class="field-label" for="csvText">Paste CSV or two columns copied from a spreadsheet</label>
+        <textarea id="csvText" class="csv-text" spellcheck="false" placeholder='term,definition\nGettysburg,"Major 1863 Civil War battle in Pennsylvania."'></textarea>
+
+        <div class="input-actions">
+          <button class="secondary-button" type="button" id="parseBtn">Load cards</button>
+          <button class="ghost-button" type="button" id="clearBtn">Clear</button>
+        </div>
+
+        <p class="help-text">Use two columns: <strong>term</strong> first, <strong>definition</strong> second. A header row such as <code>term,definition</code> is detected automatically. Quoted commas are supported.</p>
+      </section>
+
+      <section class="tool-panel options-panel" aria-labelledby="options-title">
+        <div class="panel-heading">
+          <div>
+            <div class="step-number">2</div>
+            <h2 id="options-title">Choose print options</h2>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <label class="field-block">
+            <span class="field-label">Unit line <span class="optional">optional</span></span>
+            <input id="unitLine" type="text" maxlength="80" placeholder="Civil War" />
+          </label>
+
+          <label class="field-block">
+            <span class="field-label">Subcategory line <span class="optional">optional</span></span>
+            <input id="subcategoryLine" type="text" maxlength="80" placeholder="Key Battles" />
+          </label>
+
+          <label class="field-block">
+            <span class="field-label">Back-side layout</span>
+            <select id="duplexMode">
+              <option value="long" selected>Landscape duplex — flip on long edge</option>
+              <option value="short">Landscape duplex — flip on short edge</option>
+              <option value="same">Same card positions on front and back</option>
+            </select>
+          </label>
+
+          <label class="field-block">
+            <span class="field-label">Cut lines</span>
+            <select id="cutLineMode">
+              <option value="backs" selected>Definition pages only</option>
+              <option value="both">Both sides</option>
+              <option value="none">None</option>
+            </select>
+          </label>
+
+          <label class="field-block">
+            <span class="field-label">Term typeface</span>
+            <select id="termFont">
+              <option value="helvetica" selected>Helvetica / Arial style</option>
+              <option value="times">Times / serif style</option>
+              <option value="courier">Courier / typewriter style</option>
+            </select>
+          </label>
+
+          <label class="field-block checkbox-field">
+            <input id="rotateBacks" type="checkbox" />
+            <span>
+              <strong>Rotate definitions 180°</strong>
+              <small>Useful for alternate flip/cutting workflows.</small>
+            </span>
+          </label>
+        </div>
+      </section>
+    </div>
+
+    <section class="tool-panel preview-panel" aria-labelledby="preview-title">
+      <div class="panel-heading preview-heading">
+        <div>
+          <div class="step-number">3</div>
+          <h2 id="preview-title">Preview & create PDF</h2>
+        </div>
+        <div id="cardStatus" class="card-status">No cards loaded</div>
+      </div>
+
+      <div class="preview-tabs" role="tablist" aria-label="Preview side">
+        <button class="preview-tab is-active" type="button" data-preview-side="front" role="tab" aria-selected="true">Terms</button>
+        <button class="preview-tab" type="button" data-preview-side="back" role="tab" aria-selected="false">Definitions</button>
+      </div>
+
+      <div class="sheet-preview-wrap">
+        <div class="sheet-preview" id="sheetPreview" aria-label="First sheet preview"></div>
+      </div>
+
+      <div class="generate-row">
+        <div>
+          <strong>PDF format:</strong> landscape US Letter, four 5×3 cards per sheet, no gaps between cards.
+          <div class="printer-note">Duplex printers vary. Print one test sheet before running a large batch.</div>
+        </div>
+        <button class="primary-button" type="button" id="generateBtn" disabled>Download PDF</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="siteFooter" data-include="/partials/footer.html"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="/include.js"></script>
+  <script src="/teacher-resources/flashcard-maker/flashcard-maker.js"></script>
+</body>
+</html>
