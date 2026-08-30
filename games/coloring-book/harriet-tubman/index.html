@@ -102,6 +102,16 @@
           <p class="tool-help">Type first, then click the artwork to place it. Click and drag existing text to move it. With text selected, Behind Lines / On Top moves only that text.</p>
         </section>
 
+        <section class="tool-group" aria-label="Zoom controls">
+          <span class="tool-label">Zoom</span>
+          <input class="zoom-slider" id="zoomSlider" type="range" min="100" max="400" step="5" value="100" aria-label="Zoom level" />
+          <div class="zoom-row">
+            <span class="zoom-value" id="zoomValue">100%</span>
+            <button class="zoom-reset-button" id="zoomResetBtn" type="button" disabled>Reset Zoom</button>
+          </div>
+          <p class="tool-help">Use the slider or roll your mouse wheel over the picture to zoom in and out. The page will not zoom out smaller than the default view.</p>
+        </section>
+
         <section class="tool-group">
           <span class="tool-label">Actions</span>
           <div class="action-grid">
@@ -122,7 +132,7 @@
           <div class="workspace-hint">Bucket fills closed shapes • Brush/text can go behind the lines or on top</div>
         </div>
 
-        <div class="artboard-wrap">
+        <div class="artboard-wrap" id="artboardWrap">
           <div class="artboard is-loading" id="artboard" data-tool="bucket" aria-label="Interactive coloring page"></div>
         </div>
 

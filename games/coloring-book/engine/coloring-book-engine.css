@@ -162,7 +162,8 @@ body.coloring-book-app-page{
 .action-button,
 .brush-size,
 .delete-text-button,
-.layer-button{
+.layer-button,
+.zoom-reset-button{
   appearance: none;
   border: 1px solid var(--control-border);
   background: rgba(255,255,255,.055);
@@ -193,7 +194,8 @@ body.coloring-book-app-page{
 .action-button:hover:not(:disabled),
 .brush-size:hover,
 .delete-text-button:hover,
-.layer-button:hover{
+.layer-button:hover,
+.zoom-reset-button:hover:not(:disabled){
   transform: translateY(-1px);
   background: rgba(255,255,255,.10);
 }
@@ -360,6 +362,40 @@ body.coloring-book-app-page{
   background: rgba(198,70,70,.10);
 }
 
+.zoom-slider{
+  width: 100%;
+  margin: 4px 0 0;
+  accent-color: #d8c0ff;
+  cursor: pointer;
+}
+
+.zoom-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.zoom-value{
+  color: rgba(255,255,255,.78);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+
+.zoom-reset-button{
+  min-height: 34px;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.zoom-reset-button:disabled{
+  opacity: .35;
+  cursor: not-allowed;
+}
+
 .action-grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -437,8 +473,6 @@ body.coloring-book-app-page{
 }
 
 .artboard-wrap{
-  display: grid;
-  place-items: center;
   width: 100%;
   overflow: auto;
   padding: clamp(8px, 1.5vw, 18px);
@@ -461,6 +495,11 @@ body.coloring-book-app-page{
   background: #fff;
   box-shadow: 0 15px 36px rgba(0,0,0,.38);
   user-select: none;
+  margin: 0 auto;
+}
+
+.artboard-wrap.is-zoomed .artboard{
+  margin: 0;
 }
 
 .artboard.is-loading::after{

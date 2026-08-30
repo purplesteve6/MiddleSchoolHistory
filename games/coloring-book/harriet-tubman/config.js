@@ -8,5 +8,6 @@ window.COLORING_BOOK_CONFIG = {
   defaultPalette: "basic",
   defaultLayerPosition: "below",
   palettes: ["basic", "americana", "nationalParks", "earthTones", "autumn", "pastels"],
-  printTitle: "Harriet Tubman Coloring Page"
+  printTitle: "Harriet Tubman Coloring Page",
+  maxZoom: 4
 };

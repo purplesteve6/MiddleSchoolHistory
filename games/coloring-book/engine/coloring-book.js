@@ -41,7 +41,11 @@
     pageTitle: document.getElementById("pageTitle"),
     workspaceTitle: document.getElementById("workspaceTitle"),
     layerPositionButtons: Array.from(document.querySelectorAll("[data-layer-position]")),
-    layerPositionHint: document.getElementById("layerPositionHint")
+    layerPositionHint: document.getElementById("layerPositionHint"),
+    artboardWrap: document.getElementById("artboardWrap"),
+    zoomSlider: document.getElementById("zoomSlider"),
+    zoomValue: document.getElementById("zoomValue"),
+    zoomResetBtn: document.getElementById("zoomResetBtn")
   };
 
   let svgRoot = null;
@@ -73,6 +77,12 @@
   let initialState = null;
   let history = [];
   let historyIndex = -1;
+
+  let zoomScale = 1;
+  let baseArtboardWidth = 0;
+  let baseArtboardHeight = 0;
+  const MIN_ZOOM = 1;
+  const MAX_ZOOM = Math.max(1, Number(CFG.maxZoom || 4));
 
   function setStatus(message) {
     if (els.status) els.status.textContent = message;
@@ -282,6 +292,76 @@
     updateLayerButtons();
   }
 
+  function updateZoomUi() {
+    if (els.zoomSlider) els.zoomSlider.value = String(Math.round(zoomScale * 100));
+    if (els.zoomValue) els.zoomValue.textContent = `${Math.round(zoomScale * 100)}%`;
+    if (els.zoomResetBtn) els.zoomResetBtn.disabled = zoomScale <= MIN_ZOOM + 0.001;
+    els.artboardWrap?.classList.toggle("is-zoomed", zoomScale > MIN_ZOOM + 0.001);
+  }
+
+  function measureBaseArtboard() {
+    if (!els.artboard) return;
+    const prevWidth = els.artboard.style.width;
+    const prevHeight = els.artboard.style.height;
+
+    els.artboard.style.width = "";
+    els.artboard.style.height = "";
+
+    const rect = els.artboard.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+      baseArtboardWidth = rect.width;
+      baseArtboardHeight = rect.height;
+    }
+
+    els.artboard.style.width = prevWidth;
+    els.artboard.style.height = prevHeight;
+  }
+
+  function applyZoom(nextScale, options = {}) {
+    if (!els.artboard || !els.artboardWrap || !baseArtboardWidth || !baseArtboardHeight) return;
+
+    const oldScale = zoomScale;
+    let scale = Number(nextScale);
+    if (!Number.isFinite(scale)) scale = MIN_ZOOM;
+    if (scale <= MIN_ZOOM) scale = MIN_ZOOM;
+    if (scale > MAX_ZOOM) scale = MAX_ZOOM;
+
+    const wrap = els.artboardWrap;
+    const rect = wrap.getBoundingClientRect();
+    const offsetX = options.anchorClientX != null ? options.anchorClientX - rect.left : wrap.clientWidth / 2;
+    const offsetY = options.anchorClientY != null ? options.anchorClientY - rect.top : wrap.clientHeight / 2;
+    const anchorX = Math.max(0, Math.min(wrap.clientWidth, offsetX));
+    const anchorY = Math.max(0, Math.min(wrap.clientHeight, offsetY));
+
+    const worldX = (wrap.scrollLeft + anchorX) / oldScale;
+    const worldY = (wrap.scrollTop + anchorY) / oldScale;
+
+    zoomScale = scale;
+
+    if (zoomScale <= MIN_ZOOM + 0.001) {
+      els.artboard.style.width = `${baseArtboardWidth}px`;
+      els.artboard.style.height = `${baseArtboardHeight}px`;
+      wrap.scrollLeft = 0;
+      wrap.scrollTop = 0;
+    } else {
+      els.artboard.style.width = `${baseArtboardWidth * zoomScale}px`;
+      els.artboard.style.height = `${baseArtboardHeight * zoomScale}px`;
+      wrap.scrollLeft = Math.max(0, (worldX * zoomScale) - anchorX);
+      wrap.scrollTop = Math.max(0, (worldY * zoomScale) - anchorY);
+    }
+
+    updateZoomUi();
+  }
+
+  function zoomByWheel(event) {
+    if (!els.artboardWrap || !baseArtboardWidth || !baseArtboardHeight) return;
+    event.preventDefault();
+    const factor = event.deltaY < 0 ? 1.1 : (1 / 1.1);
+    let nextScale = zoomScale * factor;
+    if (nextScale < MIN_ZOOM) nextScale = MIN_ZOOM;
+    applyZoom(nextScale, { anchorClientX: event.clientX, anchorClientY: event.clientY });
+  }
+
   function setupSvg() {
     colorGroup = svgRoot.querySelector(`#${CSS.escape(COLOR_GROUP_ID)}`);
     inkGroup = svgRoot.querySelector(`#${CSS.escape(INK_GROUP_ID)}`);
@@ -350,6 +430,12 @@
     history = [initialState];
     historyIndex = 0;
     updateHistoryButtons();
+
+    requestAnimationFrame(() => {
+      measureBaseArtboard();
+      applyZoom(MIN_ZOOM);
+      updateZoomUi();
+    });
   }
 
   function cleanTextMarkup(layer) {
@@ -730,6 +816,23 @@
       setTimeout(() => window.print(), 50);
     });
 
+    els.zoomSlider?.addEventListener("input", () => {
+      applyZoom(Number(els.zoomSlider.value) / 100);
+    });
+
+    els.zoomResetBtn?.addEventListener("click", () => {
+      applyZoom(MIN_ZOOM);
+      setStatus("Zoom reset to the default view.");
+    });
+
+    els.artboardWrap?.addEventListener("wheel", zoomByWheel, { passive: false });
+
+    window.addEventListener("resize", () => {
+      const previousScale = zoomScale;
+      measureBaseArtboard();
+      applyZoom(previousScale);
+    }, { passive: true });
+
     document.addEventListener("keydown", (event) => {
       const tag = document.activeElement?.tagName?.toLowerCase();
       const typing = tag === "input" || tag === "textarea" || tag === "select";
@@ -780,6 +883,7 @@
     setBrushSize(12);
     setCurrentColor(currentColor, { applyToSelectedText: false });
     updateLayerButtons();
+    updateZoomUi();
     setTool(currentTool);
 
     loadSvg().catch((error) => {
