@@ -583,12 +583,22 @@ body.coloring-book-app-page{
 
 /* ===== Print / Save PDF ===== */
 @media print{
+  /* Letter paper, landscape. The fixed printable box prevents browser
+     rounding or on-screen zoom dimensions from spilling onto page 2. */
   @page{
-    size: landscape;
-    margin: .3in;
+    size: 11in 8.5in;
+    margin: .25in;
   }
 
+  html,
   body{
+    width: 10.5in !important;
+    height: 8in !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
     background: #fff !important;
     color: #000 !important;
   }
@@ -605,31 +615,67 @@ body.coloring-book-app-page{
 
   .coloring-page,
   .coloring-app,
-  .coloring-workspace,
-  .artboard-wrap{
+  .coloring-workspace{
     display: block !important;
+    width: 10.5in !important;
+    height: 8in !important;
     max-width: none !important;
-    width: 100% !important;
+    max-height: none !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
     background: #fff !important;
     box-shadow: none !important;
+    overflow: hidden !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 
-  .artboard{
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    margin: 0 auto !important;
+  .artboard-wrap{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 10.5in !important;
+    height: 8in !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
     border: 0 !important;
+    background: #fff !important;
     box-shadow: none !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+  }
+
+  /* Give the artwork a little safety margin inside the actual printable
+     area. The SVG itself keeps its native aspect ratio inside this box. */
+  .artboard,
+  .artboard-wrap.is-zoomed .artboard{
+    width: 10.2in !important;
+    height: 7.7in !important;
+    max-width: 10.2in !important;
+    max-height: 7.7in !important;
+    aspect-ratio: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    transform: none !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 
   .artboard svg{
+    display: block !important;
     width: 100% !important;
-    height: auto !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
   }
 
   .artboard svg .user-text.is-selected{
