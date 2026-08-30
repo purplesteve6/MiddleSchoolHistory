@@ -161,7 +161,8 @@ body.coloring-book-app-page{
 .tool-button,
 .action-button,
 .brush-size,
-.delete-text-button{
+.delete-text-button,
+.layer-button{
   appearance: none;
   border: 1px solid var(--control-border);
   background: rgba(255,255,255,.055);
@@ -191,12 +192,31 @@ body.coloring-book-app-page{
 .tool-button:hover,
 .action-button:hover:not(:disabled),
 .brush-size:hover,
-.delete-text-button:hover{
+.delete-text-button:hover,
+.layer-button:hover{
   transform: translateY(-1px);
   background: rgba(255,255,255,.10);
 }
 
 .tool-button.is-active{
+  background: rgba(216,192,255,.20);
+  border-color: rgba(216,192,255,.65);
+  box-shadow: 0 0 0 2px rgba(216,192,255,.08) inset;
+}
+
+.layer-toggle{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.layer-button{
+  min-height: 40px;
+  border-radius: 11px;
+  padding: 8px 10px;
+}
+
+.layer-button.is-active{
   background: rgba(216,192,255,.20);
   border-color: rgba(216,192,255,.65);
   box-shadow: 0 0 0 2px rgba(216,192,255,.08) inset;

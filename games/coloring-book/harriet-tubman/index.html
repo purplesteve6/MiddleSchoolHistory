@@ -47,6 +47,15 @@
           </div>
         </section>
 
+        <section class="tool-group" aria-label="Choose drawing position">
+          <span class="tool-label">Drawing Position</span>
+          <div class="layer-toggle">
+            <button class="layer-button is-active" type="button" data-layer-position="below" aria-pressed="true">Behind Lines</button>
+            <button class="layer-button" type="button" data-layer-position="above" aria-pressed="false">On Top</button>
+          </div>
+          <p class="tool-help" id="layerPositionHint">New brush strokes and text are drawing behind the black lines.</p>
+        </section>
+
         <section class="tool-group" aria-label="Choose a color">
           <label class="tool-label" for="paletteSelect">Palette</label>
           <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
@@ -110,7 +119,7 @@
       <section class="coloring-workspace" aria-label="Coloring page workspace">
         <div class="workspace-head">
           <h2 id="workspaceTitle">Harriet Tubman</h2>
-          <div class="workspace-hint">Bucket fills closed shapes • Brush draws freely • Text adds labels</div>
+          <div class="workspace-hint">Bucket fills closed shapes • Brush/text can go behind the lines or on top</div>
         </div>
 
         <div class="artboard-wrap">

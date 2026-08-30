@@ -39,17 +39,21 @@
     printBtn: document.getElementById("printBtn"),
     status: document.getElementById("coloringStatus"),
     pageTitle: document.getElementById("pageTitle"),
-    workspaceTitle: document.getElementById("workspaceTitle")
+    workspaceTitle: document.getElementById("workspaceTitle"),
+    layerPositionButtons: Array.from(document.querySelectorAll("[data-layer-position]")),
+    layerPositionHint: document.getElementById("layerPositionHint")
   };
 
   let svgRoot = null;
   let colorGroup = null;
   let inkGroup = null;
+  let userWorkLayer = null;
   let paintLayer = null;
   let textLayer = null;
   let fillables = [];
 
   let currentTool = CFG.defaultTool || "bucket";
+  let layerPosition = CFG.defaultLayerPosition === "above" ? "above" : "below";
   let currentColor = normalizeHex(CFG.defaultColor || "#D7263D") || "#D7263D";
   let brushSize = 12;
   let selectedText = null;
@@ -209,6 +213,58 @@
     return shape;
   }
 
+  function updateLayerButtons() {
+    els.layerPositionButtons.forEach((button) => {
+      const active = button.dataset.layerPosition === layerPosition;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+
+    if (els.layerPositionHint) {
+      els.layerPositionHint.textContent = layerPosition === "above"
+        ? "New brush strokes and text are drawing on top of the black lines."
+        : "New brush strokes and text are drawing behind the black lines.";
+    }
+  }
+
+  function positionUserWorkLayer() {
+    if (!userWorkLayer || !inkGroup || !inkGroup.parentNode) return;
+    const parent = inkGroup.parentNode;
+
+    if (layerPosition === "above") {
+      if (userWorkLayer.nextSibling !== inkGroup.nextSibling) {
+        parent.insertBefore(userWorkLayer, inkGroup.nextSibling);
+      }
+    } else {
+      if (userWorkLayer.nextSibling !== inkGroup) {
+        parent.insertBefore(userWorkLayer, inkGroup);
+      }
+    }
+
+    updateLayerButtons();
+  }
+
+  function setLayerPosition(position, options = {}) {
+    const normalized = position === "above" ? "above" : "below";
+    if (layerPosition === normalized && !options.force) {
+      updateLayerButtons();
+      return;
+    }
+
+    layerPosition = normalized;
+    positionUserWorkLayer();
+
+    if (options.commit !== false && svgRoot) {
+      commitState();
+    }
+
+    if (options.announce !== false) {
+      setStatus(layerPosition === "above"
+        ? "Brush strokes and text will appear on top of the ink lines."
+        : "Brush strokes and text will appear behind the ink lines.");
+    }
+  }
+
   function setupSvg() {
     colorGroup = svgRoot.querySelector(`#${CSS.escape(COLOR_GROUP_ID)}`);
     inkGroup = svgRoot.querySelector(`#${CSS.escape(INK_GROUP_ID)}`);
@@ -227,6 +283,10 @@
       if (!shape.hasAttribute("fill")) shape.setAttribute("fill", "#FFFFFF");
     });
 
+    userWorkLayer = document.createElementNS(SVG_NS, "g");
+    userWorkLayer.id = "user-work-layer";
+    userWorkLayer.dataset.coloringGenerated = "true";
+
     paintLayer = document.createElementNS(SVG_NS, "g");
     paintLayer.id = "paint-layer";
     paintLayer.dataset.coloringGenerated = "true";
@@ -235,8 +295,11 @@
     textLayer.id = "text-layer";
     textLayer.dataset.coloringGenerated = "true";
 
-    inkGroup.parentNode.insertBefore(paintLayer, inkGroup);
-    inkGroup.parentNode.insertBefore(textLayer, inkGroup);
+    userWorkLayer.appendChild(paintLayer);
+    userWorkLayer.appendChild(textLayer);
+
+    inkGroup.parentNode.insertBefore(userWorkLayer, inkGroup);
+    positionUserWorkLayer();
 
     svgRoot.setAttribute("role", "img");
     svgRoot.setAttribute("aria-label", `${CFG.title || "Coloring page"} interactive coloring page`);
@@ -266,7 +329,8 @@
     return {
       fills: fillables.map((shape) => shape.getAttribute("fill") || "#FFFFFF"),
       paint: paintLayer ? paintLayer.innerHTML : "",
-      text: textMarkup
+      text: textMarkup,
+      layerPosition
     };
   }
 
@@ -280,12 +344,14 @@
       textLayer.innerHTML = state.text || "";
       textLayer.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
     }
+    layerPosition = state.layerPosition === "above" ? "above" : "below";
+    positionUserWorkLayer();
     clearTextSelection();
   }
 
   function statesEqual(a, b) {
     if (!a || !b) return false;
-    return a.paint === b.paint && a.text === b.text && a.fills.join("|") === b.fills.join("|");
+    return a.paint === b.paint && a.text === b.text && a.layerPosition === b.layerPosition && a.fills.join("|") === b.fills.join("|");
   }
 
   function commitState() {
@@ -570,6 +636,10 @@
       button.addEventListener("click", () => setTool(button.dataset.tool));
     });
 
+    els.layerPositionButtons.forEach((button) => {
+      button.addEventListener("click", () => setLayerPosition(button.dataset.layerPosition));
+    });
+
     els.paletteSelect?.addEventListener("change", () => renderPalette(els.paletteSelect.value));
 
     els.customColor?.addEventListener("input", () => {
@@ -662,6 +732,7 @@
     bindControls();
     setBrushSize(12);
     setCurrentColor(currentColor, { applyToSelectedText: false });
+    updateLayerButtons();
     setTool(currentTool);
 
     loadSvg().catch((error) => {

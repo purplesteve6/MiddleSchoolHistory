@@ -6,6 +6,7 @@ window.COLORING_BOOK_CONFIG = {
   defaultTool: "bucket",
   defaultColor: "#D7263D",
   defaultPalette: "basic",
+  defaultLayerPosition: "below",
   palettes: ["basic", "americana", "nationalParks", "earthTones", "autumn", "pastels"],
   printTitle: "Harriet Tubman Coloring Page"
 };
