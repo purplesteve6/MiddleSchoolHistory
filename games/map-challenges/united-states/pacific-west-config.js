@@ -1,11 +1,11 @@
 /* ============================================================
-   United States - West Map Challenge Config
+   United States - Pacific West Map Challenge Config
    Reuses the existing United States SVG, CSS, flags, and shared engine.
    States outside this region remain visible in gray as non-playable context.
    ============================================================ */
 
 window.MAP_CHALLENGE_CONFIG = {
-  slug: "united-states-west",
+  slug: "united-states-pacific-west",
 
   svgPath: "./united-states-clickable.svg",
 
@@ -91,15 +91,15 @@ window.MAP_CHALLENGE_CONFIG = {
   extraIds: [],
 
   ui: {
-    bannerTitle: "UNITED STATES: WEST MAP CHALLENGE",
-    bannerAria: "United States West map challenge banner",
+    bannerTitle: "UNITED STATES: PACIFIC WEST MAP CHALLENGE",
+    bannerAria: "United States Pacific West map challenge banner",
 
-    mainAria: "United States West map challenge",
+    mainAria: "United States Pacific West map challenge",
     mapAria: "United States map",
 
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "UNITED STATES | WEST",
-    beginMessage: "How fast can you identify the states of the West?",
+    overlayTitle: "UNITED STATES | PACIFIC WEST",
+    beginMessage: "How fast can you identify the states of the Pacific West?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }
