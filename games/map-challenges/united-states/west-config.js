@@ -1,90 +1,87 @@
 /* ============================================================
-   United States - Midwest Map Challenge Config
-   Regional challenge using the shared United States SVG and engine.
+   United States - West Map Challenge Config
+   Reuses the existing United States SVG, CSS, flags, and shared engine.
+   States outside this region remain visible in gray as non-playable context.
    ============================================================ */
 
 window.MAP_CHALLENGE_CONFIG = {
-  slug: "united-states-midwest",
+  slug: "united-states-west",
 
-  // Reuse the existing United States SVG.
   svgPath: "./united-states-clickable.svg",
 
-  // Reuse the existing state flags.
   showFlags: true,
   flagsBase: "/games/map-challenges/united-states/flags/",
   flagExt: ".webp",
 
-  // States outside this region remain visible as gray, non-playable context.
+  // All states outside this region remain visible as gray context.
   startColors: [
     {
       color: "#777777",
       ids: [
         "alabama",
-        "alaska",
         "arizona",
         "arkansas",
-        "california",
         "colorado",
         "connecticut",
         "delaware",
         "florida",
         "georgia",
-        "hawaii",
         "idaho",
+        "illinois",
+        "indiana",
+        "iowa",
+        "kansas",
         "kentucky",
         "louisiana",
         "maine",
         "maryland",
         "massachusetts",
+        "michigan",
+        "minnesota",
         "mississippi",
+        "missouri",
         "montana",
+        "nebraska",
         "nevada",
         "new_hampshire",
         "new_jersey",
         "new_mexico",
         "new_york",
         "north_carolina",
+        "north_dakota",
+        "ohio",
         "oklahoma",
-        "oregon",
         "pennsylvania",
         "rhode_island",
         "south_carolina",
+        "south_dakota",
         "tennessee",
         "texas",
         "utah",
         "vermont",
         "virginia",
-        "washington",
         "west_virginia",
+        "wisconsin",
         "wyoming"
       ]
     }
   ],
 
-  // Only these states are part of this regional challenge.
+  // Only these states are playable in this regional challenge.
   targets: [
-    "illinois",
-    "indiana",
-    "iowa",
-    "kansas",
-    "michigan",
-    "minnesota",
-    "missouri",
-    "nebraska",
-    "north_dakota",
-    "ohio",
-    "south_dakota",
-    "wisconsin"
+    "alaska",
+    "california",
+    "hawaii",
+    "oregon",
+    "washington"
   ],
 
-  // Existing non-state SVG layers.
   ignoreIds: [
     "water",
     "borders",
     "context_land"
   ],
 
-  // Optional display-name overrides.
   displayNames: {
     new_york: "New York"
   },
@@ -94,15 +91,15 @@ window.MAP_CHALLENGE_CONFIG = {
   extraIds: [],
 
   ui: {
-    bannerTitle: "UNITED STATES: MIDWEST MAP CHALLENGE",
-    bannerAria: "United States Midwest map challenge banner",
+    bannerTitle: "UNITED STATES: WEST MAP CHALLENGE",
+    bannerAria: "United States West map challenge banner",
 
-    mainAria: "United States Midwest map challenge",
+    mainAria: "United States West map challenge",
     mapAria: "United States map",
 
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "UNITED STATES | MIDWEST",
-    beginMessage: "How fast can you identify the states of the Midwest?",
+    overlayTitle: "UNITED STATES | WEST",
+    beginMessage: "How fast can you identify the states of the West?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }

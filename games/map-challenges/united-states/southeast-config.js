@@ -1,20 +1,19 @@
 /* ============================================================
    United States - Southeast Map Challenge Config
-   Regional challenge using the shared United States SVG and engine.
+   Reuses the existing United States SVG, CSS, flags, and shared engine.
+   States outside this region remain visible in gray as non-playable context.
    ============================================================ */
 
 window.MAP_CHALLENGE_CONFIG = {
   slug: "united-states-southeast",
 
-  // Reuse the existing United States SVG.
   svgPath: "./united-states-clickable.svg",
 
-  // Reuse the existing state flags.
   showFlags: true,
   flagsBase: "/games/map-challenges/united-states/flags/",
   flagExt: ".webp",
 
-  // States outside this region remain visible as gray, non-playable context.
+  // All states outside this region remain visible as gray context.
   startColors: [
     {
       color: "#777777",
@@ -61,7 +60,7 @@ window.MAP_CHALLENGE_CONFIG = {
     }
   ],
 
-  // Only these states are part of this regional challenge.
+  // Only these states are playable in this regional challenge.
   targets: [
     "alabama",
     "arkansas",
@@ -77,14 +76,12 @@ window.MAP_CHALLENGE_CONFIG = {
     "west_virginia"
   ],
 
-  // Existing non-state SVG layers.
   ignoreIds: [
     "water",
     "borders",
     "context_land"
   ],
 
-  // Optional display-name overrides.
   displayNames: {
     new_york: "New York"
   },

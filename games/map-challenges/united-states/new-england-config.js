@@ -1,11 +1,11 @@
 /* ============================================================
-   United States - Mountain West Map Challenge Config
+   United States - New England Map Challenge Config
    Reuses the existing United States SVG, CSS, flags, and shared engine.
    States outside this region remain visible in gray as non-playable context.
    ============================================================ */
 
 window.MAP_CHALLENGE_CONFIG = {
-  slug: "united-states-mountain-west",
+  slug: "united-states-new-england",
 
   svgPath: "./united-states-clickable.svg",
 
@@ -23,26 +23,26 @@ window.MAP_CHALLENGE_CONFIG = {
         "arizona",
         "arkansas",
         "california",
-        "connecticut",
+        "colorado",
         "delaware",
         "florida",
         "georgia",
         "hawaii",
+        "idaho",
         "illinois",
         "indiana",
         "iowa",
         "kansas",
         "kentucky",
         "louisiana",
-        "maine",
         "maryland",
-        "massachusetts",
         "michigan",
         "minnesota",
         "mississippi",
         "missouri",
+        "montana",
         "nebraska",
-        "new_hampshire",
+        "nevada",
         "new_jersey",
         "new_mexico",
         "new_york",
@@ -52,28 +52,28 @@ window.MAP_CHALLENGE_CONFIG = {
         "oklahoma",
         "oregon",
         "pennsylvania",
-        "rhode_island",
         "south_carolina",
         "south_dakota",
         "tennessee",
         "texas",
-        "vermont",
+        "utah",
         "virginia",
         "washington",
         "west_virginia",
-        "wisconsin"
+        "wisconsin",
+        "wyoming"
       ]
     }
   ],
 
   // Only these states are playable in this regional challenge.
   targets: [
-    "colorado",
-    "idaho",
-    "montana",
-    "nevada",
-    "utah",
-    "wyoming"
+    "connecticut",
+    "maine",
+    "massachusetts",
+    "new_hampshire",
+    "rhode_island",
+    "vermont"
   ],
 
   ignoreIds: [
@@ -91,15 +91,15 @@ window.MAP_CHALLENGE_CONFIG = {
   extraIds: [],
 
   ui: {
-    bannerTitle: "UNITED STATES: MOUNTAIN WEST MAP CHALLENGE",
-    bannerAria: "United States Mountain West map challenge banner",
+    bannerTitle: "UNITED STATES: NEW ENGLAND MAP CHALLENGE",
+    bannerAria: "United States New England map challenge banner",
 
-    mainAria: "United States Mountain West map challenge",
+    mainAria: "United States New England map challenge",
     mapAria: "United States map",
 
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "UNITED STATES | MOUNTAIN WEST",
-    beginMessage: "How fast can you identify the states of the Mountain West?",
+    overlayTitle: "UNITED STATES | NEW ENGLAND",
+    beginMessage: "How fast can you identify the states of the New England?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }

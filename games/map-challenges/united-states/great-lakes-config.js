@@ -1,20 +1,19 @@
 /* ============================================================
-   United States - Northeast Map Challenge Config
-   Regional challenge using the shared United States SVG and engine.
+   United States - Great Lakes Map Challenge Config
+   Reuses the existing United States SVG, CSS, flags, and shared engine.
+   States outside this region remain visible in gray as non-playable context.
    ============================================================ */
 
 window.MAP_CHALLENGE_CONFIG = {
-  slug: "united-states-northeast",
+  slug: "united-states-great-lakes",
 
-  // Reuse the existing United States SVG.
   svgPath: "./united-states-clickable.svg",
 
-  // Reuse the existing state flags.
   showFlags: true,
   flagsBase: "/games/map-challenges/united-states/flags/",
   flagExt: ".webp",
 
-  // States outside this region remain visible as gray, non-playable context.
+  // All states outside this region remain visible as gray context.
   startColors: [
     {
       color: "#777777",
@@ -25,66 +24,64 @@ window.MAP_CHALLENGE_CONFIG = {
         "arkansas",
         "california",
         "colorado",
+        "connecticut",
+        "delaware",
         "florida",
         "georgia",
         "hawaii",
         "idaho",
-        "illinois",
-        "indiana",
         "iowa",
         "kansas",
         "kentucky",
         "louisiana",
-        "michigan",
-        "minnesota",
+        "maine",
+        "maryland",
+        "massachusetts",
         "mississippi",
         "missouri",
         "montana",
         "nebraska",
         "nevada",
+        "new_hampshire",
+        "new_jersey",
         "new_mexico",
+        "new_york",
         "north_carolina",
         "north_dakota",
-        "ohio",
         "oklahoma",
         "oregon",
+        "pennsylvania",
+        "rhode_island",
         "south_carolina",
         "south_dakota",
         "tennessee",
         "texas",
         "utah",
+        "vermont",
         "virginia",
         "washington",
         "west_virginia",
-        "wisconsin",
         "wyoming"
       ]
     }
   ],
 
-  // Only these states are part of this regional challenge.
+  // Only these states are playable in this regional challenge.
   targets: [
-    "connecticut",
-    "delaware",
-    "maine",
-    "maryland",
-    "massachusetts",
-    "new_hampshire",
-    "new_jersey",
-    "new_york",
-    "pennsylvania",
-    "rhode_island",
-    "vermont"
+    "illinois",
+    "indiana",
+    "michigan",
+    "minnesota",
+    "ohio",
+    "wisconsin"
   ],
 
-  // Existing non-state SVG layers.
   ignoreIds: [
     "water",
     "borders",
     "context_land"
   ],
 
-  // Optional display-name overrides.
   displayNames: {
     new_york: "New York"
   },
@@ -94,15 +91,15 @@ window.MAP_CHALLENGE_CONFIG = {
   extraIds: [],
 
   ui: {
-    bannerTitle: "UNITED STATES: NORTHEAST MAP CHALLENGE",
-    bannerAria: "United States Northeast map challenge banner",
+    bannerTitle: "UNITED STATES: GREAT LAKES MAP CHALLENGE",
+    bannerAria: "United States Great Lakes map challenge banner",
 
-    mainAria: "United States Northeast map challenge",
+    mainAria: "United States Great Lakes map challenge",
     mapAria: "United States map",
 
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "UNITED STATES | NORTHEAST",
-    beginMessage: "How fast can you identify the states of the Northeast?",
+    overlayTitle: "UNITED STATES | GREAT LAKES",
+    beginMessage: "How fast can you identify the states of the Great Lakes?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }

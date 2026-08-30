@@ -1,11 +1,11 @@
 /* ============================================================
-   United States - Mountain West Map Challenge Config
+   United States - Mid-Atlantic Map Challenge Config
    Reuses the existing United States SVG, CSS, flags, and shared engine.
    States outside this region remain visible in gray as non-playable context.
    ============================================================ */
 
 window.MAP_CHALLENGE_CONFIG = {
-  slug: "united-states-mountain-west",
+  slug: "united-states-mid-atlantic",
 
   svgPath: "./united-states-clickable.svg",
 
@@ -23,11 +23,12 @@ window.MAP_CHALLENGE_CONFIG = {
         "arizona",
         "arkansas",
         "california",
+        "colorado",
         "connecticut",
-        "delaware",
         "florida",
         "georgia",
         "hawaii",
+        "idaho",
         "illinois",
         "indiana",
         "iowa",
@@ -35,45 +36,44 @@ window.MAP_CHALLENGE_CONFIG = {
         "kentucky",
         "louisiana",
         "maine",
-        "maryland",
         "massachusetts",
         "michigan",
         "minnesota",
         "mississippi",
         "missouri",
+        "montana",
         "nebraska",
+        "nevada",
         "new_hampshire",
-        "new_jersey",
         "new_mexico",
-        "new_york",
         "north_carolina",
         "north_dakota",
         "ohio",
         "oklahoma",
         "oregon",
-        "pennsylvania",
         "rhode_island",
         "south_carolina",
         "south_dakota",
         "tennessee",
         "texas",
+        "utah",
         "vermont",
         "virginia",
         "washington",
         "west_virginia",
-        "wisconsin"
+        "wisconsin",
+        "wyoming"
       ]
     }
   ],
 
   // Only these states are playable in this regional challenge.
   targets: [
-    "colorado",
-    "idaho",
-    "montana",
-    "nevada",
-    "utah",
-    "wyoming"
+    "delaware",
+    "maryland",
+    "new_jersey",
+    "new_york",
+    "pennsylvania"
   ],
 
   ignoreIds: [
@@ -91,15 +91,15 @@ window.MAP_CHALLENGE_CONFIG = {
   extraIds: [],
 
   ui: {
-    bannerTitle: "UNITED STATES: MOUNTAIN WEST MAP CHALLENGE",
-    bannerAria: "United States Mountain West map challenge banner",
+    bannerTitle: "UNITED STATES: MID-ATLANTIC MAP CHALLENGE",
+    bannerAria: "United States Mid-Atlantic map challenge banner",
 
-    mainAria: "United States Mountain West map challenge",
+    mainAria: "United States Mid-Atlantic map challenge",
     mapAria: "United States map",
 
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "UNITED STATES | MOUNTAIN WEST",
-    beginMessage: "How fast can you identify the states of the Mountain West?",
+    overlayTitle: "UNITED STATES | MID-ATLANTIC",
+    beginMessage: "How fast can you identify the states of the Mid-Atlantic?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }

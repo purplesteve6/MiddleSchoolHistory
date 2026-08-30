@@ -1,37 +1,37 @@
 /* ============================================================
-   United States - Pacific West Map Challenge Config
-   Regional challenge using the shared United States SVG and engine.
+   United States - Great Plains Map Challenge Config
+   Reuses the existing United States SVG, CSS, flags, and shared engine.
+   States outside this region remain visible in gray as non-playable context.
    ============================================================ */
 
 window.MAP_CHALLENGE_CONFIG = {
-  slug: "united-states-pacific-west",
+  slug: "united-states-great-plains",
 
-  // Reuse the existing United States SVG.
   svgPath: "./united-states-clickable.svg",
 
-  // Reuse the existing state flags.
   showFlags: true,
   flagsBase: "/games/map-challenges/united-states/flags/",
   flagExt: ".webp",
 
-  // States outside this region remain visible as gray, non-playable context.
+  // All states outside this region remain visible as gray context.
   startColors: [
     {
       color: "#777777",
       ids: [
         "alabama",
+        "alaska",
         "arizona",
         "arkansas",
+        "california",
         "colorado",
         "connecticut",
         "delaware",
         "florida",
         "georgia",
+        "hawaii",
         "idaho",
         "illinois",
         "indiana",
-        "iowa",
-        "kansas",
         "kentucky",
         "louisiana",
         "maine",
@@ -40,26 +40,25 @@ window.MAP_CHALLENGE_CONFIG = {
         "michigan",
         "minnesota",
         "mississippi",
-        "missouri",
         "montana",
-        "nebraska",
+        "nevada",
         "new_hampshire",
         "new_jersey",
         "new_mexico",
         "new_york",
         "north_carolina",
-        "north_dakota",
         "ohio",
         "oklahoma",
+        "oregon",
         "pennsylvania",
         "rhode_island",
         "south_carolina",
-        "south_dakota",
         "tennessee",
         "texas",
         "utah",
         "vermont",
         "virginia",
+        "washington",
         "west_virginia",
         "wisconsin",
         "wyoming"
@@ -67,24 +66,22 @@ window.MAP_CHALLENGE_CONFIG = {
     }
   ],
 
-  // Only these states are part of this regional challenge.
+  // Only these states are playable in this regional challenge.
   targets: [
-    "alaska",
-    "california",
-    "hawaii",
-    "nevada",
-    "oregon",
-    "washington"
+    "iowa",
+    "kansas",
+    "missouri",
+    "nebraska",
+    "north_dakota",
+    "south_dakota"
   ],
 
-  // Existing non-state SVG layers.
   ignoreIds: [
     "water",
     "borders",
     "context_land"
   ],
 
-  // Optional display-name overrides.
   displayNames: {
     new_york: "New York"
   },
@@ -94,15 +91,15 @@ window.MAP_CHALLENGE_CONFIG = {
   extraIds: [],
 
   ui: {
-    bannerTitle: "UNITED STATES: PACIFIC WEST MAP CHALLENGE",
-    bannerAria: "United States Pacific West map challenge banner",
+    bannerTitle: "UNITED STATES: GREAT PLAINS MAP CHALLENGE",
+    bannerAria: "United States Great Plains map challenge banner",
 
-    mainAria: "United States Pacific West map challenge",
+    mainAria: "United States Great Plains map challenge",
     mapAria: "United States map",
 
     overlayKicker: "MAP CHALLENGE",
-    overlayTitle: "UNITED STATES | PACIFIC WEST",
-    beginMessage: "How fast can you identify the states of the Pacific West?",
+    overlayTitle: "UNITED STATES | GREAT PLAINS",
+    beginMessage: "How fast can you identify the states of the Great Plains?",
 
     logoSrc: "/assets/images/logo/MSHistory_Logo_Small.png"
   }
