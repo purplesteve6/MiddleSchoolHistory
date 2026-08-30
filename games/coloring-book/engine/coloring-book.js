@@ -47,9 +47,12 @@
   let svgRoot = null;
   let colorGroup = null;
   let inkGroup = null;
-  let userWorkLayer = null;
-  let paintLayer = null;
-  let textLayer = null;
+  let belowWorkLayer = null;
+  let aboveWorkLayer = null;
+  let belowPaintLayer = null;
+  let belowTextLayer = null;
+  let abovePaintLayer = null;
+  let aboveTextLayer = null;
   let fillables = [];
 
   let currentTool = CFG.defaultTool || "bucket";
@@ -213,6 +216,25 @@
     return shape;
   }
 
+  function paintLayerFor(position = layerPosition) {
+    return position === "above" ? abovePaintLayer : belowPaintLayer;
+  }
+
+  function textLayerFor(position = layerPosition) {
+    return position === "above" ? aboveTextLayer : belowTextLayer;
+  }
+
+  function allTextLayers() {
+    return [belowTextLayer, aboveTextLayer].filter(Boolean);
+  }
+
+  function textPosition(text) {
+    if (!text) return null;
+    if (aboveTextLayer?.contains(text)) return "above";
+    if (belowTextLayer?.contains(text)) return "below";
+    return null;
+  }
+
   function updateLayerButtons() {
     els.layerPositionButtons.forEach((button) => {
       const active = button.dataset.layerPosition === layerPosition;
@@ -221,48 +243,43 @@
     });
 
     if (els.layerPositionHint) {
-      els.layerPositionHint.textContent = layerPosition === "above"
-        ? "New brush strokes and text are drawing on top of the black lines."
-        : "New brush strokes and text are drawing behind the black lines.";
-    }
-  }
-
-  function positionUserWorkLayer() {
-    if (!userWorkLayer || !inkGroup || !inkGroup.parentNode) return;
-    const parent = inkGroup.parentNode;
-
-    if (layerPosition === "above") {
-      if (userWorkLayer.nextSibling !== inkGroup.nextSibling) {
-        parent.insertBefore(userWorkLayer, inkGroup.nextSibling);
-      }
-    } else {
-      if (userWorkLayer.nextSibling !== inkGroup) {
-        parent.insertBefore(userWorkLayer, inkGroup);
+      if (selectedText) {
+        const position = textPosition(selectedText);
+        els.layerPositionHint.textContent = position === "above"
+          ? "Selected text is on top. Choose Behind Lines to move just this text."
+          : "Selected text is behind the lines. Choose On Top to move just this text.";
+      } else {
+        els.layerPositionHint.textContent = layerPosition === "above"
+          ? "New brush strokes and text will be placed on top of the black lines."
+          : "New brush strokes and text will be placed behind the black lines.";
       }
     }
-
-    updateLayerButtons();
   }
 
   function setLayerPosition(position, options = {}) {
     const normalized = position === "above" ? "above" : "below";
-    if (layerPosition === normalized && !options.force) {
-      updateLayerButtons();
-      return;
-    }
-
     layerPosition = normalized;
-    positionUserWorkLayer();
 
-    if (options.commit !== false && svgRoot) {
-      commitState();
+    if (selectedText && options.moveSelected !== false) {
+      const destination = textLayerFor(normalized);
+      if (destination && !destination.contains(selectedText)) {
+        destination.appendChild(selectedText);
+        commitState();
+        setStatus(normalized === "above"
+          ? "Selected text moved on top of the ink lines."
+          : "Selected text moved behind the ink lines.");
+      } else if (options.announce !== false) {
+        setStatus(normalized === "above"
+          ? "Selected text is already on top of the ink lines."
+          : "Selected text is already behind the ink lines.");
+      }
+    } else if (options.announce !== false) {
+      setStatus(normalized === "above"
+        ? "New brush strokes and text will appear on top of the ink lines."
+        : "New brush strokes and text will appear behind the ink lines.");
     }
 
-    if (options.announce !== false) {
-      setStatus(layerPosition === "above"
-        ? "Brush strokes and text will appear on top of the ink lines."
-        : "Brush strokes and text will appear behind the ink lines.");
-    }
+    updateLayerButtons();
   }
 
   function setupSvg() {
@@ -283,23 +300,40 @@
       if (!shape.hasAttribute("fill")) shape.setAttribute("fill", "#FFFFFF");
     });
 
-    userWorkLayer = document.createElementNS(SVG_NS, "g");
-    userWorkLayer.id = "user-work-layer";
-    userWorkLayer.dataset.coloringGenerated = "true";
+    belowWorkLayer = document.createElementNS(SVG_NS, "g");
+    belowWorkLayer.id = "below-ink-work";
+    belowWorkLayer.dataset.coloringGenerated = "true";
 
-    paintLayer = document.createElementNS(SVG_NS, "g");
-    paintLayer.id = "paint-layer";
-    paintLayer.dataset.coloringGenerated = "true";
+    belowPaintLayer = document.createElementNS(SVG_NS, "g");
+    belowPaintLayer.id = "below-ink-paint";
+    belowPaintLayer.dataset.coloringGenerated = "true";
 
-    textLayer = document.createElementNS(SVG_NS, "g");
-    textLayer.id = "text-layer";
-    textLayer.dataset.coloringGenerated = "true";
+    belowTextLayer = document.createElementNS(SVG_NS, "g");
+    belowTextLayer.id = "below-ink-text";
+    belowTextLayer.dataset.coloringGenerated = "true";
 
-    userWorkLayer.appendChild(paintLayer);
-    userWorkLayer.appendChild(textLayer);
+    belowWorkLayer.appendChild(belowPaintLayer);
+    belowWorkLayer.appendChild(belowTextLayer);
 
-    inkGroup.parentNode.insertBefore(userWorkLayer, inkGroup);
-    positionUserWorkLayer();
+    aboveWorkLayer = document.createElementNS(SVG_NS, "g");
+    aboveWorkLayer.id = "above-ink-work";
+    aboveWorkLayer.dataset.coloringGenerated = "true";
+
+    abovePaintLayer = document.createElementNS(SVG_NS, "g");
+    abovePaintLayer.id = "above-ink-paint";
+    abovePaintLayer.dataset.coloringGenerated = "true";
+
+    aboveTextLayer = document.createElementNS(SVG_NS, "g");
+    aboveTextLayer.id = "above-ink-text";
+    aboveTextLayer.dataset.coloringGenerated = "true";
+
+    aboveWorkLayer.appendChild(abovePaintLayer);
+    aboveWorkLayer.appendChild(aboveTextLayer);
+
+    const parent = inkGroup.parentNode;
+    parent.insertBefore(belowWorkLayer, inkGroup);
+    parent.insertBefore(aboveWorkLayer, inkGroup.nextSibling);
+    updateLayerButtons();
 
     svgRoot.setAttribute("role", "img");
     svgRoot.setAttribute("aria-label", `${CFG.title || "Coloring page"} interactive coloring page`);
@@ -318,19 +352,20 @@
     updateHistoryButtons();
   }
 
-  function captureState() {
-    let textMarkup = "";
-    if (textLayer) {
-      const clone = textLayer.cloneNode(true);
-      clone.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
-      textMarkup = clone.innerHTML;
-    }
+  function cleanTextMarkup(layer) {
+    if (!layer) return "";
+    const clone = layer.cloneNode(true);
+    clone.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
+    return clone.innerHTML;
+  }
 
+  function captureState() {
     return {
       fills: fillables.map((shape) => shape.getAttribute("fill") || "#FFFFFF"),
-      paint: paintLayer ? paintLayer.innerHTML : "",
-      text: textMarkup,
-      layerPosition
+      belowPaint: belowPaintLayer ? belowPaintLayer.innerHTML : "",
+      belowText: cleanTextMarkup(belowTextLayer),
+      abovePaint: abovePaintLayer ? abovePaintLayer.innerHTML : "",
+      aboveText: cleanTextMarkup(aboveTextLayer)
     };
   }
 
@@ -339,19 +374,26 @@
     state.fills.forEach((fill, index) => {
       if (fillables[index]) fillables[index].setAttribute("fill", fill || "#FFFFFF");
     });
-    if (paintLayer) paintLayer.innerHTML = state.paint || "";
-    if (textLayer) {
-      textLayer.innerHTML = state.text || "";
-      textLayer.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
-    }
-    layerPosition = state.layerPosition === "above" ? "above" : "below";
-    positionUserWorkLayer();
+
+    if (belowPaintLayer) belowPaintLayer.innerHTML = state.belowPaint || "";
+    if (belowTextLayer) belowTextLayer.innerHTML = state.belowText || "";
+    if (abovePaintLayer) abovePaintLayer.innerHTML = state.abovePaint || "";
+    if (aboveTextLayer) aboveTextLayer.innerHTML = state.aboveText || "";
+
+    allTextLayers().forEach((layer) => {
+      layer.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
+    });
     clearTextSelection();
+    updateLayerButtons();
   }
 
   function statesEqual(a, b) {
     if (!a || !b) return false;
-    return a.paint === b.paint && a.text === b.text && a.layerPosition === b.layerPosition && a.fills.join("|") === b.fills.join("|");
+    return a.belowPaint === b.belowPaint
+      && a.belowText === b.belowText
+      && a.abovePaint === b.abovePaint
+      && a.aboveText === b.aboveText
+      && a.fills.join("|") === b.fills.join("|");
   }
 
   function commitState() {
@@ -420,7 +462,7 @@
     currentBrushPath.setAttribute("stroke", currentColor);
     currentBrushPath.setAttribute("stroke-width", String(brushSize));
     currentBrushPath.setAttribute("d", `M ${currentBrushPoints[0].x.toFixed(2)} ${currentBrushPoints[0].y.toFixed(2)}`);
-    paintLayer.appendChild(currentBrushPath);
+    paintLayerFor().appendChild(currentBrushPath);
 
     svgRoot.setPointerCapture?.(event.pointerId);
     event.preventDefault();
@@ -504,7 +546,7 @@
     text.setAttribute("font-family", settings.font);
     text.setAttribute("font-weight", settings.font.toLowerCase().includes("impact") ? "700" : "600");
     text.textContent = settings.value;
-    textLayer.appendChild(text);
+    textLayerFor().appendChild(text);
 
     selectText(text);
     commitState();
@@ -523,6 +565,10 @@
     const fill = normalizeHex(selectedText.getAttribute("fill"));
     if (fill) setCurrentColor(fill, { applyToSelectedText: false });
 
+    const position = textPosition(selectedText);
+    if (position) layerPosition = position;
+    updateLayerButtons();
+
     if (els.deleteTextBtn) els.deleteTextBtn.disabled = false;
   }
 
@@ -530,6 +576,7 @@
     if (selectedText) selectedText.classList.remove("is-selected");
     selectedText = null;
     if (els.deleteTextBtn) els.deleteTextBtn.disabled = true;
+    updateLayerButtons();
   }
 
   function startTextDrag(event, text) {
@@ -600,7 +647,7 @@
 
       if (currentTool === "text") {
         const text = event.target.closest?.(".user-text");
-        if (text && textLayer.contains(text)) {
+        if (text && allTextLayers().some((layer) => layer.contains(text))) {
           startTextDrag(event, text);
           return;
         }
