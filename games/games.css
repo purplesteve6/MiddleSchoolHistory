@@ -107,10 +107,10 @@
   gap: clamp(18px, 2.6vw, 32px);
 }
 
-/* 3 wide on desktop */
+/* 4 wide on desktop */
 @media (min-width: 980px){
   .games-modes__grid{
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
