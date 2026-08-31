@@ -6,7 +6,7 @@
   <title>Coloring Book | Middle School History</title>
 
   <link rel="stylesheet" href="/styles.css" />
-  <link rel="stylesheet" href="/games/coloring-book/coloring-book.css" />
+  <link rel="stylesheet" href="/games/coloring-book/coloring-book.css?v=9.0" />
 </head>
 <body>
 
@@ -22,22 +22,60 @@
     </div>
   </section>
 
-  <main class="page">
-    <p class="coloring-intro">Choose a picture, then color it online with paint-bucket fills, brushes, custom palettes, and text.</p>
+  <main class="page coloring-catalog">
+    <div class="coloring-catalog__intro-row">
+      <div>
+        <p class="coloring-intro">Choose a picture, search the collection, or let us pick one for you.</p>
+      </div>
+      <button class="coloring-surprise-button" id="coloringSurpriseBtn" type="button">🎲 Surprise Me</button>
+    </div>
 
-    <section class="coloring-grid" aria-label="Coloring pages">
-      <a class="coloring-card" href="/games/coloring-book/harriet-tubman/">
-        <div class="coloring-card__thumb">
-          <img src="/games/images/thumbs/coloring-book/harriet-tubman.webp" alt="Harriet Tubman coloring page preview" loading="lazy" />
-        </div>
-        <div class="coloring-card__label">Harriet Tubman</div>
-        <div class="coloring-card__sub">Color an Underground Railroad scene featuring Harriet Tubman.</div>
-      </a>
+    <section class="coloring-catalog-controls" aria-label="Find a coloring page">
+      <div class="coloring-search-wrap">
+        <label for="coloringSearch">Search</label>
+        <input id="coloringSearch" class="coloring-search" type="search" placeholder="Search people, topics, events…" autocomplete="off" />
+      </div>
+
+      <div class="coloring-filter-wrap">
+        <label for="coloringGradeFilter">Grade Level</label>
+        <select id="coloringGradeFilter" class="coloring-filter-select"></select>
+      </div>
+
+      <div class="coloring-filter-wrap">
+        <label for="coloringSubjectFilter">Subject Area</label>
+        <select id="coloringSubjectFilter" class="coloring-filter-select"></select>
+      </div>
+
+      <button class="coloring-clear-button" id="coloringClearFilters" type="button">Clear Filters</button>
     </section>
+
+    <div class="coloring-catalog-summary">
+      <strong id="coloringResultCount">0 pages</strong>
+      <label class="coloring-page-size-label" for="coloringPageSize">
+        Show
+        <select id="coloringPageSize" class="coloring-page-size-select">
+          <option value="16">16</option>
+          <option value="24" selected>24</option>
+          <option value="32">32</option>
+        </select>
+        per page
+      </label>
+    </div>
+
+    <section class="coloring-grid" id="coloringGrid" aria-label="Available coloring pages"></section>
+
+    <div class="coloring-empty" id="coloringEmpty" hidden>
+      <strong>No coloring pages match those filters.</strong>
+      <span>Try a different search, grade level, or subject area.</span>
+    </div>
+
+    <nav class="coloring-pagination" id="coloringPagination" aria-label="Coloring book pages" hidden></nav>
   </main>
 
   <div id="siteFooter" data-include="/partials/footer.html"></div>
 
   <script src="/include.js"></script>
+  <script src="/games/coloring-book/pages/coloring-pages-manifest.js?v=9.0"></script>
+  <script src="/games/coloring-book/coloring-book-gallery.js?v=9.0"></script>
 </body>
 </html>
