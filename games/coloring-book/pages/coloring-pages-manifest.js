@@ -51,7 +51,7 @@ window.COLORING_BOOK_PAGES = [
     description: "Color a distinguished picture of General George Washington",
     gradeLevels: ["7"],
     subjects: ["us-history"],
-    tags: ["George Washington", "horse", "Revolutionary War", "American Revolution", "leadership", "soldiers"]
+    tags: ["George Washington", "horse", "Revolutionary War", "American Revolution", "leadership", "soldiers", "war", "America"]
 
   },
 
@@ -66,5 +66,21 @@ window.COLORING_BOOK_PAGES = [
     gradeLevels: ["7", "8"],
     subjects: ["us-history"],
     tags: ["Harriet Tubman", "Underground Railroad", "abolition", "slavery", "Civil War"]
-  }
+  },
+
+
+  {
+    id: "washington-crossing-delaware",
+    title: "Washington Crossing the Delaware",
+    file: "/games/coloring-book/pages/washington-crossing-delaware.svg",
+    thumbnail: "/games/images/thumbs/coloring-book/washington-crossing-delaware.webp",
+    description: "Color a depiction of Washington crossing the Delaware",
+    gradeLevels: ["7"],
+    subjects: ["us-history"],
+    tags: ["George Washington", "Delaware", "Revolutionary War", "American Revolution", "leadership", "soldiers", "crossing", "flag", "America", "war"]
+
+  },
+
+
+
 ];
