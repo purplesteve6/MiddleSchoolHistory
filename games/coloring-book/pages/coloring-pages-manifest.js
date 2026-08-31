@@ -38,10 +38,10 @@ window.COLORING_BOOK_PAGES = [
     thumbnail: "/games/images/thumbs/coloring-book/athena.webp",
     description: "Color a scene featuring Athena, Greek Goddess of wisdom.",
     gradeLevels: ["6"],
-    subjects: ["world-history", "mythhology"],
+    subjects: ["world-history", "mythology"],
     tags: ["athena", "greek mythology", "greek goddess", "ancient greece", "goddess of wisdom", "warrior goddess", "owl", "spear", "shield", "helmet", "parthenon", "acropolis", "athens", "medusa", "greek armor", "olive tree"]
 
-  }
+  },
 
   {
     id: "harriet-tubman",
