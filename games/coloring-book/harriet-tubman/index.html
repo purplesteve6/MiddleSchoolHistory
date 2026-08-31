@@ -40,15 +40,23 @@
               <span class="tool-button__icon" aria-hidden="true">🖌️</span>
               <span>Brush</span>
             </button>
+            <button class="tool-button" type="button" data-tool="eraser" aria-pressed="false">
+              <span class="tool-button__icon" aria-hidden="true">⌫</span>
+              <span>Eraser</span>
+            </button>
             <button class="tool-button" type="button" data-tool="text" aria-pressed="false">
               <span class="tool-button__icon" aria-hidden="true">T</span>
               <span>Text</span>
+            </button>
+            <button class="tool-button" type="button" data-tool="grab" aria-pressed="false">
+              <span class="tool-button__icon" aria-hidden="true">✋</span>
+              <span>Grab</span>
             </button>
           </div>
         </section>
 
         <section class="tool-group tool-options" id="brushOptions" hidden>
-          <span class="tool-label">Brush Size</span>
+          <span class="tool-label" id="brushOptionsLabel">Brush Size</span>
           <div class="brush-sizes">
             <button class="brush-size" type="button" data-brush-size="5" aria-label="Small brush"><span class="brush-dot" style="width:5px;height:5px"></span></button>
             <button class="brush-size" type="button" data-brush-size="12" aria-label="Medium brush"><span class="brush-dot" style="width:10px;height:10px"></span></button>
@@ -136,7 +144,7 @@
         </div>
 
         <div class="workspace-foot">
-          <span>Mouse wheel over the artwork zooms toward the pointer. Ctrl/Cmd + Z undoes.</span>
+          <span>Mouse wheel zooms toward the pointer. The Grab tool pans when you are zoomed in. Ctrl/Cmd + Z undoes.</span>
           <span>Your work stays in this browser tab until you leave or reload the page.</span>
         </div>
       </section>
