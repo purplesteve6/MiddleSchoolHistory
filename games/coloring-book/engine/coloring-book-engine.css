@@ -247,6 +247,55 @@ body.coloring-book-app-page{
   box-shadow: 0 0 0 3px rgba(216,192,255,.11);
 }
 
+.palette-tabs{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.palette-tab{
+  appearance: none;
+  min-height: 36px;
+  border: 1px solid var(--control-border);
+  border-radius: 10px;
+  background: rgba(255,255,255,.045);
+  color: rgba(255,255,255,.72);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.palette-tab:hover{
+  background: rgba(255,255,255,.09);
+}
+
+.palette-tab.is-active{
+  background: rgba(216,192,255,.20);
+  border-color: rgba(216,192,255,.65);
+  color: #fff;
+}
+
+.palette-panel[hidden]{
+  display: none !important;
+}
+
+.current-colors-empty{
+  margin: 10px 0 0;
+  color: rgba(255,255,255,.48);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.current-swatches:empty + .current-colors-empty{
+  display: block;
+}
+
+.current-swatches:not(:empty) + .current-colors-empty{
+  display: none;
+}
+
 .swatches{
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -353,6 +402,39 @@ body.coloring-book-app-page{
   display: grid;
   grid-template-columns: 1fr 82px;
   gap: 8px;
+}
+
+.text-rotation-row{
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 74px;
+  align-items: center;
+  gap: 8px;
+}
+
+.text-rotation-row label{
+  color: rgba(255,255,255,.68);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.text-rotation-slider{
+  width: 100%;
+  accent-color: var(--purple-lite);
+  cursor: pointer;
+}
+
+.text-rotation-value{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 3px;
+  color: rgba(255,255,255,.62);
+}
+
+.text-rotation-value .number-control{
+  min-height: 36px;
+  padding: 6px 7px;
+  text-align: right;
 }
 
 .delete-text-button{
@@ -719,6 +801,8 @@ body.coloring-book-app-page{
   cursor: none !important;
 }
 .artboard[data-tool="text"] svg{ cursor: text; }
+.artboard[data-tool="eyedrop"],
+.artboard[data-tool="eyedrop"] svg{ cursor: crosshair; }
 .artboard[data-tool="grab"],
 .artboard[data-tool="grab"] svg{ cursor: grab; }
 
@@ -789,6 +873,10 @@ body.coloring-book-app-page{
   stroke-linecap: round;
   stroke-linejoin: round;
   pointer-events: none;
+}
+
+.artboard[data-tool="eyedrop"] svg .user-brush-stroke{
+  pointer-events: stroke;
 }
 
 .artboard svg .user-eraser-stroke{

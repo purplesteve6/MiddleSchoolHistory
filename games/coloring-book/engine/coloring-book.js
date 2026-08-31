@@ -21,6 +21,10 @@
     artboard: document.getElementById("artboard"),
     paletteSelect: document.getElementById("paletteSelect"),
     swatches: document.getElementById("swatches"),
+    paletteTabButtons: Array.from(document.querySelectorAll("[data-palette-tab]")),
+    palettePanels: Array.from(document.querySelectorAll("[data-palette-panel]")),
+    currentSwatches: document.getElementById("currentSwatches"),
+    currentColorsEmpty: document.getElementById("currentColorsEmpty"),
     customColor: document.getElementById("customColor"),
     colorPickerField: document.getElementById("colorPickerField"),
     colorPickerMarker: document.getElementById("colorPickerMarker"),
@@ -36,6 +40,8 @@
     textValue: document.getElementById("textValue"),
     textFont: document.getElementById("textFont"),
     textSize: document.getElementById("textSize"),
+    textRotation: document.getElementById("textRotation"),
+    textRotationNumber: document.getElementById("textRotationNumber"),
     deleteTextBtn: document.getElementById("deleteTextBtn"),
     undoBtn: document.getElementById("undoBtn"),
     redoBtn: document.getElementById("redoBtn"),
@@ -67,6 +73,7 @@
   let currentTool = CFG.defaultTool || "bucket";
   let layerPosition = CFG.defaultLayerPosition === "above" ? "above" : "below";
   let currentColor = normalizeHex(CFG.defaultColor || "#D7263D") || "#D7263D";
+  let colorRecency = [];
   let brushSize = 12;
   let selectedText = null;
 
@@ -248,6 +255,81 @@
     updateColorPickerUi();
   }
 
+  function normalizeSvgColor(value) {
+    const hex = normalizeHex(value);
+    if (hex) return hex;
+    const match = /^rgba?\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)/i.exec(String(value || "").trim());
+    if (match) return rgbToHex(Number(match[1]), Number(match[2]), Number(match[3]));
+    return null;
+  }
+
+  function markColorUsed(value) {
+    const color = normalizeHex(value);
+    if (!color) return;
+    colorRecency = [color, ...colorRecency.filter((item) => item !== color)];
+    refreshCurrentColors();
+  }
+
+  function artworkColorsPresent() {
+    const present = new Set();
+
+    fillables.forEach((shape) => {
+      const color = normalizeSvgColor(shape.getAttribute("fill"));
+      if (color) present.add(color);
+    });
+
+    [belowPaintLayer, abovePaintLayer].filter(Boolean).forEach((layer) => {
+      layer.querySelectorAll(".user-brush-stroke").forEach((stroke) => {
+        const color = normalizeSvgColor(stroke.getAttribute("stroke"));
+        if (color) present.add(color);
+      });
+    });
+
+    allTextLayers().forEach((layer) => {
+      layer.querySelectorAll(".user-text").forEach((textNode) => {
+        const color = normalizeSvgColor(textNode.getAttribute("fill"));
+        if (color) present.add(color);
+      });
+    });
+
+    return present;
+  }
+
+  function renderCurrentColorSwatch(color) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "swatch";
+    if (color === currentColor) button.classList.add("is-active");
+    button.dataset.color = color;
+    button.dataset.light = String(isLightColor(color));
+    button.style.background = color;
+    button.title = color;
+    button.setAttribute("aria-label", `Choose current artwork color ${color}`);
+    button.addEventListener("click", () => setCurrentColor(color, { applyToSelectedText: false }));
+    return button;
+  }
+
+  function refreshCurrentColors() {
+    if (!els.currentSwatches) return;
+    const present = artworkColorsPresent();
+    const colors = colorRecency.filter((color) => present.has(color));
+    els.currentSwatches.innerHTML = "";
+    colors.forEach((color) => els.currentSwatches.appendChild(renderCurrentColorSwatch(color)));
+  }
+
+  function setPaletteTab(tab) {
+    const target = tab === "current" ? "current" : "presets";
+    els.paletteTabButtons.forEach((button) => {
+      const active = button.dataset.paletteTab === target;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-selected", String(active));
+    });
+    els.palettePanels.forEach((panel) => {
+      panel.hidden = panel.dataset.palettePanel !== target;
+    });
+    if (target === "current") refreshCurrentColors();
+  }
+
   function setCurrentColor(value, options = {}) {
     const color = normalizeHex(value);
     if (!color) return false;
@@ -258,14 +340,17 @@
     if (els.currentColorChip) els.currentColorChip.style.background = color;
     if (els.currentColorText) els.currentColorText.textContent = color;
 
-    els.swatches?.querySelectorAll(".swatch").forEach((swatch) => {
-      swatch.classList.toggle("is-active", normalizeHex(swatch.dataset.color) === color);
+    [els.swatches, els.currentSwatches].filter(Boolean).forEach((host) => {
+      host.querySelectorAll(".swatch").forEach((swatch) => {
+        swatch.classList.toggle("is-active", normalizeHex(swatch.dataset.color) === color);
+      });
     });
 
     if (options.syncPicker !== false) syncPickerFromHex(color);
 
     if (selectedText && options.applyToSelectedText !== false) {
       selectedText.setAttribute("fill", color);
+      markColorUsed(color);
       commitState();
       setStatus("Text color updated.");
     }
@@ -331,7 +416,7 @@
   }
 
   function setTool(tool) {
-    if (!["bucket", "brush", "eraser", "text", "grab"].includes(tool)) return;
+    if (!["bucket", "brush", "eraser", "eyedrop", "text", "grab"].includes(tool)) return;
     currentTool = tool;
     els.artboard?.setAttribute("data-tool", tool);
 
@@ -353,6 +438,7 @@
     if (tool === "bucket") setStatus("Paint Bucket: choose a color, then click any white area.");
     if (tool === "brush") setStatus("Brush: drag across the picture to paint freely.");
     if (tool === "eraser") setStatus("Eraser: drag to permanently erase existing brush strokes and text on the active drawing position.");
+    if (tool === "eyedrop") setStatus("Eyedropper: click a colored area, brush stroke, or text to make that the current color.");
     if (tool === "text") setStatus("Text: type your words, then click the picture to place them.");
     if (tool === "grab") setStatus("Grab: drag the artwork to pan around when zoomed in.");
     refreshCursorPreview();
@@ -766,6 +852,7 @@
     });
     clearTextSelection();
     updateLayerButtons();
+    refreshCurrentColors();
   }
 
   function statesEqual(a, b) {
@@ -788,6 +875,7 @@
     if (history.length > MAX_HISTORY) history.shift();
     historyIndex = history.length - 1;
     updateHistoryButtons();
+    refreshCurrentColors();
   }
 
   function updateHistoryButtons() {
@@ -831,7 +919,26 @@
     const oldFill = normalizeHex(shape.getAttribute("fill")) || shape.getAttribute("fill");
     if (String(oldFill).toUpperCase() === currentColor) return;
     shape.setAttribute("fill", currentColor);
+    markColorUsed(currentColor);
     commitState();
+  }
+
+  function colorFromArtworkTarget(target) {
+    if (!target) return null;
+    const node = target.closest?.(".user-text, .user-brush-stroke, [data-coloring-fillable='true']");
+    if (!node || !svgRoot?.contains(node)) return null;
+    if (node.classList?.contains("user-brush-stroke")) return normalizeSvgColor(node.getAttribute("stroke"));
+    return normalizeSvgColor(node.getAttribute("fill"));
+  }
+
+  function eyedropColor(target) {
+    const color = colorFromArtworkTarget(target);
+    if (!color) {
+      setStatus("Eyedropper: click a colored shape, brush stroke, or text.");
+      return;
+    }
+    setCurrentColor(color, { applyToSelectedText: false });
+    setStatus(`Picked ${color}.`);
   }
 
   function startBrush(event) {
@@ -845,6 +952,7 @@
     currentBrushPath.setAttribute("stroke-width", String(brushSize));
     currentBrushPath.setAttribute("d", `M ${currentBrushPoints[0].x.toFixed(2)} ${currentBrushPoints[0].y.toFixed(2)}`);
     paintLayerFor().appendChild(currentBrushPath);
+    markColorUsed(currentColor);
     showCursorPreview(event);
 
     svgRoot.setPointerCapture?.(event.pointerId);
@@ -997,11 +1105,55 @@
     event.preventDefault();
   }
 
+  function clampRotation(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return 0;
+    return Math.max(-180, Math.min(180, n));
+  }
+
+  function textRotationValue(textNode) {
+    if (!textNode) return 0;
+    const dataValue = Number(textNode.dataset.rotation);
+    if (Number.isFinite(dataValue)) return clampRotation(dataValue);
+    const match = /rotate\(\s*([-+]?\d*\.?\d+)/.exec(textNode.getAttribute("transform") || "");
+    return match ? clampRotation(match[1]) : 0;
+  }
+
+  function applyTextRotation(textNode, value) {
+    if (!textNode) return;
+    const rotation = clampRotation(value);
+    const x = Number(textNode.getAttribute("x")) || 0;
+    const y = Number(textNode.getAttribute("y")) || 0;
+    textNode.dataset.rotation = String(rotation);
+    if (Math.abs(rotation) < 0.001) textNode.removeAttribute("transform");
+    else textNode.setAttribute("transform", `rotate(${rotation} ${x.toFixed(2)} ${y.toFixed(2)})`);
+  }
+
+  function syncTextRotationControls(value) {
+    const rotation = clampRotation(value);
+    if (els.textRotation) els.textRotation.value = String(rotation);
+    if (els.textRotationNumber) els.textRotationNumber.value = String(rotation);
+  }
+
+  function previewTextRotation(value) {
+    const rotation = clampRotation(value);
+    syncTextRotationControls(rotation);
+    if (selectedText) applyTextRotation(selectedText, rotation);
+  }
+
+  function commitTextRotation() {
+    if (!selectedText) return;
+    applyTextRotation(selectedText, els.textRotationNumber?.value ?? 0);
+    commitState();
+    setStatus("Text rotation updated.");
+  }
+
   function currentTextSettings() {
     return {
       value: String(els.textValue?.value || "").trim(),
       font: els.textFont?.value || "Arial, sans-serif",
-      size: Math.max(10, Math.min(160, Number(els.textSize?.value) || 44))
+      size: Math.max(10, Math.min(160, Number(els.textSize?.value) || 44)),
+      rotation: clampRotation(els.textRotationNumber?.value ?? els.textRotation?.value ?? 0)
     };
   }
 
@@ -1022,7 +1174,9 @@
     text.setAttribute("font-family", settings.font);
     text.setAttribute("font-weight", settings.font.toLowerCase().includes("impact") ? "700" : "600");
     text.textContent = settings.value;
+    applyTextRotation(text, settings.rotation);
     textLayerFor().appendChild(text);
+    markColorUsed(currentColor);
 
     selectText(text);
     commitState();
@@ -1037,6 +1191,7 @@
     if (els.textValue) els.textValue.value = selectedText.textContent || "";
     if (els.textFont) els.textFont.value = selectedText.getAttribute("font-family") || els.textFont.value;
     if (els.textSize) els.textSize.value = selectedText.getAttribute("font-size") || els.textSize.value;
+    syncTextRotationControls(textRotationValue(selectedText));
 
     const fill = normalizeHex(selectedText.getAttribute("fill"));
     if (fill) setCurrentColor(fill, { applyToSelectedText: false });
@@ -1079,6 +1234,7 @@
     if (Math.abs(dx) + Math.abs(dy) > 1) textDidMove = true;
     selectedText.setAttribute("x", (textOriginalPos.x + dx).toFixed(2));
     selectedText.setAttribute("y", (textOriginalPos.y + dy).toFixed(2));
+    applyTextRotation(selectedText, textRotationValue(selectedText));
     if (textMaskMarks && textOriginalMaskTranslate) {
       textMaskMarks.setAttribute("transform", `translate(${(textOriginalMaskTranslate.x + dx).toFixed(2)} ${(textOriginalMaskTranslate.y + dy).toFixed(2)})`);
     }
@@ -1108,6 +1264,8 @@
     selectedText.setAttribute("font-family", settings.font);
     selectedText.setAttribute("font-size", String(settings.size));
     selectedText.setAttribute("fill", currentColor);
+    applyTextRotation(selectedText, settings.rotation);
+    markColorUsed(currentColor);
     commitState();
     setStatus("Text updated.");
   }
@@ -1170,6 +1328,7 @@
 
     svgRoot.addEventListener("click", (event) => {
       if (currentTool === "bucket") paintBucket(event.target);
+      if (currentTool === "eyedrop") eyedropColor(event.target);
     });
 
     // Mouse eraser tracking is intentionally separate from SVG Pointer Events.
@@ -1278,6 +1437,7 @@
 
     const specs = [
       { tool: "eraser", icon: "⌫", label: "Eraser" },
+      { tool: "eyedrop", icon: "💧", label: "Eyedropper" },
       { tool: "grab", icon: "✋", label: "Grab" }
     ];
 
@@ -1302,6 +1462,10 @@
 
     els.layerPositionButtons.forEach((button) => {
       button.addEventListener("click", () => setLayerPosition(button.dataset.layerPosition));
+    });
+
+    els.paletteTabButtons.forEach((button) => {
+      button.addEventListener("click", () => setPaletteTab(button.dataset.paletteTab));
     });
 
     els.paletteSelect?.addEventListener("change", () => renderPalette(els.paletteSelect.value));
@@ -1336,6 +1500,16 @@
     [els.textValue, els.textFont, els.textSize].forEach((control) => {
       control?.addEventListener("change", updateSelectedText);
     });
+
+    els.textRotation?.addEventListener("input", () => {
+      previewTextRotation(els.textRotation.value);
+    });
+    els.textRotation?.addEventListener("change", commitTextRotation);
+
+    els.textRotationNumber?.addEventListener("input", () => {
+      previewTextRotation(els.textRotationNumber.value);
+    });
+    els.textRotationNumber?.addEventListener("change", commitTextRotation);
 
     els.deleteTextBtn?.addEventListener("click", deleteSelectedText);
     els.undoBtn?.addEventListener("click", undo);
@@ -1417,6 +1591,8 @@
     setCurrentColor(currentColor, { applyToSelectedText: false });
     updateLayerButtons();
     updateZoomUi();
+    setPaletteTab("presets");
+    refreshCurrentColors();
     ensureCursorPreview();
     setTool(currentTool);
 

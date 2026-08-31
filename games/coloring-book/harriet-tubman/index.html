@@ -6,9 +6,9 @@
   <title>Harriet Tubman | Middle School History</title>
 
   <link rel="stylesheet" href="/styles.css" />
-  <link rel="stylesheet" href="/games/coloring-book/engine/coloring-book-engine.css?v=7.6" />
+  <link rel="stylesheet" href="/games/coloring-book/engine/coloring-book-engine.css?v=7.7" />
 </head>
-<body class="coloring-book-app-page" data-coloring-build="7.1">
+<body class="coloring-book-app-page" data-coloring-build="7.7">
 
   <div id="siteHeader" data-include="/partials/main-header.html"></div>
 
@@ -43,6 +43,10 @@
             <button class="tool-button" type="button" data-tool="eraser" aria-pressed="false">
               <span class="tool-button__icon" aria-hidden="true">⌫</span>
               <span>Eraser</span>
+            </button>
+            <button class="tool-button" type="button" data-tool="eyedrop" aria-pressed="false">
+              <span class="tool-button__icon" aria-hidden="true">💧</span>
+              <span>Eyedropper</span>
             </button>
             <button class="tool-button" type="button" data-tool="text" aria-pressed="false">
               <span class="tool-button__icon" aria-hidden="true">T</span>
@@ -80,15 +84,31 @@
               </select>
               <input class="number-control" id="textSize" type="number" value="44" min="10" max="160" step="2" aria-label="Text size" />
             </div>
+            <div class="text-rotation-row">
+              <label for="textRotation">Rotate</label>
+              <input class="text-rotation-slider" id="textRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Text rotation" />
+              <div class="text-rotation-value"><input class="number-control" id="textRotationNumber" type="number" min="-180" max="180" step="1" value="0" aria-label="Text rotation degrees" /><span>°</span></div>
+            </div>
             <button class="delete-text-button" id="deleteTextBtn" type="button" disabled>Delete Selected Text</button>
           </div>
           <p class="tool-help">Type first, then click the artwork to place it. Click and drag existing text to move it.</p>
         </section>
 
-        <section class="tool-group" aria-label="Choose a palette">
-          <label class="tool-label" for="paletteSelect">Palette</label>
-          <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
-          <div class="swatches" id="swatches" aria-label="Palette colors"></div>
+        <section class="tool-group" aria-label="Color palettes">
+          <span class="tool-label">Colors</span>
+          <div class="palette-tabs" role="tablist" aria-label="Palette views">
+            <button class="palette-tab is-active" type="button" role="tab" aria-selected="true" data-palette-tab="presets">Palettes</button>
+            <button class="palette-tab" type="button" role="tab" aria-selected="false" data-palette-tab="current">Current Colors</button>
+          </div>
+          <div class="palette-panel" data-palette-panel="presets">
+            <label class="sr-only" for="paletteSelect">Palette</label>
+            <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
+            <div class="swatches" id="swatches" aria-label="Palette colors"></div>
+          </div>
+          <div class="palette-panel" data-palette-panel="current" hidden>
+            <div class="swatches current-swatches" id="currentSwatches" aria-label="Colors currently used in the artwork"></div>
+            <p class="current-colors-empty" id="currentColorsEmpty">No custom colors are currently used.</p>
+          </div>
         </section>
 
         <section class="tool-group" aria-label="Color picker">
@@ -154,8 +174,8 @@
   <div id="siteFooter" data-include="/partials/footer.html"></div>
 
   <script src="/include.js"></script>
-  <script src="/games/coloring-book/engine/palettes.js?v=7.6"></script>
-  <script src="/games/coloring-book/harriet-tubman/config.js?v=7.6"></script>
-  <script src="/games/coloring-book/engine/coloring-book.js?v=7.6"></script>
+  <script src="/games/coloring-book/engine/palettes.js?v=7.7"></script>
+  <script src="/games/coloring-book/harriet-tubman/config.js?v=7.7"></script>
+  <script src="/games/coloring-book/engine/coloring-book.js?v=7.7"></script>
 </body>
 </html>
