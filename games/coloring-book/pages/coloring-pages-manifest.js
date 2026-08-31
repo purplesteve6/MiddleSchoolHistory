@@ -35,7 +35,7 @@ window.COLORING_BOOK_PAGES = [
     file: "/games/coloring-book/pages/harriet-tubman.svg",
     thumbnail: "/games/images/thumbs/coloring-book/harriet-tubman.webp",
     description: "Color an Underground Railroad scene featuring Harriet Tubman.",
-    gradeLevels: [],
+    gradeLevels: ["7", "8"],
     subjects: ["us-history"],
     tags: ["Harriet Tubman", "Underground Railroad", "abolition", "slavery", "Civil War"]
   }
