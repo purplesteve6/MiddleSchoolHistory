@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Harriet Tubman | Middle School History</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/games/coloring-book/engine/coloring-book-engine.css?v=7.6" />
+</head>
+<body class="coloring-book-app-page" data-coloring-build="7.1">
+
+  <div id="siteHeader" data-include="/partials/main-header.html"></div>
+
+  <section class="coloring-band coloring-band--image"
+           style="background-image: url('/assets/images/banners/games-banner.jpg');"
+           aria-label="Coloring Book banner">
+    <div class="coloring-band__bottom">
+      <div class="coloring-band__inner">
+        <h1 class="coloring-band__title" id="pageTitle">Harriet Tubman</h1>
+      </div>
+    </div>
+  </section>
+
+  <main class="coloring-page">
+    <a class="coloring-back" href="/games/coloring-book/">← Coloring Book</a>
+
+    <div class="coloring-app">
+      <aside class="coloring-toolbar" aria-label="Coloring tools">
+        <h2 class="tool-title">Coloring Tools</h2>
+
+        <section class="tool-group" aria-label="Choose a tool">
+          <span class="tool-label">Tool</span>
+          <div class="tool-buttons">
+            <button class="tool-button" type="button" data-tool="bucket" aria-pressed="true">
+              <span class="tool-button__icon" aria-hidden="true">🪣</span>
+              <span>Bucket</span>
+            </button>
+            <button class="tool-button" type="button" data-tool="brush" aria-pressed="false">
+              <span class="tool-button__icon" aria-hidden="true">🖌️</span>
+              <span>Brush</span>
+            </button>
+            <button class="tool-button" type="button" data-tool="eraser" aria-pressed="false">
+              <span class="tool-button__icon" aria-hidden="true">⌫</span>
+              <span>Eraser</span>
+            </button>
+            <button class="tool-button" type="button" data-tool="text" aria-pressed="false">
+              <span class="tool-button__icon" aria-hidden="true">T</span>
+              <span>Text</span>
+            </button>
+            <button class="tool-button" type="button" data-tool="grab" aria-pressed="false">
+              <span class="tool-button__icon" aria-hidden="true">✋</span>
+              <span>Grab</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="tool-group tool-options" id="brushOptions" hidden>
+          <span class="tool-label" id="brushOptionsLabel">Brush Size</span>
+          <div class="brush-sizes">
+            <button class="brush-size" type="button" data-brush-size="5" aria-label="Small brush"><span class="brush-dot" style="width:5px;height:5px"></span></button>
+            <button class="brush-size" type="button" data-brush-size="12" aria-label="Medium brush"><span class="brush-dot" style="width:10px;height:10px"></span></button>
+            <button class="brush-size" type="button" data-brush-size="24" aria-label="Large brush"><span class="brush-dot" style="width:16px;height:16px"></span></button>
+            <button class="brush-size" type="button" data-brush-size="42" aria-label="Extra large brush"><span class="brush-dot" style="width:23px;height:23px"></span></button>
+          </div>
+        </section>
+
+        <section class="tool-group tool-options" id="textOptions" hidden>
+          <span class="tool-label">Text</span>
+          <div class="text-settings">
+            <input class="text-control" id="textValue" type="text" maxlength="80" placeholder="Type your text…" />
+            <div class="text-two-col">
+              <select class="palette-select" id="textFont" aria-label="Text font">
+                <option value="Arial, sans-serif">Arial</option>
+                <option value="Impact, Haettenschweiler, sans-serif">Impact</option>
+                <option value="'Comic Sans MS', 'Trebuchet MS', sans-serif">Comic</option>
+                <option value="Georgia, serif">Georgia</option>
+                <option value="'Lemon Milk', Arial, sans-serif">Lemon Milk</option>
+                <option value="'Tommy Soft', Arial, sans-serif">Tommy Soft</option>
+              </select>
+              <input class="number-control" id="textSize" type="number" value="44" min="10" max="160" step="2" aria-label="Text size" />
+            </div>
+            <button class="delete-text-button" id="deleteTextBtn" type="button" disabled>Delete Selected Text</button>
+          </div>
+          <p class="tool-help">Type first, then click the artwork to place it. Click and drag existing text to move it.</p>
+        </section>
+
+        <section class="tool-group" aria-label="Choose a palette">
+          <label class="tool-label" for="paletteSelect">Palette</label>
+          <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
+          <div class="swatches" id="swatches" aria-label="Palette colors"></div>
+        </section>
+
+        <section class="tool-group" aria-label="Color picker">
+          <span class="tool-label">Color Picker</span>
+          <div class="color-picker-field" id="colorPickerField" role="slider" tabindex="0" aria-label="Choose saturation and brightness">
+            <span class="color-picker-marker" id="colorPickerMarker" aria-hidden="true"></span>
+          </div>
+          <input class="hue-slider" id="hueSlider" type="range" min="0" max="360" step="1" value="350" aria-label="Hue" />
+          <div class="color-picker-bottom-row">
+            <span class="current-color-chip" id="currentColorChip" aria-hidden="true"></span>
+            <input class="hex-input" id="hexInput" type="text" value="#D7263D" maxlength="7" spellcheck="false" aria-label="Hex color code" />
+          </div>
+          <div class="current-color-row current-color-row--picker">
+            <span>Current: <strong id="currentColorText">#D7263D</strong></span>
+          </div>
+        </section>
+
+        <div class="coloring-status" id="coloringStatus" role="status" aria-live="polite">Loading coloring page…</div>
+      </aside>
+
+      <section class="coloring-workspace" aria-label="Coloring page workspace">
+        <div class="workspace-commandbar">
+          <div class="workspace-actions" aria-label="File and edit actions">
+            <button class="menu-button" id="undoBtn" type="button" disabled>↶ Undo</button>
+            <button class="menu-button" id="redoBtn" type="button" disabled>↷ Redo</button>
+            <button class="menu-button menu-button--danger" id="resetBtn" type="button">Clear</button>
+            <button class="menu-button menu-button--primary" id="printBtn" type="button">Print / Save</button>
+          </div>
+
+          <div class="workspace-view-controls">
+            <div class="drawing-position-compact" aria-label="Choose drawing position">
+              <span class="compact-control-label">Drawing Position</span>
+              <div class="layer-toggle layer-toggle--compact">
+                <button class="layer-button is-active" type="button" data-layer-position="below" aria-pressed="true">Behind Lines</button>
+                <button class="layer-button" type="button" data-layer-position="above" aria-pressed="false">On Top</button>
+              </div>
+              <span class="sr-only" id="layerPositionHint">New brush strokes and text will be placed behind the black lines.</span>
+            </div>
+
+            <div class="zoom-compact" aria-label="Zoom controls">
+              <span class="compact-control-label">Zoom</span>
+              <div class="zoom-inline-row">
+                <input class="zoom-slider" id="zoomSlider" type="range" min="100" max="400" step="5" value="100" aria-label="Zoom level" />
+                <span class="zoom-value" id="zoomValue">100%</span>
+                <button class="zoom-reset-button" id="zoomResetBtn" type="button" disabled>Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="artboard-wrap" id="artboardWrap">
+          <div class="artboard is-loading" id="artboard" data-tool="bucket" aria-label="Interactive coloring page"></div>
+        </div>
+
+        <div class="workspace-foot">
+          <span>Mouse wheel zooms toward the pointer. The Grab tool pans when you are zoomed in. Ctrl/Cmd + Z undoes.</span>
+          <span>Your work stays in this browser tab until you leave or reload the page.</span>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="siteFooter" data-include="/partials/footer.html"></div>
+
+  <script src="/include.js"></script>
+  <script src="/games/coloring-book/engine/palettes.js?v=7.6"></script>
+  <script src="/games/coloring-book/harriet-tubman/config.js?v=7.6"></script>
+  <script src="/games/coloring-book/engine/coloring-book.js?v=7.6"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coloring Book | Middle School History</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/games/coloring-book/coloring-book.css" />
+</head>
+<body>
+
+  <div id="siteHeader" data-include="/partials/main-header.html"></div>
+
+  <section class="coloring-list-band coloring-list-band--image"
+           style="background-image: url('/assets/images/banners/games-banner.jpg');"
+           aria-label="Coloring Book banner">
+    <div class="coloring-list-band__bottom">
+      <div class="coloring-list-band__inner">
+        <h1 class="coloring-list-band__title">COLORING BOOK</h1>
+      </div>
+    </div>
+  </section>
+
+  <main class="page">
+    <p class="coloring-intro">Choose a picture, then color it online with paint-bucket fills, brushes, custom palettes, and text.</p>
+
+    <section class="coloring-grid" aria-label="Coloring pages">
+      <a class="coloring-card" href="/games/coloring-book/harriet-tubman/">
+        <div class="coloring-card__thumb">
+          <img src="/games/images/thumbs/coloring-book/harriet-tubman.webp" alt="Harriet Tubman coloring page preview" loading="lazy" />
+        </div>
+        <div class="coloring-card__label">Harriet Tubman</div>
+        <div class="coloring-card__sub">Color an Underground Railroad scene featuring Harriet Tubman.</div>
+      </a>
+    </section>
+  </main>
+
+  <div id="siteFooter" data-include="/partials/footer.html"></div>
+
+  <script src="/include.js"></script>
+</body>
+</html>
