@@ -22,7 +22,7 @@
 
   host.innerHTML = `
   <section class="coloring-band coloring-band--image"
-           style="background-image: url('/assets/images/banners/coloring-book-banner.jpg');"
+           style="background-image: url('/assets/images/banners/games-banner.jpg');"
            aria-label="Coloring Book banner">
     <div class="coloring-band__bottom">
       <div class="coloring-band__inner">
@@ -94,21 +94,23 @@
               <span class="tool-label">Text</span>
               <div class="text-settings">
                 <input class="text-control" id="textValue" type="text" maxlength="80" placeholder="Type your text…" />
-                <div class="text-two-col">
-                  <select class="palette-select" id="textFont" aria-label="Text font">
-                    <option value="Arial, sans-serif">Arial</option>
-                    <option value="Impact, Haettenschweiler, sans-serif">Impact</option>
-                    <option value="'Comic Sans MS', 'Trebuchet MS', sans-serif">Comic</option>
-                    <option value="Georgia, serif">Georgia</option>
-                    <option value="'Lemon Milk', Arial, sans-serif">Lemon Milk</option>
-                    <option value="'Tommy Soft', Arial, sans-serif">Tommy Soft</option>
-                  </select>
-                  <input class="number-control" id="textSize" type="number" value="44" min="10" max="160" step="2" aria-label="Text size" />
+                <select class="palette-select" id="textFont" aria-label="Text font">
+                  <option value="Arial, sans-serif">Arial</option>
+                  <option value="Impact, Haettenschweiler, sans-serif">Impact</option>
+                  <option value="'Comic Sans MS', 'Trebuchet MS', sans-serif">Comic</option>
+                  <option value="Georgia, serif">Georgia</option>
+                  <option value="'Lemon Milk', Arial, sans-serif">Lemon Milk</option>
+                  <option value="'Tommy Soft', Arial, sans-serif">Tommy Soft</option>
+                </select>
+
+                <div class="stamp-control-block">
+                  <div class="stamp-control-head"><label for="textSize">Size</label><span>Small</span><span>Large</span></div>
+                  <input class="stamp-slider" id="textSize" type="range" value="44" min="10" max="160" step="2" aria-label="Text size" />
                 </div>
-                <div class="text-rotation-row">
-                  <label for="textRotation">Rotate</label>
-                  <input class="text-rotation-slider" id="textRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Text rotation" />
-                  <div class="text-rotation-value"><input class="number-control" id="textRotationNumber" type="number" min="-180" max="180" step="1" value="0" aria-label="Text rotation degrees" /><span>°</span></div>
+
+                <div class="stamp-control-block">
+                  <div class="stamp-control-head stamp-control-head--rotation"><label for="textRotation">Rotate</label><output id="textRotationValue" for="textRotation">0°</output></div>
+                  <input class="stamp-slider" id="textRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Text rotation" />
                 </div>
                 <button class="delete-text-button" id="deleteTextBtn" type="button" disabled>Delete Selected Text</button>
               </div>

@@ -78,7 +78,7 @@
     textFont: document.getElementById("textFont"),
     textSize: document.getElementById("textSize"),
     textRotation: document.getElementById("textRotation"),
-    textRotationNumber: document.getElementById("textRotationNumber"),
+    textRotationValue: document.getElementById("textRotationValue"),
     deleteTextBtn: document.getElementById("deleteTextBtn"),
     stampOptions: document.getElementById("stampOptions"),
     stampChoices: Array.from(document.querySelectorAll("[data-stamp-src]")),
@@ -1296,7 +1296,7 @@
   function syncTextRotationControls(value) {
     const rotation = clampRotation(value);
     if (els.textRotation) els.textRotation.value = String(rotation);
-    if (els.textRotationNumber) els.textRotationNumber.value = String(rotation);
+    if (els.textRotationValue) els.textRotationValue.textContent = `${Math.round(rotation)}°`;
   }
 
   function previewTextRotation(value) {
@@ -1307,7 +1307,7 @@
 
   function commitTextRotation() {
     if (!selectedText) return;
-    applyTextRotation(selectedText, els.textRotationNumber?.value ?? 0);
+    applyTextRotation(selectedText, els.textRotation?.value ?? 0);
     commitState();
     setStatus("Text rotation updated.");
   }
@@ -1317,7 +1317,7 @@
       value: String(els.textValue?.value || "").trim(),
       font: els.textFont?.value || "Arial, sans-serif",
       size: Math.max(10, Math.min(160, Number(els.textSize?.value) || 44)),
-      rotation: clampRotation(els.textRotationNumber?.value ?? els.textRotation?.value ?? 0)
+      rotation: clampRotation(els.textRotation?.value ?? 0)
     };
   }
 
@@ -2010,19 +2010,25 @@
     els.stampRotation?.addEventListener("change", commitStampRotation);
     els.deleteStampBtn?.addEventListener("click", deleteSelectedStamp);
 
-    [els.textValue, els.textFont, els.textSize].forEach((control) => {
+    [els.textValue, els.textFont].forEach((control) => {
       control?.addEventListener("change", updateSelectedText);
+    });
+
+    els.textSize?.addEventListener("input", () => {
+      if (!selectedText) return;
+      const size = Math.max(10, Math.min(160, Number(els.textSize.value) || 44));
+      selectedText.setAttribute("font-size", String(size));
+    });
+    els.textSize?.addEventListener("change", () => {
+      if (!selectedText) return;
+      commitState();
+      setStatus("Text size updated.");
     });
 
     els.textRotation?.addEventListener("input", () => {
       previewTextRotation(els.textRotation.value);
     });
     els.textRotation?.addEventListener("change", commitTextRotation);
-
-    els.textRotationNumber?.addEventListener("input", () => {
-      previewTextRotation(els.textRotationNumber.value);
-    });
-    els.textRotationNumber?.addEventListener("change", commitTextRotation);
 
     els.deleteTextBtn?.addEventListener("click", deleteSelectedText);
     els.undoBtn?.addEventListener("click", undo);
