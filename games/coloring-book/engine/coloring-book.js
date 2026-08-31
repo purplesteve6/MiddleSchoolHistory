@@ -182,7 +182,15 @@
     const preview = document.createElement("div");
     preview.className = "tool-cursor-preview";
     preview.setAttribute("aria-hidden", "true");
-    preview.innerHTML = `<span class="tool-cursor-preview__x"></span>`;
+    preview.innerHTML = `
+      <span class="tool-cursor-preview__x"></span>
+      <svg class="tool-cursor-preview__eyedrop" viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+        <g transform="rotate(-45 14 14)">
+          <path d="M12 3h4v5h2.4c1.1 0 1.6 1.3.8 2.1l-2.1 2.1V23a2 2 0 0 1-2 2h-2.2a2 2 0 0 1-2-2V12.2l-2.1-2.1C8 9.3 8.5 8 9.6 8H12V3Z" fill="#fff" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+          <path class="tool-cursor-preview__eyedrop-color" d="M11 18h6v5a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-5Z"/>
+          <path d="M11 18h6" fill="none" stroke="#000" stroke-width="1.4"/>
+        </g>
+      </svg>`;
     document.body.appendChild(preview);
     cursorPreview = preview;
   }
@@ -196,13 +204,26 @@
   function showCursorPreview(event) {
     ensureCursorPreview();
     if (!cursorPreview) return;
-    const diameter = previewStrokeDiameter();
-    cursorPreview.style.width = `${diameter}px`;
-    cursorPreview.style.height = `${diameter}px`;
+
     cursorPreview.style.left = `${event.clientX}px`;
     cursorPreview.style.top = `${event.clientY}px`;
     cursorPreview.dataset.mode = currentTool;
-    cursorPreview.hidden = !(currentTool === "brush" || currentTool === "eraser");
+
+    if (currentTool === "eyedrop") {
+      cursorPreview.style.width = "32px";
+      cursorPreview.style.height = "32px";
+      const hoverColor = colorFromArtworkTarget(event.target) || "#FFFFFF";
+      cursorPreview.style.setProperty("--eyedrop-hover-color", hoverColor);
+      cursorPreview.hidden = false;
+    } else if (currentTool === "brush" || currentTool === "eraser") {
+      const diameter = previewStrokeDiameter();
+      cursorPreview.style.width = `${diameter}px`;
+      cursorPreview.style.height = `${diameter}px`;
+      cursorPreview.hidden = false;
+    } else {
+      cursorPreview.hidden = true;
+    }
+
     cursorPreviewX = event.clientX;
     cursorPreviewY = event.clientY;
   }
@@ -215,15 +236,22 @@
   }
 
   function refreshCursorPreview() {
-    if ((currentTool !== "brush" && currentTool !== "eraser") || cursorPreviewX == null || cursorPreviewY == null) {
+    if (!["brush", "eraser", "eyedrop"].includes(currentTool) || cursorPreviewX == null || cursorPreviewY == null) {
       hideCursorPreview();
       return;
     }
     ensureCursorPreview();
     if (!cursorPreview) return;
-    const diameter = previewStrokeDiameter();
-    cursorPreview.style.width = `${diameter}px`;
-    cursorPreview.style.height = `${diameter}px`;
+
+    if (currentTool === "eyedrop") {
+      cursorPreview.style.width = "32px";
+      cursorPreview.style.height = "32px";
+    } else {
+      const diameter = previewStrokeDiameter();
+      cursorPreview.style.width = `${diameter}px`;
+      cursorPreview.style.height = `${diameter}px`;
+    }
+
     cursorPreview.style.left = `${cursorPreviewX}px`;
     cursorPreview.style.top = `${cursorPreviewY}px`;
     cursorPreview.dataset.mode = currentTool;
@@ -1031,6 +1059,27 @@
     commitState();
   }
 
+  function renderedSvgColor(node) {
+    if (!node || !svgRoot?.contains(node) || typeof window.getComputedStyle !== "function") return null;
+    const style = window.getComputedStyle(node);
+
+    const fillText = String(style.fill || node.getAttribute?.("fill") || "").trim().toLowerCase();
+    const fillOpacity = Number(style.fillOpacity || 1);
+    if (fillText && fillText !== "none" && fillOpacity > 0) {
+      const fill = normalizeSvgColor(style.fill) || normalizeSvgColor(node.getAttribute?.("fill"));
+      if (fill) return fill;
+    }
+
+    const strokeText = String(style.stroke || node.getAttribute?.("stroke") || "").trim().toLowerCase();
+    const strokeOpacity = Number(style.strokeOpacity || 1);
+    if (strokeText && strokeText !== "none" && strokeOpacity > 0) {
+      const stroke = normalizeSvgColor(style.stroke) || normalizeSvgColor(node.getAttribute?.("stroke"));
+      if (stroke) return stroke;
+    }
+
+    return null;
+  }
+
   function colorFromArtworkTarget(target) {
     if (!target) return null;
     const stamp = target.closest?.(".user-stamp");
@@ -1038,12 +1087,12 @@
       const region = target.closest?.("[data-stamp-main='true'], [data-stamp-accent='true']");
       if (region?.dataset?.stampAccent === "true") return stampChannelColor(stamp, "accent");
       if (region?.dataset?.stampMain === "true") return stampChannelColor(stamp, "main");
-      return stampChannelColor(stamp, "main") || stampChannelColor(stamp, "accent");
+      return renderedSvgColor(target) || stampChannelColor(stamp, "main") || stampChannelColor(stamp, "accent");
     }
     const node = target.closest?.(".user-text, .user-brush-stroke, [data-coloring-fillable='true']");
     if (!node || !svgRoot?.contains(node)) return null;
     if (node.classList?.contains("user-brush-stroke")) return normalizeSvgColor(node.getAttribute("stroke"));
-    return normalizeSvgColor(node.getAttribute("fill"));
+    return normalizeSvgColor(node.getAttribute("fill")) || renderedSvgColor(node);
   }
 
   function eyedropColor(target) {
@@ -1714,11 +1763,11 @@
 
   function bindSvgEvents() {
     els.artboard?.addEventListener("pointerenter", (event) => {
-      if (currentTool === "brush" || currentTool === "eraser") showCursorPreview(event);
+      if (currentTool === "brush" || currentTool === "eraser" || currentTool === "eyedrop") showCursorPreview(event);
     });
 
     els.artboard?.addEventListener("pointermove", (event) => {
-      if (currentTool === "brush" || currentTool === "eraser") showCursorPreview(event);
+      if (currentTool === "brush" || currentTool === "eraser" || currentTool === "eyedrop") showCursorPreview(event);
     });
 
     els.artboard?.addEventListener("pointerleave", () => {
