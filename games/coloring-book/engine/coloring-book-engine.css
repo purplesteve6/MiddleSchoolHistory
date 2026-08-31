@@ -398,77 +398,6 @@ body.coloring-book-app-page{
   gap: 9px;
 }
 
-.stamp-picker{
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.stamp-choice{
-  display: grid;
-  gap: 6px;
-  place-items: center;
-  min-height: 92px;
-  padding: 8px;
-  border: 1px solid var(--control-border);
-  border-radius: 12px;
-  background: rgba(255,255,255,.04);
-  color: #fff;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 850;
-  cursor: pointer;
-}
-
-.stamp-choice img{
-  width: 100%;
-  max-width: 66px;
-  max-height: 46px;
-  object-fit: contain;
-  display: block;
-}
-
-.stamp-choice:hover{ background: rgba(255,255,255,.08); }
-.stamp-choice.is-active{
-  background: rgba(216,192,255,.18);
-  border-color: rgba(216,192,255,.65);
-}
-
-.stamp-color-grid{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.stamp-color-box{
-  display: grid;
-  gap: 6px;
-  padding: 9px;
-  border: 1px solid var(--control-border);
-  border-radius: 12px;
-  background: rgba(255,255,255,.04);
-  cursor: pointer;
-}
-
-.stamp-color-box.is-active{
-  background: rgba(216,192,255,.18);
-  border-color: rgba(216,192,255,.65);
-}
-
-.stamp-color-label{
-  color: rgba(255,255,255,.72);
-  font-size: 11px;
-  font-weight: 850;
-}
-
-.stamp-color-chip{
-  width: 100%;
-  height: 24px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,.32);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
-}
-
 .text-two-col{
   display: grid;
   grid-template-columns: 1fr 82px;
@@ -513,6 +442,87 @@ body.coloring-book-app-page{
   border-radius: 10px;
   color: #ffdede;
   background: rgba(198,70,70,.10);
+}
+
+/* ===== Stamp Tool ===== */
+.stamp-picker{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stamp-choice{
+  appearance: none;
+  min-width: 0;
+  min-height: 100px;
+  padding: 8px;
+  border: 1px solid var(--control-border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.045);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.stamp-choice:hover{
+  background: rgba(255,255,255,.09);
+}
+
+.stamp-choice.is-active{
+  background: rgba(216,192,255,.20);
+  border-color: rgba(216,192,255,.65);
+  box-shadow: 0 0 0 2px rgba(216,192,255,.08) inset;
+}
+
+.stamp-choice img{
+  display: block;
+  width: 100%;
+  height: 82px;
+  object-fit: contain;
+}
+
+.stamp-control-block{
+  display: grid;
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.stamp-control-head{
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 9px;
+  align-items: center;
+  color: rgba(255,255,255,.55);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.stamp-control-head label{
+  color: rgba(255,255,255,.80);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.stamp-control-head--rotation{
+  grid-template-columns: 1fr auto;
+}
+
+.stamp-control-head output{
+  min-width: 38px;
+  text-align: right;
+  color: rgba(255,255,255,.78);
+}
+
+.stamp-slider{
+  width: 100%;
+  margin: 0;
+  accent-color: var(--purple-lite);
+  cursor: pointer;
+}
+
+#deleteStampBtn{
+  width: 100%;
+  margin-top: 13px;
 }
 
 .zoom-slider{
@@ -872,9 +882,13 @@ body.coloring-book-app-page{
   cursor: none !important;
 }
 .artboard[data-tool="text"] svg{ cursor: text; }
+.artboard[data-tool="stamp"],
+.artboard[data-tool="stamp"] svg{ cursor: copy; }
 .artboard[data-tool="eyedrop"],
 .artboard[data-tool="eyedrop"] svg,
-.artboard[data-tool="eyedrop"] svg *{ cursor: none !important; }
+.artboard[data-tool="eyedrop"] svg *{
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg transform='rotate(-45 14 14)'%3E%3Cpath d='M12 3h4v5h2.4c1.1 0 1.6 1.3.8 2.1l-2.1 2.1V23a2 2 0 0 1-2 2h-2.2a2 2 0 0 1-2-2V12.2l-2.1-2.1C8 9.3 8.5 8 9.6 8H12V3Z' fill='white' stroke='%23000' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M11 18h6' stroke='%23000' stroke-width='1.4'/%3E%3C/g%3E%3C/svg%3E") 5 24, crosshair;
+}
 .artboard[data-tool="grab"],
 .artboard[data-tool="grab"] svg{ cursor: grab; }
 
@@ -900,26 +914,8 @@ body.coloring-book-app-page{
   display: none;
 }
 
-.tool-cursor-preview__x,
-.tool-cursor-preview__icon{
+.tool-cursor-preview__x{
   display: none;
-}
-
-.tool-cursor-preview[data-mode="eyedrop"]{
-  width: 26px !important;
-  height: 26px !important;
-  border-radius: 8px;
-  background: rgba(22,16,34,.92);
-  border-color: rgba(255,255,255,.55);
-}
-
-.tool-cursor-preview[data-mode="eyedrop"] .tool-cursor-preview__icon{
-  display: grid;
-  place-items: center;
-  position: absolute;
-  inset: 0;
-  font-size: 14px;
-  line-height: 1;
 }
 
 .tool-cursor-preview[data-mode="eraser"]{
@@ -982,8 +978,7 @@ body.coloring-book-app-page{
   user-select: none;
 }
 
-.artboard svg .user-text.is-selected,
-.artboard svg .user-stamp.is-selected{
+.artboard svg .user-text.is-selected{
   filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 2px #6d3ea0);
 }
 
@@ -991,6 +986,10 @@ body.coloring-book-app-page{
   cursor: move;
   pointer-events: all;
   user-select: none;
+}
+
+.artboard svg .user-stamp.is-selected{
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 3px #6d3ea0);
 }
 
 .workspace-foot{

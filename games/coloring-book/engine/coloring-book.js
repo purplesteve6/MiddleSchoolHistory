@@ -10,7 +10,6 @@
 
   const CFG = window.COLORING_BOOK_CONFIG || {};
   const PALETTES = window.COLORING_BOOK_PALETTES || {};
-  const STAMPS = Array.isArray(window.COLORING_BOOK_STAMPS) ? window.COLORING_BOOK_STAMPS : [];
 
   const SVG_NS = "http://www.w3.org/2000/svg";
   const COLOR_GROUP_ID = CFG.colorGroupId || "color";
@@ -37,7 +36,6 @@
     brushOptions: document.getElementById("brushOptions"),
     brushOptionsLabel: document.getElementById("brushOptionsLabel"),
     textOptions: document.getElementById("textOptions"),
-    stampOptions: document.getElementById("stampOptions"),
     brushSizes: Array.from(document.querySelectorAll("[data-brush-size]")),
     textValue: document.getElementById("textValue"),
     textFont: document.getElementById("textFont"),
@@ -45,16 +43,11 @@
     textRotation: document.getElementById("textRotation"),
     textRotationNumber: document.getElementById("textRotationNumber"),
     deleteTextBtn: document.getElementById("deleteTextBtn"),
-    stampPicker: document.getElementById("stampPicker"),
+    stampOptions: document.getElementById("stampOptions"),
+    stampChoices: Array.from(document.querySelectorAll("[data-stamp-src]")),
     stampSize: document.getElementById("stampSize"),
     stampRotation: document.getElementById("stampRotation"),
-    stampRotationNumber: document.getElementById("stampRotationNumber"),
-    stampMainBox: document.getElementById("stampMainBox"),
-    stampAccentBox: document.getElementById("stampAccentBox"),
-    stampMainChip: document.getElementById("stampMainChip"),
-    stampAccentChip: document.getElementById("stampAccentChip"),
-    stampMainHex: document.getElementById("stampMainHex"),
-    stampAccentHex: document.getElementById("stampAccentHex"),
+    stampRotationValue: document.getElementById("stampRotationValue"),
     deleteStampBtn: document.getElementById("deleteStampBtn"),
     undoBtn: document.getElementById("undoBtn"),
     redoBtn: document.getElementById("redoBtn"),
@@ -77,10 +70,8 @@
   let belowWorkLayer = null;
   let aboveWorkLayer = null;
   let belowPaintLayer = null;
-  let belowStampLayer = null;
   let belowTextLayer = null;
   let abovePaintLayer = null;
-  let aboveStampLayer = null;
   let aboveTextLayer = null;
   let userDefs = null;
   let fillables = [];
@@ -92,11 +83,16 @@
   let brushSize = 12;
   let selectedText = null;
   let selectedStamp = null;
-  let currentStampId = STAMPS[0]?.id || null;
-  let stampMainColor = "#FFFFFF";
-  let stampAccentColor = "#000000";
-  let stampColorTarget = "main";
-  let stampTemplates = new Map();
+  let currentStampSrc = els.stampChoices[0]?.dataset.stampSrc || "";
+  let currentStampName = els.stampChoices[0]?.dataset.stampName || "Stamp";
+  let stampSize = Math.max(80, Number(els.stampSize?.value) || 360);
+  let stampRotation = clampRotation(Number(els.stampRotation?.value) || 0);
+  const stampTemplateCache = new Map();
+
+  let draggingStamp = false;
+  let stampDragStart = null;
+  let stampOriginalPos = null;
+  let stampDidMove = false;
 
   let drawing = false;
   let currentBrushPath = null;
@@ -117,11 +113,6 @@
   let textOriginalMaskTranslate = null;
   let textMaskMarks = null;
   let textDidMove = false;
-
-  let draggingStamp = false;
-  let stampDragStart = null;
-  let stampOriginalPos = null;
-  let stampDidMove = false;
 
   let initialState = null;
   let history = [];
@@ -148,7 +139,7 @@
     const preview = document.createElement("div");
     preview.className = "tool-cursor-preview";
     preview.setAttribute("aria-hidden", "true");
-    preview.innerHTML = `<span class="tool-cursor-preview__x"></span><span class="tool-cursor-preview__icon">💧</span>`;
+    preview.innerHTML = `<span class="tool-cursor-preview__x"></span>`;
     document.body.appendChild(preview);
     cursorPreview = preview;
   }
@@ -168,7 +159,7 @@
     cursorPreview.style.left = `${event.clientX}px`;
     cursorPreview.style.top = `${event.clientY}px`;
     cursorPreview.dataset.mode = currentTool;
-    cursorPreview.hidden = !(currentTool === "brush" || currentTool === "eraser" || currentTool === "eyedrop");
+    cursorPreview.hidden = !(currentTool === "brush" || currentTool === "eraser");
     cursorPreviewX = event.clientX;
     cursorPreviewY = event.clientY;
   }
@@ -181,7 +172,7 @@
   }
 
   function refreshCursorPreview() {
-    if ((currentTool !== "brush" && currentTool !== "eraser" && currentTool !== "eyedrop") || cursorPreviewX == null || cursorPreviewY == null) {
+    if ((currentTool !== "brush" && currentTool !== "eraser") || cursorPreviewX == null || cursorPreviewY == null) {
       hideCursorPreview();
       return;
     }
@@ -316,14 +307,9 @@
         const color = normalizeSvgColor(textNode.getAttribute("fill"));
         if (color) present.add(color);
       });
-    });
-
-    allStampLayers().forEach((layer) => {
-      layer.querySelectorAll(".user-stamp").forEach((stampNode) => {
-        const main = normalizeSvgColor(stampNode.dataset.mainColor);
-        const accent = normalizeSvgColor(stampNode.dataset.accentColor);
-        if (main) present.add(main);
-        if (accent) present.add(accent);
+      layer.querySelectorAll(".user-stamp [data-stamp-main='true']").forEach((node) => {
+        const color = normalizeSvgColor(node.getAttribute("fill"));
+        if (color) present.add(color);
       });
     });
 
@@ -340,7 +326,7 @@
     button.style.background = color;
     button.title = color;
     button.setAttribute("aria-label", `Choose current artwork color ${color}`);
-    button.addEventListener("click", () => setCurrentColor(color, { applyToSelectedText: false, applyToSelectedStamp: true }));
+    button.addEventListener("click", () => setCurrentColor(color, { applyToSelectedText: false }));
     return button;
   }
 
@@ -388,11 +374,11 @@
       markColorUsed(color);
       commitState();
       setStatus("Text color updated.");
-    }
-
-    if (options.applyToSelectedStamp !== false && (selectedStamp || currentTool === "stamp")) {
-      if (stampColorTarget === "accent") setStampAccentColor(color, { commit: !!selectedStamp, syncCurrent: false });
-      else setStampMainColor(color, { commit: !!selectedStamp, syncCurrent: false });
+    } else if (selectedStamp && options.applyToSelectedText !== false) {
+      applyStampColor(selectedStamp, color);
+      markColorUsed(color);
+      commitState();
+      setStatus("Stamp color updated.");
     }
 
     return true;
@@ -452,8 +438,7 @@
       els.swatches.appendChild(button);
     });
 
-    setCurrentColor(currentColor, { applyToSelectedText: false, applyToSelectedStamp: false });
-    syncStampUi();
+    setCurrentColor(currentColor, { applyToSelectedText: false });
   }
 
   function setTool(tool) {
@@ -481,9 +466,9 @@
     if (tool === "bucket") setStatus("Paint Bucket: choose a color, then click any white area.");
     if (tool === "brush") setStatus("Brush: drag across the picture to paint freely.");
     if (tool === "eraser") setStatus("Eraser: drag to permanently erase existing brush strokes and text on the active drawing position.");
-    if (tool === "eyedrop") setStatus("Eyedropper: click a colored shape, brush stroke, text, or stamp color to make that the current color.");
+    if (tool === "eyedrop") setStatus("Eyedropper: click a colored area, brush stroke, text, or stamp to make that the current color.");
     if (tool === "text") setStatus("Text: type your words, then click the picture to place them.");
-    if (tool === "stamp") setStatus("Stamp: choose a stamp, then click the picture to place it.");
+    if (tool === "stamp") setStatus("Stamp: choose a stamp, size, and rotation, then click the picture to place it.");
     if (tool === "grab") setStatus("Grab: drag the artwork to pan around when zoomed in.");
     refreshCursorPreview();
   }
@@ -524,27 +509,17 @@
     return position === "above" ? aboveTextLayer : belowTextLayer;
   }
 
-  function stampLayerFor(position = layerPosition) {
-    return position === "above" ? aboveStampLayer : belowStampLayer;
-  }
-
   function allTextLayers() {
     return [belowTextLayer, aboveTextLayer].filter(Boolean);
-  }
-
-  function allStampLayers() {
-    return [belowStampLayer, aboveStampLayer].filter(Boolean);
   }
 
   function workObjectsFor(position = layerPosition) {
     const objects = [];
     const paintLayer = paintLayerFor(position);
-    const stampLayer = stampLayerFor(position);
     const textLayer = textLayerFor(position);
     if (paintLayer) objects.push(...Array.from(paintLayer.children));
-    if (stampLayer) objects.push(...Array.from(stampLayer.children));
     if (textLayer) objects.push(...Array.from(textLayer.children));
-    return objects.filter((el) => el.classList?.contains("user-brush-stroke") || el.classList?.contains("user-text") || el.classList?.contains("user-stamp"));
+    return objects.filter((el) => el.classList?.contains("user-brush-stroke") || el.classList?.contains("user-text"));
   }
 
   function parseTranslate(transformValue) {
@@ -646,6 +621,13 @@
     return null;
   }
 
+  function stampPosition(stamp) {
+    if (!stamp) return null;
+    if (aboveTextLayer?.contains(stamp)) return "above";
+    if (belowTextLayer?.contains(stamp)) return "below";
+    return null;
+  }
+
   function updateLayerButtons() {
     els.layerPositionButtons.forEach((button) => {
       const active = button.dataset.layerPosition === layerPosition;
@@ -659,10 +641,15 @@
         els.layerPositionHint.textContent = position === "above"
           ? "Selected text is on top. Choose Behind Lines to move just this text."
           : "Selected text is behind the lines. Choose On Top to move just this text.";
+      } else if (selectedStamp) {
+        const position = stampPosition(selectedStamp);
+        els.layerPositionHint.textContent = position === "above"
+          ? "Selected stamp is on top. Choose Behind Lines to move just this stamp."
+          : "Selected stamp is behind the lines. Choose On Top to move just this stamp.";
       } else {
         els.layerPositionHint.textContent = layerPosition === "above"
-          ? "New brush strokes and text will be placed on top of the black lines."
-          : "New brush strokes and text will be placed behind the black lines.";
+          ? "New brush strokes, text, and stamps will be placed on top of the black lines."
+          : "New brush strokes, text, and stamps will be placed behind the black lines.";
       }
     }
   }
@@ -684,10 +671,23 @@
           ? "Selected text is already on top of the ink lines."
           : "Selected text is already behind the ink lines.");
       }
+    } else if (selectedStamp && options.moveSelected !== false) {
+      const destination = textLayerFor(normalized);
+      if (destination && !destination.contains(selectedStamp)) {
+        destination.appendChild(selectedStamp);
+        commitState();
+        setStatus(normalized === "above"
+          ? "Selected stamp moved on top of the ink lines."
+          : "Selected stamp moved behind the ink lines.");
+      } else if (options.announce !== false) {
+        setStatus(normalized === "above"
+          ? "Selected stamp is already on top of the ink lines."
+          : "Selected stamp is already behind the ink lines.");
+      }
     } else if (options.announce !== false) {
       setStatus(normalized === "above"
-        ? "New brush strokes and text will appear on top of the ink lines."
-        : "New brush strokes and text will appear behind the ink lines.");
+        ? "New brush strokes, text, and stamps will appear on top of the ink lines."
+        : "New brush strokes, text, and stamps will appear behind the ink lines.");
     }
 
     updateLayerButtons();
@@ -814,16 +814,11 @@
     belowPaintLayer.id = "below-ink-paint";
     belowPaintLayer.dataset.coloringGenerated = "true";
 
-    belowStampLayer = document.createElementNS(SVG_NS, "g");
-    belowStampLayer.id = "below-ink-stamp";
-    belowStampLayer.dataset.coloringGenerated = "true";
-
     belowTextLayer = document.createElementNS(SVG_NS, "g");
     belowTextLayer.id = "below-ink-text";
     belowTextLayer.dataset.coloringGenerated = "true";
 
     belowWorkLayer.appendChild(belowPaintLayer);
-    belowWorkLayer.appendChild(belowStampLayer);
     belowWorkLayer.appendChild(belowTextLayer);
 
     aboveWorkLayer = document.createElementNS(SVG_NS, "g");
@@ -834,16 +829,11 @@
     abovePaintLayer.id = "above-ink-paint";
     abovePaintLayer.dataset.coloringGenerated = "true";
 
-    aboveStampLayer = document.createElementNS(SVG_NS, "g");
-    aboveStampLayer.id = "above-ink-stamp";
-    aboveStampLayer.dataset.coloringGenerated = "true";
-
     aboveTextLayer = document.createElementNS(SVG_NS, "g");
     aboveTextLayer.id = "above-ink-text";
     aboveTextLayer.dataset.coloringGenerated = "true";
 
     aboveWorkLayer.appendChild(abovePaintLayer);
-    aboveWorkLayer.appendChild(aboveStampLayer);
     aboveWorkLayer.appendChild(aboveTextLayer);
 
     const viewBox = svgRoot.viewBox && svgRoot.viewBox.baseVal;
@@ -881,7 +871,7 @@
     });
   }
 
-  function cleanLayerMarkup(layer) {
+  function cleanTextMarkup(layer) {
     if (!layer) return "";
     const clone = layer.cloneNode(true);
     clone.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
@@ -892,11 +882,9 @@
     return {
       fills: fillables.map((shape) => shape.getAttribute("fill") || "#FFFFFF"),
       belowPaint: belowPaintLayer ? belowPaintLayer.innerHTML : "",
-      belowStamp: cleanLayerMarkup(belowStampLayer),
-      belowText: cleanLayerMarkup(belowTextLayer),
+      belowText: cleanTextMarkup(belowTextLayer),
       abovePaint: abovePaintLayer ? abovePaintLayer.innerHTML : "",
-      aboveStamp: cleanLayerMarkup(aboveStampLayer),
-      aboveText: cleanLayerMarkup(aboveTextLayer),
+      aboveText: cleanTextMarkup(aboveTextLayer),
       defs: userDefs ? userDefs.innerHTML : ""
     };
   }
@@ -908,17 +896,12 @@
     });
 
     if (belowPaintLayer) belowPaintLayer.innerHTML = state.belowPaint || "";
-    if (belowStampLayer) belowStampLayer.innerHTML = state.belowStamp || "";
     if (belowTextLayer) belowTextLayer.innerHTML = state.belowText || "";
     if (abovePaintLayer) abovePaintLayer.innerHTML = state.abovePaint || "";
-    if (aboveStampLayer) aboveStampLayer.innerHTML = state.aboveStamp || "";
     if (aboveTextLayer) aboveTextLayer.innerHTML = state.aboveText || "";
     if (userDefs) userDefs.innerHTML = state.defs || "";
 
     allTextLayers().forEach((layer) => {
-      layer.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
-    });
-    allStampLayers().forEach((layer) => {
       layer.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
     });
     clearTextSelection();
@@ -930,10 +913,8 @@
   function statesEqual(a, b) {
     if (!a || !b) return false;
     return a.belowPaint === b.belowPaint
-      && a.belowStamp === b.belowStamp
       && a.belowText === b.belowText
       && a.abovePaint === b.abovePaint
-      && a.aboveStamp === b.aboveStamp
       && a.aboveText === b.aboveText
       && a.defs === b.defs
       && a.fills.join("|") === b.fills.join("|");
@@ -981,7 +962,7 @@
       return;
     }
 
-    if (!window.confirm("Clear all coloring, brush strokes, stamps, and text from this page?")) return;
+    if (!window.confirm("Clear all coloring, brush strokes, text, and stamps from this page?")) return;
     applyState(initialState);
     commitState();
     setStatus("Coloring page reset.");
@@ -999,21 +980,23 @@
 
   function colorFromArtworkTarget(target) {
     if (!target) return null;
-    const node = target.closest?.(".user-text, .user-brush-stroke, [data-coloring-fillable='true'], [data-stamp-role='main'], [data-stamp-role='accent'], .user-stamp");
+    const stamp = target.closest?.(".user-stamp");
+    if (stamp && svgRoot?.contains(stamp)) {
+      return normalizeSvgColor(stamp.querySelector("[data-stamp-main='true']")?.getAttribute("fill"));
+    }
+    const node = target.closest?.(".user-text, .user-brush-stroke, [data-coloring-fillable='true']");
     if (!node || !svgRoot?.contains(node)) return null;
     if (node.classList?.contains("user-brush-stroke")) return normalizeSvgColor(node.getAttribute("stroke"));
-    if (node.matches?.("[data-stamp-role='main'], [data-stamp-role='accent']")) return normalizeSvgColor(node.getAttribute("fill") || node.getAttribute("stroke"));
-    if (node.classList?.contains("user-stamp")) return normalizeSvgColor(node.dataset.mainColor || node.dataset.accentColor);
     return normalizeSvgColor(node.getAttribute("fill"));
   }
 
   function eyedropColor(target) {
     const color = colorFromArtworkTarget(target);
     if (!color) {
-      setStatus("Eyedropper: click a colored shape, brush stroke, text, or stamp color.");
+      setStatus("Eyedropper: click a colored shape, brush stroke, text, or stamp.");
       return;
     }
-    setCurrentColor(color, { applyToSelectedText: false, applyToSelectedStamp: false });
+    setCurrentColor(color, { applyToSelectedText: false });
     setStatus(`Picked ${color}.`);
   }
 
@@ -1260,6 +1243,7 @@
   }
 
   function selectText(text) {
+    clearStampSelection();
     clearTextSelection();
     selectedText = text;
     selectedText.classList.add("is-selected");
@@ -1355,194 +1339,150 @@
     setStatus("Text deleted.");
   }
 
-  function stampPosition(stamp) {
-    if (!stamp) return null;
-    if (belowStampLayer?.contains(stamp)) return "below";
-    if (aboveStampLayer?.contains(stamp)) return "above";
-    return null;
+  function clampStampSize(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return 360;
+    return Math.max(80, Math.min(1400, n));
   }
 
-  function syncStampRotationControls(value) {
-    const rotation = clampRotation(value);
-    if (els.stampRotation) els.stampRotation.value = String(rotation);
-    if (els.stampRotationNumber) els.stampRotationNumber.value = String(rotation);
+  function updateStampControls() {
+    if (els.stampSize) els.stampSize.value = String(Math.round(stampSize));
+    if (els.stampRotation) els.stampRotation.value = String(Math.round(stampRotation));
+    if (els.stampRotationValue) els.stampRotationValue.textContent = `${Math.round(stampRotation)}°`;
   }
 
-  function syncStampUi() {
-    if (els.stampMainChip) els.stampMainChip.style.background = stampMainColor;
-    if (els.stampAccentChip) els.stampAccentChip.style.background = stampAccentColor;
-    if (els.stampMainHex) els.stampMainHex.value = stampMainColor;
-    if (els.stampAccentHex) els.stampAccentHex.value = stampAccentColor;
-    [els.stampMainBox, els.stampAccentBox].forEach((box) => {
-      if (!box) return;
-      const active = box.dataset.stampColorTarget === stampColorTarget;
-      box.classList.toggle("is-active", active);
-      box.setAttribute("aria-pressed", String(active));
+  function setStampChoice(button) {
+    if (!button?.dataset?.stampSrc) return;
+    currentStampSrc = button.dataset.stampSrc;
+    currentStampName = button.dataset.stampName || "Stamp";
+    els.stampChoices.forEach((choice) => {
+      const active = choice === button;
+      choice.classList.toggle("is-active", active);
+      choice.setAttribute("aria-pressed", String(active));
     });
+    setStatus(`${currentStampName} selected. Click the artwork to place it.`);
   }
 
-  function setStampColorTarget(target) {
-    stampColorTarget = target === "accent" ? "accent" : "main";
-    syncStampUi();
+  async function loadStampTemplate(src) {
+    if (!src) throw new Error("No stamp selected.");
+    if (stampTemplateCache.has(src)) return stampTemplateCache.get(src);
+
+    const promise = fetch(src, { cache: "no-store" }).then(async (response) => {
+      if (!response.ok) throw new Error(`Could not load stamp (${response.status}).`);
+      const text = await response.text();
+      const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+      if (doc.querySelector("parsererror")) throw new Error("Stamp SVG could not be parsed.");
+      const sourceSvg = doc.documentElement;
+      if (!sourceSvg || sourceSvg.localName !== "svg") throw new Error("Stamp file did not contain an SVG.");
+
+      const viewBox = (sourceSvg.getAttribute("viewBox") || "0 0 100 100").trim().split(/[ ,]+/).map(Number);
+      if (viewBox.length !== 4 || viewBox.some((v) => !Number.isFinite(v)) || viewBox[2] <= 0 || viewBox[3] <= 0) {
+        throw new Error("Stamp SVG needs a valid viewBox.");
+      }
+
+      const clone = sourceSvg.cloneNode(true);
+      const main = clone.querySelector("#main_color");
+      const accent = clone.querySelector("#accent_color");
+      if (main) {
+        main.removeAttribute("id");
+        main.dataset.stampMain = "true";
+      }
+      if (accent) {
+        accent.removeAttribute("id");
+        accent.dataset.stampAccent = "true";
+        accent.setAttribute("fill", "#000000");
+      }
+      clone.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+
+      return { clone, viewBox };
+    });
+
+    stampTemplateCache.set(src, promise);
+    try {
+      return await promise;
+    } catch (error) {
+      stampTemplateCache.delete(src);
+      throw error;
+    }
   }
 
-  function stampRoleNodes(stamp, role) {
-    return Array.from(stamp.querySelectorAll(`[data-stamp-role="${role}"]`));
-  }
-
-  function recolorStampRole(stamp, role, color) {
+  function applyStampColor(stamp, color) {
     const hex = normalizeHex(color);
     if (!stamp || !hex) return;
-    stampRoleNodes(stamp, role).forEach((node) => {
-      if (node.hasAttribute("fill") && String(node.getAttribute("fill")).toLowerCase() !== "none") node.setAttribute("fill", hex);
-      if (node.hasAttribute("stroke") && String(node.getAttribute("stroke")).toLowerCase() !== "none") node.setAttribute("stroke", hex);
-    });
-  }
-
-  function setStampMainColor(value, options = {}) {
-    const hex = normalizeHex(value);
-    if (!hex) return false;
-    stampMainColor = hex;
-    syncStampUi();
-    if (options.syncCurrent !== false) setCurrentColor(hex, { applyToSelectedText: false, applyToSelectedStamp: false });
-    if (selectedStamp) {
-      selectedStamp.dataset.mainColor = hex;
-      recolorStampRole(selectedStamp, "main", hex);
-      markColorUsed(hex);
-      if (options.commit !== false) commitState();
-    }
-    return true;
-  }
-
-  function setStampAccentColor(value, options = {}) {
-    const hex = normalizeHex(value);
-    if (!hex) return false;
-    stampAccentColor = hex;
-    syncStampUi();
-    if (options.syncCurrent !== false) setCurrentColor(hex, { applyToSelectedText: false, applyToSelectedStamp: false });
-    if (selectedStamp) {
-      selectedStamp.dataset.accentColor = hex;
-      recolorStampRole(selectedStamp, "accent", hex);
-      markColorUsed(hex);
-      if (options.commit !== false) commitState();
-    }
-    return true;
-  }
-
-  function highlightChosenStampButton(stampId) {
-    els.stampPicker?.querySelectorAll(".stamp-choice").forEach((button) => {
-      const active = button.dataset.stampId === stampId;
-      button.classList.toggle("is-active", active);
-      button.setAttribute("aria-pressed", String(active));
-    });
-  }
-
-  function chooseStamp(stampId) {
-    currentStampId = stampId;
-    highlightChosenStampButton(stampId);
-  }
-
-  async function loadStampTemplate(stampId) {
-    if (!stampId) return null;
-    if (stampTemplates.has(stampId)) return stampTemplates.get(stampId);
-    const meta = STAMPS.find((item) => item.id === stampId);
-    if (!meta) return null;
-    const response = await fetch(meta.file, { cache: "no-store" });
-    if (!response.ok) throw new Error(`Could not load stamp ${stampId}.`);
-    const text = await response.text();
-    const doc = new DOMParser().parseFromString(text, "image/svg+xml");
-    const root = doc.documentElement;
-    const vbText = root.getAttribute("viewBox") || "0 0 100 100";
-    const [x=0,y=0,w=100,h=100] = vbText.trim().split(/[ ,]+/).map(Number);
-    const template = { meta, root, viewBox: { x, y, width: w || 100, height: h || 100 } };
-    stampTemplates.set(stampId, template);
-    return template;
-  }
-
-  function cloneStampPart(templateRoot, id, role) {
-    const source = templateRoot.querySelector(`#${CSS.escape(id)}`);
-    if (!source) return null;
-    const clone = source.cloneNode(true);
-    [clone, ...clone.querySelectorAll("*")].forEach((el) => {
-      el.removeAttribute("id");
-      el.dataset.stampRole = role;
-    });
-    return clone;
-  }
-
-  function createStampNode(template, point) {
-    const stamp = document.createElementNS(SVG_NS, "g");
-    stamp.classList.add("user-stamp");
-    stamp.dataset.stampId = template.meta.id;
-    stamp.dataset.x = String(point.x);
-    stamp.dataset.y = String(point.y);
-    stamp.dataset.rotation = String(clampRotation(els.stampRotationNumber?.value || 0));
-    stamp.dataset.size = String(Math.max(20, Math.min(400, Number(els.stampSize?.value) || 100)));
-    stamp.dataset.baseScale = String(220 / template.viewBox.width);
-    stamp.dataset.mainColor = stampMainColor;
-    stamp.dataset.accentColor = stampAccentColor;
-
-    const content = document.createElementNS(SVG_NS, "g");
-    content.classList.add("user-stamp-content");
-    const cx = template.viewBox.x + template.viewBox.width / 2;
-    const cy = template.viewBox.y + template.viewBox.height / 2;
-    content.setAttribute("transform", `translate(${-cx.toFixed(2)} ${-cy.toFixed(2)})`);
-
-    const main = cloneStampPart(template.root, "main_color", "main");
-    const accent = cloneStampPart(template.root, "accent_color", "accent");
-    const ink = cloneStampPart(template.root, "ink", "ink");
-    if (main) content.appendChild(main);
-    if (accent) content.appendChild(accent);
-    if (ink) content.appendChild(ink);
-
-    stamp.appendChild(content);
-    recolorStampRole(stamp, "main", stampMainColor);
-    recolorStampRole(stamp, "accent", stampAccentColor);
-    updateStampTransform(stamp);
-    return stamp;
+    stamp.querySelectorAll("[data-stamp-main='true']").forEach((node) => node.setAttribute("fill", hex));
+    stamp.querySelectorAll("[data-stamp-accent='true']").forEach((node) => node.setAttribute("fill", "#000000"));
+    stamp.dataset.color = hex;
   }
 
   function updateStampTransform(stamp) {
     if (!stamp) return;
     const x = Number(stamp.dataset.x) || 0;
     const y = Number(stamp.dataset.y) || 0;
-    const rotation = clampRotation(stamp.dataset.rotation || 0);
-    const size = Math.max(20, Math.min(400, Number(stamp.dataset.size) || 100));
-    const baseScale = Number(stamp.dataset.baseScale) || 1;
-    stamp.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${rotation}) scale(${(baseScale * size / 100).toFixed(5)})`);
+    const size = clampStampSize(stamp.dataset.size);
+    const rotation = clampRotation(stamp.dataset.rotation);
+    const vbX = Number(stamp.dataset.vbX) || 0;
+    const vbY = Number(stamp.dataset.vbY) || 0;
+    const vbW = Math.max(1, Number(stamp.dataset.vbW) || 100);
+    const vbH = Math.max(1, Number(stamp.dataset.vbH) || 100);
+    const scale = size / vbW;
+    const cx = vbX + vbW / 2;
+    const cy = vbY + vbH / 2;
+    stamp.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${rotation.toFixed(2)}) scale(${scale.toFixed(6)}) translate(${-cx.toFixed(2)} ${-cy.toFixed(2)})`);
   }
 
   async function addStampAt(point) {
-    if (!currentStampId) {
+    if (!currentStampSrc) {
       setStatus("Choose a stamp first.");
       return;
     }
-    const template = await loadStampTemplate(currentStampId);
-    if (!template) {
-      setStatus("That stamp could not be loaded.");
-      return;
+
+    try {
+      const template = await loadStampTemplate(currentStampSrc);
+      const [vbX, vbY, vbW, vbH] = template.viewBox;
+      const stamp = document.createElementNS(SVG_NS, "g");
+      stamp.classList.add("user-stamp");
+      stamp.dataset.stampSrc = currentStampSrc;
+      stamp.dataset.stampName = currentStampName;
+      stamp.dataset.x = String(point.x);
+      stamp.dataset.y = String(point.y);
+      stamp.dataset.size = String(stampSize);
+      stamp.dataset.rotation = String(stampRotation);
+      stamp.dataset.vbX = String(vbX);
+      stamp.dataset.vbY = String(vbY);
+      stamp.dataset.vbW = String(vbW);
+      stamp.dataset.vbH = String(vbH);
+
+      Array.from(template.clone.childNodes).forEach((node) => {
+        stamp.appendChild(document.importNode(node, true));
+      });
+
+      applyStampColor(stamp, currentColor);
+      updateStampTransform(stamp);
+      textLayerFor().appendChild(stamp);
+      markColorUsed(currentColor);
+      selectStamp(stamp);
+      commitState();
+      setStatus(`${currentStampName} placed. Drag it to move it.`);
+    } catch (error) {
+      console.error("[coloring-book stamp]", error);
+      setStatus(error.message || "The stamp could not be loaded.");
     }
-    const stamp = createStampNode(template, point);
-    stampLayerFor().appendChild(stamp);
-    markColorUsed(stampMainColor);
-    markColorUsed(stampAccentColor);
-    selectStamp(stamp);
-    commitState();
-    setStatus("Stamp added. Drag it to move it, or use the controls to edit it.");
   }
 
   function selectStamp(stamp) {
-    clearStampSelection();
     clearTextSelection();
+    clearStampSelection();
     selectedStamp = stamp;
     selectedStamp.classList.add("is-selected");
-    currentStampId = selectedStamp.dataset.stampId || currentStampId;
-    stampMainColor = normalizeHex(selectedStamp.dataset.mainColor) || stampMainColor;
-    stampAccentColor = normalizeHex(selectedStamp.dataset.accentColor) || stampAccentColor;
-    if (els.stampSize) els.stampSize.value = String(Math.max(20, Math.min(400, Number(selectedStamp.dataset.size) || 100)));
-    syncStampRotationControls(Number(selectedStamp.dataset.rotation) || 0);
-    syncStampUi();
-    highlightChosenStampButton(currentStampId);
+
+    stampSize = clampStampSize(selectedStamp.dataset.size);
+    stampRotation = clampRotation(selectedStamp.dataset.rotation);
+    updateStampControls();
+
+    const color = normalizeHex(selectedStamp.dataset.color)
+      || normalizeSvgColor(selectedStamp.querySelector("[data-stamp-main='true']")?.getAttribute("fill"));
+    if (color) setCurrentColor(color, { applyToSelectedText: false });
+
     const position = stampPosition(selectedStamp);
     if (position) layerPosition = position;
     updateLayerButtons();
@@ -1553,29 +1493,7 @@
     if (selectedStamp) selectedStamp.classList.remove("is-selected");
     selectedStamp = null;
     if (els.deleteStampBtn) els.deleteStampBtn.disabled = true;
-  }
-
-  function previewSelectedStamp() {
-    if (!selectedStamp) return;
-    selectedStamp.dataset.size = String(Math.max(20, Math.min(400, Number(els.stampSize?.value) || 100)));
-    selectedStamp.dataset.rotation = String(clampRotation(els.stampRotationNumber?.value || 0));
-    updateStampTransform(selectedStamp);
-  }
-
-  function commitSelectedStamp(message = "Stamp updated.") {
-    if (!selectedStamp) return;
-    previewSelectedStamp();
-    commitState();
-    setStatus(message);
-  }
-
-  function deleteSelectedStamp() {
-    if (!selectedStamp) return;
-    selectedStamp.remove();
-    selectedStamp = null;
-    if (els.deleteStampBtn) els.deleteStampBtn.disabled = true;
-    commitState();
-    setStatus("Stamp deleted.");
+    updateLayerButtons();
   }
 
   function startStampDrag(event, stamp) {
@@ -1583,7 +1501,10 @@
     draggingStamp = true;
     stampDidMove = false;
     stampDragStart = getSvgPoint(event);
-    stampOriginalPos = { x: Number(stamp.dataset.x) || 0, y: Number(stamp.dataset.y) || 0 };
+    stampOriginalPos = {
+      x: Number(stamp.dataset.x) || 0,
+      y: Number(stamp.dataset.y) || 0
+    };
     svgRoot.setPointerCapture?.(event.pointerId);
     event.preventDefault();
     event.stopPropagation();
@@ -1615,42 +1536,55 @@
     event?.preventDefault?.();
   }
 
-  function buildStampPicker() {
-    if (!els.stampPicker) return;
-    els.stampPicker.innerHTML = "";
-    STAMPS.forEach((stamp) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "stamp-choice";
-      btn.dataset.stampId = stamp.id;
-      btn.setAttribute("aria-pressed", "false");
-      btn.innerHTML = `<img src="${stamp.file}" alt="" /><span>${stamp.label || stamp.id}</span>`;
-      btn.addEventListener("click", () => chooseStamp(stamp.id));
-      els.stampPicker.appendChild(btn);
-    });
-    highlightChosenStampButton(currentStampId);
-    syncStampUi();
+  function previewStampSize(value) {
+    stampSize = clampStampSize(value);
+    if (selectedStamp) {
+      selectedStamp.dataset.size = String(stampSize);
+      updateStampTransform(selectedStamp);
+    }
   }
 
-  function bindStampColorBox(box) {
-    if (!box) return;
-    const activate = () => setStampColorTarget(box.dataset.stampColorTarget);
-    box.addEventListener("click", activate);
-    box.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        activate();
-      }
-    });
+  function commitStampSize() {
+    if (!selectedStamp) return;
+    selectedStamp.dataset.size = String(stampSize);
+    updateStampTransform(selectedStamp);
+    commitState();
+    setStatus("Stamp size updated.");
+  }
+
+  function previewStampRotation(value) {
+    stampRotation = clampRotation(value);
+    if (els.stampRotationValue) els.stampRotationValue.textContent = `${Math.round(stampRotation)}°`;
+    if (selectedStamp) {
+      selectedStamp.dataset.rotation = String(stampRotation);
+      updateStampTransform(selectedStamp);
+    }
+  }
+
+  function commitStampRotation() {
+    if (!selectedStamp) return;
+    selectedStamp.dataset.rotation = String(stampRotation);
+    updateStampTransform(selectedStamp);
+    commitState();
+    setStatus("Stamp rotation updated.");
+  }
+
+  function deleteSelectedStamp() {
+    if (!selectedStamp) return;
+    selectedStamp.remove();
+    selectedStamp = null;
+    if (els.deleteStampBtn) els.deleteStampBtn.disabled = true;
+    commitState();
+    setStatus("Stamp deleted.");
   }
 
   function bindSvgEvents() {
     els.artboard?.addEventListener("pointerenter", (event) => {
-      if (currentTool === "brush" || currentTool === "eraser" || currentTool === "eyedrop") showCursorPreview(event);
+      if (currentTool === "brush" || currentTool === "eraser") showCursorPreview(event);
     });
 
     els.artboard?.addEventListener("pointermove", (event) => {
-      if (currentTool === "brush" || currentTool === "eraser" || currentTool === "eyedrop") showCursorPreview(event);
+      if (currentTool === "brush" || currentTool === "eraser") showCursorPreview(event);
     });
 
     els.artboard?.addEventListener("pointerleave", () => {
@@ -1663,6 +1597,18 @@
         return;
       }
 
+      if (currentTool === "stamp") {
+        const stamp = event.target.closest?.(".user-stamp");
+        if (stamp && allTextLayers().some((layer) => layer.contains(stamp))) {
+          startStampDrag(event, stamp);
+          return;
+        }
+        clearStampSelection();
+        addStampAt(getSvgPoint(event));
+        event.preventDefault();
+        return;
+      }
+
       if (currentTool === "text") {
         const text = event.target.closest?.(".user-text");
         if (text && allTextLayers().some((layer) => layer.contains(text))) {
@@ -1671,24 +1617,8 @@
         }
 
         clearTextSelection();
-        clearStampSelection();
         addTextAt(getSvgPoint(event));
         event.preventDefault();
-        return;
-      }
-
-      if (currentTool === "stamp") {
-        const stamp = event.target.closest?.(".user-stamp");
-        if (stamp && allStampLayers().some((layer) => layer.contains(stamp))) {
-          startStampDrag(event, stamp);
-          return;
-        }
-
-        clearTextSelection();
-        clearStampSelection();
-        addStampAt(getSvgPoint(event));
-        event.preventDefault();
-        return;
       }
     });
 
@@ -1822,7 +1752,7 @@
     const specs = [
       { tool: "eraser", icon: "⌫", label: "Eraser" },
       { tool: "eyedrop", icon: "💧", label: "Eyedropper" },
-      { tool: "stamp", icon: "✦", label: "Stamp" },
+      { tool: "stamp", icon: "💬", label: "Stamp" },
       { tool: "grab", icon: "✋", label: "Grab" }
     ];
 
@@ -1882,6 +1812,17 @@
       button.addEventListener("click", () => setBrushSize(button.dataset.brushSize));
     });
 
+    els.stampChoices.forEach((button) => {
+      button.addEventListener("click", () => setStampChoice(button));
+    });
+
+    els.stampSize?.addEventListener("input", () => previewStampSize(els.stampSize.value));
+    els.stampSize?.addEventListener("change", commitStampSize);
+
+    els.stampRotation?.addEventListener("input", () => previewStampRotation(els.stampRotation.value));
+    els.stampRotation?.addEventListener("change", commitStampRotation);
+    els.deleteStampBtn?.addEventListener("click", deleteSelectedStamp);
+
     [els.textValue, els.textFont, els.textSize].forEach((control) => {
       control?.addEventListener("change", updateSelectedText);
     });
@@ -1897,30 +1838,6 @@
     els.textRotationNumber?.addEventListener("change", commitTextRotation);
 
     els.deleteTextBtn?.addEventListener("click", deleteSelectedText);
-
-    bindStampColorBox(els.stampMainBox);
-    bindStampColorBox(els.stampAccentBox);
-
-    els.stampSize?.addEventListener("input", previewSelectedStamp);
-    els.stampSize?.addEventListener("change", () => commitSelectedStamp("Stamp size updated."));
-    els.stampRotation?.addEventListener("input", () => {
-      syncStampRotationControls(els.stampRotation.value);
-      previewSelectedStamp();
-    });
-    els.stampRotation?.addEventListener("change", () => commitSelectedStamp("Stamp rotation updated."));
-    els.stampRotationNumber?.addEventListener("input", () => {
-      syncStampRotationControls(els.stampRotationNumber.value);
-      previewSelectedStamp();
-    });
-    els.stampRotationNumber?.addEventListener("change", () => commitSelectedStamp("Stamp rotation updated."));
-    els.stampMainHex?.addEventListener("change", () => {
-      if (!setStampMainColor(els.stampMainHex.value)) { els.stampMainHex.value = stampMainColor; }
-    });
-    els.stampAccentHex?.addEventListener("change", () => {
-      if (!setStampAccentColor(els.stampAccentHex.value)) { els.stampAccentHex.value = stampAccentColor; }
-    });
-    els.deleteStampBtn?.addEventListener("click", deleteSelectedStamp);
-
     els.undoBtn?.addEventListener("click", undo);
     els.redoBtn?.addEventListener("click", redo);
     els.resetBtn?.addEventListener("click", resetArtwork);
@@ -1964,14 +1881,14 @@
         redo();
       }
 
-      if ((event.key === "Delete" || event.key === "Backspace") && selectedText && !typing) {
-        event.preventDefault();
-        deleteSelectedText();
-      }
-
-      if ((event.key === "Delete" || event.key === "Backspace") && selectedStamp && !typing) {
-        event.preventDefault();
-        deleteSelectedStamp();
+      if ((event.key === "Delete" || event.key === "Backspace") && !typing) {
+        if (selectedText) {
+          event.preventDefault();
+          deleteSelectedText();
+        } else if (selectedStamp) {
+          event.preventDefault();
+          deleteSelectedStamp();
+        }
       }
     });
   }
@@ -1999,12 +1916,12 @@
     document.title = `${CFG.title || "Coloring Book"} | Middle School History`;
 
     buildPaletteMenu();
-    buildStampPicker();
     ensureToolButtons();
     bindControls();
     setBrushSize(12);
-    setCurrentColor(currentColor, { applyToSelectedText: false, applyToSelectedStamp: false });
-    syncStampUi();
+    if (els.stampChoices[0]) setStampChoice(els.stampChoices[0]);
+    updateStampControls();
+    setCurrentColor(currentColor, { applyToSelectedText: false });
     updateLayerButtons();
     updateZoomUi();
     setPaletteTab("presets");

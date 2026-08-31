@@ -53,7 +53,7 @@
               <span>Text</span>
             </button>
             <button class="tool-button" type="button" data-tool="stamp" aria-pressed="false">
-              <span class="tool-button__icon" aria-hidden="true">✦</span>
+              <span class="tool-button__icon" aria-hidden="true">💬</span>
               <span>Stamp</span>
             </button>
             <button class="tool-button" type="button" data-tool="grab" aria-pressed="false">
@@ -98,35 +98,29 @@
           <p class="tool-help">Type first, then click the artwork to place it. Click and drag existing text to move it.</p>
         </section>
 
-
         <section class="tool-group tool-options" id="stampOptions" hidden>
           <span class="tool-label">Stamp</span>
-          <div class="text-settings">
-            <div class="stamp-picker" id="stampPicker" aria-label="Available stamps"></div>
-            <div class="text-two-col">
-              <input class="number-control" id="stampSize" type="number" value="100" min="20" max="400" step="5" aria-label="Stamp size percent" />
-              <input class="number-control" id="stampRotationNumber" type="number" min="-180" max="180" step="1" value="0" aria-label="Stamp rotation degrees" />
-            </div>
-            <div class="text-rotation-row">
-              <label for="stampRotation">Rotate</label>
-              <input class="text-rotation-slider" id="stampRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Stamp rotation" />
-              <div class="text-rotation-value"><span>°</span></div>
-            </div>
-            <div class="stamp-color-grid">
-              <div class="stamp-color-box is-active" id="stampMainBox" data-stamp-color-target="main" tabindex="0" role="button" aria-pressed="true">
-                <span class="stamp-color-label">Main</span>
-                <div class="stamp-color-chip" id="stampMainChip"></div>
-                <input class="hex-input" id="stampMainHex" type="text" value="#FFFFFF" maxlength="7" spellcheck="false" aria-label="Stamp main color" />
-              </div>
-              <div class="stamp-color-box" id="stampAccentBox" data-stamp-color-target="accent" tabindex="0" role="button" aria-pressed="false">
-                <span class="stamp-color-label">Accent</span>
-                <div class="stamp-color-chip" id="stampAccentChip"></div>
-                <input class="hex-input" id="stampAccentHex" type="text" value="#000000" maxlength="7" spellcheck="false" aria-label="Stamp accent color" />
-              </div>
-            </div>
-            <button class="delete-text-button" id="deleteStampBtn" type="button" disabled>Delete Selected Stamp</button>
+          <div class="stamp-picker" id="stampPicker" aria-label="Choose a stamp">
+            <button class="stamp-choice is-active" type="button" data-stamp-src="/assets/games/coloring-book/stamps/bubble_1.svg" data-stamp-name="Bubble 1" aria-pressed="true">
+              <img src="/assets/games/coloring-book/stamps/bubble_1.svg" alt="Bubble 1" />
+            </button>
+            <button class="stamp-choice" type="button" data-stamp-src="/assets/games/coloring-book/stamps/bubble_2.svg" data-stamp-name="Bubble 2" aria-pressed="false">
+              <img src="/assets/games/coloring-book/stamps/bubble_2.svg" alt="Bubble 2" />
+            </button>
           </div>
-          <p class="tool-help">Choose a stamp, then click the artwork to place it. Click and drag an existing stamp to move it.</p>
+
+          <div class="stamp-control-block">
+            <div class="stamp-control-head"><label for="stampSize">Size</label><span>Small</span><span>Large</span></div>
+            <input class="stamp-slider" id="stampSize" type="range" min="80" max="1400" step="10" value="360" aria-label="Stamp size" />
+          </div>
+
+          <div class="stamp-control-block">
+            <div class="stamp-control-head stamp-control-head--rotation"><label for="stampRotation">Rotate</label><output id="stampRotationValue" for="stampRotation">0°</output></div>
+            <input class="stamp-slider" id="stampRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Stamp rotation" />
+          </div>
+
+          <button class="delete-text-button" id="deleteStampBtn" type="button" disabled>Delete Selected Stamp</button>
+          <p class="tool-help">Choose a stamp, set its size and rotation, then click the artwork to place it. Drag a placed stamp to move it.</p>
         </section>
 
         <section class="tool-group" aria-label="Color palettes">
@@ -211,7 +205,6 @@
   <script src="/include.js"></script>
   <script src="/games/coloring-book/engine/palettes.js?v=7.8"></script>
   <script src="/games/coloring-book/harriet-tubman/config.js?v=7.8"></script>
-  <script src="/games/coloring-book/engine/stamps-manifest.js?v=7.8"></script>
   <script src="/games/coloring-book/engine/coloring-book.js?v=7.8"></script>
 </body>
 </html>
