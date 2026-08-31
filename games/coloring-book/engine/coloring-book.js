@@ -425,6 +425,13 @@
       markColorUsed(color);
       commitState();
       setStatus(`${stampColorTarget === "accent" ? "Accent" : "Main"} stamp color updated.`);
+    } else if (currentTool === "stamp" && options.applyToSelectedStamp !== false) {
+      // No stamp has been placed/selected yet: treat the palette choice as the
+      // color for the next stamp. This keeps Main/Accent useful before placement.
+      if (stampColorTarget === "accent") stampAccentColor = color;
+      else stampMainColor = color;
+      syncStampColorControls();
+      setStatus(`${stampColorTarget === "accent" ? "Accent" : "Main"} color set for the next stamp.`);
     }
 
     return true;
@@ -1430,8 +1437,25 @@
       }
 
       const clone = sourceSvg.cloneNode(true);
-      const main = clone.querySelector("#main_color");
-      const accent = clone.querySelector("#accent_color");
+
+      // Illustrator can preserve a layer name as either id="main_color" or
+      // data-name="main_color" (and may vary punctuation/case depending on
+      // export settings). Accept those equivalent forms without modifying the
+      // source SVG file itself.
+      const normalizeStampLayerName = (value) => String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s-]+/g, "_");
+      const findStampLayer = (wanted) => {
+        const normalizedWanted = normalizeStampLayerName(wanted);
+        return Array.from(clone.querySelectorAll("[id], [data-name]")).find((node) => {
+          return normalizeStampLayerName(node.getAttribute("id")) === normalizedWanted
+            || normalizeStampLayerName(node.getAttribute("data-name")) === normalizedWanted;
+        }) || null;
+      };
+
+      const main = findStampLayer("main_color");
+      const accent = findStampLayer("accent_color");
       if (main) {
         main.removeAttribute("id");
         main.dataset.stampMain = "true";
@@ -1459,8 +1483,16 @@
     if (!stamp || !hex) return;
     const selector = target === "accent" ? "[data-stamp-accent='true']" : "[data-stamp-main='true']";
     stamp.querySelectorAll(selector).forEach((node) => {
+      // Illustrator commonly exports fills through .cls-* rules in an embedded
+      // <style>. A normal SVG fill attribute loses to those class rules. An
+      // inline important fill overrides that exported CSS while leaving the
+      // original stamp SVG untouched on disk.
       node.setAttribute("fill", hex);
-      node.querySelectorAll?.("path, polygon, rect, circle, ellipse").forEach((shape) => shape.setAttribute("fill", hex));
+      node.style?.setProperty("fill", hex, "important");
+      node.querySelectorAll?.("path, polygon, rect, circle, ellipse").forEach((shape) => {
+        shape.setAttribute("fill", hex);
+        shape.style?.setProperty("fill", hex, "important");
+      });
     });
   }
 
