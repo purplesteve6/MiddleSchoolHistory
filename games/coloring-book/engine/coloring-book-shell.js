@@ -22,7 +22,7 @@
 
   host.innerHTML = `
   <section class="coloring-band coloring-band--image"
-           style="background-image: url('/assets/images/banners/games-banner.jpg');"
+           style="background-image: url('/assets/images/banners/coloring-book-banner.jpg');"
            aria-label="Coloring Book banner">
     <div class="coloring-band__bottom">
       <div class="coloring-band__inner">
