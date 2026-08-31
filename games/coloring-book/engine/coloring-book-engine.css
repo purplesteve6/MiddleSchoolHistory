@@ -1087,9 +1087,12 @@ body.coloring-book-app-page{
 }
 
 
-/* ===== v8.2 Three-panel editor layout ===== */
+/* ===== v8.3 Viewport-height editor layout ===== */
 :root{
-  --coloring-canvas-h: clamp(440px, 68vh, 760px);
+  /* Keep the desktop editor almost exactly one viewport tall. The 18px
+     allowance at top and bottom matches the sticky-panel breathing room. */
+  --coloring-editor-h: calc(100vh - 36px);
+  --coloring-editor-h: calc(100dvh - 36px);
 }
 
 .coloring-app{
@@ -1111,7 +1114,7 @@ body.coloring-book-app-page{
 .coloring-tools-panel{
   position: sticky;
   top: 18px;
-  height: var(--coloring-canvas-h);
+  height: var(--coloring-editor-h);
   min-height: 0;
   box-sizing: border-box;
   padding: 10px 8px;
@@ -1157,7 +1160,7 @@ body.coloring-book-app-page{
 .coloring-side-stack{
   position: sticky;
   top: 18px;
-  height: var(--coloring-canvas-h);
+  height: var(--coloring-editor-h);
   min-height: 0;
   display: grid;
   grid-template-rows: minmax(0, 1fr) 315px;
@@ -1258,8 +1261,23 @@ body.coloring-book-app-page{
   grid-template-columns: minmax(0, 1fr);
 }
 
+.coloring-workspace{
+  height: var(--coloring-editor-h);
+  min-height: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.coloring-workspace .workspace-commandbar,
+.coloring-workspace .workspace-foot{
+  flex: 0 0 auto;
+}
+
 .artboard-wrap{
-  height: var(--coloring-canvas-h);
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
 }
 
 @media (max-width: 1180px){
@@ -1287,6 +1305,15 @@ body.coloring-book-app-page{
   .coloring-side-stack{
     position: static;
     height: auto;
+  }
+
+  .coloring-workspace{
+    height: auto;
+  }
+
+  .artboard-wrap{
+    flex: none;
+    height: clamp(420px, 66vh, 700px);
   }
 
   .coloring-tools-panel{
