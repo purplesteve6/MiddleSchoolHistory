@@ -48,6 +48,9 @@
     stampSize: document.getElementById("stampSize"),
     stampRotation: document.getElementById("stampRotation"),
     stampRotationValue: document.getElementById("stampRotationValue"),
+    stampColorButtons: Array.from(document.querySelectorAll("[data-stamp-color-target]")),
+    stampMainColorChip: document.getElementById("stampMainColorChip"),
+    stampAccentColorChip: document.getElementById("stampAccentColorChip"),
     deleteStampBtn: document.getElementById("deleteStampBtn"),
     undoBtn: document.getElementById("undoBtn"),
     redoBtn: document.getElementById("redoBtn"),
@@ -87,6 +90,9 @@
   let currentStampName = els.stampChoices[0]?.dataset.stampName || "Stamp";
   let stampSize = Math.max(80, Number(els.stampSize?.value) || 360);
   let stampRotation = clampRotation(Number(els.stampRotation?.value) || 0);
+  let stampColorTarget = "main";
+  let stampMainColor = currentColor;
+  let stampAccentColor = "#000000";
   const stampTemplateCache = new Map();
 
   let draggingStamp = false;
@@ -374,11 +380,14 @@
       markColorUsed(color);
       commitState();
       setStatus("Text color updated.");
-    } else if (selectedStamp && options.applyToSelectedText !== false) {
-      applyStampColor(selectedStamp, color);
+    } else if (selectedStamp && options.applyToSelectedStamp !== false) {
+      applyStampColorChannel(selectedStamp, stampColorTarget, color);
+      if (stampColorTarget === "accent") stampAccentColor = color;
+      else stampMainColor = color;
+      syncStampColorControls();
       markColorUsed(color);
       commitState();
-      setStatus("Stamp color updated.");
+      setStatus(`${stampColorTarget === "accent" ? "Accent" : "Main"} stamp color updated.`);
     }
 
     return true;
@@ -982,7 +991,10 @@
     if (!target) return null;
     const stamp = target.closest?.(".user-stamp");
     if (stamp && svgRoot?.contains(stamp)) {
-      return normalizeSvgColor(stamp.querySelector("[data-stamp-main='true']")?.getAttribute("fill"));
+      const region = target.closest?.("[data-stamp-main='true'], [data-stamp-accent='true']");
+      if (region?.dataset?.stampAccent === "true") return stampChannelColor(stamp, "accent");
+      if (region?.dataset?.stampMain === "true") return stampChannelColor(stamp, "main");
+      return stampChannelColor(stamp, "main") || stampChannelColor(stamp, "accent");
     }
     const node = target.closest?.(".user-text, .user-brush-stroke, [data-coloring-fillable='true']");
     if (!node || !svgRoot?.contains(node)) return null;
@@ -1390,7 +1402,6 @@
       if (accent) {
         accent.removeAttribute("id");
         accent.dataset.stampAccent = "true";
-        accent.setAttribute("fill", "#000000");
       }
       clone.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
 
@@ -1406,12 +1417,61 @@
     }
   }
 
-  function applyStampColor(stamp, color) {
+  function paintStampRegion(stamp, target, color) {
     const hex = normalizeHex(color);
     if (!stamp || !hex) return;
-    stamp.querySelectorAll("[data-stamp-main='true']").forEach((node) => node.setAttribute("fill", hex));
-    stamp.querySelectorAll("[data-stamp-accent='true']").forEach((node) => node.setAttribute("fill", "#000000"));
-    stamp.dataset.color = hex;
+    const selector = target === "accent" ? "[data-stamp-accent='true']" : "[data-stamp-main='true']";
+    stamp.querySelectorAll(selector).forEach((node) => {
+      node.setAttribute("fill", hex);
+      node.querySelectorAll?.("path, polygon, rect, circle, ellipse").forEach((shape) => shape.setAttribute("fill", hex));
+    });
+  }
+
+  function applyStampColorChannel(stamp, target, color) {
+    const hex = normalizeHex(color);
+    if (!stamp || !hex) return;
+    const channel = target === "accent" ? "accent" : "main";
+    paintStampRegion(stamp, channel, hex);
+    if (channel === "accent") stamp.dataset.accentColor = hex;
+    else stamp.dataset.mainColor = hex;
+  }
+
+  function applyStampColors(stamp, mainColor, accentColor) {
+    const main = normalizeHex(mainColor) || "#FFFFFF";
+    const accent = normalizeHex(accentColor) || "#000000";
+    applyStampColorChannel(stamp, "main", main);
+    applyStampColorChannel(stamp, "accent", accent);
+  }
+
+  function stampChannelColor(stamp, target) {
+    if (!stamp) return null;
+    const channel = target === "accent" ? "accent" : "main";
+    const dataColor = normalizeHex(channel === "accent" ? stamp.dataset.accentColor : stamp.dataset.mainColor);
+    if (dataColor) return dataColor;
+    const marker = stamp.querySelector(channel === "accent" ? "[data-stamp-accent='true']" : "[data-stamp-main='true']");
+    if (!marker) return null;
+    return normalizeSvgColor(marker.getAttribute("fill"))
+      || normalizeSvgColor(marker.querySelector?.("path, polygon, rect, circle, ellipse")?.getAttribute("fill"));
+  }
+
+  function syncStampColorControls() {
+    if (els.stampMainColorChip) els.stampMainColorChip.style.background = stampMainColor;
+    if (els.stampAccentColorChip) els.stampAccentColorChip.style.background = stampAccentColor;
+    els.stampColorButtons.forEach((button) => {
+      const active = button.dataset.stampColorTarget === stampColorTarget;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  function setStampColorTarget(target, options = {}) {
+    stampColorTarget = target === "accent" ? "accent" : "main";
+    syncStampColorControls();
+    const color = stampColorTarget === "accent" ? stampAccentColor : stampMainColor;
+    setCurrentColor(color, { applyToSelectedText: false, applyToSelectedStamp: false });
+    if (options.announce !== false) {
+      setStatus(`${stampColorTarget === "accent" ? "Accent" : "Main"} stamp color selected. Choose a color below.`);
+    }
   }
 
   function updateStampTransform(stamp) {
@@ -1456,10 +1516,11 @@
         stamp.appendChild(document.importNode(node, true));
       });
 
-      applyStampColor(stamp, currentColor);
+      applyStampColors(stamp, stampMainColor, stampAccentColor);
       updateStampTransform(stamp);
       textLayerFor().appendChild(stamp);
-      markColorUsed(currentColor);
+      markColorUsed(stampMainColor);
+      markColorUsed(stampAccentColor);
       selectStamp(stamp);
       commitState();
       setStatus(`${currentStampName} placed. Drag it to move it.`);
@@ -1479,9 +1540,13 @@
     stampRotation = clampRotation(selectedStamp.dataset.rotation);
     updateStampControls();
 
-    const color = normalizeHex(selectedStamp.dataset.color)
-      || normalizeSvgColor(selectedStamp.querySelector("[data-stamp-main='true']")?.getAttribute("fill"));
-    if (color) setCurrentColor(color, { applyToSelectedText: false });
+    stampMainColor = stampChannelColor(selectedStamp, "main") || stampMainColor || currentColor;
+    stampAccentColor = stampChannelColor(selectedStamp, "accent") || stampAccentColor || "#000000";
+    syncStampColorControls();
+    setCurrentColor(stampColorTarget === "accent" ? stampAccentColor : stampMainColor, {
+      applyToSelectedText: false,
+      applyToSelectedStamp: false
+    });
 
     const position = stampPosition(selectedStamp);
     if (position) layerPosition = position;
@@ -1816,6 +1881,10 @@
       button.addEventListener("click", () => setStampChoice(button));
     });
 
+    els.stampColorButtons.forEach((button) => {
+      button.addEventListener("click", () => setStampColorTarget(button.dataset.stampColorTarget));
+    });
+
     els.stampSize?.addEventListener("input", () => previewStampSize(els.stampSize.value));
     els.stampSize?.addEventListener("change", commitStampSize);
 
@@ -1921,7 +1990,8 @@
     setBrushSize(12);
     if (els.stampChoices[0]) setStampChoice(els.stampChoices[0]);
     updateStampControls();
-    setCurrentColor(currentColor, { applyToSelectedText: false });
+    syncStampColorControls();
+    setCurrentColor(currentColor, { applyToSelectedText: false, applyToSelectedStamp: false });
     updateLayerButtons();
     updateZoomUi();
     setPaletteTab("presets");

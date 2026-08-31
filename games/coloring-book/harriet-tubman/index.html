@@ -6,9 +6,9 @@
   <title>Harriet Tubman | Middle School History</title>
 
   <link rel="stylesheet" href="/styles.css" />
-  <link rel="stylesheet" href="/games/coloring-book/engine/coloring-book-engine.css?v=7.8" />
+  <link rel="stylesheet" href="/games/coloring-book/engine/coloring-book-engine.css?v=7.9" />
 </head>
-<body class="coloring-book-app-page" data-coloring-build="7.8">
+<body class="coloring-book-app-page" data-coloring-build="7.9">
 
   <div id="siteHeader" data-include="/partials/main-header.html"></div>
 
@@ -109,6 +109,21 @@
             </button>
           </div>
 
+          <div class="stamp-color-controls" aria-label="Choose which stamp color to edit">
+            <span class="stamp-color-controls__label">Stamp Colors</span>
+            <div class="stamp-color-selector" role="group" aria-label="Stamp color layer">
+              <button class="stamp-color-button is-active" type="button" data-stamp-color-target="main" aria-pressed="true">
+                <span class="stamp-color-chip" id="stampMainColorChip" aria-hidden="true"></span>
+                <span>Main</span>
+              </button>
+              <button class="stamp-color-button" type="button" data-stamp-color-target="accent" aria-pressed="false">
+                <span class="stamp-color-chip" id="stampAccentColorChip" aria-hidden="true"></span>
+                <span>Accent</span>
+              </button>
+            </div>
+            <p class="tool-help stamp-color-help">Choose Main or Accent, then use any palette or custom color below.</p>
+          </div>
+
           <div class="stamp-control-block">
             <div class="stamp-control-head"><label for="stampSize">Size</label><span>Small</span><span>Large</span></div>
             <input class="stamp-slider" id="stampSize" type="range" min="80" max="1400" step="10" value="360" aria-label="Stamp size" />
@@ -203,8 +218,8 @@
   <div id="siteFooter" data-include="/partials/footer.html"></div>
 
   <script src="/include.js"></script>
-  <script src="/games/coloring-book/engine/palettes.js?v=7.8"></script>
-  <script src="/games/coloring-book/harriet-tubman/config.js?v=7.8"></script>
-  <script src="/games/coloring-book/engine/coloring-book.js?v=7.8"></script>
+  <script src="/games/coloring-book/engine/palettes.js?v=7.9"></script>
+  <script src="/games/coloring-book/harriet-tubman/config.js?v=7.9"></script>
+  <script src="/games/coloring-book/engine/coloring-book.js?v=7.9"></script>
 </body>
 </html>
