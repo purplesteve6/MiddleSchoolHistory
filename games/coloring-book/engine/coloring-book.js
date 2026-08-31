@@ -103,8 +103,64 @@
   let pickingColor = false;
   let userMaskCounter = 0;
   let userMaskBounds = { x: 0, y: 0, width: 2000, height: 2000 };
+  let cursorPreview = null;
+  let cursorPreviewX = null;
+  let cursorPreviewY = null;
   const MIN_ZOOM = 1;
   const MAX_ZOOM = Math.max(1, Number(CFG.maxZoom || 4));
+
+  function ensureCursorPreview() {
+    if (cursorPreview || !document.body) return;
+    const preview = document.createElement("div");
+    preview.className = "tool-cursor-preview";
+    preview.setAttribute("aria-hidden", "true");
+    preview.innerHTML = `<span class="tool-cursor-preview__x"></span>`;
+    document.body.appendChild(preview);
+    cursorPreview = preview;
+  }
+
+  function previewStrokeDiameter() {
+    if (!svgRoot) return Math.max(8, brushSize);
+    const scale = Math.abs(svgRoot.getScreenCTM()?.a || 1);
+    return Math.max(8, brushSize * scale);
+  }
+
+  function showCursorPreview(event) {
+    ensureCursorPreview();
+    if (!cursorPreview) return;
+    const diameter = previewStrokeDiameter();
+    cursorPreview.style.width = `${diameter}px`;
+    cursorPreview.style.height = `${diameter}px`;
+    cursorPreview.style.left = `${event.clientX}px`;
+    cursorPreview.style.top = `${event.clientY}px`;
+    cursorPreview.dataset.mode = currentTool;
+    cursorPreview.hidden = !(currentTool === "brush" || currentTool === "eraser");
+    cursorPreviewX = event.clientX;
+    cursorPreviewY = event.clientY;
+  }
+
+  function hideCursorPreview() {
+    if (!cursorPreview) return;
+    cursorPreview.hidden = true;
+    cursorPreviewX = null;
+    cursorPreviewY = null;
+  }
+
+  function refreshCursorPreview() {
+    if ((currentTool !== "brush" && currentTool !== "eraser") || cursorPreviewX == null || cursorPreviewY == null) {
+      hideCursorPreview();
+      return;
+    }
+    ensureCursorPreview();
+    if (!cursorPreview) return;
+    const diameter = previewStrokeDiameter();
+    cursorPreview.style.width = `${diameter}px`;
+    cursorPreview.style.height = `${diameter}px`;
+    cursorPreview.style.left = `${cursorPreviewX}px`;
+    cursorPreview.style.top = `${cursorPreviewY}px`;
+    cursorPreview.dataset.mode = currentTool;
+    cursorPreview.hidden = false;
+  }
 
   function setStatus(message) {
     if (els.status) els.status.textContent = message;
@@ -298,6 +354,7 @@
     if (tool === "eraser") setStatus("Eraser: drag to permanently erase existing brush strokes and text on the active drawing position.");
     if (tool === "text") setStatus("Text: type your words, then click the picture to place them.");
     if (tool === "grab") setStatus("Grab: drag the artwork to pan around when zoomed in.");
+    refreshCursorPreview();
   }
 
   function setBrushSize(size) {
@@ -307,6 +364,7 @@
     els.brushSizes.forEach((button) => {
       button.classList.toggle("is-active", Number(button.dataset.brushSize) === brushSize);
     });
+    refreshCursorPreview();
   }
 
   function getSvgPoint(event) {
@@ -407,7 +465,6 @@
 
   function createEraseMark(points, width, offset = { x: 0, y: 0 }) {
     if (!points?.length) return null;
-    const shifted = points.map((point) => ({ x: point.x - offset.x, y: point.y - offset.y }));
     const path = document.createElementNS(SVG_NS, "path");
     path.classList.add("user-eraser-stroke");
     path.setAttribute("stroke", "#000000");
@@ -415,32 +472,28 @@
     path.setAttribute("fill", "none");
     path.setAttribute("stroke-linecap", "round");
     path.setAttribute("stroke-linejoin", "round");
-
-    if (shifted.length === 1) {
-      const p = shifted[0];
-      path.setAttribute("d", `M ${p.x.toFixed(2)} ${p.y.toFixed(2)} l 0.01 0`);
-    } else {
-      path.setAttribute("d", buildSmoothPath(shifted));
-    }
-
+    path.setAttribute("d", pathDataForPoints(points, offset));
     return path;
   }
 
-  function applyEraserToCurrentLayer(points, width) {
+  function beginEraserTargets(points, width) {
     const objects = workObjectsFor(layerPosition);
-    let applied = 0;
-
-    objects.forEach((target) => {
+    currentEraseTargets = objects.map((target) => {
       const marks = ensureObjectMask(target);
-      if (!marks) return;
+      if (!marks) return null;
       const offset = parseTranslate(marks.getAttribute("transform"));
       const eraseMark = createEraseMark(points, width, offset);
-      if (!eraseMark) return;
+      if (!eraseMark) return null;
       marks.appendChild(eraseMark);
-      applied += 1;
-    });
+      return { target, marks, offset, path: eraseMark };
+    }).filter(Boolean);
+    return currentEraseTargets.length;
+  }
 
-    return applied;
+  function updateEraserTargets(points) {
+    currentEraseTargets.forEach((entry) => {
+      entry.path.setAttribute("d", pathDataForPoints(points, entry.offset));
+    });
   }
 
   function textPosition(text) {
@@ -576,6 +629,7 @@
     }
 
     updateZoomUi();
+    refreshCursorPreview();
   }
 
   function zoomByWheel(event) {
@@ -788,6 +842,7 @@
     currentBrushPath.setAttribute("stroke-width", String(brushSize));
     currentBrushPath.setAttribute("d", `M ${currentBrushPoints[0].x.toFixed(2)} ${currentBrushPoints[0].y.toFixed(2)}`);
     paintLayerFor().appendChild(currentBrushPath);
+    showCursorPreview(event);
 
     svgRoot.setPointerCapture?.(event.pointerId);
     event.preventDefault();
@@ -803,6 +858,7 @@
 
     currentBrushPoints.push(point);
     currentBrushPath.setAttribute("d", buildSmoothPath(currentBrushPoints));
+    showCursorPreview(event);
     event.preventDefault();
   }
 
@@ -828,6 +884,15 @@
     return d;
   }
 
+  function pathDataForPoints(points, offset = { x: 0, y: 0 }) {
+    const shifted = points.map((point) => ({ x: point.x - (offset.x || 0), y: point.y - (offset.y || 0) }));
+    if (shifted.length === 1) {
+      const p = shifted[0];
+      return `M ${p.x.toFixed(2)} ${p.y.toFixed(2)} l 0.01 0`;
+    }
+    return buildSmoothPath(shifted);
+  }
+
   function endBrush(event) {
     if (!drawing) return;
     drawing = false;
@@ -850,6 +915,8 @@
     if (event.button !== undefined && event.button !== 0) return;
     drawing = true;
     currentErasePoints = [getSvgPoint(event)];
+    beginEraserTargets(currentErasePoints, brushSize);
+    showCursorPreview(event);
     svgRoot.setPointerCapture?.(event.pointerId);
     event.preventDefault();
   }
@@ -863,6 +930,8 @@
     if (dx * dx + dy * dy < 2.5) return;
 
     currentErasePoints.push(point);
+    updateEraserTargets(currentErasePoints);
+    showCursorPreview(event);
     event.preventDefault();
   }
 
@@ -871,8 +940,9 @@
     drawing = false;
     try { svgRoot.releasePointerCapture?.(event.pointerId); } catch (_) {}
 
-    const applied = applyEraserToCurrentLayer(currentErasePoints, brushSize);
+    const applied = currentEraseTargets.length;
     if (applied > 0) {
+      updateEraserTargets(currentErasePoints);
       commitState();
       setStatus(`Erased from ${applied} item${applied === 1 ? "" : "s"} on the ${layerPosition === "above" ? "On Top" : "Behind Lines"} layer.`);
     } else {
@@ -880,6 +950,7 @@
     }
 
     currentErasePoints = [];
+    currentEraseTargets = [];
     event.preventDefault();
   }
 
@@ -1038,6 +1109,18 @@
   }
 
   function bindSvgEvents() {
+    els.artboard?.addEventListener("pointerenter", (event) => {
+      if (currentTool === "brush" || currentTool === "eraser") showCursorPreview(event);
+    });
+
+    els.artboard?.addEventListener("pointermove", (event) => {
+      if (currentTool === "brush" || currentTool === "eraser") showCursorPreview(event);
+    });
+
+    els.artboard?.addEventListener("pointerleave", () => {
+      hideCursorPreview();
+    });
+
     svgRoot.addEventListener("pointerdown", (event) => {
       if (currentTool === "brush") {
         startBrush(event);
@@ -1310,6 +1393,7 @@
     setCurrentColor(currentColor, { applyToSelectedText: false });
     updateLayerButtons();
     updateZoomUi();
+    ensureCursorPreview();
     setTool(currentTool);
 
     loadSvg().catch((error) => {

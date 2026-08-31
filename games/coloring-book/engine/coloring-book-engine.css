@@ -710,8 +710,10 @@ body.coloring-book-app-page{
   cursor: cell;
 }
 
-.artboard[data-tool="brush"] svg{ cursor: crosshair; }
-.artboard[data-tool="eraser"] svg{ cursor: crosshair; }
+.artboard[data-tool="brush"],
+.artboard[data-tool="brush"] svg,
+.artboard[data-tool="eraser"],
+.artboard[data-tool="eraser"] svg{ cursor: none; }
 .artboard[data-tool="text"] svg{ cursor: text; }
 .artboard[data-tool="grab"],
 .artboard[data-tool="grab"] svg{ cursor: grab; }
@@ -719,6 +721,58 @@ body.coloring-book-app-page{
 .artboard-wrap.is-grabbing,
 .artboard-wrap.is-grabbing *{
   cursor: grabbing !important;
+}
+
+.tool-cursor-preview{
+  position: fixed;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255,255,255,.92);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.42), 0 0 10px rgba(0,0,0,.20);
+  background: rgba(255,255,255,.08);
+}
+
+.tool-cursor-preview[hidden]{
+  display: none;
+}
+
+.tool-cursor-preview__x{
+  display: none;
+}
+
+.tool-cursor-preview[data-mode="eraser"]{
+  border-color: rgba(255,255,255,.96);
+  background: rgba(255,255,255,.14);
+}
+
+.tool-cursor-preview[data-mode="eraser"] .tool-cursor-preview__x{
+  display: block;
+  position: absolute;
+  inset: 28%;
+}
+
+.tool-cursor-preview[data-mode="eraser"] .tool-cursor-preview__x::before,
+.tool-cursor-preview[data-mode="eraser"] .tool-cursor-preview__x::after{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,.88);
+  transform-origin: center;
+}
+
+.tool-cursor-preview[data-mode="eraser"] .tool-cursor-preview__x::before{
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.tool-cursor-preview[data-mode="eraser"] .tool-cursor-preview__x::after{
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .artboard svg #ink,
