@@ -24,11 +24,25 @@ window.COLORING_BOOK_FILTERS = {
     { id: "world-history", label: "World History" },
     { id: "geography", label: "Geography" },
     { id: "civics", label: "Civics" },
-    { id: "economics", label: "Economics" }
+    { id: "economics", label: "Economics" },
+    { id: "mythology", label: "Mythology" },
   ]
 };
 
 window.COLORING_BOOK_PAGES = [
+
+  {
+    id: "athena",
+    title: "Athena",
+    file: "/games/coloring-book/pages/athena.svg",
+    thumbnail: "/games/images/thumbs/coloring-book/athena.webp",
+    description: "Color a scene featuring Athena, Greek Goddess of wisdom.",
+    gradeLevels: ["6"],
+    subjects: ["world-history", "mythhology"],
+    tags: ["athena", "greek mythology", "greek goddess", "ancient greece", "goddess of wisdom", "warrior goddess", "owl", "spear", "shield", "helmet", "parthenon", "acropolis", "athens", "medusa", "greek armor", "olive tree"]
+
+  }
+
   {
     id: "harriet-tubman",
     title: "Harriet Tubman",
