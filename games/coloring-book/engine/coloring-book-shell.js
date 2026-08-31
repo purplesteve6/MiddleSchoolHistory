@@ -35,146 +35,155 @@
     <a class="coloring-back" href="/games/coloring-book/">← Coloring Book</a>
 
     <div class="coloring-app">
-      <aside class="coloring-toolbar" aria-label="Coloring tools">
-        <h2 class="tool-title">Coloring Tools</h2>
+      <aside class="coloring-tools-panel" aria-label="Main coloring tools">
+        <h2 class="tools-panel-title">Tools</h2>
+        <div class="tool-buttons tool-buttons--rail">
+          <button class="tool-button" type="button" data-tool="grab" aria-pressed="false">
+            <span class="tool-button__icon" aria-hidden="true">✋</span>
+            <span>Grab</span>
+          </button>
+          <button class="tool-button" type="button" data-tool="brush" aria-pressed="false">
+            <span class="tool-button__icon" aria-hidden="true">🖌️</span>
+            <span>Brush</span>
+          </button>
+          <button class="tool-button" type="button" data-tool="bucket" aria-pressed="true">
+            <span class="tool-button__icon" aria-hidden="true">🪣</span>
+            <span>Bucket</span>
+          </button>
+          <button class="tool-button" type="button" data-tool="eyedrop" aria-pressed="false">
+            <span class="tool-button__icon" aria-hidden="true">💧</span>
+            <span>Eyedropper</span>
+          </button>
+          <button class="tool-button" type="button" data-tool="eraser" aria-pressed="false">
+            <span class="tool-button__icon" aria-hidden="true">⌫</span>
+            <span>Eraser</span>
+          </button>
+          <button class="tool-button" type="button" data-tool="text" aria-pressed="false">
+            <span class="tool-button__icon" aria-hidden="true">T</span>
+            <span>Text</span>
+          </button>
+          <button class="tool-button" type="button" data-tool="stamp" aria-pressed="false">
+            <span class="tool-button__icon" aria-hidden="true">💬</span>
+            <span>Stamp</span>
+          </button>
+        </div>
+      </aside>
 
-        <section class="tool-group" aria-label="Choose a tool">
-          <span class="tool-label">Tool</span>
-          <div class="tool-buttons">
-            <button class="tool-button" type="button" data-tool="bucket" aria-pressed="true">
-              <span class="tool-button__icon" aria-hidden="true">🪣</span>
-              <span>Bucket</span>
-            </button>
-            <button class="tool-button" type="button" data-tool="brush" aria-pressed="false">
-              <span class="tool-button__icon" aria-hidden="true">🖌️</span>
-              <span>Brush</span>
-            </button>
-            <button class="tool-button" type="button" data-tool="eraser" aria-pressed="false">
-              <span class="tool-button__icon" aria-hidden="true">⌫</span>
-              <span>Eraser</span>
-            </button>
-            <button class="tool-button" type="button" data-tool="eyedrop" aria-pressed="false">
-              <span class="tool-button__icon" aria-hidden="true">💧</span>
-              <span>Eyedropper</span>
-            </button>
-            <button class="tool-button" type="button" data-tool="text" aria-pressed="false">
-              <span class="tool-button__icon" aria-hidden="true">T</span>
-              <span>Text</span>
-            </button>
-            <button class="tool-button" type="button" data-tool="stamp" aria-pressed="false">
-              <span class="tool-button__icon" aria-hidden="true">💬</span>
-              <span>Stamp</span>
-            </button>
-            <button class="tool-button" type="button" data-tool="grab" aria-pressed="false">
-              <span class="tool-button__icon" aria-hidden="true">✋</span>
-              <span>Grab</span>
-            </button>
+      <div class="coloring-side-stack">
+        <aside class="coloring-options-panel" aria-label="Tool options">
+          <h2 class="side-panel-title">Tool Options</h2>
+
+          <div class="tool-options-scroll">
+            <section class="tool-group tool-options" id="brushOptions" hidden>
+              <span class="tool-label" id="brushOptionsLabel">Brush Size</span>
+              <div class="brush-sizes">
+                <button class="brush-size" type="button" data-brush-size="5" aria-label="Small brush"><span class="brush-dot" style="width:5px;height:5px"></span></button>
+                <button class="brush-size" type="button" data-brush-size="12" aria-label="Medium brush"><span class="brush-dot" style="width:10px;height:10px"></span></button>
+                <button class="brush-size" type="button" data-brush-size="24" aria-label="Large brush"><span class="brush-dot" style="width:16px;height:16px"></span></button>
+                <button class="brush-size" type="button" data-brush-size="42" aria-label="Extra large brush"><span class="brush-dot" style="width:23px;height:23px"></span></button>
+              </div>
+            </section>
+
+            <section class="tool-group tool-options" id="textOptions" hidden>
+              <span class="tool-label">Text</span>
+              <div class="text-settings">
+                <input class="text-control" id="textValue" type="text" maxlength="80" placeholder="Type your text…" />
+                <div class="text-two-col">
+                  <select class="palette-select" id="textFont" aria-label="Text font">
+                    <option value="Arial, sans-serif">Arial</option>
+                    <option value="Impact, Haettenschweiler, sans-serif">Impact</option>
+                    <option value="'Comic Sans MS', 'Trebuchet MS', sans-serif">Comic</option>
+                    <option value="Georgia, serif">Georgia</option>
+                    <option value="'Lemon Milk', Arial, sans-serif">Lemon Milk</option>
+                    <option value="'Tommy Soft', Arial, sans-serif">Tommy Soft</option>
+                  </select>
+                  <input class="number-control" id="textSize" type="number" value="44" min="10" max="160" step="2" aria-label="Text size" />
+                </div>
+                <div class="text-rotation-row">
+                  <label for="textRotation">Rotate</label>
+                  <input class="text-rotation-slider" id="textRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Text rotation" />
+                  <div class="text-rotation-value"><input class="number-control" id="textRotationNumber" type="number" min="-180" max="180" step="1" value="0" aria-label="Text rotation degrees" /><span>°</span></div>
+                </div>
+                <button class="delete-text-button" id="deleteTextBtn" type="button" disabled>Delete Selected Text</button>
+              </div>
+              <p class="tool-help">Type first, then click the artwork to place it. Click and drag existing text to move it.</p>
+            </section>
+
+            <section class="tool-group tool-options" id="stampOptions" hidden>
+              <span class="tool-label">Stamp</span>
+              <div class="stamp-picker" id="stampPicker" aria-label="Choose a stamp"></div>
+
+              <div class="stamp-color-controls" aria-label="Choose which stamp color to edit">
+                <span class="stamp-color-controls__label">Stamp Colors</span>
+                <div class="stamp-color-selector" role="group" aria-label="Stamp color layer">
+                  <button class="stamp-color-button is-active" type="button" data-stamp-color-target="main" aria-pressed="true">
+                    <span class="stamp-color-chip" id="stampMainColorChip" aria-hidden="true"></span>
+                    <span>Main</span>
+                  </button>
+                  <button class="stamp-color-button" type="button" data-stamp-color-target="accent" aria-pressed="false">
+                    <span class="stamp-color-chip" id="stampAccentColorChip" aria-hidden="true"></span>
+                    <span>Accent</span>
+                  </button>
+                </div>
+                <p class="tool-help stamp-color-help">Choose Main or Accent, then use any palette or custom color below.</p>
+              </div>
+
+              <div class="stamp-control-block">
+                <div class="stamp-control-head"><label for="stampSize">Size</label><span>Small</span><span>Large</span></div>
+                <input class="stamp-slider" id="stampSize" type="range" min="80" max="1400" step="10" value="360" aria-label="Stamp size" />
+              </div>
+
+              <div class="stamp-control-block">
+                <div class="stamp-control-head stamp-control-head--rotation"><label for="stampRotation">Rotate</label><output id="stampRotationValue" for="stampRotation">0°</output></div>
+                <input class="stamp-slider" id="stampRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Stamp rotation" />
+              </div>
+
+              <button class="delete-text-button" id="deleteStampBtn" type="button" disabled>Delete Selected Stamp</button>
+              <p class="tool-help">Choose a stamp, set its size and rotation, then click the artwork to place it. Drag a placed stamp to move it.</p>
+            </section>
           </div>
-        </section>
 
-        <section class="tool-group tool-options" id="brushOptions" hidden>
-          <span class="tool-label" id="brushOptionsLabel">Brush Size</span>
-          <div class="brush-sizes">
-            <button class="brush-size" type="button" data-brush-size="5" aria-label="Small brush"><span class="brush-dot" style="width:5px;height:5px"></span></button>
-            <button class="brush-size" type="button" data-brush-size="12" aria-label="Medium brush"><span class="brush-dot" style="width:10px;height:10px"></span></button>
-            <button class="brush-size" type="button" data-brush-size="24" aria-label="Large brush"><span class="brush-dot" style="width:16px;height:16px"></span></button>
-            <button class="brush-size" type="button" data-brush-size="42" aria-label="Extra large brush"><span class="brush-dot" style="width:23px;height:23px"></span></button>
-          </div>
-        </section>
+          <div class="coloring-status" id="coloringStatus" role="status" aria-live="polite">Loading coloring page…</div>
+        </aside>
 
-        <section class="tool-group tool-options" id="textOptions" hidden>
-          <span class="tool-label">Text</span>
-          <div class="text-settings">
-            <input class="text-control" id="textValue" type="text" maxlength="80" placeholder="Type your text…" />
-            <div class="text-two-col">
-              <select class="palette-select" id="textFont" aria-label="Text font">
-                <option value="Arial, sans-serif">Arial</option>
-                <option value="Impact, Haettenschweiler, sans-serif">Impact</option>
-                <option value="'Comic Sans MS', 'Trebuchet MS', sans-serif">Comic</option>
-                <option value="Georgia, serif">Georgia</option>
-                <option value="'Lemon Milk', Arial, sans-serif">Lemon Milk</option>
-                <option value="'Tommy Soft', Arial, sans-serif">Tommy Soft</option>
-              </select>
-              <input class="number-control" id="textSize" type="number" value="44" min="10" max="160" step="2" aria-label="Text size" />
+        <aside class="coloring-palette-panel" aria-label="Colors and palettes">
+          <h2 class="side-panel-title">Colors</h2>
+
+          <section class="tool-group palette-tool-group" aria-label="Color palettes">
+            <div class="palette-tabs" role="tablist" aria-label="Palette views">
+              <button class="palette-tab is-active" type="button" role="tab" aria-selected="true" data-palette-tab="presets">Palettes</button>
+              <button class="palette-tab" type="button" role="tab" aria-selected="false" data-palette-tab="current">Current Colors</button>
             </div>
-            <div class="text-rotation-row">
-              <label for="textRotation">Rotate</label>
-              <input class="text-rotation-slider" id="textRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Text rotation" />
-              <div class="text-rotation-value"><input class="number-control" id="textRotationNumber" type="number" min="-180" max="180" step="1" value="0" aria-label="Text rotation degrees" /><span>°</span></div>
+            <div class="palette-panel" data-palette-panel="presets">
+              <label class="sr-only" for="paletteSelect">Palette</label>
+              <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
+              <div class="swatches" id="swatches" aria-label="Palette colors"></div>
             </div>
-            <button class="delete-text-button" id="deleteTextBtn" type="button" disabled>Delete Selected Text</button>
-          </div>
-          <p class="tool-help">Type first, then click the artwork to place it. Click and drag existing text to move it.</p>
-        </section>
-
-        <section class="tool-group tool-options" id="stampOptions" hidden>
-          <span class="tool-label">Stamp</span>
-          <div class="stamp-picker" id="stampPicker" aria-label="Choose a stamp">
-          </div>
-
-          <div class="stamp-color-controls" aria-label="Choose which stamp color to edit">
-            <span class="stamp-color-controls__label">Stamp Colors</span>
-            <div class="stamp-color-selector" role="group" aria-label="Stamp color layer">
-              <button class="stamp-color-button is-active" type="button" data-stamp-color-target="main" aria-pressed="true">
-                <span class="stamp-color-chip" id="stampMainColorChip" aria-hidden="true"></span>
-                <span>Main</span>
-              </button>
-              <button class="stamp-color-button" type="button" data-stamp-color-target="accent" aria-pressed="false">
-                <span class="stamp-color-chip" id="stampAccentColorChip" aria-hidden="true"></span>
-                <span>Accent</span>
-              </button>
+            <div class="palette-panel" data-palette-panel="current" hidden>
+              <div class="swatches current-swatches" id="currentSwatches" aria-label="Colors currently used in the artwork"></div>
+              <p class="current-colors-empty" id="currentColorsEmpty">No custom colors are currently used.</p>
             </div>
-            <p class="tool-help stamp-color-help">Choose Main or Accent, then use any palette or custom color below.</p>
-          </div>
+          </section>
 
-          <div class="stamp-control-block">
-            <div class="stamp-control-head"><label for="stampSize">Size</label><span>Small</span><span>Large</span></div>
-            <input class="stamp-slider" id="stampSize" type="range" min="80" max="1400" step="10" value="360" aria-label="Stamp size" />
-          </div>
-
-          <div class="stamp-control-block">
-            <div class="stamp-control-head stamp-control-head--rotation"><label for="stampRotation">Rotate</label><output id="stampRotationValue" for="stampRotation">0°</output></div>
-            <input class="stamp-slider" id="stampRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Stamp rotation" />
-          </div>
-
-          <button class="delete-text-button" id="deleteStampBtn" type="button" disabled>Delete Selected Stamp</button>
-          <p class="tool-help">Choose a stamp, set its size and rotation, then click the artwork to place it. Drag a placed stamp to move it.</p>
-        </section>
-
-        <section class="tool-group" aria-label="Color palettes">
-          <span class="tool-label">Colors</span>
-          <div class="palette-tabs" role="tablist" aria-label="Palette views">
-            <button class="palette-tab is-active" type="button" role="tab" aria-selected="true" data-palette-tab="presets">Palettes</button>
-            <button class="palette-tab" type="button" role="tab" aria-selected="false" data-palette-tab="current">Current Colors</button>
-          </div>
-          <div class="palette-panel" data-palette-panel="presets">
-            <label class="sr-only" for="paletteSelect">Palette</label>
-            <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
-            <div class="swatches" id="swatches" aria-label="Palette colors"></div>
-          </div>
-          <div class="palette-panel" data-palette-panel="current" hidden>
-            <div class="swatches current-swatches" id="currentSwatches" aria-label="Colors currently used in the artwork"></div>
-            <p class="current-colors-empty" id="currentColorsEmpty">No custom colors are currently used.</p>
-          </div>
-        </section>
-
-        <section class="tool-group" aria-label="Color picker">
-          <span class="tool-label">Color Picker</span>
-          <div class="color-picker-field" id="colorPickerField" role="slider" tabindex="0" aria-label="Choose saturation and brightness">
-            <span class="color-picker-marker" id="colorPickerMarker" aria-hidden="true"></span>
-          </div>
-          <input class="hue-slider" id="hueSlider" type="range" min="0" max="360" step="1" value="350" aria-label="Hue" />
-          <div class="color-picker-bottom-row">
+          <div class="palette-current-row" aria-label="Current selected color">
             <span class="current-color-chip" id="currentColorChip" aria-hidden="true"></span>
-            <input class="hex-input" id="hexInput" type="text" value="#D7263D" maxlength="7" spellcheck="false" aria-label="Hex color code" />
-          </div>
-          <div class="current-color-row current-color-row--picker">
             <span>Current: <strong id="currentColorText">#D7263D</strong></span>
           </div>
-        </section>
 
-        <div class="coloring-status" id="coloringStatus" role="status" aria-live="polite">Loading coloring page…</div>
-      </aside>
+          <details class="color-picker-disclosure">
+            <summary>Custom Color Picker</summary>
+            <div class="color-picker-disclosure__body">
+              <div class="color-picker-field" id="colorPickerField" role="slider" tabindex="0" aria-label="Choose saturation and brightness">
+                <span class="color-picker-marker" id="colorPickerMarker" aria-hidden="true"></span>
+              </div>
+              <input class="hue-slider" id="hueSlider" type="range" min="0" max="360" step="1" value="350" aria-label="Hue" />
+              <div class="color-picker-bottom-row color-picker-bottom-row--compact">
+                <input class="hex-input" id="hexInput" type="text" value="#D7263D" maxlength="7" spellcheck="false" aria-label="Hex color code" />
+              </div>
+            </div>
+          </details>
+        </aside>
+      </div>
 
       <section class="coloring-workspace" aria-label="Coloring page workspace">
         <div class="workspace-commandbar">
