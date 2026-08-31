@@ -10,6 +10,43 @@
 
   const CFG = window.COLORING_BOOK_CONFIG || {};
   const PALETTES = window.COLORING_BOOK_PALETTES || {};
+  const STAMPS = Array.isArray(window.COLORING_BOOK_STAMPS) ? window.COLORING_BOOK_STAMPS : [];
+
+  function buildStampPickerFromManifest() {
+    const host = document.getElementById("stampPicker");
+    if (!host) return;
+
+    host.replaceChildren();
+    const validStamps = STAMPS.filter((stamp) =>
+      stamp && String(stamp.file || "").trim() && String(stamp.label || "").trim()
+    );
+
+    validStamps.forEach((stamp, index) => {
+      const button = document.createElement("button");
+      button.className = `stamp-choice${index === 0 ? " is-active" : ""}`;
+      button.type = "button";
+      button.dataset.stampId = String(stamp.id || `stamp-${index + 1}`);
+      button.dataset.stampSrc = String(stamp.file);
+      button.dataset.stampName = String(stamp.label);
+      button.setAttribute("aria-pressed", String(index === 0));
+      button.title = String(stamp.label);
+
+      const image = document.createElement("img");
+      image.src = String(stamp.file);
+      image.alt = String(stamp.label);
+      button.appendChild(image);
+      host.appendChild(button);
+    });
+
+    if (!validStamps.length) {
+      const empty = document.createElement("p");
+      empty.className = "tool-help";
+      empty.textContent = "No stamps are configured in stamps-manifest.js.";
+      host.appendChild(empty);
+    }
+  }
+
+  buildStampPickerFromManifest();
 
   const SVG_NS = "http://www.w3.org/2000/svg";
   const COLOR_GROUP_ID = CFG.colorGroupId || "color";
@@ -477,7 +514,7 @@
     if (tool === "eraser") setStatus("Eraser: drag to permanently erase existing brush strokes and text on the active drawing position.");
     if (tool === "eyedrop") setStatus("Eyedropper: click a colored area, brush stroke, text, or stamp to make that the current color.");
     if (tool === "text") setStatus("Text: type your words, then click the picture to place them.");
-    if (tool === "stamp") setStatus("Stamp: choose a stamp, size, and rotation, then click the picture to place it.");
+    if (tool === "stamp") setStatus(currentStampSrc ? "Stamp: choose a stamp, size, and rotation, then click the picture to place it." : "Stamp: no stamps are configured in stamps-manifest.js.");
     if (tool === "grab") setStatus("Grab: drag the artwork to pan around when zoomed in.");
     refreshCursorPreview();
   }
