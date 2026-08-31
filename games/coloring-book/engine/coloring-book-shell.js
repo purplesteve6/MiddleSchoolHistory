@@ -55,7 +55,13 @@
             <span>Eyedropper</span>
           </button>
           <button class="tool-button" type="button" data-tool="eraser" aria-pressed="false">
-            <span class="tool-button__icon" aria-hidden="true">⌫</span>
+            <span class="tool-button__icon tool-button__icon--eraser" aria-hidden="true">
+              <svg viewBox="0 0 32 32" focusable="false" aria-hidden="true">
+                <path class="eraser-icon__body" d="M7.2 21.9 17.9 7.8a3.2 3.2 0 0 1 4.5-.6l5.1 3.9a3.2 3.2 0 0 1 .6 4.5L17.4 29.7H9.8l-2-1.5a4.5 4.5 0 0 1-.6-6.3Z"/>
+                <path class="eraser-icon__end" d="m7.2 21.9 7.3 5.6-1.7 2.2h-3l-2-1.5a4.5 4.5 0 0 1-.6-6.3Z"/>
+                <path class="eraser-icon__seam" d="m12.7 14.7 7.3 5.6"/>
+              </svg>
+            </span>
             <span>Eraser</span>
           </button>
           <button class="tool-button" type="button" data-tool="text" aria-pressed="false">
@@ -111,7 +117,13 @@
 
             <section class="tool-group tool-options" id="stampOptions" hidden>
               <span class="tool-label">Stamp</span>
-              <div class="stamp-picker" id="stampPicker" aria-label="Choose a stamp"></div>
+
+              <details class="stamp-library-disclosure" open>
+                <summary>Stamp Library</summary>
+                <div class="stamp-library-disclosure__body">
+                  <div class="stamp-picker" id="stampPicker" aria-label="Choose a stamp"></div>
+                </div>
+              </details>
 
               <div class="stamp-color-controls" aria-label="Choose which stamp color to edit">
                 <span class="stamp-color-controls__label">Stamp Colors</span>
