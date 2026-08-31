@@ -174,54 +174,58 @@
         <aside class="coloring-palette-panel" aria-label="Colors and palettes">
           <h2 class="side-panel-title">Colors</h2>
 
-          <section class="tool-group palette-tool-group" aria-label="Color palettes">
-            <div class="palette-tabs" role="tablist" aria-label="Palette views">
-              <button class="palette-tab is-active" type="button" role="tab" aria-selected="true" data-palette-tab="presets">Palettes</button>
-              <button class="palette-tab" type="button" role="tab" aria-selected="false" data-palette-tab="current">Current Colors</button>
-            </div>
-            <div class="palette-panel" data-palette-panel="presets">
-              <label class="sr-only" for="paletteSelect">Palette</label>
-              <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
-              <div class="swatches" id="swatches" aria-label="Palette colors"></div>
-            </div>
-            <div class="palette-panel" data-palette-panel="current" hidden>
-              <div class="swatches current-swatches" id="currentSwatches" aria-label="Colors currently used in the artwork"></div>
-              <p class="current-colors-empty" id="currentColorsEmpty">No custom colors are currently used.</p>
-            </div>
-          </section>
+          <div class="palette-top-row">
+            <section class="global-colors global-colors--photoshop" aria-label="Foreground and background colors">
+              <div class="global-colors__stack" role="group" aria-label="Choose color target">
+                <button class="global-color-button global-color-button--background" type="button" data-global-color-target="background" aria-pressed="false" aria-label="Edit background color">
+                  <span class="global-color-chip" id="backgroundColorChip" aria-hidden="true"></span>
+                  <span class="global-color-badge" aria-hidden="true">BG</span>
+                  <span class="sr-only">Background</span>
+                </button>
+                <button class="global-color-button global-color-button--foreground is-active" type="button" data-global-color-target="foreground" aria-pressed="true" aria-label="Edit foreground color">
+                  <span class="global-color-chip" id="foregroundColorChip" aria-hidden="true"></span>
+                  <span class="global-color-badge" aria-hidden="true">FG</span>
+                  <span class="sr-only">Foreground</span>
+                </button>
+                <button class="swap-colors-button" id="swapColorsBtn" type="button" aria-label="Swap foreground and background colors" title="Swap colors">⇄</button>
+              </div>
+              <div class="global-colors__labels">
+                <div class="global-color-readout">
+                  <span class="global-color-readout__label">Foreground</span>
+                  <span class="global-color-readout__value" id="foregroundColorText">#D7263D</span>
+                </div>
+                <div class="global-color-readout">
+                  <span class="global-color-readout__label">Background</span>
+                  <span class="global-color-readout__value" id="backgroundColorText">#000000</span>
+                </div>
+              </div>
+            </section>
 
-          <section class="global-colors" aria-label="Foreground and background colors">
-            <div class="global-colors__header">
-              <span class="tool-label">Foreground / Background</span>
-              <button class="swap-colors-button" id="swapColorsBtn" type="button" aria-label="Swap foreground and background colors" title="Swap colors">⇄</button>
-            </div>
-            <div class="global-color-selector" role="group" aria-label="Choose color target">
-              <button class="global-color-button is-active" type="button" data-global-color-target="foreground" aria-pressed="true">
-                <span class="global-color-chip" id="foregroundColorChip" aria-hidden="true"></span>
-                <span class="global-color-text">
-                  <strong>Foreground</strong>
-                  <small id="foregroundColorText">#D7263D</small>
-                </span>
-              </button>
-              <button class="global-color-button" type="button" data-global-color-target="background" aria-pressed="false">
-                <span class="global-color-chip" id="backgroundColorChip" aria-hidden="true"></span>
-                <span class="global-color-text">
-                  <strong>Background</strong>
-                  <small id="backgroundColorText">#000000</small>
-                </span>
-              </button>
-            </div>
-            <p class="tool-help global-colors-help">Left click uses Foreground. Right click uses Background. Text uses Foreground for fill and Background for outline. Stamps use Foreground for Main and Background for Accent.</p>
-          </section>
+            <section class="tool-group palette-tool-group" aria-label="Color palettes">
+              <div class="palette-tabs" role="tablist" aria-label="Palette views">
+                <button class="palette-tab is-active" type="button" role="tab" aria-selected="true" data-palette-tab="presets">Palettes</button>
+                <button class="palette-tab" type="button" role="tab" aria-selected="false" data-palette-tab="current">Current Colors</button>
+              </div>
+              <div class="palette-panel" data-palette-panel="presets">
+                <label class="sr-only" for="paletteSelect">Palette</label>
+                <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
+                <div class="swatches" id="swatches" aria-label="Palette colors"></div>
+              </div>
+              <div class="palette-panel" data-palette-panel="current" hidden>
+                <div class="swatches current-swatches" id="currentSwatches" aria-label="Colors currently used in the artwork"></div>
+                <p class="current-colors-empty" id="currentColorsEmpty">No custom colors are currently used.</p>
+              </div>
+            </section>
+          </div>
 
           <div class="palette-current-row" aria-label="Currently active color target">
             <span class="current-color-chip" id="currentColorChip" aria-hidden="true"></span>
-            <span>Editing <strong id="currentColorRoleText">Foreground</strong>: <strong id="currentColorText">#D7263D</strong></span>
+            <span><strong id="currentColorRoleText">Foreground</strong> is active · <strong id="currentColorText">#D7263D</strong></span>
           </div>
 
-          <details class="color-picker-disclosure">
-            <summary>Custom Color Picker</summary>
-            <div class="color-picker-disclosure__body">
+          <section class="color-picker-panel" aria-label="Custom color picker">
+            <span class="tool-label">Custom Color Picker</span>
+            <div class="color-picker-panel__body">
               <div class="color-picker-field" id="colorPickerField" role="slider" tabindex="0" aria-label="Choose saturation and brightness">
                 <span class="color-picker-marker" id="colorPickerMarker" aria-hidden="true"></span>
               </div>
@@ -230,7 +234,7 @@
                 <input class="hex-input" id="hexInput" type="text" value="#D7263D" maxlength="7" spellcheck="false" aria-label="Hex color code" />
               </div>
             </div>
-          </details>
+          </section>
         </aside>
       </div>
 
