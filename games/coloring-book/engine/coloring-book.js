@@ -61,8 +61,7 @@
   let belowTextLayer = null;
   let abovePaintLayer = null;
   let aboveTextLayer = null;
-  let belowEraseLayer = null;
-  let aboveEraseLayer = null;
+  let userDefs = null;
   let fillables = [];
 
   let currentTool = CFG.defaultTool || "bucket";
@@ -86,6 +85,8 @@
   let draggingText = false;
   let textDragStart = null;
   let textOriginalPos = null;
+  let textOriginalMaskTranslate = null;
+  let textMaskMarks = null;
   let textDidMove = false;
 
   let initialState = null;
@@ -100,6 +101,8 @@
   let pickerSaturation = 0.82;
   let pickerValue = 0.84;
   let pickingColor = false;
+  let userMaskCounter = 0;
+  let userMaskBounds = { x: 0, y: 0, width: 2000, height: 2000 };
   const MIN_ZOOM = 1;
   const MAX_ZOOM = Math.max(1, Number(CFG.maxZoom || 4));
 
@@ -292,7 +295,7 @@
 
     if (tool === "bucket") setStatus("Paint Bucket: choose a color, then click any white area.");
     if (tool === "brush") setStatus("Brush: drag across the picture to paint freely.");
-    if (tool === "eraser") setStatus("Eraser: drag to erase brush strokes and text on the active drawing position.");
+    if (tool === "eraser") setStatus("Eraser: drag to permanently erase existing brush strokes and text on the active drawing position.");
     if (tool === "text") setStatus("Text: type your words, then click the picture to place them.");
     if (tool === "grab") setStatus("Grab: drag the artwork to pan around when zoomed in.");
   }
@@ -332,12 +335,112 @@
     return position === "above" ? aboveTextLayer : belowTextLayer;
   }
 
-  function eraseLayerFor(position = layerPosition) {
-    return position === "above" ? aboveEraseLayer : belowEraseLayer;
-  }
-
   function allTextLayers() {
     return [belowTextLayer, aboveTextLayer].filter(Boolean);
+  }
+
+  function workObjectsFor(position = layerPosition) {
+    const objects = [];
+    const paintLayer = paintLayerFor(position);
+    const textLayer = textLayerFor(position);
+    if (paintLayer) objects.push(...Array.from(paintLayer.children));
+    if (textLayer) objects.push(...Array.from(textLayer.children));
+    return objects.filter((el) => el.classList?.contains("user-brush-stroke") || el.classList?.contains("user-text"));
+  }
+
+  function parseTranslate(transformValue) {
+    const match = /translate\(\s*([-+]?\d*\.?\d+)(?:[ ,]\s*([-+]?\d*\.?\d+))?\s*\)/.exec(transformValue || "");
+    return {
+      x: match ? Number(match[1]) || 0 : 0,
+      y: match && match[2] != null ? Number(match[2]) || 0 : 0
+    };
+  }
+
+  function maskMarksFor(target) {
+    const maskId = target?.dataset?.eraseMaskId;
+    if (!maskId || !userDefs) return null;
+    const mask = userDefs.querySelector(`#${CSS.escape(maskId)}`);
+    return mask?.querySelector(".eraser-marks") || null;
+  }
+
+  function createUserMask() {
+    if (!userDefs) return null;
+    userMaskCounter += 1;
+    const maskId = `coloring-user-mask-${userMaskCounter}`;
+
+    const mask = document.createElementNS(SVG_NS, "mask");
+    mask.id = maskId;
+    mask.setAttribute("maskUnits", "userSpaceOnUse");
+    mask.setAttribute("maskContentUnits", "userSpaceOnUse");
+    mask.setAttribute("x", String(userMaskBounds.x));
+    mask.setAttribute("y", String(userMaskBounds.y));
+    mask.setAttribute("width", String(userMaskBounds.width));
+    mask.setAttribute("height", String(userMaskBounds.height));
+
+    const bg = document.createElementNS(SVG_NS, "rect");
+    bg.setAttribute("x", String(userMaskBounds.x));
+    bg.setAttribute("y", String(userMaskBounds.y));
+    bg.setAttribute("width", String(userMaskBounds.width));
+    bg.setAttribute("height", String(userMaskBounds.height));
+    bg.setAttribute("fill", "#FFFFFF");
+    mask.appendChild(bg);
+
+    const marks = document.createElementNS(SVG_NS, "g");
+    marks.classList.add("eraser-marks");
+    mask.appendChild(marks);
+
+    userDefs.appendChild(mask);
+    return { maskId, marks };
+  }
+
+  function ensureObjectMask(target) {
+    if (!target) return null;
+    let marks = maskMarksFor(target);
+    if (marks) return marks;
+
+    const created = createUserMask();
+    if (!created) return null;
+    target.dataset.eraseMaskId = created.maskId;
+    target.setAttribute("mask", `url(#${created.maskId})`);
+    return created.marks;
+  }
+
+  function createEraseMark(points, width, offset = { x: 0, y: 0 }) {
+    if (!points?.length) return null;
+    const shifted = points.map((point) => ({ x: point.x - offset.x, y: point.y - offset.y }));
+    const path = document.createElementNS(SVG_NS, "path");
+    path.classList.add("user-eraser-stroke");
+    path.setAttribute("stroke", "#000000");
+    path.setAttribute("stroke-width", String(width));
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+
+    if (shifted.length === 1) {
+      const p = shifted[0];
+      path.setAttribute("d", `M ${p.x.toFixed(2)} ${p.y.toFixed(2)} l 0.01 0`);
+    } else {
+      path.setAttribute("d", buildSmoothPath(shifted));
+    }
+
+    return path;
+  }
+
+  function applyEraserToCurrentLayer(points, width) {
+    const objects = workObjectsFor(layerPosition);
+    let applied = 0;
+
+    objects.forEach((target) => {
+      const marks = ensureObjectMask(target);
+      if (!marks) return;
+      const offset = parseTranslate(marks.getAttribute("transform"));
+      const eraseMark = createEraseMark(points, width, offset);
+      if (!eraseMark) return;
+      marks.appendChild(eraseMark);
+      applied += 1;
+    });
+
+    return applied;
   }
 
   function textPosition(text) {
@@ -540,55 +643,13 @@
     if (viewBox && viewBox.width > 0 && viewBox.height > 0 && els.artboard) {
       artAspect = viewBox.width / viewBox.height;
       els.artboard.style.aspectRatio = `${viewBox.width} / ${viewBox.height}`;
+      userMaskBounds = { x: viewBox.x, y: viewBox.y, width: viewBox.width, height: viewBox.height };
     }
 
-    const maskX = viewBox ? viewBox.x : 0;
-    const maskY = viewBox ? viewBox.y : 0;
-    const maskW = viewBox ? viewBox.width : 2000;
-    const maskH = viewBox ? viewBox.height : 2000;
-
-    let defs = svgRoot.querySelector("defs");
-    if (!defs) {
-      defs = document.createElementNS(SVG_NS, "defs");
-      svgRoot.insertBefore(defs, svgRoot.firstChild);
-    }
-
-    const maskSuffix = Math.random().toString(36).slice(2, 8);
-
-    function createEraserMask(idBase) {
-      const mask = document.createElementNS(SVG_NS, "mask");
-      mask.id = `${idBase}-${maskSuffix}`;
-      mask.setAttribute("maskUnits", "userSpaceOnUse");
-      mask.setAttribute("maskContentUnits", "userSpaceOnUse");
-      mask.setAttribute("x", String(maskX));
-      mask.setAttribute("y", String(maskY));
-      mask.setAttribute("width", String(maskW));
-      mask.setAttribute("height", String(maskH));
-
-      const bg = document.createElementNS(SVG_NS, "rect");
-      bg.setAttribute("x", String(maskX));
-      bg.setAttribute("y", String(maskY));
-      bg.setAttribute("width", String(maskW));
-      bg.setAttribute("height", String(maskH));
-      bg.setAttribute("fill", "#FFFFFF");
-      mask.appendChild(bg);
-
-      const eraseLayer = document.createElementNS(SVG_NS, "g");
-      eraseLayer.id = `${idBase}-erase`;
-      eraseLayer.dataset.coloringGenerated = "true";
-      mask.appendChild(eraseLayer);
-
-      defs.appendChild(mask);
-      return { maskId: mask.id, eraseLayer };
-    }
-
-    const belowMask = createEraserMask("below-work-mask");
-    belowEraseLayer = belowMask.eraseLayer;
-    belowWorkLayer.setAttribute("mask", `url(#${belowMask.maskId})`);
-
-    const aboveMask = createEraserMask("above-work-mask");
-    aboveEraseLayer = aboveMask.eraseLayer;
-    aboveWorkLayer.setAttribute("mask", `url(#${aboveMask.maskId})`);
+    userDefs = document.createElementNS(SVG_NS, "defs");
+    userDefs.id = "coloring-generated-defs";
+    userDefs.dataset.coloringGenerated = "true";
+    svgRoot.insertBefore(userDefs, svgRoot.firstChild);
 
     const parent = inkGroup.parentNode;
     parent.insertBefore(belowWorkLayer, inkGroup);
@@ -625,10 +686,9 @@
       fills: fillables.map((shape) => shape.getAttribute("fill") || "#FFFFFF"),
       belowPaint: belowPaintLayer ? belowPaintLayer.innerHTML : "",
       belowText: cleanTextMarkup(belowTextLayer),
-      belowErase: belowEraseLayer ? belowEraseLayer.innerHTML : "",
       abovePaint: abovePaintLayer ? abovePaintLayer.innerHTML : "",
       aboveText: cleanTextMarkup(aboveTextLayer),
-      aboveErase: aboveEraseLayer ? aboveEraseLayer.innerHTML : ""
+      defs: userDefs ? userDefs.innerHTML : ""
     };
   }
 
@@ -640,10 +700,9 @@
 
     if (belowPaintLayer) belowPaintLayer.innerHTML = state.belowPaint || "";
     if (belowTextLayer) belowTextLayer.innerHTML = state.belowText || "";
-    if (belowEraseLayer) belowEraseLayer.innerHTML = state.belowErase || "";
     if (abovePaintLayer) abovePaintLayer.innerHTML = state.abovePaint || "";
     if (aboveTextLayer) aboveTextLayer.innerHTML = state.aboveText || "";
-    if (aboveEraseLayer) aboveEraseLayer.innerHTML = state.aboveErase || "";
+    if (userDefs) userDefs.innerHTML = state.defs || "";
 
     allTextLayers().forEach((layer) => {
       layer.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
@@ -656,10 +715,9 @@
     if (!a || !b) return false;
     return a.belowPaint === b.belowPaint
       && a.belowText === b.belowText
-      && a.belowErase === b.belowErase
       && a.abovePaint === b.abovePaint
       && a.aboveText === b.aboveText
-      && a.aboveErase === b.aboveErase
+      && a.defs === b.defs
       && a.fills.join("|") === b.fills.join("|");
   }
 
@@ -792,23 +850,12 @@
     if (event.button !== undefined && event.button !== 0) return;
     drawing = true;
     currentErasePoints = [getSvgPoint(event)];
-
-    currentErasePath = document.createElementNS(SVG_NS, "path");
-    currentErasePath.classList.add("user-eraser-stroke");
-    currentErasePath.setAttribute("stroke", "#000000");
-    currentErasePath.setAttribute("stroke-width", String(brushSize));
-    currentErasePath.setAttribute("fill", "none");
-    currentErasePath.setAttribute("stroke-linecap", "round");
-    currentErasePath.setAttribute("stroke-linejoin", "round");
-    currentErasePath.setAttribute("d", `M ${currentErasePoints[0].x.toFixed(2)} ${currentErasePoints[0].y.toFixed(2)}`);
-    eraseLayerFor().appendChild(currentErasePath);
-
     svgRoot.setPointerCapture?.(event.pointerId);
     event.preventDefault();
   }
 
   function continueEraser(event) {
-    if (!drawing || !currentErasePath) return;
+    if (!drawing) return;
     const point = getSvgPoint(event);
     const previous = currentErasePoints[currentErasePoints.length - 1];
     const dx = point.x - previous.x;
@@ -816,7 +863,6 @@
     if (dx * dx + dy * dy < 2.5) return;
 
     currentErasePoints.push(point);
-    currentErasePath.setAttribute("d", buildSmoothPath(currentErasePoints));
     event.preventDefault();
   }
 
@@ -825,15 +871,14 @@
     drawing = false;
     try { svgRoot.releasePointerCapture?.(event.pointerId); } catch (_) {}
 
-    if (currentErasePath) {
-      if (currentErasePoints.length === 1) {
-        const p = currentErasePoints[0];
-        currentErasePath.setAttribute("d", `M ${p.x.toFixed(2)} ${p.y.toFixed(2)} l 0.01 0`);
-      }
+    const applied = applyEraserToCurrentLayer(currentErasePoints, brushSize);
+    if (applied > 0) {
       commitState();
+      setStatus(`Erased from ${applied} item${applied === 1 ? "" : "s"} on the ${layerPosition === "above" ? "On Top" : "Behind Lines"} layer.`);
+    } else {
+      setStatus(`There is nothing to erase on the ${layerPosition === "above" ? "On Top" : "Behind Lines"} layer.`);
     }
 
-    currentErasePath = null;
     currentErasePoints = [];
     event.preventDefault();
   }
@@ -935,6 +980,8 @@
       x: Number(text.getAttribute("x")) || 0,
       y: Number(text.getAttribute("y")) || 0
     };
+    textMaskMarks = maskMarksFor(text);
+    textOriginalMaskTranslate = textMaskMarks ? parseTranslate(textMaskMarks.getAttribute("transform")) : null;
     svgRoot.setPointerCapture?.(event.pointerId);
     event.preventDefault();
     event.stopPropagation();
@@ -948,6 +995,9 @@
     if (Math.abs(dx) + Math.abs(dy) > 1) textDidMove = true;
     selectedText.setAttribute("x", (textOriginalPos.x + dx).toFixed(2));
     selectedText.setAttribute("y", (textOriginalPos.y + dy).toFixed(2));
+    if (textMaskMarks && textOriginalMaskTranslate) {
+      textMaskMarks.setAttribute("transform", `translate(${(textOriginalMaskTranslate.x + dx).toFixed(2)} ${(textOriginalMaskTranslate.y + dy).toFixed(2)})`);
+    }
     event.preventDefault();
   }
 
@@ -961,6 +1011,8 @@
     }
     textDragStart = null;
     textOriginalPos = null;
+    textOriginalMaskTranslate = null;
+    textMaskMarks = null;
     textDidMove = false;
     event.preventDefault();
   }
