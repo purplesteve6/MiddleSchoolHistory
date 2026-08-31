@@ -703,7 +703,7 @@ body.coloring-book-app-page{
 }
 
 .artboard svg [data-coloring-fillable="true"]{
-  cursor: crosshair;
+  cursor: default;
 }
 
 .artboard[data-tool="bucket"] svg [data-coloring-fillable="true"]{

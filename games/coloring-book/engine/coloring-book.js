@@ -919,28 +919,39 @@
     currentErasePoints = [getSvgPoint(event)];
     beginEraserTargets(currentErasePoints[0], brushSize);
     showCursorPreview(event);
-    svgRoot.setPointerCapture?.(event.pointerId);
     event.preventDefault();
   }
 
   function continueEraser(event) {
-    if (!drawing) return;
-    const point = getSvgPoint(event);
-    const previous = currentErasePoints[currentErasePoints.length - 1];
-    const dx = point.x - previous.x;
-    const dy = point.y - previous.y;
-    if (dx * dx + dy * dy < 2.5) return;
+    if (!drawing || currentTool !== "eraser") return;
 
-    addEraserSegment(previous, point, brushSize);
-    currentErasePoints.push(point);
+    const coalesced = typeof event.getCoalescedEvents === "function"
+      ? event.getCoalescedEvents()
+      : null;
+    const samples = coalesced && coalesced.length ? coalesced : [event];
+
+    for (const sample of samples) {
+      const point = getSvgPoint(sample);
+      const previous = currentErasePoints[currentErasePoints.length - 1];
+      if (!previous) {
+        currentErasePoints.push(point);
+        continue;
+      }
+      const dx = point.x - previous.x;
+      const dy = point.y - previous.y;
+      if (dx * dx + dy * dy < 0.5) continue;
+
+      addEraserSegment(previous, point, brushSize);
+      currentErasePoints.push(point);
+    }
+
     showCursorPreview(event);
     event.preventDefault();
   }
 
   function endEraser(event) {
-    if (!drawing) return;
+    if (!drawing || currentTool !== "eraser") return;
     drawing = false;
-    try { svgRoot.releasePointerCapture?.(event.pointerId); } catch (_) {}
 
     const applied = currentEraseTargets.length;
     if (applied > 0) {
@@ -1148,24 +1159,45 @@
 
     svgRoot.addEventListener("pointermove", (event) => {
       if (currentTool === "brush") continueBrush(event);
-      if (currentTool === "eraser") continueEraser(event);
       if (currentTool === "text") continueTextDrag(event);
     });
 
     svgRoot.addEventListener("pointerup", (event) => {
       if (currentTool === "brush") endBrush(event);
-      if (currentTool === "eraser") endEraser(event);
       if (currentTool === "text") endTextDrag(event);
     });
 
     svgRoot.addEventListener("pointercancel", (event) => {
       if (currentTool === "brush") endBrush(event);
-      if (currentTool === "eraser") endEraser(event);
       if (currentTool === "text") endTextDrag(event);
     });
 
     svgRoot.addEventListener("click", (event) => {
       if (currentTool === "bucket") paintBucket(event.target);
+    });
+
+    // Track eraser drags globally. The eraser changes SVG masks while it runs,
+    // so relying on the SVG itself for move/up events can lose the drag stream.
+    window.addEventListener("pointermove", (event) => {
+      if (currentTool === "eraser" && drawing) continueEraser(event);
+    }, { capture: true, passive: false });
+
+    window.addEventListener("pointerup", (event) => {
+      if (currentTool === "eraser" && drawing) endEraser(event);
+    }, { capture: true, passive: false });
+
+    window.addEventListener("pointercancel", (event) => {
+      if (currentTool === "eraser" && drawing) endEraser(event);
+    }, { capture: true, passive: false });
+
+    window.addEventListener("blur", () => {
+      if (currentTool === "eraser" && drawing) {
+        const applied = currentEraseTargets.length;
+        drawing = false;
+        if (applied > 0) commitState();
+        currentErasePoints = [];
+        currentEraseTargets = [];
+      }
     });
 
     els.artboardWrap?.addEventListener("pointerdown", (event) => {
