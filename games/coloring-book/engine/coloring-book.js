@@ -10,6 +10,7 @@
 
   const CFG = window.COLORING_BOOK_CONFIG || {};
   const PALETTES = window.COLORING_BOOK_PALETTES || {};
+  const STAMPS = Array.isArray(window.COLORING_BOOK_STAMPS) ? window.COLORING_BOOK_STAMPS : [];
 
   const SVG_NS = "http://www.w3.org/2000/svg";
   const COLOR_GROUP_ID = CFG.colorGroupId || "color";
@@ -36,6 +37,7 @@
     brushOptions: document.getElementById("brushOptions"),
     brushOptionsLabel: document.getElementById("brushOptionsLabel"),
     textOptions: document.getElementById("textOptions"),
+    stampOptions: document.getElementById("stampOptions"),
     brushSizes: Array.from(document.querySelectorAll("[data-brush-size]")),
     textValue: document.getElementById("textValue"),
     textFont: document.getElementById("textFont"),
@@ -43,6 +45,17 @@
     textRotation: document.getElementById("textRotation"),
     textRotationNumber: document.getElementById("textRotationNumber"),
     deleteTextBtn: document.getElementById("deleteTextBtn"),
+    stampPicker: document.getElementById("stampPicker"),
+    stampSize: document.getElementById("stampSize"),
+    stampRotation: document.getElementById("stampRotation"),
+    stampRotationNumber: document.getElementById("stampRotationNumber"),
+    stampMainBox: document.getElementById("stampMainBox"),
+    stampAccentBox: document.getElementById("stampAccentBox"),
+    stampMainChip: document.getElementById("stampMainChip"),
+    stampAccentChip: document.getElementById("stampAccentChip"),
+    stampMainHex: document.getElementById("stampMainHex"),
+    stampAccentHex: document.getElementById("stampAccentHex"),
+    deleteStampBtn: document.getElementById("deleteStampBtn"),
     undoBtn: document.getElementById("undoBtn"),
     redoBtn: document.getElementById("redoBtn"),
     resetBtn: document.getElementById("resetBtn"),
@@ -64,8 +77,10 @@
   let belowWorkLayer = null;
   let aboveWorkLayer = null;
   let belowPaintLayer = null;
+  let belowStampLayer = null;
   let belowTextLayer = null;
   let abovePaintLayer = null;
+  let aboveStampLayer = null;
   let aboveTextLayer = null;
   let userDefs = null;
   let fillables = [];
@@ -76,6 +91,12 @@
   let colorRecency = [];
   let brushSize = 12;
   let selectedText = null;
+  let selectedStamp = null;
+  let currentStampId = STAMPS[0]?.id || null;
+  let stampMainColor = "#FFFFFF";
+  let stampAccentColor = "#000000";
+  let stampColorTarget = "main";
+  let stampTemplates = new Map();
 
   let drawing = false;
   let currentBrushPath = null;
@@ -96,6 +117,11 @@
   let textOriginalMaskTranslate = null;
   let textMaskMarks = null;
   let textDidMove = false;
+
+  let draggingStamp = false;
+  let stampDragStart = null;
+  let stampOriginalPos = null;
+  let stampDidMove = false;
 
   let initialState = null;
   let history = [];
@@ -122,7 +148,7 @@
     const preview = document.createElement("div");
     preview.className = "tool-cursor-preview";
     preview.setAttribute("aria-hidden", "true");
-    preview.innerHTML = `<span class="tool-cursor-preview__x"></span>`;
+    preview.innerHTML = `<span class="tool-cursor-preview__x"></span><span class="tool-cursor-preview__icon">💧</span>`;
     document.body.appendChild(preview);
     cursorPreview = preview;
   }
@@ -142,7 +168,7 @@
     cursorPreview.style.left = `${event.clientX}px`;
     cursorPreview.style.top = `${event.clientY}px`;
     cursorPreview.dataset.mode = currentTool;
-    cursorPreview.hidden = !(currentTool === "brush" || currentTool === "eraser");
+    cursorPreview.hidden = !(currentTool === "brush" || currentTool === "eraser" || currentTool === "eyedrop");
     cursorPreviewX = event.clientX;
     cursorPreviewY = event.clientY;
   }
@@ -155,7 +181,7 @@
   }
 
   function refreshCursorPreview() {
-    if ((currentTool !== "brush" && currentTool !== "eraser") || cursorPreviewX == null || cursorPreviewY == null) {
+    if ((currentTool !== "brush" && currentTool !== "eraser" && currentTool !== "eyedrop") || cursorPreviewX == null || cursorPreviewY == null) {
       hideCursorPreview();
       return;
     }
@@ -292,6 +318,15 @@
       });
     });
 
+    allStampLayers().forEach((layer) => {
+      layer.querySelectorAll(".user-stamp").forEach((stampNode) => {
+        const main = normalizeSvgColor(stampNode.dataset.mainColor);
+        const accent = normalizeSvgColor(stampNode.dataset.accentColor);
+        if (main) present.add(main);
+        if (accent) present.add(accent);
+      });
+    });
+
     return present;
   }
 
@@ -305,7 +340,7 @@
     button.style.background = color;
     button.title = color;
     button.setAttribute("aria-label", `Choose current artwork color ${color}`);
-    button.addEventListener("click", () => setCurrentColor(color, { applyToSelectedText: false }));
+    button.addEventListener("click", () => setCurrentColor(color, { applyToSelectedText: false, applyToSelectedStamp: true }));
     return button;
   }
 
@@ -353,6 +388,11 @@
       markColorUsed(color);
       commitState();
       setStatus("Text color updated.");
+    }
+
+    if (options.applyToSelectedStamp !== false && (selectedStamp || currentTool === "stamp")) {
+      if (stampColorTarget === "accent") setStampAccentColor(color, { commit: !!selectedStamp, syncCurrent: false });
+      else setStampMainColor(color, { commit: !!selectedStamp, syncCurrent: false });
     }
 
     return true;
@@ -412,11 +452,12 @@
       els.swatches.appendChild(button);
     });
 
-    setCurrentColor(currentColor, { applyToSelectedText: false });
+    setCurrentColor(currentColor, { applyToSelectedText: false, applyToSelectedStamp: false });
+    syncStampUi();
   }
 
   function setTool(tool) {
-    if (!["bucket", "brush", "eraser", "eyedrop", "text", "grab"].includes(tool)) return;
+    if (!["bucket", "brush", "eraser", "eyedrop", "text", "stamp", "grab"].includes(tool)) return;
     currentTool = tool;
     els.artboard?.setAttribute("data-tool", tool);
 
@@ -432,14 +473,17 @@
       els.brushOptionsLabel.textContent = tool === "eraser" ? "Eraser Size" : "Brush Size";
     }
     if (els.textOptions) els.textOptions.hidden = tool !== "text";
+    if (els.stampOptions) els.stampOptions.hidden = tool !== "stamp";
 
     if (tool !== "text") clearTextSelection();
+    if (tool !== "stamp") clearStampSelection();
 
     if (tool === "bucket") setStatus("Paint Bucket: choose a color, then click any white area.");
     if (tool === "brush") setStatus("Brush: drag across the picture to paint freely.");
     if (tool === "eraser") setStatus("Eraser: drag to permanently erase existing brush strokes and text on the active drawing position.");
-    if (tool === "eyedrop") setStatus("Eyedropper: click a colored area, brush stroke, or text to make that the current color.");
+    if (tool === "eyedrop") setStatus("Eyedropper: click a colored shape, brush stroke, text, or stamp color to make that the current color.");
     if (tool === "text") setStatus("Text: type your words, then click the picture to place them.");
+    if (tool === "stamp") setStatus("Stamp: choose a stamp, then click the picture to place it.");
     if (tool === "grab") setStatus("Grab: drag the artwork to pan around when zoomed in.");
     refreshCursorPreview();
   }
@@ -480,17 +524,27 @@
     return position === "above" ? aboveTextLayer : belowTextLayer;
   }
 
+  function stampLayerFor(position = layerPosition) {
+    return position === "above" ? aboveStampLayer : belowStampLayer;
+  }
+
   function allTextLayers() {
     return [belowTextLayer, aboveTextLayer].filter(Boolean);
+  }
+
+  function allStampLayers() {
+    return [belowStampLayer, aboveStampLayer].filter(Boolean);
   }
 
   function workObjectsFor(position = layerPosition) {
     const objects = [];
     const paintLayer = paintLayerFor(position);
+    const stampLayer = stampLayerFor(position);
     const textLayer = textLayerFor(position);
     if (paintLayer) objects.push(...Array.from(paintLayer.children));
+    if (stampLayer) objects.push(...Array.from(stampLayer.children));
     if (textLayer) objects.push(...Array.from(textLayer.children));
-    return objects.filter((el) => el.classList?.contains("user-brush-stroke") || el.classList?.contains("user-text"));
+    return objects.filter((el) => el.classList?.contains("user-brush-stroke") || el.classList?.contains("user-text") || el.classList?.contains("user-stamp"));
   }
 
   function parseTranslate(transformValue) {
@@ -760,11 +814,16 @@
     belowPaintLayer.id = "below-ink-paint";
     belowPaintLayer.dataset.coloringGenerated = "true";
 
+    belowStampLayer = document.createElementNS(SVG_NS, "g");
+    belowStampLayer.id = "below-ink-stamp";
+    belowStampLayer.dataset.coloringGenerated = "true";
+
     belowTextLayer = document.createElementNS(SVG_NS, "g");
     belowTextLayer.id = "below-ink-text";
     belowTextLayer.dataset.coloringGenerated = "true";
 
     belowWorkLayer.appendChild(belowPaintLayer);
+    belowWorkLayer.appendChild(belowStampLayer);
     belowWorkLayer.appendChild(belowTextLayer);
 
     aboveWorkLayer = document.createElementNS(SVG_NS, "g");
@@ -775,11 +834,16 @@
     abovePaintLayer.id = "above-ink-paint";
     abovePaintLayer.dataset.coloringGenerated = "true";
 
+    aboveStampLayer = document.createElementNS(SVG_NS, "g");
+    aboveStampLayer.id = "above-ink-stamp";
+    aboveStampLayer.dataset.coloringGenerated = "true";
+
     aboveTextLayer = document.createElementNS(SVG_NS, "g");
     aboveTextLayer.id = "above-ink-text";
     aboveTextLayer.dataset.coloringGenerated = "true";
 
     aboveWorkLayer.appendChild(abovePaintLayer);
+    aboveWorkLayer.appendChild(aboveStampLayer);
     aboveWorkLayer.appendChild(aboveTextLayer);
 
     const viewBox = svgRoot.viewBox && svgRoot.viewBox.baseVal;
@@ -817,7 +881,7 @@
     });
   }
 
-  function cleanTextMarkup(layer) {
+  function cleanLayerMarkup(layer) {
     if (!layer) return "";
     const clone = layer.cloneNode(true);
     clone.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
@@ -828,9 +892,11 @@
     return {
       fills: fillables.map((shape) => shape.getAttribute("fill") || "#FFFFFF"),
       belowPaint: belowPaintLayer ? belowPaintLayer.innerHTML : "",
-      belowText: cleanTextMarkup(belowTextLayer),
+      belowStamp: cleanLayerMarkup(belowStampLayer),
+      belowText: cleanLayerMarkup(belowTextLayer),
       abovePaint: abovePaintLayer ? abovePaintLayer.innerHTML : "",
-      aboveText: cleanTextMarkup(aboveTextLayer),
+      aboveStamp: cleanLayerMarkup(aboveStampLayer),
+      aboveText: cleanLayerMarkup(aboveTextLayer),
       defs: userDefs ? userDefs.innerHTML : ""
     };
   }
@@ -842,15 +908,21 @@
     });
 
     if (belowPaintLayer) belowPaintLayer.innerHTML = state.belowPaint || "";
+    if (belowStampLayer) belowStampLayer.innerHTML = state.belowStamp || "";
     if (belowTextLayer) belowTextLayer.innerHTML = state.belowText || "";
     if (abovePaintLayer) abovePaintLayer.innerHTML = state.abovePaint || "";
+    if (aboveStampLayer) aboveStampLayer.innerHTML = state.aboveStamp || "";
     if (aboveTextLayer) aboveTextLayer.innerHTML = state.aboveText || "";
     if (userDefs) userDefs.innerHTML = state.defs || "";
 
     allTextLayers().forEach((layer) => {
       layer.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
     });
+    allStampLayers().forEach((layer) => {
+      layer.querySelectorAll(".is-selected").forEach((el) => el.classList.remove("is-selected"));
+    });
     clearTextSelection();
+    clearStampSelection();
     updateLayerButtons();
     refreshCurrentColors();
   }
@@ -858,8 +930,10 @@
   function statesEqual(a, b) {
     if (!a || !b) return false;
     return a.belowPaint === b.belowPaint
+      && a.belowStamp === b.belowStamp
       && a.belowText === b.belowText
       && a.abovePaint === b.abovePaint
+      && a.aboveStamp === b.aboveStamp
       && a.aboveText === b.aboveText
       && a.defs === b.defs
       && a.fills.join("|") === b.fills.join("|");
@@ -907,7 +981,7 @@
       return;
     }
 
-    if (!window.confirm("Clear all coloring, brush strokes, and text from this page?")) return;
+    if (!window.confirm("Clear all coloring, brush strokes, stamps, and text from this page?")) return;
     applyState(initialState);
     commitState();
     setStatus("Coloring page reset.");
@@ -925,19 +999,21 @@
 
   function colorFromArtworkTarget(target) {
     if (!target) return null;
-    const node = target.closest?.(".user-text, .user-brush-stroke, [data-coloring-fillable='true']");
+    const node = target.closest?.(".user-text, .user-brush-stroke, [data-coloring-fillable='true'], [data-stamp-role='main'], [data-stamp-role='accent'], .user-stamp");
     if (!node || !svgRoot?.contains(node)) return null;
     if (node.classList?.contains("user-brush-stroke")) return normalizeSvgColor(node.getAttribute("stroke"));
+    if (node.matches?.("[data-stamp-role='main'], [data-stamp-role='accent']")) return normalizeSvgColor(node.getAttribute("fill") || node.getAttribute("stroke"));
+    if (node.classList?.contains("user-stamp")) return normalizeSvgColor(node.dataset.mainColor || node.dataset.accentColor);
     return normalizeSvgColor(node.getAttribute("fill"));
   }
 
   function eyedropColor(target) {
     const color = colorFromArtworkTarget(target);
     if (!color) {
-      setStatus("Eyedropper: click a colored shape, brush stroke, or text.");
+      setStatus("Eyedropper: click a colored shape, brush stroke, text, or stamp color.");
       return;
     }
-    setCurrentColor(color, { applyToSelectedText: false });
+    setCurrentColor(color, { applyToSelectedText: false, applyToSelectedStamp: false });
     setStatus(`Picked ${color}.`);
   }
 
@@ -1279,13 +1355,302 @@
     setStatus("Text deleted.");
   }
 
+  function stampPosition(stamp) {
+    if (!stamp) return null;
+    if (belowStampLayer?.contains(stamp)) return "below";
+    if (aboveStampLayer?.contains(stamp)) return "above";
+    return null;
+  }
+
+  function syncStampRotationControls(value) {
+    const rotation = clampRotation(value);
+    if (els.stampRotation) els.stampRotation.value = String(rotation);
+    if (els.stampRotationNumber) els.stampRotationNumber.value = String(rotation);
+  }
+
+  function syncStampUi() {
+    if (els.stampMainChip) els.stampMainChip.style.background = stampMainColor;
+    if (els.stampAccentChip) els.stampAccentChip.style.background = stampAccentColor;
+    if (els.stampMainHex) els.stampMainHex.value = stampMainColor;
+    if (els.stampAccentHex) els.stampAccentHex.value = stampAccentColor;
+    [els.stampMainBox, els.stampAccentBox].forEach((box) => {
+      if (!box) return;
+      const active = box.dataset.stampColorTarget === stampColorTarget;
+      box.classList.toggle("is-active", active);
+      box.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  function setStampColorTarget(target) {
+    stampColorTarget = target === "accent" ? "accent" : "main";
+    syncStampUi();
+  }
+
+  function stampRoleNodes(stamp, role) {
+    return Array.from(stamp.querySelectorAll(`[data-stamp-role="${role}"]`));
+  }
+
+  function recolorStampRole(stamp, role, color) {
+    const hex = normalizeHex(color);
+    if (!stamp || !hex) return;
+    stampRoleNodes(stamp, role).forEach((node) => {
+      if (node.hasAttribute("fill") && String(node.getAttribute("fill")).toLowerCase() !== "none") node.setAttribute("fill", hex);
+      if (node.hasAttribute("stroke") && String(node.getAttribute("stroke")).toLowerCase() !== "none") node.setAttribute("stroke", hex);
+    });
+  }
+
+  function setStampMainColor(value, options = {}) {
+    const hex = normalizeHex(value);
+    if (!hex) return false;
+    stampMainColor = hex;
+    syncStampUi();
+    if (options.syncCurrent !== false) setCurrentColor(hex, { applyToSelectedText: false, applyToSelectedStamp: false });
+    if (selectedStamp) {
+      selectedStamp.dataset.mainColor = hex;
+      recolorStampRole(selectedStamp, "main", hex);
+      markColorUsed(hex);
+      if (options.commit !== false) commitState();
+    }
+    return true;
+  }
+
+  function setStampAccentColor(value, options = {}) {
+    const hex = normalizeHex(value);
+    if (!hex) return false;
+    stampAccentColor = hex;
+    syncStampUi();
+    if (options.syncCurrent !== false) setCurrentColor(hex, { applyToSelectedText: false, applyToSelectedStamp: false });
+    if (selectedStamp) {
+      selectedStamp.dataset.accentColor = hex;
+      recolorStampRole(selectedStamp, "accent", hex);
+      markColorUsed(hex);
+      if (options.commit !== false) commitState();
+    }
+    return true;
+  }
+
+  function highlightChosenStampButton(stampId) {
+    els.stampPicker?.querySelectorAll(".stamp-choice").forEach((button) => {
+      const active = button.dataset.stampId === stampId;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  function chooseStamp(stampId) {
+    currentStampId = stampId;
+    highlightChosenStampButton(stampId);
+  }
+
+  async function loadStampTemplate(stampId) {
+    if (!stampId) return null;
+    if (stampTemplates.has(stampId)) return stampTemplates.get(stampId);
+    const meta = STAMPS.find((item) => item.id === stampId);
+    if (!meta) return null;
+    const response = await fetch(meta.file, { cache: "no-store" });
+    if (!response.ok) throw new Error(`Could not load stamp ${stampId}.`);
+    const text = await response.text();
+    const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+    const root = doc.documentElement;
+    const vbText = root.getAttribute("viewBox") || "0 0 100 100";
+    const [x=0,y=0,w=100,h=100] = vbText.trim().split(/[ ,]+/).map(Number);
+    const template = { meta, root, viewBox: { x, y, width: w || 100, height: h || 100 } };
+    stampTemplates.set(stampId, template);
+    return template;
+  }
+
+  function cloneStampPart(templateRoot, id, role) {
+    const source = templateRoot.querySelector(`#${CSS.escape(id)}`);
+    if (!source) return null;
+    const clone = source.cloneNode(true);
+    [clone, ...clone.querySelectorAll("*")].forEach((el) => {
+      el.removeAttribute("id");
+      el.dataset.stampRole = role;
+    });
+    return clone;
+  }
+
+  function createStampNode(template, point) {
+    const stamp = document.createElementNS(SVG_NS, "g");
+    stamp.classList.add("user-stamp");
+    stamp.dataset.stampId = template.meta.id;
+    stamp.dataset.x = String(point.x);
+    stamp.dataset.y = String(point.y);
+    stamp.dataset.rotation = String(clampRotation(els.stampRotationNumber?.value || 0));
+    stamp.dataset.size = String(Math.max(20, Math.min(400, Number(els.stampSize?.value) || 100)));
+    stamp.dataset.baseScale = String(220 / template.viewBox.width);
+    stamp.dataset.mainColor = stampMainColor;
+    stamp.dataset.accentColor = stampAccentColor;
+
+    const content = document.createElementNS(SVG_NS, "g");
+    content.classList.add("user-stamp-content");
+    const cx = template.viewBox.x + template.viewBox.width / 2;
+    const cy = template.viewBox.y + template.viewBox.height / 2;
+    content.setAttribute("transform", `translate(${-cx.toFixed(2)} ${-cy.toFixed(2)})`);
+
+    const main = cloneStampPart(template.root, "main_color", "main");
+    const accent = cloneStampPart(template.root, "accent_color", "accent");
+    const ink = cloneStampPart(template.root, "ink", "ink");
+    if (main) content.appendChild(main);
+    if (accent) content.appendChild(accent);
+    if (ink) content.appendChild(ink);
+
+    stamp.appendChild(content);
+    recolorStampRole(stamp, "main", stampMainColor);
+    recolorStampRole(stamp, "accent", stampAccentColor);
+    updateStampTransform(stamp);
+    return stamp;
+  }
+
+  function updateStampTransform(stamp) {
+    if (!stamp) return;
+    const x = Number(stamp.dataset.x) || 0;
+    const y = Number(stamp.dataset.y) || 0;
+    const rotation = clampRotation(stamp.dataset.rotation || 0);
+    const size = Math.max(20, Math.min(400, Number(stamp.dataset.size) || 100));
+    const baseScale = Number(stamp.dataset.baseScale) || 1;
+    stamp.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${rotation}) scale(${(baseScale * size / 100).toFixed(5)})`);
+  }
+
+  async function addStampAt(point) {
+    if (!currentStampId) {
+      setStatus("Choose a stamp first.");
+      return;
+    }
+    const template = await loadStampTemplate(currentStampId);
+    if (!template) {
+      setStatus("That stamp could not be loaded.");
+      return;
+    }
+    const stamp = createStampNode(template, point);
+    stampLayerFor().appendChild(stamp);
+    markColorUsed(stampMainColor);
+    markColorUsed(stampAccentColor);
+    selectStamp(stamp);
+    commitState();
+    setStatus("Stamp added. Drag it to move it, or use the controls to edit it.");
+  }
+
+  function selectStamp(stamp) {
+    clearStampSelection();
+    clearTextSelection();
+    selectedStamp = stamp;
+    selectedStamp.classList.add("is-selected");
+    currentStampId = selectedStamp.dataset.stampId || currentStampId;
+    stampMainColor = normalizeHex(selectedStamp.dataset.mainColor) || stampMainColor;
+    stampAccentColor = normalizeHex(selectedStamp.dataset.accentColor) || stampAccentColor;
+    if (els.stampSize) els.stampSize.value = String(Math.max(20, Math.min(400, Number(selectedStamp.dataset.size) || 100)));
+    syncStampRotationControls(Number(selectedStamp.dataset.rotation) || 0);
+    syncStampUi();
+    highlightChosenStampButton(currentStampId);
+    const position = stampPosition(selectedStamp);
+    if (position) layerPosition = position;
+    updateLayerButtons();
+    if (els.deleteStampBtn) els.deleteStampBtn.disabled = false;
+  }
+
+  function clearStampSelection() {
+    if (selectedStamp) selectedStamp.classList.remove("is-selected");
+    selectedStamp = null;
+    if (els.deleteStampBtn) els.deleteStampBtn.disabled = true;
+  }
+
+  function previewSelectedStamp() {
+    if (!selectedStamp) return;
+    selectedStamp.dataset.size = String(Math.max(20, Math.min(400, Number(els.stampSize?.value) || 100)));
+    selectedStamp.dataset.rotation = String(clampRotation(els.stampRotationNumber?.value || 0));
+    updateStampTransform(selectedStamp);
+  }
+
+  function commitSelectedStamp(message = "Stamp updated.") {
+    if (!selectedStamp) return;
+    previewSelectedStamp();
+    commitState();
+    setStatus(message);
+  }
+
+  function deleteSelectedStamp() {
+    if (!selectedStamp) return;
+    selectedStamp.remove();
+    selectedStamp = null;
+    if (els.deleteStampBtn) els.deleteStampBtn.disabled = true;
+    commitState();
+    setStatus("Stamp deleted.");
+  }
+
+  function startStampDrag(event, stamp) {
+    selectStamp(stamp);
+    draggingStamp = true;
+    stampDidMove = false;
+    stampDragStart = getSvgPoint(event);
+    stampOriginalPos = { x: Number(stamp.dataset.x) || 0, y: Number(stamp.dataset.y) || 0 };
+    svgRoot.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function continueStampDrag(event) {
+    if (!draggingStamp || !selectedStamp || !stampDragStart || !stampOriginalPos) return;
+    const point = getSvgPoint(event);
+    const dx = point.x - stampDragStart.x;
+    const dy = point.y - stampDragStart.y;
+    if (Math.abs(dx) + Math.abs(dy) > 1) stampDidMove = true;
+    selectedStamp.dataset.x = String(stampOriginalPos.x + dx);
+    selectedStamp.dataset.y = String(stampOriginalPos.y + dy);
+    updateStampTransform(selectedStamp);
+    event.preventDefault();
+  }
+
+  function endStampDrag(event) {
+    if (!draggingStamp) return;
+    draggingStamp = false;
+    try { svgRoot.releasePointerCapture?.(event.pointerId); } catch (_) {}
+    if (stampDidMove) {
+      commitState();
+      setStatus("Stamp moved.");
+    }
+    stampDragStart = null;
+    stampOriginalPos = null;
+    stampDidMove = false;
+    event?.preventDefault?.();
+  }
+
+  function buildStampPicker() {
+    if (!els.stampPicker) return;
+    els.stampPicker.innerHTML = "";
+    STAMPS.forEach((stamp) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "stamp-choice";
+      btn.dataset.stampId = stamp.id;
+      btn.setAttribute("aria-pressed", "false");
+      btn.innerHTML = `<img src="${stamp.file}" alt="" /><span>${stamp.label || stamp.id}</span>`;
+      btn.addEventListener("click", () => chooseStamp(stamp.id));
+      els.stampPicker.appendChild(btn);
+    });
+    highlightChosenStampButton(currentStampId);
+    syncStampUi();
+  }
+
+  function bindStampColorBox(box) {
+    if (!box) return;
+    const activate = () => setStampColorTarget(box.dataset.stampColorTarget);
+    box.addEventListener("click", activate);
+    box.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        activate();
+      }
+    });
+  }
+
   function bindSvgEvents() {
     els.artboard?.addEventListener("pointerenter", (event) => {
-      if (currentTool === "brush" || currentTool === "eraser") showCursorPreview(event);
+      if (currentTool === "brush" || currentTool === "eraser" || currentTool === "eyedrop") showCursorPreview(event);
     });
 
     els.artboard?.addEventListener("pointermove", (event) => {
-      if (currentTool === "brush" || currentTool === "eraser") showCursorPreview(event);
+      if (currentTool === "brush" || currentTool === "eraser" || currentTool === "eyedrop") showCursorPreview(event);
     });
 
     els.artboard?.addEventListener("pointerleave", () => {
@@ -1306,24 +1671,43 @@
         }
 
         clearTextSelection();
+        clearStampSelection();
         addTextAt(getSvgPoint(event));
         event.preventDefault();
+        return;
+      }
+
+      if (currentTool === "stamp") {
+        const stamp = event.target.closest?.(".user-stamp");
+        if (stamp && allStampLayers().some((layer) => layer.contains(stamp))) {
+          startStampDrag(event, stamp);
+          return;
+        }
+
+        clearTextSelection();
+        clearStampSelection();
+        addStampAt(getSvgPoint(event));
+        event.preventDefault();
+        return;
       }
     });
 
     svgRoot.addEventListener("pointermove", (event) => {
       if (currentTool === "brush") continueBrush(event);
       if (currentTool === "text") continueTextDrag(event);
+      if (currentTool === "stamp") continueStampDrag(event);
     });
 
     svgRoot.addEventListener("pointerup", (event) => {
       if (currentTool === "brush") endBrush(event);
       if (currentTool === "text") endTextDrag(event);
+      if (currentTool === "stamp") endStampDrag(event);
     });
 
     svgRoot.addEventListener("pointercancel", (event) => {
       if (currentTool === "brush") endBrush(event);
       if (currentTool === "text") endTextDrag(event);
+      if (currentTool === "stamp") endStampDrag(event);
     });
 
     svgRoot.addEventListener("click", (event) => {
@@ -1438,6 +1822,7 @@
     const specs = [
       { tool: "eraser", icon: "⌫", label: "Eraser" },
       { tool: "eyedrop", icon: "💧", label: "Eyedropper" },
+      { tool: "stamp", icon: "✦", label: "Stamp" },
       { tool: "grab", icon: "✋", label: "Grab" }
     ];
 
@@ -1512,6 +1897,30 @@
     els.textRotationNumber?.addEventListener("change", commitTextRotation);
 
     els.deleteTextBtn?.addEventListener("click", deleteSelectedText);
+
+    bindStampColorBox(els.stampMainBox);
+    bindStampColorBox(els.stampAccentBox);
+
+    els.stampSize?.addEventListener("input", previewSelectedStamp);
+    els.stampSize?.addEventListener("change", () => commitSelectedStamp("Stamp size updated."));
+    els.stampRotation?.addEventListener("input", () => {
+      syncStampRotationControls(els.stampRotation.value);
+      previewSelectedStamp();
+    });
+    els.stampRotation?.addEventListener("change", () => commitSelectedStamp("Stamp rotation updated."));
+    els.stampRotationNumber?.addEventListener("input", () => {
+      syncStampRotationControls(els.stampRotationNumber.value);
+      previewSelectedStamp();
+    });
+    els.stampRotationNumber?.addEventListener("change", () => commitSelectedStamp("Stamp rotation updated."));
+    els.stampMainHex?.addEventListener("change", () => {
+      if (!setStampMainColor(els.stampMainHex.value)) { els.stampMainHex.value = stampMainColor; }
+    });
+    els.stampAccentHex?.addEventListener("change", () => {
+      if (!setStampAccentColor(els.stampAccentHex.value)) { els.stampAccentHex.value = stampAccentColor; }
+    });
+    els.deleteStampBtn?.addEventListener("click", deleteSelectedStamp);
+
     els.undoBtn?.addEventListener("click", undo);
     els.redoBtn?.addEventListener("click", redo);
     els.resetBtn?.addEventListener("click", resetArtwork);
@@ -1559,6 +1968,11 @@
         event.preventDefault();
         deleteSelectedText();
       }
+
+      if ((event.key === "Delete" || event.key === "Backspace") && selectedStamp && !typing) {
+        event.preventDefault();
+        deleteSelectedStamp();
+      }
     });
   }
 
@@ -1585,10 +1999,12 @@
     document.title = `${CFG.title || "Coloring Book"} | Middle School History`;
 
     buildPaletteMenu();
+    buildStampPicker();
     ensureToolButtons();
     bindControls();
     setBrushSize(12);
-    setCurrentColor(currentColor, { applyToSelectedText: false });
+    setCurrentColor(currentColor, { applyToSelectedText: false, applyToSelectedStamp: false });
+    syncStampUi();
     updateLayerButtons();
     updateZoomUi();
     setPaletteTab("presets");

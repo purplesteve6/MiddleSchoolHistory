@@ -398,6 +398,77 @@ body.coloring-book-app-page{
   gap: 9px;
 }
 
+.stamp-picker{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stamp-choice{
+  display: grid;
+  gap: 6px;
+  place-items: center;
+  min-height: 92px;
+  padding: 8px;
+  border: 1px solid var(--control-border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.04);
+  color: #fff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.stamp-choice img{
+  width: 100%;
+  max-width: 66px;
+  max-height: 46px;
+  object-fit: contain;
+  display: block;
+}
+
+.stamp-choice:hover{ background: rgba(255,255,255,.08); }
+.stamp-choice.is-active{
+  background: rgba(216,192,255,.18);
+  border-color: rgba(216,192,255,.65);
+}
+
+.stamp-color-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.stamp-color-box{
+  display: grid;
+  gap: 6px;
+  padding: 9px;
+  border: 1px solid var(--control-border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.04);
+  cursor: pointer;
+}
+
+.stamp-color-box.is-active{
+  background: rgba(216,192,255,.18);
+  border-color: rgba(216,192,255,.65);
+}
+
+.stamp-color-label{
+  color: rgba(255,255,255,.72);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.stamp-color-chip{
+  width: 100%;
+  height: 24px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.32);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+}
+
 .text-two-col{
   display: grid;
   grid-template-columns: 1fr 82px;
@@ -802,7 +873,8 @@ body.coloring-book-app-page{
 }
 .artboard[data-tool="text"] svg{ cursor: text; }
 .artboard[data-tool="eyedrop"],
-.artboard[data-tool="eyedrop"] svg{ cursor: crosshair; }
+.artboard[data-tool="eyedrop"] svg,
+.artboard[data-tool="eyedrop"] svg *{ cursor: none !important; }
 .artboard[data-tool="grab"],
 .artboard[data-tool="grab"] svg{ cursor: grab; }
 
@@ -828,8 +900,26 @@ body.coloring-book-app-page{
   display: none;
 }
 
-.tool-cursor-preview__x{
+.tool-cursor-preview__x,
+.tool-cursor-preview__icon{
   display: none;
+}
+
+.tool-cursor-preview[data-mode="eyedrop"]{
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 8px;
+  background: rgba(22,16,34,.92);
+  border-color: rgba(255,255,255,.55);
+}
+
+.tool-cursor-preview[data-mode="eyedrop"] .tool-cursor-preview__icon{
+  display: grid;
+  place-items: center;
+  position: absolute;
+  inset: 0;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .tool-cursor-preview[data-mode="eraser"]{
@@ -892,8 +982,15 @@ body.coloring-book-app-page{
   user-select: none;
 }
 
-.artboard svg .user-text.is-selected{
+.artboard svg .user-text.is-selected,
+.artboard svg .user-stamp.is-selected{
   filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 2px #6d3ea0);
+}
+
+.artboard svg .user-stamp{
+  cursor: move;
+  pointer-events: all;
+  user-select: none;
 }
 
 .workspace-foot{
