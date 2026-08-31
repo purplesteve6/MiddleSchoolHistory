@@ -712,8 +712,12 @@ body.coloring-book-app-page{
 
 .artboard[data-tool="brush"],
 .artboard[data-tool="brush"] svg,
+.artboard[data-tool="brush"] svg *,
 .artboard[data-tool="eraser"],
-.artboard[data-tool="eraser"] svg{ cursor: none; }
+.artboard[data-tool="eraser"] svg,
+.artboard[data-tool="eraser"] svg *{
+  cursor: none !important;
+}
 .artboard[data-tool="text"] svg{ cursor: text; }
 .artboard[data-tool="grab"],
 .artboard[data-tool="grab"] svg{ cursor: grab; }

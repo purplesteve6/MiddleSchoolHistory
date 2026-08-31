@@ -476,23 +476,25 @@
     return path;
   }
 
-  function beginEraserTargets(points, width) {
+  function beginEraserTargets(point, width) {
     const objects = workObjectsFor(layerPosition);
     currentEraseTargets = objects.map((target) => {
       const marks = ensureObjectMask(target);
       if (!marks) return null;
       const offset = parseTranslate(marks.getAttribute("transform"));
-      const eraseMark = createEraseMark(points, width, offset);
-      if (!eraseMark) return null;
-      marks.appendChild(eraseMark);
-      return { target, marks, offset, path: eraseMark };
+      const dab = createEraseMark([point], width, offset);
+      if (!dab) return null;
+      marks.appendChild(dab);
+      return { target, marks, offset };
     }).filter(Boolean);
     return currentEraseTargets.length;
   }
 
-  function updateEraserTargets(points) {
+  function addEraserSegment(fromPoint, toPoint, width) {
+    if (!fromPoint || !toPoint) return;
     currentEraseTargets.forEach((entry) => {
-      entry.path.setAttribute("d", pathDataForPoints(points, entry.offset));
+      const segment = createEraseMark([fromPoint, toPoint], width, entry.offset);
+      if (segment) entry.marks.appendChild(segment);
     });
   }
 
@@ -915,7 +917,7 @@
     if (event.button !== undefined && event.button !== 0) return;
     drawing = true;
     currentErasePoints = [getSvgPoint(event)];
-    beginEraserTargets(currentErasePoints, brushSize);
+    beginEraserTargets(currentErasePoints[0], brushSize);
     showCursorPreview(event);
     svgRoot.setPointerCapture?.(event.pointerId);
     event.preventDefault();
@@ -929,8 +931,8 @@
     const dy = point.y - previous.y;
     if (dx * dx + dy * dy < 2.5) return;
 
+    addEraserSegment(previous, point, brushSize);
     currentErasePoints.push(point);
-    updateEraserTargets(currentErasePoints);
     showCursorPreview(event);
     event.preventDefault();
   }
@@ -942,7 +944,6 @@
 
     const applied = currentEraseTargets.length;
     if (applied > 0) {
-      updateEraserTargets(currentErasePoints);
       commitState();
       setStatus(`Erased from ${applied} item${applied === 1 ? "" : "s"} on the ${layerPosition === "above" ? "On Top" : "Behind Lines"} layer.`);
     } else {
