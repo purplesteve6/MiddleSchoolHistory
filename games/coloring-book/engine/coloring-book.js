@@ -75,6 +75,7 @@
   let currentBrushPoints = [];
   let currentErasePath = null;
   let currentErasePoints = [];
+  let currentEraseTargets = [];
 
   let panning = false;
   let panStartX = 0;
@@ -914,7 +915,7 @@
   }
 
   function startEraser(event) {
-    if (event.button !== undefined && event.button !== 0) return;
+    if (event.button !== 0) return;
     drawing = true;
     currentErasePoints = [getSvgPoint(event)];
     beginEraserTargets(currentErasePoints[0], brushSize);
@@ -925,26 +926,26 @@
   function continueEraser(event) {
     if (!drawing || currentTool !== "eraser") return;
 
-    const coalesced = typeof event.getCoalescedEvents === "function"
-      ? event.getCoalescedEvents()
-      : null;
-    const samples = coalesced && coalesced.length ? coalesced : [event];
-
-    for (const sample of samples) {
-      const point = getSvgPoint(sample);
-      const previous = currentErasePoints[currentErasePoints.length - 1];
-      if (!previous) {
-        currentErasePoints.push(point);
-        continue;
-      }
-      const dx = point.x - previous.x;
-      const dy = point.y - previous.y;
-      if (dx * dx + dy * dy < 0.5) continue;
-
-      addEraserSegment(previous, point, brushSize);
-      currentErasePoints.push(point);
+    // If the browser reports that the left mouse button is no longer held,
+    // finish the stroke. This is a backup for a missed mouseup event.
+    if (typeof event.buttons === "number" && (event.buttons & 1) === 0) {
+      endEraser(event);
+      return;
     }
 
+    const point = getSvgPoint(event);
+    const previous = currentErasePoints[currentErasePoints.length - 1];
+    if (!previous) {
+      currentErasePoints.push(point);
+      return;
+    }
+
+    const dx = point.x - previous.x;
+    const dy = point.y - previous.y;
+    if (dx * dx + dy * dy < 0.25) return;
+
+    addEraserSegment(previous, point, brushSize);
+    currentErasePoints.push(point);
     showCursorPreview(event);
     event.preventDefault();
   }
@@ -963,7 +964,7 @@
 
     currentErasePoints = [];
     currentEraseTargets = [];
-    event.preventDefault();
+    if (event?.preventDefault) event.preventDefault();
   }
 
   function startPan(event) {
@@ -1139,11 +1140,6 @@
         return;
       }
 
-      if (currentTool === "eraser") {
-        startEraser(event);
-        return;
-      }
-
       if (currentTool === "text") {
         const text = event.target.closest?.(".user-text");
         if (text && allTextLayers().some((layer) => layer.contains(text))) {
@@ -1176,28 +1172,23 @@
       if (currentTool === "bucket") paintBucket(event.target);
     });
 
-    // Track eraser drags globally. The eraser changes SVG masks while it runs,
-    // so relying on the SVG itself for move/up events can lose the drag stream.
-    window.addEventListener("pointermove", (event) => {
+    // Mouse eraser tracking is intentionally separate from SVG Pointer Events.
+    // Once the left mouse button goes down, document-level mousemove/mouseup
+    // owns the drag until release, even while masks change under the pointer.
+    svgRoot.addEventListener("mousedown", (event) => {
+      if (currentTool === "eraser") startEraser(event);
+    });
+
+    document.addEventListener("mousemove", (event) => {
       if (currentTool === "eraser" && drawing) continueEraser(event);
     }, { capture: true, passive: false });
 
-    window.addEventListener("pointerup", (event) => {
-      if (currentTool === "eraser" && drawing) endEraser(event);
-    }, { capture: true, passive: false });
-
-    window.addEventListener("pointercancel", (event) => {
+    document.addEventListener("mouseup", (event) => {
       if (currentTool === "eraser" && drawing) endEraser(event);
     }, { capture: true, passive: false });
 
     window.addEventListener("blur", () => {
-      if (currentTool === "eraser" && drawing) {
-        const applied = currentEraseTargets.length;
-        drawing = false;
-        if (applied > 0) commitState();
-        currentErasePoints = [];
-        currentEraseTargets = [];
-      }
+      if (currentTool === "eraser" && drawing) endEraser(null);
     });
 
     els.artboardWrap?.addEventListener("pointerdown", (event) => {
