@@ -39,9 +39,23 @@ window.COLORING_BOOK_PAGES = [
     description: "Color a scene featuring Athena, Greek Goddess of wisdom.",
     gradeLevels: ["6"],
     subjects: ["world-history", "mythology"],
-    tags: ["athena", "greek mythology", "greek goddess", "ancient greece", "goddess of wisdom", "warrior goddess", "owl", "spear", "shield", "helmet", "parthenon", "acropolis", "athens", "medusa", "greek armor", "olive tree"]
+    tags: ["athena", "greek mythology", "greek goddess", "ancient greece", "goddess of wisdom", "warrior goddess", "owl", "spear", "shield", "helmet", "parthenon", "acropolis", "athens", "medusa", "greek armor", "olive tree", "religion"]
 
   },
+
+  {
+    id: "general-washington",
+    title: "General Washington",
+    file: "/games/coloring-book/pages/general-washington.svg",
+    thumbnail: "/games/images/thumbs/coloring-book/general-washington.webp",
+    description: "Color a distinguished picture of General George Washington",
+    gradeLevels: ["7"],
+    subjects: ["us-history"],
+    tags: ["George Washington", "horse", "Revolutionary War", "American Revolution", "leadership", "soldiers"]
+
+  },
+
+
 
   {
     id: "harriet-tubman",
