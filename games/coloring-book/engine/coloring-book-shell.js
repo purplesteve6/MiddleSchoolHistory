@@ -132,6 +132,12 @@
                   <div class="stamp-control-head stamp-control-head--rotation"><label for="textRotation">Rotate</label><output id="textRotationValue" for="textRotation">0°</output></div>
                   <input class="stamp-slider" id="textRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Text rotation" />
                 </div>
+
+                <div class="stamp-control-block">
+                  <div class="stamp-control-head"><label for="textStrokeWidth">Outline Width</label><span>None</span><span>Thick</span></div>
+                  <input class="stamp-slider" id="textStrokeWidth" type="range" value="0" min="0" max="18" step="1" aria-label="Text outline width" />
+                </div>
+
                 <button class="delete-text-button" id="deleteTextBtn" type="button" disabled>Delete Selected Text</button>
               </div>
               <p class="tool-help">Type first, then click the artwork to place it. Click and drag existing text to move it.</p>
@@ -146,21 +152,6 @@
                   <div class="stamp-picker" id="stampPicker" aria-label="Choose a stamp"></div>
                 </div>
               </details>
-
-              <div class="stamp-color-controls" aria-label="Choose which stamp color to edit">
-                <span class="stamp-color-controls__label">Stamp Colors</span>
-                <div class="stamp-color-selector" role="group" aria-label="Stamp color layer">
-                  <button class="stamp-color-button is-active" type="button" data-stamp-color-target="main" aria-pressed="true">
-                    <span class="stamp-color-chip" id="stampMainColorChip" aria-hidden="true"></span>
-                    <span>Main</span>
-                  </button>
-                  <button class="stamp-color-button" type="button" data-stamp-color-target="accent" aria-pressed="false">
-                    <span class="stamp-color-chip" id="stampAccentColorChip" aria-hidden="true"></span>
-                    <span>Accent</span>
-                  </button>
-                </div>
-                <p class="tool-help stamp-color-help">Choose Main or Accent, then use any palette or custom color below.</p>
-              </div>
 
               <div class="stamp-control-block">
                 <div class="stamp-control-head"><label for="stampSize">Size</label><span>Small</span><span>Large</span></div>
@@ -199,9 +190,33 @@
             </div>
           </section>
 
-          <div class="palette-current-row" aria-label="Current selected color">
+          <section class="global-colors" aria-label="Foreground and background colors">
+            <div class="global-colors__header">
+              <span class="tool-label">Foreground / Background</span>
+              <button class="swap-colors-button" id="swapColorsBtn" type="button" aria-label="Swap foreground and background colors" title="Swap colors">⇄</button>
+            </div>
+            <div class="global-color-selector" role="group" aria-label="Choose color target">
+              <button class="global-color-button is-active" type="button" data-global-color-target="foreground" aria-pressed="true">
+                <span class="global-color-chip" id="foregroundColorChip" aria-hidden="true"></span>
+                <span class="global-color-text">
+                  <strong>Foreground</strong>
+                  <small id="foregroundColorText">#D7263D</small>
+                </span>
+              </button>
+              <button class="global-color-button" type="button" data-global-color-target="background" aria-pressed="false">
+                <span class="global-color-chip" id="backgroundColorChip" aria-hidden="true"></span>
+                <span class="global-color-text">
+                  <strong>Background</strong>
+                  <small id="backgroundColorText">#000000</small>
+                </span>
+              </button>
+            </div>
+            <p class="tool-help global-colors-help">Left click uses Foreground. Right click uses Background. Text uses Foreground for fill and Background for outline. Stamps use Foreground for Main and Background for Accent.</p>
+          </section>
+
+          <div class="palette-current-row" aria-label="Currently active color target">
             <span class="current-color-chip" id="currentColorChip" aria-hidden="true"></span>
-            <span>Current: <strong id="currentColorText">#D7263D</strong></span>
+            <span>Editing <strong id="currentColorRoleText">Foreground</strong>: <strong id="currentColorText">#D7263D</strong></span>
           </div>
 
           <details class="color-picker-disclosure">

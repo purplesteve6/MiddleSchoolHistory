@@ -69,6 +69,13 @@
     hexInput: document.getElementById("hexInput"),
     currentColorChip: document.getElementById("currentColorChip"),
     currentColorText: document.getElementById("currentColorText"),
+    currentColorRoleText: document.getElementById("currentColorRoleText"),
+    globalColorButtons: Array.from(document.querySelectorAll("[data-global-color-target]")),
+    foregroundColorChip: document.getElementById("foregroundColorChip"),
+    backgroundColorChip: document.getElementById("backgroundColorChip"),
+    foregroundColorText: document.getElementById("foregroundColorText"),
+    backgroundColorText: document.getElementById("backgroundColorText"),
+    swapColorsBtn: document.getElementById("swapColorsBtn"),
     toolButtons: Array.from(document.querySelectorAll("[data-tool]")),
     brushOptions: document.getElementById("brushOptions"),
     brushOptionsLabel: document.getElementById("brushOptionsLabel"),
@@ -79,6 +86,7 @@
     textSize: document.getElementById("textSize"),
     textRotation: document.getElementById("textRotation"),
     textRotationValue: document.getElementById("textRotationValue"),
+    textStrokeWidth: document.getElementById("textStrokeWidth"),
     textAlignButtons: Array.from(document.querySelectorAll("[data-text-align]")),
     textBoldBtn: document.getElementById("textBoldBtn"),
     textItalicBtn: document.getElementById("textItalicBtn"),
@@ -121,7 +129,10 @@
 
   let currentTool = CFG.defaultTool || "bucket";
   let layerPosition = CFG.defaultLayerPosition === "above" ? "above" : "below";
-  let currentColor = normalizeHex(CFG.defaultColor || "#D7263D") || "#D7263D";
+  let foregroundColor = normalizeHex(CFG.defaultColor || "#D7263D") || "#D7263D";
+  let backgroundColor = normalizeHex(CFG.defaultBackgroundColor || "#000000") || "#000000";
+  let activeColorTarget = "foreground";
+  let currentColor = foregroundColor;
   let colorRecency = [];
   let brushSize = 12;
   let selectedText = null;
@@ -131,8 +142,8 @@
   let stampSize = Math.max(80, Number(els.stampSize?.value) || 360);
   let stampRotation = clampRotation(Number(els.stampRotation?.value) || 0);
   let stampColorTarget = "main";
-  let stampMainColor = currentColor;
-  let stampAccentColor = "#000000";
+  let stampMainColor = foregroundColor;
+  let stampAccentColor = backgroundColor;
   const stampTemplateCache = new Map();
 
   let draggingStamp = false;
@@ -378,10 +389,12 @@
 
     allTextLayers().forEach((layer) => {
       layer.querySelectorAll(".user-text").forEach((textNode) => {
-        const color = normalizeSvgColor(textNode.getAttribute("fill"));
-        if (color) present.add(color);
+        const fill = normalizeSvgColor(textNode.getAttribute("fill"));
+        const stroke = normalizeSvgColor(textNode.getAttribute("stroke"));
+        if (fill) present.add(fill);
+        if (stroke) present.add(stroke);
       });
-      layer.querySelectorAll(".user-stamp [data-stamp-main='true']").forEach((node) => {
+      layer.querySelectorAll(".user-stamp [data-stamp-main='true'], .user-stamp [data-stamp-accent='true']").forEach((node) => {
         const color = normalizeSvgColor(node.getAttribute("fill"));
         if (color) present.add(color);
       });
@@ -400,7 +413,7 @@
     button.style.background = color;
     button.title = color;
     button.setAttribute("aria-label", `Choose current artwork color ${color}`);
-    button.addEventListener("click", () => setCurrentColor(color, { applyToSelectedText: false }));
+    button.addEventListener("click", () => setCurrentColor(color));
     return button;
   }
 
@@ -425,15 +438,82 @@
     if (target === "current") refreshCurrentColors();
   }
 
+  function syncGlobalColorControls() {
+    if (els.foregroundColorChip) els.foregroundColorChip.style.background = foregroundColor;
+    if (els.backgroundColorChip) els.backgroundColorChip.style.background = backgroundColor;
+    if (els.foregroundColorText) els.foregroundColorText.textContent = foregroundColor;
+    if (els.backgroundColorText) els.backgroundColorText.textContent = backgroundColor;
+    if (els.currentColorChip) els.currentColorChip.style.background = currentColor;
+    if (els.currentColorText) els.currentColorText.textContent = currentColor;
+    if (els.currentColorRoleText) els.currentColorRoleText.textContent = activeColorTarget === "background" ? "Background" : "Foreground";
+    els.globalColorButtons.forEach((button) => {
+      const active = button.dataset.globalColorTarget === activeColorTarget;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  function setActiveColorTarget(target, options = {}) {
+    activeColorTarget = target === "background" ? "background" : "foreground";
+    stampColorTarget = activeColorTarget === "background" ? "accent" : "main";
+    const color = activeColorTarget === "background" ? backgroundColor : foregroundColor;
+    setCurrentColor(color, {
+      applyToSelectedText: false,
+      applyToSelectedStamp: false,
+      syncPicker: options.syncPicker,
+      announce: false,
+      persistTarget: false
+    });
+    syncGlobalColorControls();
+    if (options.announce) {
+      setStatus(`${activeColorTarget === "background" ? "Background" : "Foreground"} color selected.`);
+    }
+  }
+
+  function swapGlobalColors() {
+    const oldForeground = foregroundColor;
+    foregroundColor = backgroundColor;
+    backgroundColor = oldForeground;
+    stampMainColor = foregroundColor;
+    stampAccentColor = backgroundColor;
+    const active = activeColorTarget === "background" ? backgroundColor : foregroundColor;
+    setCurrentColor(active, {
+      applyToSelectedText: false,
+      applyToSelectedStamp: false,
+      announce: false,
+      persistTarget: false
+    });
+    syncGlobalColorControls();
+    setStatus("Foreground and Background colors swapped.");
+  }
+
+  function textOutlineColor(node) {
+    if (!node) return null;
+    return normalizeSvgColor(node.getAttribute("stroke")) || renderedSvgColor(node);
+  }
+
   function setCurrentColor(value, options = {}) {
     const color = normalizeHex(value);
     if (!color) return false;
 
+    const target = options.target || activeColorTarget;
+    if (options.persistTarget !== false) {
+      activeColorTarget = target === "background" ? "background" : "foreground";
+      stampColorTarget = activeColorTarget === "background" ? "accent" : "main";
+    }
+
     currentColor = color;
+    if (activeColorTarget === "background") {
+      backgroundColor = color;
+      stampAccentColor = color;
+    } else {
+      foregroundColor = color;
+      stampMainColor = color;
+    }
+
     if (els.customColor) els.customColor.value = color;
     if (els.hexInput) els.hexInput.value = color;
-    if (els.currentColorChip) els.currentColorChip.style.background = color;
-    if (els.currentColorText) els.currentColorText.textContent = color;
+    syncGlobalColorControls();
 
     [els.swatches, els.currentSwatches].filter(Boolean).forEach((host) => {
       host.querySelectorAll(".swatch").forEach((swatch) => {
@@ -444,25 +524,24 @@
     if (options.syncPicker !== false) syncPickerFromHex(color);
 
     if (selectedText && options.applyToSelectedText !== false) {
-      selectedText.setAttribute("fill", color);
-      markColorUsed(color);
-      commitState();
-      setStatus("Text color updated.");
+      if (activeColorTarget === "background") {
+        applyTextStroke(selectedText, backgroundColor, textStrokeWidthFromControl());
+        markColorUsed(backgroundColor);
+        commitState();
+        setStatus("Text outline color updated.");
+      } else {
+        selectedText.setAttribute("fill", foregroundColor);
+        markColorUsed(foregroundColor);
+        commitState();
+        setStatus("Text fill color updated.");
+      }
     } else if (selectedStamp && options.applyToSelectedStamp !== false) {
       applyStampColorChannel(selectedStamp, stampColorTarget, color);
-      if (stampColorTarget === "accent") stampAccentColor = color;
-      else stampMainColor = color;
-      syncStampColorControls();
       markColorUsed(color);
       commitState();
-      setStatus(`${stampColorTarget === "accent" ? "Accent" : "Main"} stamp color updated.`);
+      setStatus(`${activeColorTarget === "background" ? "Accent" : "Main"} stamp color updated.`);
     } else if (currentTool === "stamp" && options.applyToSelectedStamp !== false) {
-      // No stamp has been placed/selected yet: treat the palette choice as the
-      // color for the next stamp. This keeps Main/Accent useful before placement.
-      if (stampColorTarget === "accent") stampAccentColor = color;
-      else stampMainColor = color;
-      syncStampColorControls();
-      setStatus(`${stampColorTarget === "accent" ? "Accent" : "Main"} color set for the next stamp.`);
+      setStatus(`${activeColorTarget === "background" ? "Accent" : "Main"} color set for the next stamp.`);
     }
 
     return true;
@@ -522,7 +601,7 @@
       els.swatches.appendChild(button);
     });
 
-    setCurrentColor(currentColor, { applyToSelectedText: false });
+    setCurrentColor(currentColor, { applyToSelectedText: false, applyToSelectedStamp: false, announce: false, persistTarget: false });
   }
 
   function setTool(tool) {
@@ -547,12 +626,12 @@
     if (tool !== "text") clearTextSelection();
     if (tool !== "stamp") clearStampSelection();
 
-    if (tool === "bucket") setStatus("Paint Bucket: choose a color, then click any white area.");
-    if (tool === "brush") setStatus("Brush: drag across the picture to paint freely.");
+    if (tool === "bucket") setStatus("Paint Bucket: left click fills with Foreground; right click fills with Background.");
+    if (tool === "brush") setStatus("Brush: drag to paint freely. Left click uses Foreground; right click uses Background.");
     if (tool === "eraser") setStatus("Eraser: drag to permanently erase existing brush strokes and text on the active drawing position.");
-    if (tool === "eyedrop") setStatus("Eyedropper: click a colored area, brush stroke, text, or stamp to make that the current color.");
-    if (tool === "text") setStatus("Text: type your words, then click the picture to place them.");
-    if (tool === "stamp") setStatus(currentStampSrc ? "Stamp: choose a stamp, size, and rotation, then click the picture to place it." : "Stamp: no stamps are configured in stamps-manifest.js.");
+    if (tool === "eyedrop") setStatus("Eyedropper: left click samples to Foreground; right click samples to Background.");
+    if (tool === "text") setStatus("Text: type your words, then click the picture to place them. Foreground fills the text and Background outlines it.");
+    if (tool === "stamp") setStatus(currentStampSrc ? "Stamp: choose a stamp, size, and rotation, then click the picture to place it. Foreground colors the main area and Background colors the accent." : "Stamp: no stamps are configured in stamps-manifest.js.");
     if (tool === "grab") setStatus("Grab: drag the artwork to pan around when zoomed in.");
     refreshCursorPreview();
   }
@@ -1052,13 +1131,14 @@
     setStatus("Coloring page reset.");
   }
 
-  function paintBucket(target) {
+  function paintBucket(target, color = currentColor) {
     const shape = getFillableFromTarget(target);
     if (!shape) return;
+    const hex = normalizeHex(color) || currentColor;
     const oldFill = normalizeHex(shape.getAttribute("fill")) || shape.getAttribute("fill");
-    if (String(oldFill).toUpperCase() === currentColor) return;
-    shape.setAttribute("fill", currentColor);
-    markColorUsed(currentColor);
+    if (String(oldFill).toUpperCase() === hex) return;
+    shape.setAttribute("fill", hex);
+    markColorUsed(hex);
     commitState();
   }
 
@@ -1083,43 +1163,51 @@
     return null;
   }
 
-  function colorFromArtworkTarget(target) {
+  function colorFromArtworkTarget(target, preferredTarget = activeColorTarget) {
     if (!target) return null;
     const stamp = target.closest?.(".user-stamp");
     if (stamp && svgRoot?.contains(stamp)) {
       const region = target.closest?.("[data-stamp-main='true'], [data-stamp-accent='true']");
       if (region?.dataset?.stampAccent === "true") return stampChannelColor(stamp, "accent");
       if (region?.dataset?.stampMain === "true") return stampChannelColor(stamp, "main");
-      return renderedSvgColor(target) || stampChannelColor(stamp, "main") || stampChannelColor(stamp, "accent");
+      if (preferredTarget === "background") return stampChannelColor(stamp, "accent") || stampChannelColor(stamp, "main") || renderedSvgColor(target);
+      return stampChannelColor(stamp, "main") || stampChannelColor(stamp, "accent") || renderedSvgColor(target);
     }
     const node = target.closest?.(".user-text, .user-brush-stroke, [data-coloring-fillable='true']");
     if (!node || !svgRoot?.contains(node)) return null;
     if (node.classList?.contains("user-brush-stroke")) return normalizeSvgColor(node.getAttribute("stroke"));
+    if (node.classList?.contains("user-text")) {
+      if (preferredTarget === "background") return normalizeSvgColor(node.getAttribute("stroke")) || normalizeSvgColor(node.getAttribute("fill")) || renderedSvgColor(node);
+      return normalizeSvgColor(node.getAttribute("fill")) || normalizeSvgColor(node.getAttribute("stroke")) || renderedSvgColor(node);
+    }
     return normalizeSvgColor(node.getAttribute("fill")) || renderedSvgColor(node);
   }
 
-  function eyedropColor(target) {
-    const color = colorFromArtworkTarget(target);
+  function eyedropColor(target, colorTarget = activeColorTarget) {
+    const preferred = colorTarget === "background" ? "background" : "foreground";
+    const color = colorFromArtworkTarget(target, preferred);
     if (!color) {
       setStatus("Eyedropper: click a colored shape, brush stroke, text, or stamp.");
       return;
     }
-    setCurrentColor(color, { applyToSelectedText: false });
-    setStatus(`Picked ${color}.`);
+    setActiveColorTarget(preferred, { syncPicker: false });
+    setCurrentColor(color, { applyToSelectedText: false, applyToSelectedStamp: false, target: preferred });
+    setStatus(`Picked ${color} for ${preferred === "background" ? "Background" : "Foreground"}.`);
   }
 
-  function startBrush(event) {
-    if (event.button !== undefined && event.button !== 0) return;
+  function startBrush(event, color = currentColor) {
+    if (event.button !== undefined && event.button !== 0 && event.button !== 2) return;
+    const hex = normalizeHex(color) || currentColor;
     drawing = true;
     currentBrushPoints = [getSvgPoint(event)];
 
     currentBrushPath = document.createElementNS(SVG_NS, "path");
     currentBrushPath.classList.add("user-brush-stroke");
-    currentBrushPath.setAttribute("stroke", currentColor);
+    currentBrushPath.setAttribute("stroke", hex);
     currentBrushPath.setAttribute("stroke-width", String(brushSize));
     currentBrushPath.setAttribute("d", `M ${currentBrushPoints[0].x.toFixed(2)} ${currentBrushPoints[0].y.toFixed(2)}`);
     paintLayerFor().appendChild(currentBrushPath);
-    markColorUsed(currentColor);
+    markColorUsed(hex);
     showCursorPreview(event);
 
     svgRoot.setPointerCapture?.(event.pointerId);
@@ -1381,6 +1469,44 @@
     textNode.querySelectorAll(":scope > tspan").forEach((span) => span.setAttribute("x", x));
   }
 
+  function normalizeTextStrokeWidth(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return 0;
+    return Math.max(0, Math.min(18, n));
+  }
+
+  function textStrokeWidthFromNode(textNode) {
+    if (!textNode) return 0;
+    const stroke = String(textNode.getAttribute("stroke") || "").toLowerCase();
+    if (!stroke || stroke === "none") return 0;
+    return normalizeTextStrokeWidth(textNode.getAttribute("stroke-width"));
+  }
+
+  function textStrokeWidthFromControl() {
+    return normalizeTextStrokeWidth(els.textStrokeWidth?.value ?? 0);
+  }
+
+  function syncTextStrokeControls(value) {
+    if (els.textStrokeWidth) els.textStrokeWidth.value = String(normalizeTextStrokeWidth(value));
+  }
+
+  function applyTextStroke(textNode, color, width) {
+    if (!textNode) return;
+    const strokeWidth = normalizeTextStrokeWidth(width);
+    if (strokeWidth <= 0) {
+      textNode.setAttribute("stroke", "none");
+      textNode.setAttribute("stroke-width", "0");
+      textNode.removeAttribute("paint-order");
+      textNode.removeAttribute("stroke-linejoin");
+      return;
+    }
+    const hex = normalizeHex(color) || backgroundColor || "#000000";
+    textNode.setAttribute("stroke", hex);
+    textNode.setAttribute("stroke-width", String(strokeWidth));
+    textNode.setAttribute("paint-order", "stroke fill");
+    textNode.setAttribute("stroke-linejoin", "round");
+  }
+
   function renderTextLines(textNode, value) {
     if (!textNode) return;
     const normalized = String(value ?? "").replace(/\r\n?/g, "\n");
@@ -1405,6 +1531,7 @@
     textNode.setAttribute("font-style", settings.italic ? "italic" : "normal");
     textNode.dataset.textAlign = normalizeTextAlign(settings.align);
     textNode.setAttribute("text-anchor", textAnchorForAlign(textNode.dataset.textAlign));
+    applyTextStroke(textNode, backgroundColor, settings.strokeWidth);
     if (options.renderValue !== false) renderTextLines(textNode, settings.value);
     else syncTextLinePositions(textNode);
   }
@@ -1416,6 +1543,7 @@
       font: els.textFont?.value || "Arial, sans-serif",
       size: Math.max(10, Math.min(160, Number(els.textSize?.value) || 44)),
       rotation: clampRotation(els.textRotation?.value ?? 0),
+      strokeWidth: textStrokeWidthFromControl(),
       align: currentTextAlign(),
       bold: els.textBoldBtn?.getAttribute("aria-pressed") === "true",
       italic: els.textItalicBtn?.getAttribute("aria-pressed") === "true"
@@ -1434,11 +1562,12 @@
     text.classList.add("user-text");
     text.setAttribute("x", point.x.toFixed(2));
     text.setAttribute("y", point.y.toFixed(2));
-    text.setAttribute("fill", currentColor);
+    text.setAttribute("fill", foregroundColor);
     applyTextFormatting(text, settings);
     applyTextRotation(text, settings.rotation);
     textLayerFor().appendChild(text);
-    markColorUsed(currentColor);
+    markColorUsed(foregroundColor);
+    if (settings.strokeWidth > 0) markColorUsed(backgroundColor);
 
     selectText(text);
     commitState();
@@ -1454,13 +1583,19 @@
     if (els.textValue) els.textValue.value = textValueFromNode(selectedText);
     if (els.textFont) els.textFont.value = selectedText.getAttribute("font-family") || els.textFont.value;
     if (els.textSize) els.textSize.value = selectedText.getAttribute("font-size") || els.textSize.value;
+    syncTextStrokeControls(textStrokeWidthFromNode(selectedText));
     syncTextRotationControls(textRotationValue(selectedText));
     setTextAlignControls(textAlignFromNode(selectedText));
     setTextToggleControl(els.textBoldBtn, textIsBold(selectedText));
     setTextToggleControl(els.textItalicBtn, textIsItalic(selectedText));
 
     const fill = normalizeHex(selectedText.getAttribute("fill"));
-    if (fill) setCurrentColor(fill, { applyToSelectedText: false });
+    const stroke = normalizeHex(selectedText.getAttribute("stroke"));
+    if (fill) foregroundColor = fill;
+    if (stroke) backgroundColor = stroke;
+    stampMainColor = foregroundColor;
+    stampAccentColor = backgroundColor;
+    setActiveColorTarget(activeColorTarget, { syncPicker: false });
 
     const position = textPosition(selectedText);
     if (position) layerPosition = position;
@@ -1528,9 +1663,11 @@
     if (!selectedText) return;
     const settings = currentTextSettings();
     applyTextFormatting(selectedText, { ...settings, value: settings.value || "Text" });
-    selectedText.setAttribute("fill", currentColor);
+    selectedText.setAttribute("fill", foregroundColor);
+    applyTextStroke(selectedText, backgroundColor, settings.strokeWidth);
     applyTextRotation(selectedText, settings.rotation);
-    markColorUsed(currentColor);
+    markColorUsed(foregroundColor);
+    if (settings.strokeWidth > 0) markColorUsed(backgroundColor);
     commitState();
     setStatus("Text updated.");
   }
@@ -1539,6 +1676,8 @@
     if (!selectedText) return;
     const settings = currentTextSettings();
     applyTextFormatting(selectedText, { ...settings, value: textValueFromNode(selectedText) }, { renderValue: false });
+    selectedText.setAttribute("fill", foregroundColor);
+    applyTextStroke(selectedText, backgroundColor, settings.strokeWidth);
     applyTextRotation(selectedText, settings.rotation);
     commitState();
     setStatus(statusMessage);
@@ -1682,23 +1821,13 @@
   }
 
   function syncStampColorControls() {
-    if (els.stampMainColorChip) els.stampMainColorChip.style.background = stampMainColor;
-    if (els.stampAccentColorChip) els.stampAccentColorChip.style.background = stampAccentColor;
-    els.stampColorButtons.forEach((button) => {
-      const active = button.dataset.stampColorTarget === stampColorTarget;
-      button.classList.toggle("is-active", active);
-      button.setAttribute("aria-pressed", String(active));
-    });
+    stampMainColor = foregroundColor;
+    stampAccentColor = backgroundColor;
+    syncGlobalColorControls();
   }
 
   function setStampColorTarget(target, options = {}) {
-    stampColorTarget = target === "accent" ? "accent" : "main";
-    syncStampColorControls();
-    const color = stampColorTarget === "accent" ? stampAccentColor : stampMainColor;
-    setCurrentColor(color, { applyToSelectedText: false, applyToSelectedStamp: false });
-    if (options.announce !== false) {
-      setStatus(`${stampColorTarget === "accent" ? "Accent" : "Main"} stamp color selected. Choose a color below.`);
-    }
+    setActiveColorTarget(target === "accent" ? "background" : "foreground", { announce: options.announce !== false });
   }
 
   function updateStampTransform(stamp) {
@@ -1767,13 +1896,11 @@
     stampRotation = clampRotation(selectedStamp.dataset.rotation);
     updateStampControls();
 
-    stampMainColor = stampChannelColor(selectedStamp, "main") || stampMainColor || currentColor;
-    stampAccentColor = stampChannelColor(selectedStamp, "accent") || stampAccentColor || "#000000";
-    syncStampColorControls();
-    setCurrentColor(stampColorTarget === "accent" ? stampAccentColor : stampMainColor, {
-      applyToSelectedText: false,
-      applyToSelectedStamp: false
-    });
+    stampMainColor = stampChannelColor(selectedStamp, "main") || stampMainColor || foregroundColor;
+    stampAccentColor = stampChannelColor(selectedStamp, "accent") || stampAccentColor || backgroundColor;
+    foregroundColor = stampMainColor;
+    backgroundColor = stampAccentColor;
+    setActiveColorTarget(activeColorTarget, { syncPicker: false });
 
     const position = stampPosition(selectedStamp);
     if (position) layerPosition = position;
@@ -1885,7 +2012,26 @@
 
     svgRoot.addEventListener("pointerdown", (event) => {
       if (currentTool === "brush") {
-        startBrush(event);
+        const targetRole = event.button === 2 ? "background" : "foreground";
+        setActiveColorTarget(targetRole, { syncPicker: false });
+        startBrush(event, targetRole === "background" ? backgroundColor : foregroundColor);
+        return;
+      }
+
+      if (currentTool === "bucket") {
+        if (event.button !== 0 && event.button !== 2) return;
+        const targetRole = event.button === 2 ? "background" : "foreground";
+        setActiveColorTarget(targetRole, { syncPicker: false });
+        paintBucket(event.target, targetRole === "background" ? backgroundColor : foregroundColor);
+        event.preventDefault();
+        return;
+      }
+
+      if (currentTool === "eyedrop") {
+        if (event.button !== 0 && event.button !== 2) return;
+        const targetRole = event.button === 2 ? "background" : "foreground";
+        eyedropColor(event.target, targetRole);
+        event.preventDefault();
         return;
       }
 
@@ -1933,8 +2079,9 @@
     });
 
     svgRoot.addEventListener("click", (event) => {
-      if (currentTool === "bucket") paintBucket(event.target);
-      if (currentTool === "eyedrop") eyedropColor(event.target);
+      if (currentTool === "bucket" || currentTool === "eyedrop") {
+        event.preventDefault();
+      }
     });
 
     // Mouse eraser tracking is intentionally separate from SVG Pointer Events.
@@ -1954,6 +2101,13 @@
 
     window.addEventListener("blur", () => {
       if (currentTool === "eraser" && drawing) endEraser(null);
+    });
+
+    els.artboardWrap?.addEventListener("contextmenu", (event) => {
+      if (!els.artboard?.contains(event.target)) return;
+      if (["brush", "bucket", "eyedrop"].includes(currentTool)) {
+        event.preventDefault();
+      }
     });
 
     els.artboardWrap?.addEventListener("pointerdown", (event) => {
@@ -2078,6 +2232,14 @@
     els.paletteSelect?.addEventListener("change", () => renderPalette(els.paletteSelect.value));
     bindColorPicker();
 
+    els.globalColorButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveColorTarget(button.dataset.globalColorTarget, { announce: true });
+      });
+    });
+
+    els.swapColorsBtn?.addEventListener("click", swapGlobalColors);
+
     els.customColor?.addEventListener("input", () => {
       setCurrentColor(els.customColor.value, { applyToSelectedText: false });
     });
@@ -2157,6 +2319,16 @@
       previewTextRotation(els.textRotation.value);
     });
     els.textRotation?.addEventListener("change", commitTextRotation);
+
+    els.textStrokeWidth?.addEventListener("input", () => {
+      if (!selectedText) return;
+      updateSelectedTextFormatting("Text outline width updated.");
+    });
+    els.textStrokeWidth?.addEventListener("change", () => {
+      if (!selectedText) return;
+      commitState();
+      setStatus("Text outline width updated.");
+    });
 
     els.deleteTextBtn?.addEventListener("click", deleteSelectedText);
     els.undoBtn?.addEventListener("click", undo);
@@ -2242,8 +2414,8 @@
     setBrushSize(12);
     if (els.stampChoices[0]) setStampChoice(els.stampChoices[0]);
     updateStampControls();
-    syncStampColorControls();
-    setCurrentColor(currentColor, { applyToSelectedText: false, applyToSelectedStamp: false });
+    syncGlobalColorControls();
+    setCurrentColor(currentColor, { applyToSelectedText: false, applyToSelectedStamp: false, announce: false, persistTarget: false });
     updateLayerButtons();
     updateZoomUi();
     setPaletteTab("presets");
