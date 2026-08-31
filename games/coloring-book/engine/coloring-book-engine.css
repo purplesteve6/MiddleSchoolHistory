@@ -711,7 +711,15 @@ body.coloring-book-app-page{
 }
 
 .artboard[data-tool="brush"] svg{ cursor: crosshair; }
+.artboard[data-tool="eraser"] svg{ cursor: crosshair; }
 .artboard[data-tool="text"] svg{ cursor: text; }
+.artboard[data-tool="grab"],
+.artboard[data-tool="grab"] svg{ cursor: grab; }
+
+.artboard-wrap.is-grabbing,
+.artboard-wrap.is-grabbing *{
+  cursor: grabbing !important;
+}
 
 .artboard svg #ink,
 .artboard svg [data-coloring-ink="true"]{
@@ -719,6 +727,13 @@ body.coloring-book-app-page{
 }
 
 .artboard svg .user-brush-stroke{
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.artboard svg .user-eraser-stroke{
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
