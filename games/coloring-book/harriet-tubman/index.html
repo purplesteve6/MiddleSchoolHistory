@@ -47,31 +47,6 @@
           </div>
         </section>
 
-        <section class="tool-group" aria-label="Choose drawing position">
-          <span class="tool-label">Drawing Position</span>
-          <div class="layer-toggle">
-            <button class="layer-button is-active" type="button" data-layer-position="below" aria-pressed="true">Behind Lines</button>
-            <button class="layer-button" type="button" data-layer-position="above" aria-pressed="false">On Top</button>
-          </div>
-          <p class="tool-help" id="layerPositionHint">New brush strokes and text will be placed behind the black lines.</p>
-        </section>
-
-        <section class="tool-group" aria-label="Choose a color">
-          <label class="tool-label" for="paletteSelect">Palette</label>
-          <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
-          <div class="swatches" id="swatches" aria-label="Palette colors"></div>
-
-          <div class="custom-color-row">
-            <input class="custom-color" id="customColor" type="color" value="#D7263D" aria-label="Custom color picker" />
-            <input class="hex-input" id="hexInput" type="text" value="#D7263D" maxlength="7" spellcheck="false" aria-label="Hex color code" />
-          </div>
-
-          <div class="current-color-row">
-            <span class="current-color-chip" id="currentColorChip" aria-hidden="true"></span>
-            <span>Current: <strong id="currentColorText">#D7263D</strong></span>
-          </div>
-        </section>
-
         <section class="tool-group tool-options" id="brushOptions" hidden>
           <span class="tool-label">Brush Size</span>
           <div class="brush-sizes">
@@ -99,37 +74,61 @@
             </div>
             <button class="delete-text-button" id="deleteTextBtn" type="button" disabled>Delete Selected Text</button>
           </div>
-          <p class="tool-help">Type first, then click the artwork to place it. Click and drag existing text to move it. With text selected, Behind Lines / On Top moves only that text.</p>
+          <p class="tool-help">Type first, then click the artwork to place it. Click and drag existing text to move it.</p>
         </section>
 
-        <section class="tool-group" aria-label="Zoom controls">
-          <span class="tool-label">Zoom</span>
-          <input class="zoom-slider" id="zoomSlider" type="range" min="100" max="400" step="5" value="100" aria-label="Zoom level" />
-          <div class="zoom-row">
-            <span class="zoom-value" id="zoomValue">100%</span>
-            <button class="zoom-reset-button" id="zoomResetBtn" type="button" disabled>Reset Zoom</button>
-          </div>
-          <p class="tool-help">Use the slider or roll your mouse wheel over the picture to zoom in and out. The page will not zoom out smaller than the default view.</p>
+        <section class="tool-group" aria-label="Choose a palette">
+          <label class="tool-label" for="paletteSelect">Palette</label>
+          <select class="palette-select" id="paletteSelect" aria-label="Color palette"></select>
+          <div class="swatches" id="swatches" aria-label="Palette colors"></div>
         </section>
 
-        <section class="tool-group">
-          <span class="tool-label">Actions</span>
-          <div class="action-grid">
-            <button class="action-button" id="undoBtn" type="button" disabled>↶ Undo</button>
-            <button class="action-button" id="redoBtn" type="button" disabled>↷ Redo</button>
-            <button class="action-button action-button--danger" id="resetBtn" type="button">Clear Page</button>
-            <button class="action-button action-button--primary" id="printBtn" type="button">Print / Save PDF</button>
+        <section class="tool-group" aria-label="Color picker">
+          <span class="tool-label">Color Picker</span>
+          <div class="color-picker-field" id="colorPickerField" role="slider" tabindex="0" aria-label="Choose saturation and brightness">
+            <span class="color-picker-marker" id="colorPickerMarker" aria-hidden="true"></span>
           </div>
-          <p class="tool-help">For a PDF, choose <strong>Save as PDF</strong> in your browser's print window.</p>
+          <input class="hue-slider" id="hueSlider" type="range" min="0" max="360" step="1" value="350" aria-label="Hue" />
+          <div class="color-picker-bottom-row">
+            <span class="current-color-chip" id="currentColorChip" aria-hidden="true"></span>
+            <input class="hex-input" id="hexInput" type="text" value="#D7263D" maxlength="7" spellcheck="false" aria-label="Hex color code" />
+          </div>
+          <div class="current-color-row current-color-row--picker">
+            <span>Current: <strong id="currentColorText">#D7263D</strong></span>
+          </div>
         </section>
 
         <div class="coloring-status" id="coloringStatus" role="status" aria-live="polite">Loading coloring page…</div>
       </aside>
 
       <section class="coloring-workspace" aria-label="Coloring page workspace">
-        <div class="workspace-head">
-          <h2 id="workspaceTitle">Harriet Tubman</h2>
-          <div class="workspace-hint">Bucket fills closed shapes • Brush/text can go behind the lines or on top</div>
+        <div class="workspace-commandbar">
+          <div class="workspace-actions" aria-label="File and edit actions">
+            <button class="menu-button" id="undoBtn" type="button" disabled>↶ Undo</button>
+            <button class="menu-button" id="redoBtn" type="button" disabled>↷ Redo</button>
+            <button class="menu-button menu-button--danger" id="resetBtn" type="button">Clear</button>
+            <button class="menu-button menu-button--primary" id="printBtn" type="button">Print / Save</button>
+          </div>
+
+          <div class="workspace-view-controls">
+            <div class="drawing-position-compact" aria-label="Choose drawing position">
+              <span class="compact-control-label">Drawing Position</span>
+              <div class="layer-toggle layer-toggle--compact">
+                <button class="layer-button is-active" type="button" data-layer-position="below" aria-pressed="true">Behind Lines</button>
+                <button class="layer-button" type="button" data-layer-position="above" aria-pressed="false">On Top</button>
+              </div>
+              <span class="sr-only" id="layerPositionHint">New brush strokes and text will be placed behind the black lines.</span>
+            </div>
+
+            <div class="zoom-compact" aria-label="Zoom controls">
+              <span class="compact-control-label">Zoom</span>
+              <div class="zoom-inline-row">
+                <input class="zoom-slider" id="zoomSlider" type="range" min="100" max="400" step="5" value="100" aria-label="Zoom level" />
+                <span class="zoom-value" id="zoomValue">100%</span>
+                <button class="zoom-reset-button" id="zoomResetBtn" type="button" disabled>Reset</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="artboard-wrap" id="artboardWrap">
@@ -137,7 +136,7 @@
         </div>
 
         <div class="workspace-foot">
-          <span>Tip: Ctrl/Cmd + Z also undoes your last change.</span>
+          <span>Mouse wheel over the artwork zooms toward the pointer. Ctrl/Cmd + Z undoes.</span>
           <span>Your work stays in this browser tab until you leave or reload the page.</span>
         </div>
       </section>

@@ -22,6 +22,9 @@
     paletteSelect: document.getElementById("paletteSelect"),
     swatches: document.getElementById("swatches"),
     customColor: document.getElementById("customColor"),
+    colorPickerField: document.getElementById("colorPickerField"),
+    colorPickerMarker: document.getElementById("colorPickerMarker"),
+    hueSlider: document.getElementById("hueSlider"),
     hexInput: document.getElementById("hexInput"),
     currentColorChip: document.getElementById("currentColorChip"),
     currentColorText: document.getElementById("currentColorText"),
@@ -81,6 +84,11 @@
   let zoomScale = 1;
   let baseArtboardWidth = 0;
   let baseArtboardHeight = 0;
+  let artAspect = 4 / 3;
+  let pickerHue = 350;
+  let pickerSaturation = 0.82;
+  let pickerValue = 0.84;
+  let pickingColor = false;
   const MIN_ZOOM = 1;
   const MAX_ZOOM = Math.max(1, Number(CFG.maxZoom || 4));
 
@@ -98,6 +106,77 @@
     return null;
   }
 
+  function hexToRgb(hex) {
+    const value = normalizeHex(hex);
+    if (!value) return null;
+    return {
+      r: parseInt(value.slice(1, 3), 16),
+      g: parseInt(value.slice(3, 5), 16),
+      b: parseInt(value.slice(5, 7), 16)
+    };
+  }
+
+  function rgbToHex(r, g, b) {
+    const byte = (n) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, "0");
+    return `#${byte(r)}${byte(g)}${byte(b)}`.toUpperCase();
+  }
+
+  function rgbToHsv(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const d = max - min;
+    let h = pickerHue;
+    if (d !== 0) {
+      if (max === r) h = 60 * (((g - b) / d) % 6);
+      else if (max === g) h = 60 * (((b - r) / d) + 2);
+      else h = 60 * (((r - g) / d) + 4);
+      if (h < 0) h += 360;
+    }
+    return { h, s: max === 0 ? 0 : d / max, v: max };
+  }
+
+  function hsvToRgb(h, s, v) {
+    const c = v * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = v - c;
+    let rp = 0, gp = 0, bp = 0;
+    if (h < 60) { rp = c; gp = x; }
+    else if (h < 120) { rp = x; gp = c; }
+    else if (h < 180) { gp = c; bp = x; }
+    else if (h < 240) { gp = x; bp = c; }
+    else if (h < 300) { rp = x; bp = c; }
+    else { rp = c; bp = x; }
+    return { r: (rp + m) * 255, g: (gp + m) * 255, b: (bp + m) * 255 };
+  }
+
+  function pickerHex() {
+    const rgb = hsvToRgb(pickerHue, pickerSaturation, pickerValue);
+    return rgbToHex(rgb.r, rgb.g, rgb.b);
+  }
+
+  function updateColorPickerUi() {
+    if (els.colorPickerField) {
+      els.colorPickerField.style.background = `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent), hsl(${pickerHue} 100% 50%)`;
+      els.colorPickerField.setAttribute("aria-valuetext", `Saturation ${Math.round(pickerSaturation * 100)}%, brightness ${Math.round(pickerValue * 100)}%`);
+    }
+    if (els.colorPickerMarker) {
+      els.colorPickerMarker.style.left = `${pickerSaturation * 100}%`;
+      els.colorPickerMarker.style.top = `${(1 - pickerValue) * 100}%`;
+    }
+    if (els.hueSlider) els.hueSlider.value = String(Math.round(pickerHue));
+  }
+
+  function syncPickerFromHex(hex) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return;
+    const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+    if (hsv.s > 0.005) pickerHue = hsv.h;
+    pickerSaturation = hsv.s;
+    pickerValue = hsv.v;
+    updateColorPickerUi();
+  }
+
   function setCurrentColor(value, options = {}) {
     const color = normalizeHex(value);
     if (!color) return false;
@@ -111,6 +190,8 @@
     els.swatches?.querySelectorAll(".swatch").forEach((swatch) => {
       swatch.classList.toggle("is-active", normalizeHex(swatch.dataset.color) === color);
     });
+
+    if (options.syncPicker !== false) syncPickerFromHex(color);
 
     if (selectedText && options.applyToSelectedText !== false) {
       selectedText.setAttribute("fill", color);
@@ -299,55 +380,75 @@
     els.artboardWrap?.classList.toggle("is-zoomed", zoomScale > MIN_ZOOM + 0.001);
   }
 
+  function artboardAvailableSize() {
+    if (!els.artboardWrap) return { width: 0, height: 0 };
+    const style = getComputedStyle(els.artboardWrap);
+    const padX = (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0);
+    const padY = (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0);
+    return {
+      width: Math.max(1, els.artboardWrap.clientWidth - padX - 2),
+      height: Math.max(1, els.artboardWrap.clientHeight - padY - 2)
+    };
+  }
+
   function measureBaseArtboard() {
-    if (!els.artboard) return;
-    const prevWidth = els.artboard.style.width;
-    const prevHeight = els.artboard.style.height;
+    if (!els.artboard || !els.artboardWrap) return;
+    const available = artboardAvailableSize();
+    if (!available.width || !available.height) return;
 
-    els.artboard.style.width = "";
-    els.artboard.style.height = "";
+    const maxWidth = Math.min(1100, available.width);
+    baseArtboardWidth = Math.min(maxWidth, available.height * artAspect);
+    baseArtboardHeight = baseArtboardWidth / artAspect;
 
-    const rect = els.artboard.getBoundingClientRect();
-    if (rect.width > 0 && rect.height > 0) {
-      baseArtboardWidth = rect.width;
-      baseArtboardHeight = rect.height;
+    if (baseArtboardHeight > available.height) {
+      baseArtboardHeight = available.height;
+      baseArtboardWidth = baseArtboardHeight * artAspect;
     }
+  }
 
-    els.artboard.style.width = prevWidth;
-    els.artboard.style.height = prevHeight;
+  function setArtboardSizeForZoom() {
+    if (!els.artboard || !baseArtboardWidth || !baseArtboardHeight) return;
+    const width = baseArtboardWidth * zoomScale;
+    const height = baseArtboardHeight * zoomScale;
+    els.artboard.style.width = `${width}px`;
+    els.artboard.style.height = `${height}px`;
+
+    const available = artboardAvailableSize();
+    const verticalSpace = Math.max(0, (available.height - height) / 2);
+    els.artboard.style.marginTop = `${verticalSpace}px`;
+    els.artboard.style.marginBottom = `${verticalSpace}px`;
+    els.artboard.style.marginLeft = "auto";
+    els.artboard.style.marginRight = "auto";
   }
 
   function applyZoom(nextScale, options = {}) {
     if (!els.artboard || !els.artboardWrap || !baseArtboardWidth || !baseArtboardHeight) return;
 
-    const oldScale = zoomScale;
     let scale = Number(nextScale);
     if (!Number.isFinite(scale)) scale = MIN_ZOOM;
-    if (scale <= MIN_ZOOM) scale = MIN_ZOOM;
-    if (scale > MAX_ZOOM) scale = MAX_ZOOM;
+    scale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, scale));
 
     const wrap = els.artboardWrap;
-    const rect = wrap.getBoundingClientRect();
-    const offsetX = options.anchorClientX != null ? options.anchorClientX - rect.left : wrap.clientWidth / 2;
-    const offsetY = options.anchorClientY != null ? options.anchorClientY - rect.top : wrap.clientHeight / 2;
-    const anchorX = Math.max(0, Math.min(wrap.clientWidth, offsetX));
-    const anchorY = Math.max(0, Math.min(wrap.clientHeight, offsetY));
+    const before = els.artboard.getBoundingClientRect();
+    const wrapRect = wrap.getBoundingClientRect();
+    const anchorClientX = options.anchorClientX ?? (wrapRect.left + wrap.clientWidth / 2);
+    const anchorClientY = options.anchorClientY ?? (wrapRect.top + wrap.clientHeight / 2);
 
-    const worldX = (wrap.scrollLeft + anchorX) / oldScale;
-    const worldY = (wrap.scrollTop + anchorY) / oldScale;
+    const u = before.width > 0 ? Math.max(0, Math.min(1, (anchorClientX - before.left) / before.width)) : 0.5;
+    const v = before.height > 0 ? Math.max(0, Math.min(1, (anchorClientY - before.top) / before.height)) : 0.5;
 
     zoomScale = scale;
+    setArtboardSizeForZoom();
 
     if (zoomScale <= MIN_ZOOM + 0.001) {
-      els.artboard.style.width = `${baseArtboardWidth}px`;
-      els.artboard.style.height = `${baseArtboardHeight}px`;
       wrap.scrollLeft = 0;
       wrap.scrollTop = 0;
     } else {
-      els.artboard.style.width = `${baseArtboardWidth * zoomScale}px`;
-      els.artboard.style.height = `${baseArtboardHeight * zoomScale}px`;
-      wrap.scrollLeft = Math.max(0, (worldX * zoomScale) - anchorX);
-      wrap.scrollTop = Math.max(0, (worldY * zoomScale) - anchorY);
+      const after = els.artboard.getBoundingClientRect();
+      const pointX = after.left + (u * after.width);
+      const pointY = after.top + (v * after.height);
+      wrap.scrollLeft += pointX - anchorClientX;
+      wrap.scrollTop += pointY - anchorClientY;
     }
 
     updateZoomUi();
@@ -355,10 +456,14 @@
 
   function zoomByWheel(event) {
     if (!els.artboardWrap || !baseArtboardWidth || !baseArtboardHeight) return;
+    const artRect = els.artboard.getBoundingClientRect();
+    const overArt = event.clientX >= artRect.left && event.clientX <= artRect.right
+      && event.clientY >= artRect.top && event.clientY <= artRect.bottom;
+    if (!overArt) return;
+
     event.preventDefault();
-    const factor = event.deltaY < 0 ? 1.1 : (1 / 1.1);
-    let nextScale = zoomScale * factor;
-    if (nextScale < MIN_ZOOM) nextScale = MIN_ZOOM;
+    const factor = event.deltaY < 0 ? 1.12 : (1 / 1.12);
+    const nextScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomScale * factor));
     applyZoom(nextScale, { anchorClientX: event.clientX, anchorClientY: event.clientY });
   }
 
@@ -421,6 +526,7 @@
 
     const viewBox = svgRoot.viewBox && svgRoot.viewBox.baseVal;
     if (viewBox && viewBox.width > 0 && viewBox.height > 0 && els.artboard) {
+      artAspect = viewBox.width / viewBox.height;
       els.artboard.style.aspectRatio = `${viewBox.width} / ${viewBox.height}`;
     }
 
@@ -764,6 +870,68 @@
     });
   }
 
+  function updatePickerFromPointer(event, applyToText = false) {
+    if (!els.colorPickerField) return;
+    const rect = els.colorPickerField.getBoundingClientRect();
+    const x = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
+    const y = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
+    pickerSaturation = rect.width ? x / rect.width : 0;
+    pickerValue = rect.height ? 1 - (y / rect.height) : 0;
+    updateColorPickerUi();
+    setCurrentColor(pickerHex(), { applyToSelectedText: applyToText, syncPicker: false });
+  }
+
+  function bindColorPicker() {
+    if (els.colorPickerField) {
+      els.colorPickerField.addEventListener("pointerdown", (event) => {
+        if (event.button !== undefined && event.button !== 0) return;
+        pickingColor = true;
+        els.colorPickerField.setPointerCapture?.(event.pointerId);
+        updatePickerFromPointer(event, false);
+        event.preventDefault();
+      });
+
+      els.colorPickerField.addEventListener("pointermove", (event) => {
+        if (!pickingColor) return;
+        updatePickerFromPointer(event, false);
+        event.preventDefault();
+      });
+
+      const finishPick = (event) => {
+        if (!pickingColor) return;
+        pickingColor = false;
+        try { els.colorPickerField.releasePointerCapture?.(event.pointerId); } catch (_) {}
+        updatePickerFromPointer(event, true);
+        event.preventDefault();
+      };
+
+      els.colorPickerField.addEventListener("pointerup", finishPick);
+      els.colorPickerField.addEventListener("pointercancel", finishPick);
+
+      els.colorPickerField.addEventListener("keydown", (event) => {
+        const step = event.shiftKey ? 0.05 : 0.01;
+        if (event.key === "ArrowLeft") pickerSaturation = Math.max(0, pickerSaturation - step);
+        else if (event.key === "ArrowRight") pickerSaturation = Math.min(1, pickerSaturation + step);
+        else if (event.key === "ArrowUp") pickerValue = Math.min(1, pickerValue + step);
+        else if (event.key === "ArrowDown") pickerValue = Math.max(0, pickerValue - step);
+        else return;
+        event.preventDefault();
+        updateColorPickerUi();
+        setCurrentColor(pickerHex(), { syncPicker: false });
+      });
+    }
+
+    els.hueSlider?.addEventListener("input", () => {
+      pickerHue = Number(els.hueSlider.value) || 0;
+      updateColorPickerUi();
+      setCurrentColor(pickerHex(), { applyToSelectedText: false, syncPicker: false });
+    });
+
+    els.hueSlider?.addEventListener("change", () => {
+      setCurrentColor(pickerHex(), { syncPicker: false });
+    });
+  }
+
   function bindControls() {
     els.toolButtons.forEach((button) => {
       button.addEventListener("click", () => setTool(button.dataset.tool));
@@ -774,6 +942,7 @@
     });
 
     els.paletteSelect?.addEventListener("change", () => renderPalette(els.paletteSelect.value));
+    bindColorPicker();
 
     els.customColor?.addEventListener("input", () => {
       setCurrentColor(els.customColor.value, { applyToSelectedText: false });
