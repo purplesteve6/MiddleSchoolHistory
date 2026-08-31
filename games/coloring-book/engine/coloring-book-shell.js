@@ -218,11 +218,6 @@
             </section>
           </div>
 
-          <div class="palette-current-row" aria-label="Currently active color target">
-            <span class="current-color-chip" id="currentColorChip" aria-hidden="true"></span>
-            <span><strong id="currentColorRoleText">Foreground</strong> is active · <strong id="currentColorText">#D7263D</strong></span>
-          </div>
-
           <section class="color-picker-panel" aria-label="Custom color picker">
             <span class="tool-label">Custom Color Picker</span>
             <div class="color-picker-panel__body">
@@ -248,11 +243,11 @@
           </div>
 
           <div class="workspace-view-controls">
-            <div class="drawing-position-compact" aria-label="Choose drawing position">
-              <span class="compact-control-label">Drawing Position</span>
+            <div class="drawing-position-compact" aria-label="Choose drawing layer">
+              <span class="compact-control-label">Drawing Layer</span>
               <div class="layer-toggle layer-toggle--compact">
                 <button class="layer-button is-active" type="button" data-layer-position="below" aria-pressed="true">Behind Lines</button>
-                <button class="layer-button" type="button" data-layer-position="above" aria-pressed="false">On Top</button>
+                <button class="layer-button" type="button" data-layer-position="above" aria-pressed="false">Above Lines</button>
               </div>
               <span class="sr-only" id="layerPositionHint">New brush strokes and text will be placed behind the black lines.</span>
             </div>

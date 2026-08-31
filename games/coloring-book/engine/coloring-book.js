@@ -183,6 +183,7 @@
   let pickerSaturation = 0.82;
   let pickerValue = 0.84;
   let pickingColor = false;
+  let pickingColorTarget = "foreground";
   let userMaskCounter = 0;
   let userMaskBounds = { x: 0, y: 0, width: 2000, height: 2000 };
   let cursorPreview = null;
@@ -412,8 +413,16 @@
     button.dataset.light = String(isLightColor(color));
     button.style.background = color;
     button.title = color;
-    button.setAttribute("aria-label", `Choose current artwork color ${color}`);
-    button.addEventListener("click", () => setCurrentColor(color));
+    button.setAttribute("aria-label", `Choose current artwork color ${color}. Left click sets Foreground; right click sets Background.`);
+    button.addEventListener("click", () => {
+      setActiveColorTarget("foreground", { syncPicker: false });
+      setCurrentColor(color, { target: "foreground" });
+    });
+    button.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      setActiveColorTarget("background", { syncPicker: false });
+      setCurrentColor(color, { target: "background" });
+    });
     return button;
   }
 
@@ -595,9 +604,17 @@
       button.dataset.color = hex;
       button.dataset.light = String(isLightColor(hex));
       button.style.background = hex;
-      button.title = hex;
-      button.setAttribute("aria-label", `Choose color ${hex}`);
-      button.addEventListener("click", () => setCurrentColor(hex));
+      button.title = `${hex} — left: Foreground, right: Background`;
+      button.setAttribute("aria-label", `Choose color ${hex}. Left click sets Foreground; right click sets Background.`);
+      button.addEventListener("click", () => {
+        setActiveColorTarget("foreground", { syncPicker: false });
+        setCurrentColor(hex, { target: "foreground" });
+      });
+      button.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+        setActiveColorTarget("background", { syncPicker: false });
+        setCurrentColor(hex, { target: "background" });
+      });
       els.swatches.appendChild(button);
     });
 
@@ -628,7 +645,7 @@
 
     if (tool === "bucket") setStatus("Paint Bucket: left click fills with Foreground; right click fills with Background.");
     if (tool === "brush") setStatus("Brush: drag to paint freely. Left click uses Foreground; right click uses Background.");
-    if (tool === "eraser") setStatus("Eraser: drag to permanently erase existing brush strokes and text on the active drawing position.");
+    if (tool === "eraser") setStatus("Eraser: drag to permanently erase existing brush strokes and text on the active drawing layer.");
     if (tool === "eyedrop") setStatus("Eyedropper: left click samples to Foreground; right click samples to Background.");
     if (tool === "text") setStatus("Text: type your words, then click the picture to place them. Foreground fills the text and Background outlines it.");
     if (tool === "stamp") setStatus(currentStampSrc ? "Stamp: choose a stamp, size, and rotation, then click the picture to place it. Foreground colors the main area and Background colors the accent." : "Stamp: no stamps are configured in stamps-manifest.js.");
@@ -802,16 +819,16 @@
       if (selectedText) {
         const position = textPosition(selectedText);
         els.layerPositionHint.textContent = position === "above"
-          ? "Selected text is on top. Choose Behind Lines to move just this text."
-          : "Selected text is behind the lines. Choose On Top to move just this text.";
+          ? "Selected text is above the lines. Choose Behind Lines to move just this text."
+          : "Selected text is behind the lines. Choose Above Lines to move just this text.";
       } else if (selectedStamp) {
         const position = stampPosition(selectedStamp);
         els.layerPositionHint.textContent = position === "above"
-          ? "Selected stamp is on top. Choose Behind Lines to move just this stamp."
-          : "Selected stamp is behind the lines. Choose On Top to move just this stamp.";
+          ? "Selected stamp is above the lines. Choose Behind Lines to move just this stamp."
+          : "Selected stamp is behind the lines. Choose Above Lines to move just this stamp.";
       } else {
         els.layerPositionHint.textContent = layerPosition === "above"
-          ? "New brush strokes, text, and stamps will be placed on top of the black lines."
+          ? "New brush strokes, text, and stamps will be placed above the black lines."
           : "New brush strokes, text, and stamps will be placed behind the black lines.";
       }
     }
@@ -827,11 +844,11 @@
         destination.appendChild(selectedText);
         commitState();
         setStatus(normalized === "above"
-          ? "Selected text moved on top of the ink lines."
+          ? "Selected text moved above the ink lines."
           : "Selected text moved behind the ink lines.");
       } else if (options.announce !== false) {
         setStatus(normalized === "above"
-          ? "Selected text is already on top of the ink lines."
+          ? "Selected text is already above the ink lines."
           : "Selected text is already behind the ink lines.");
       }
     } else if (selectedStamp && options.moveSelected !== false) {
@@ -840,16 +857,16 @@
         destination.appendChild(selectedStamp);
         commitState();
         setStatus(normalized === "above"
-          ? "Selected stamp moved on top of the ink lines."
+          ? "Selected stamp moved above the ink lines."
           : "Selected stamp moved behind the ink lines.");
       } else if (options.announce !== false) {
         setStatus(normalized === "above"
-          ? "Selected stamp is already on top of the ink lines."
+          ? "Selected stamp is already above the ink lines."
           : "Selected stamp is already behind the ink lines.");
       }
     } else if (options.announce !== false) {
       setStatus(normalized === "above"
-        ? "New brush strokes, text, and stamps will appear on top of the ink lines."
+        ? "New brush strokes, text, and stamps will appear above the ink lines."
         : "New brush strokes, text, and stamps will appear behind the ink lines.");
     }
 
@@ -1320,9 +1337,9 @@
     const applied = currentEraseTargets.length;
     if (applied > 0) {
       commitState();
-      setStatus(`Erased from ${applied} item${applied === 1 ? "" : "s"} on the ${layerPosition === "above" ? "On Top" : "Behind Lines"} layer.`);
+      setStatus(`Erased from ${applied} item${applied === 1 ? "" : "s"} on the ${layerPosition === "above" ? "Above Lines" : "Behind Lines"} layer.`);
     } else {
-      setStatus(`There is nothing to erase on the ${layerPosition === "above" ? "On Top" : "Behind Lines"} layer.`);
+      setStatus(`There is nothing to erase on the ${layerPosition === "above" ? "Above Lines" : "Behind Lines"} layer.`);
     }
 
     currentErasePoints = [];
@@ -2129,7 +2146,7 @@
     });
   }
 
-  function updatePickerFromPointer(event, applyToText = false) {
+  function updatePickerFromPointer(event, target = pickingColorTarget, applyToSelection = false) {
     if (!els.colorPickerField) return;
     const rect = els.colorPickerField.getBoundingClientRect();
     const x = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
@@ -2137,22 +2154,31 @@
     pickerSaturation = rect.width ? x / rect.width : 0;
     pickerValue = rect.height ? 1 - (y / rect.height) : 0;
     updateColorPickerUi();
-    setCurrentColor(pickerHex(), { applyToSelectedText: applyToText, syncPicker: false });
+    setActiveColorTarget(target, { syncPicker: false });
+    setCurrentColor(pickerHex(), {
+      target,
+      applyToSelectedText: applyToSelection,
+      applyToSelectedStamp: applyToSelection,
+      syncPicker: false
+    });
   }
 
   function bindColorPicker() {
     if (els.colorPickerField) {
+      els.colorPickerField.addEventListener("contextmenu", (event) => event.preventDefault());
+
       els.colorPickerField.addEventListener("pointerdown", (event) => {
-        if (event.button !== undefined && event.button !== 0) return;
+        if (event.button !== undefined && event.button !== 0 && event.button !== 2) return;
         pickingColor = true;
+        pickingColorTarget = event.button === 2 ? "background" : "foreground";
         els.colorPickerField.setPointerCapture?.(event.pointerId);
-        updatePickerFromPointer(event, false);
+        updatePickerFromPointer(event, pickingColorTarget, false);
         event.preventDefault();
       });
 
       els.colorPickerField.addEventListener("pointermove", (event) => {
         if (!pickingColor) return;
-        updatePickerFromPointer(event, false);
+        updatePickerFromPointer(event, pickingColorTarget, false);
         event.preventDefault();
       });
 
@@ -2160,7 +2186,7 @@
         if (!pickingColor) return;
         pickingColor = false;
         try { els.colorPickerField.releasePointerCapture?.(event.pointerId); } catch (_) {}
-        updatePickerFromPointer(event, true);
+        updatePickerFromPointer(event, pickingColorTarget, true);
         event.preventDefault();
       };
 
@@ -2180,10 +2206,16 @@
       });
     }
 
+    els.hueSlider?.addEventListener("contextmenu", (event) => event.preventDefault());
+    els.hueSlider?.addEventListener("pointerdown", (event) => {
+      if (event.button === 2) setActiveColorTarget("background", { syncPicker: false });
+      else if (event.button === 0) setActiveColorTarget("foreground", { syncPicker: false });
+    });
+
     els.hueSlider?.addEventListener("input", () => {
       pickerHue = Number(els.hueSlider.value) || 0;
       updateColorPickerUi();
-      setCurrentColor(pickerHex(), { applyToSelectedText: false, syncPicker: false });
+      setCurrentColor(pickerHex(), { applyToSelectedText: false, applyToSelectedStamp: false, syncPicker: false });
     });
 
     els.hueSlider?.addEventListener("change", () => {

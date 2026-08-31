@@ -328,16 +328,16 @@ body.coloring-book-app-page{
 
 .swatches{
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
   margin-top: 10px;
 }
 
 .swatch{
   position: relative;
   aspect-ratio: 1;
-  border-radius: 8px;
-  border: 2px solid rgba(255,255,255,.25);
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.28);
   padding: 0;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,.22);
@@ -1180,7 +1180,7 @@ body.coloring-book-app-page{
   .coloring-app{ grid-template-columns: 1fr; }
   .coloring-toolbar{ position: static; }
   .tool-buttons{ grid-template-columns: repeat(3, minmax(90px, 1fr)); }
-  .swatches{ grid-template-columns: repeat(12, 1fr); }
+  .swatches{ grid-template-columns: repeat(6, 1fr); }
   .workspace-commandbar{ align-items: stretch; flex-direction: column; }
   .workspace-view-controls{ justify-content: space-between; }
   .artboard-wrap{ height: clamp(420px, 66vh, 700px); }
@@ -1192,7 +1192,7 @@ body.coloring-book-app-page{
   .coloring-toolbar, .coloring-workspace{ border-radius: 16px; }
   .coloring-toolbar{ padding: 14px; }
   .coloring-workspace{ padding: 9px; }
-  .swatches{ grid-template-columns: repeat(8, 1fr); }
+  .swatches{ grid-template-columns: repeat(6, 1fr); }
   .workspace-view-controls{ align-items: stretch; flex-direction: column; }
   .zoom-inline-row .zoom-slider{ width: min(55vw, 230px); }
   .workspace-foot{ flex-direction: column; }
