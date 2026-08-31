@@ -79,6 +79,9 @@
     textSize: document.getElementById("textSize"),
     textRotation: document.getElementById("textRotation"),
     textRotationValue: document.getElementById("textRotationValue"),
+    textAlignButtons: Array.from(document.querySelectorAll("[data-text-align]")),
+    textBoldBtn: document.getElementById("textBoldBtn"),
+    textItalicBtn: document.getElementById("textItalicBtn"),
     deleteTextBtn: document.getElementById("deleteTextBtn"),
     stampOptions: document.getElementById("stampOptions"),
     stampChoices: Array.from(document.querySelectorAll("[data-stamp-src]")),
@@ -1312,12 +1315,110 @@
     setStatus("Text rotation updated.");
   }
 
+  function normalizeTextAlign(value) {
+    const align = String(value || "left").toLowerCase();
+    return align === "center" || align === "right" ? align : "left";
+  }
+
+  function textAnchorForAlign(align) {
+    if (align === "center") return "middle";
+    if (align === "right") return "end";
+    return "start";
+  }
+
+  function textAlignFromNode(textNode) {
+    if (!textNode) return "left";
+    if (textNode.dataset?.textAlign) return normalizeTextAlign(textNode.dataset.textAlign);
+    const anchor = String(textNode.getAttribute("text-anchor") || "start").toLowerCase();
+    if (anchor === "middle") return "center";
+    if (anchor === "end") return "right";
+    return "left";
+  }
+
+  function textIsBold(textNode) {
+    const weight = String(textNode?.getAttribute("font-weight") || "").toLowerCase();
+    if (weight === "bold" || weight === "bolder") return true;
+    const numeric = Number(weight);
+    return Number.isFinite(numeric) && numeric >= 600;
+  }
+
+  function textIsItalic(textNode) {
+    const style = String(textNode?.getAttribute("font-style") || "").toLowerCase();
+    return style === "italic" || style === "oblique";
+  }
+
+  function setTextAlignControls(value) {
+    const align = normalizeTextAlign(value);
+    els.textAlignButtons.forEach((button) => {
+      const active = button.dataset.textAlign === align;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+
+  function setTextToggleControl(button, active) {
+    if (!button) return;
+    const on = Boolean(active);
+    button.classList.toggle("is-active", on);
+    button.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+
+  function currentTextAlign() {
+    return normalizeTextAlign(els.textAlignButtons.find((button) => button.classList.contains("is-active"))?.dataset.textAlign || "left");
+  }
+
+  function textValueFromNode(textNode) {
+    if (!textNode) return "";
+    if (typeof textNode.dataset?.textValue === "string") return textNode.dataset.textValue;
+    const spans = Array.from(textNode.querySelectorAll(":scope > tspan"));
+    if (spans.length) return spans.map((span) => span.textContent?.replace(/\u200B/g, "") || "").join("\n");
+    return textNode.textContent || "";
+  }
+
+  function syncTextLinePositions(textNode) {
+    if (!textNode) return;
+    const x = textNode.getAttribute("x") || "0";
+    textNode.querySelectorAll(":scope > tspan").forEach((span) => span.setAttribute("x", x));
+  }
+
+  function renderTextLines(textNode, value) {
+    if (!textNode) return;
+    const normalized = String(value ?? "").replace(/\r\n?/g, "\n");
+    textNode.dataset.textValue = normalized;
+    while (textNode.firstChild) textNode.removeChild(textNode.firstChild);
+
+    const lines = normalized.split("\n");
+    lines.forEach((line, index) => {
+      const tspan = document.createElementNS(SVG_NS, "tspan");
+      tspan.setAttribute("x", textNode.getAttribute("x") || "0");
+      tspan.setAttribute("dy", index === 0 ? "0" : "1.2em");
+      tspan.textContent = line || "\u200B";
+      textNode.appendChild(tspan);
+    });
+  }
+
+  function applyTextFormatting(textNode, settings, options = {}) {
+    if (!textNode) return;
+    textNode.setAttribute("font-family", settings.font);
+    textNode.setAttribute("font-size", String(settings.size));
+    textNode.setAttribute("font-weight", settings.bold ? "700" : "400");
+    textNode.setAttribute("font-style", settings.italic ? "italic" : "normal");
+    textNode.dataset.textAlign = normalizeTextAlign(settings.align);
+    textNode.setAttribute("text-anchor", textAnchorForAlign(textNode.dataset.textAlign));
+    if (options.renderValue !== false) renderTextLines(textNode, settings.value);
+    else syncTextLinePositions(textNode);
+  }
+
   function currentTextSettings() {
+    const value = String(els.textValue?.value || "").replace(/\r\n?/g, "\n").trim();
     return {
-      value: String(els.textValue?.value || "").trim(),
+      value,
       font: els.textFont?.value || "Arial, sans-serif",
       size: Math.max(10, Math.min(160, Number(els.textSize?.value) || 44)),
-      rotation: clampRotation(els.textRotation?.value ?? 0)
+      rotation: clampRotation(els.textRotation?.value ?? 0),
+      align: currentTextAlign(),
+      bold: els.textBoldBtn?.getAttribute("aria-pressed") === "true",
+      italic: els.textItalicBtn?.getAttribute("aria-pressed") === "true"
     };
   }
 
@@ -1334,10 +1435,7 @@
     text.setAttribute("x", point.x.toFixed(2));
     text.setAttribute("y", point.y.toFixed(2));
     text.setAttribute("fill", currentColor);
-    text.setAttribute("font-size", String(settings.size));
-    text.setAttribute("font-family", settings.font);
-    text.setAttribute("font-weight", settings.font.toLowerCase().includes("impact") ? "700" : "600");
-    text.textContent = settings.value;
+    applyTextFormatting(text, settings);
     applyTextRotation(text, settings.rotation);
     textLayerFor().appendChild(text);
     markColorUsed(currentColor);
@@ -1353,10 +1451,13 @@
     selectedText = text;
     selectedText.classList.add("is-selected");
 
-    if (els.textValue) els.textValue.value = selectedText.textContent || "";
+    if (els.textValue) els.textValue.value = textValueFromNode(selectedText);
     if (els.textFont) els.textFont.value = selectedText.getAttribute("font-family") || els.textFont.value;
     if (els.textSize) els.textSize.value = selectedText.getAttribute("font-size") || els.textSize.value;
     syncTextRotationControls(textRotationValue(selectedText));
+    setTextAlignControls(textAlignFromNode(selectedText));
+    setTextToggleControl(els.textBoldBtn, textIsBold(selectedText));
+    setTextToggleControl(els.textItalicBtn, textIsItalic(selectedText));
 
     const fill = normalizeHex(selectedText.getAttribute("fill"));
     if (fill) setCurrentColor(fill, { applyToSelectedText: false });
@@ -1399,6 +1500,7 @@
     if (Math.abs(dx) + Math.abs(dy) > 1) textDidMove = true;
     selectedText.setAttribute("x", (textOriginalPos.x + dx).toFixed(2));
     selectedText.setAttribute("y", (textOriginalPos.y + dy).toFixed(2));
+    syncTextLinePositions(selectedText);
     applyTextRotation(selectedText, textRotationValue(selectedText));
     if (textMaskMarks && textOriginalMaskTranslate) {
       textMaskMarks.setAttribute("transform", `translate(${(textOriginalMaskTranslate.x + dx).toFixed(2)} ${(textOriginalMaskTranslate.y + dy).toFixed(2)})`);
@@ -1425,14 +1527,21 @@
   function updateSelectedText() {
     if (!selectedText) return;
     const settings = currentTextSettings();
-    selectedText.textContent = settings.value || "Text";
-    selectedText.setAttribute("font-family", settings.font);
-    selectedText.setAttribute("font-size", String(settings.size));
+    applyTextFormatting(selectedText, { ...settings, value: settings.value || "Text" });
     selectedText.setAttribute("fill", currentColor);
     applyTextRotation(selectedText, settings.rotation);
     markColorUsed(currentColor);
     commitState();
     setStatus("Text updated.");
+  }
+
+  function updateSelectedTextFormatting(statusMessage = "Text formatting updated.") {
+    if (!selectedText) return;
+    const settings = currentTextSettings();
+    applyTextFormatting(selectedText, { ...settings, value: textValueFromNode(selectedText) }, { renderValue: false });
+    applyTextRotation(selectedText, settings.rotation);
+    commitState();
+    setStatus(statusMessage);
   }
 
   function deleteSelectedText() {
@@ -2012,6 +2121,25 @@
 
     [els.textValue, els.textFont].forEach((control) => {
       control?.addEventListener("change", updateSelectedText);
+    });
+
+    els.textAlignButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setTextAlignControls(button.dataset.textAlign);
+        if (selectedText) updateSelectedTextFormatting("Text alignment updated.");
+      });
+    });
+
+    els.textBoldBtn?.addEventListener("click", () => {
+      const next = els.textBoldBtn.getAttribute("aria-pressed") !== "true";
+      setTextToggleControl(els.textBoldBtn, next);
+      if (selectedText) updateSelectedTextFormatting(next ? "Bold turned on." : "Bold turned off.");
+    });
+
+    els.textItalicBtn?.addEventListener("click", () => {
+      const next = els.textItalicBtn.getAttribute("aria-pressed") !== "true";
+      setTextToggleControl(els.textItalicBtn, next);
+      if (selectedText) updateSelectedTextFormatting(next ? "Italics turned on." : "Italics turned off.");
     });
 
     els.textSize?.addEventListener("input", () => {

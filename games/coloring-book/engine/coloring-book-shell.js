@@ -22,7 +22,7 @@
 
   host.innerHTML = `
   <section class="coloring-band coloring-band--image"
-           style="background-image: url('/assets/images/banners/games-banner.jpg');"
+           style="background-image: url('/assets/images/banners/coloring-book-banner.jpg');"
            aria-label="Coloring Book banner">
     <div class="coloring-band__bottom">
       <div class="coloring-band__inner">
@@ -93,7 +93,27 @@
             <section class="tool-group tool-options" id="textOptions" hidden>
               <span class="tool-label">Text</span>
               <div class="text-settings">
-                <input class="text-control" id="textValue" type="text" maxlength="80" placeholder="Type your text…" />
+                <textarea class="text-control text-control--multiline" id="textValue" maxlength="500" rows="3" placeholder="Type your text…" spellcheck="true"></textarea>
+
+                <div class="text-format-toolbar" role="toolbar" aria-label="Text formatting">
+                  <div class="text-format-group" aria-label="Text alignment">
+                    <button class="text-format-button is-active" type="button" data-text-align="left" aria-label="Align left" aria-pressed="true" title="Align left">
+                      <svg class="text-format-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h14M4 10h10M4 14h14M4 18h8"/></svg>
+                    </button>
+                    <button class="text-format-button" type="button" data-text-align="center" aria-label="Align center" aria-pressed="false" title="Align center">
+                      <svg class="text-format-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M7 10h10M5 14h14M8 18h8"/></svg>
+                    </button>
+                    <button class="text-format-button" type="button" data-text-align="right" aria-label="Align right" aria-pressed="false" title="Align right">
+                      <svg class="text-format-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h14M10 10h10M6 14h14M12 18h8"/></svg>
+                    </button>
+                  </div>
+                  <span class="text-format-divider" aria-hidden="true"></span>
+                  <div class="text-format-group" aria-label="Text style">
+                    <button class="text-format-button text-format-button--letter" id="textBoldBtn" type="button" aria-label="Bold" aria-pressed="false" title="Bold"><strong>B</strong></button>
+                    <button class="text-format-button text-format-button--letter" id="textItalicBtn" type="button" aria-label="Italic" aria-pressed="false" title="Italic"><em>I</em></button>
+                  </div>
+                </div>
+
                 <select class="palette-select" id="textFont" aria-label="Text font">
                   <option value="Arial, sans-serif">Arial</option>
                   <option value="Impact, Haettenschweiler, sans-serif">Impact</option>
