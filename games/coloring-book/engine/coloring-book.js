@@ -1113,6 +1113,29 @@
     });
   }
 
+  function ensureToolButtons() {
+    const host = document.querySelector(".tool-buttons");
+    if (!host) return;
+
+    const specs = [
+      { tool: "eraser", icon: "⌫", label: "Eraser" },
+      { tool: "grab", icon: "✋", label: "Grab" }
+    ];
+
+    for (const spec of specs) {
+      if (host.querySelector(`[data-tool="${spec.tool}"]`)) continue;
+      const button = document.createElement("button");
+      button.className = "tool-button";
+      button.type = "button";
+      button.dataset.tool = spec.tool;
+      button.setAttribute("aria-pressed", "false");
+      button.innerHTML = `<span class="tool-button__icon" aria-hidden="true">${spec.icon}</span><span>${spec.label}</span>`;
+      host.appendChild(button);
+    }
+
+    els.toolButtons = Array.from(document.querySelectorAll("[data-tool]"));
+  }
+
   function bindControls() {
     els.toolButtons.forEach((button) => {
       button.addEventListener("click", () => setTool(button.dataset.tool));
@@ -1229,6 +1252,7 @@
     document.title = `${CFG.title || "Coloring Book"} | Middle School History`;
 
     buildPaletteMenu();
+    ensureToolButtons();
     bindControls();
     setBrushSize(12);
     setCurrentColor(currentColor, { applyToSelectedText: false });
