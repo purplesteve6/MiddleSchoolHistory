@@ -1880,7 +1880,23 @@
     const scaleY = baseScale * (scaleYPercent / 100);
     const cx = vbX + vbW / 2;
     const cy = vbY + vbH / 2;
-    stamp.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${rotation.toFixed(2)}) scale(${scaleX.toFixed(6)} ${scaleY.toFixed(6)}) translate(${-cx.toFixed(2)} ${-cy.toFixed(2)})`);
+
+    // Build one explicit matrix so the stamp's center always stays at (x, y).
+    // This keeps dragging completely independent from non-uniform scaling.
+    const radians = rotation * Math.PI / 180;
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+    const a = cos * scaleX;
+    const b = sin * scaleX;
+    const c = -sin * scaleY;
+    const d = cos * scaleY;
+    const e = x - (a * cx) - (c * cy);
+    const f = y - (b * cx) - (d * cy);
+
+    stamp.setAttribute(
+      "transform",
+      `matrix(${a.toFixed(8)} ${b.toFixed(8)} ${c.toFixed(8)} ${d.toFixed(8)} ${e.toFixed(4)} ${f.toFixed(4)})`
+    );
   }
 
   async function addStampAt(point) {
