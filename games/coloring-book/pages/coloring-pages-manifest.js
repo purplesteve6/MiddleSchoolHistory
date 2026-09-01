@@ -90,7 +90,7 @@ window.COLORING_BOOK_PAGES = [
   description: "Color a scene of Jigonsaseh combing the snakes from Tadadaho's hair in the Haudenosaunee Peacemaker legend.",
   gradeLevels: ["7"],
   subjects: ["us-history"],
-  tags: ["jigonsaseh", "tadadaho", "haudenosaunee", "iroquois confederacy", "great law of peace", "peacemaker", "haudenosaunee confederacy", "five nations", "clan mother", "native american history", "indigenous history", "new york history", "onondaga", "peace", "confederacy"]
+  tags: ["jigonsaseh", "tadadaho", "haudenosaunee", "iroquois", "iroquois confederacy", "great law of peace", "peacemaker", "haudenosaunee confederacy", "five nations", "clan mother", "native american history", "indigenous history", "new york history", "onondaga", "peace", "confederacy"]
 },
 
   {
