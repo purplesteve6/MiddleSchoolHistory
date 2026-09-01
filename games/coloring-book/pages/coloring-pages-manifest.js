@@ -85,6 +85,18 @@ window.COLORING_BOOK_PAGES = [
   },
 
 {
+  id: "haudenosaunee_lacrosse",
+  title: "Haudenosaunee Lacrosse",
+  file: "/games/coloring-book/pages/haudenosaunee_lacrosse.svg",
+  thumbnail: "/games/images/thumbs/coloring-book/haudenosaunee_lacrosse.webp",
+  description: "Color a traditional Haudenosaunee lacrosse player running with a wooden lacrosse stick.",
+  gradeLevels: ["7"],
+  subjects: ["us-history", "native-americans"],
+  tags: ["haudenosaunee", "lacrosse", "traditional lacrosse", "creators game", "iroquois", "iroquois confederacy", "haudenosaunee confederacy", "native americans", "indigenous peoples", "northeast woodlands", "woodland indians", "new york", "traditional sports", "native american games", "lacrosse stick", "traditional clothing"]
+},
+
+
+{
   id: "haudenosaunee_longhouse",
   title: "Haudenosaunee Longhouse",
   file: "/games/coloring-book/pages/haudenosaunee_longhouse.svg",
