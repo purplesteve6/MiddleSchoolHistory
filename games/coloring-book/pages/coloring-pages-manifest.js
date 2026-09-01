@@ -119,6 +119,18 @@ window.COLORING_BOOK_PAGES = [
   tags: ["jigonsaseh", "tadadaho", "haudenosaunee", "iroquois", "iroquois confederacy", "great law of peace", "peacemaker", "haudenosaunee confederacy", "five nations", "clan mother", "native american history", "indigenous history", "new york history", "onondaga", "peace", "confederacy"]
 },
 
+{
+  id: "john_brown",
+  title: "John Brown",
+  file: "/games/coloring-book/pages/john_brown.svg",
+  thumbnail: "/games/images/thumbs/coloring-book/john_brown.webp",
+  description: "Color a dramatic scene featuring abolitionist John Brown holding a rifle and Bible amid smoke and fire.",
+  gradeLevels: ["8"],
+  subjects: ["us-history"],
+  tags: ["john brown", "abolitionist", "abolitionism", "slavery", "antislavery", "harpers ferry", "harpers ferry raid", "john browns raid", "bleeding kansas", "civil war", "civil war era", "sectionalism", "antebellum america", "american abolitionists", "enslavement", "rifle", "bible", "1859"]
+},
+
+
   {
     id: "sphynx",
     title: "Sphinx",
