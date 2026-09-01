@@ -94,6 +94,10 @@
     stampOptions: document.getElementById("stampOptions"),
     stampChoices: Array.from(document.querySelectorAll("[data-stamp-src]")),
     stampSize: document.getElementById("stampSize"),
+    stampScaleX: document.getElementById("stampScaleX"),
+    stampScaleXValue: document.getElementById("stampScaleXValue"),
+    stampScaleY: document.getElementById("stampScaleY"),
+    stampScaleYValue: document.getElementById("stampScaleYValue"),
     stampRotation: document.getElementById("stampRotation"),
     stampRotationValue: document.getElementById("stampRotationValue"),
     stampColorButtons: Array.from(document.querySelectorAll("[data-stamp-color-target]")),
@@ -140,6 +144,8 @@
   let currentStampSrc = els.stampChoices[0]?.dataset.stampSrc || "";
   let currentStampName = els.stampChoices[0]?.dataset.stampName || "Stamp";
   let stampSize = Math.max(80, Number(els.stampSize?.value) || 360);
+  let stampScaleX = clampStampScale(Number(els.stampScaleX?.value) || 100);
+  let stampScaleY = clampStampScale(Number(els.stampScaleY?.value) || 100);
   let stampRotation = clampRotation(Number(els.stampRotation?.value) || 0);
   let stampColorTarget = "main";
   let stampMainColor = foregroundColor;
@@ -1709,6 +1715,12 @@
     setStatus("Text deleted.");
   }
 
+  function clampStampScale(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return 100;
+    return Math.max(25, Math.min(200, n));
+  }
+
   function clampStampSize(value) {
     const n = Number(value);
     if (!Number.isFinite(n)) return 360;
@@ -1717,6 +1729,10 @@
 
   function updateStampControls() {
     if (els.stampSize) els.stampSize.value = String(Math.round(stampSize));
+    if (els.stampScaleX) els.stampScaleX.value = String(Math.round(stampScaleX));
+    if (els.stampScaleXValue) els.stampScaleXValue.textContent = `${Math.round(stampScaleX)}%`;
+    if (els.stampScaleY) els.stampScaleY.value = String(Math.round(stampScaleY));
+    if (els.stampScaleYValue) els.stampScaleYValue.textContent = `${Math.round(stampScaleY)}%`;
     if (els.stampRotation) els.stampRotation.value = String(Math.round(stampRotation));
     if (els.stampRotationValue) els.stampRotationValue.textContent = `${Math.round(stampRotation)}°`;
   }
@@ -1852,15 +1868,19 @@
     const x = Number(stamp.dataset.x) || 0;
     const y = Number(stamp.dataset.y) || 0;
     const size = clampStampSize(stamp.dataset.size);
+    const scaleXPercent = clampStampScale(stamp.dataset.scaleX ?? 100);
+    const scaleYPercent = clampStampScale(stamp.dataset.scaleY ?? 100);
     const rotation = clampRotation(stamp.dataset.rotation);
     const vbX = Number(stamp.dataset.vbX) || 0;
     const vbY = Number(stamp.dataset.vbY) || 0;
     const vbW = Math.max(1, Number(stamp.dataset.vbW) || 100);
     const vbH = Math.max(1, Number(stamp.dataset.vbH) || 100);
-    const scale = size / vbW;
+    const baseScale = size / vbW;
+    const scaleX = baseScale * (scaleXPercent / 100);
+    const scaleY = baseScale * (scaleYPercent / 100);
     const cx = vbX + vbW / 2;
     const cy = vbY + vbH / 2;
-    stamp.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${rotation.toFixed(2)}) scale(${scale.toFixed(6)}) translate(${-cx.toFixed(2)} ${-cy.toFixed(2)})`);
+    stamp.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${rotation.toFixed(2)}) scale(${scaleX.toFixed(6)} ${scaleY.toFixed(6)}) translate(${-cx.toFixed(2)} ${-cy.toFixed(2)})`);
   }
 
   async function addStampAt(point) {
@@ -1879,6 +1899,8 @@
       stamp.dataset.x = String(point.x);
       stamp.dataset.y = String(point.y);
       stamp.dataset.size = String(stampSize);
+      stamp.dataset.scaleX = String(stampScaleX);
+      stamp.dataset.scaleY = String(stampScaleY);
       stamp.dataset.rotation = String(stampRotation);
       stamp.dataset.vbX = String(vbX);
       stamp.dataset.vbY = String(vbY);
@@ -1910,6 +1932,8 @@
     selectedStamp.classList.add("is-selected");
 
     stampSize = clampStampSize(selectedStamp.dataset.size);
+    stampScaleX = clampStampScale(selectedStamp.dataset.scaleX ?? 100);
+    stampScaleY = clampStampScale(selectedStamp.dataset.scaleY ?? 100);
     stampRotation = clampRotation(selectedStamp.dataset.rotation);
     updateStampControls();
 
@@ -1986,6 +2010,40 @@
     updateStampTransform(selectedStamp);
     commitState();
     setStatus("Stamp size updated.");
+  }
+
+  function previewStampScaleX(value) {
+    stampScaleX = clampStampScale(value);
+    if (els.stampScaleXValue) els.stampScaleXValue.textContent = `${Math.round(stampScaleX)}%`;
+    if (selectedStamp) {
+      selectedStamp.dataset.scaleX = String(stampScaleX);
+      updateStampTransform(selectedStamp);
+    }
+  }
+
+  function commitStampScaleX() {
+    if (!selectedStamp) return;
+    selectedStamp.dataset.scaleX = String(stampScaleX);
+    updateStampTransform(selectedStamp);
+    commitState();
+    setStatus("Stamp horizontal scale updated.");
+  }
+
+  function previewStampScaleY(value) {
+    stampScaleY = clampStampScale(value);
+    if (els.stampScaleYValue) els.stampScaleYValue.textContent = `${Math.round(stampScaleY)}%`;
+    if (selectedStamp) {
+      selectedStamp.dataset.scaleY = String(stampScaleY);
+      updateStampTransform(selectedStamp);
+    }
+  }
+
+  function commitStampScaleY() {
+    if (!selectedStamp) return;
+    selectedStamp.dataset.scaleY = String(stampScaleY);
+    updateStampTransform(selectedStamp);
+    commitState();
+    setStatus("Stamp vertical scale updated.");
   }
 
   function previewStampRotation(value) {
@@ -2308,6 +2366,11 @@
 
     els.stampSize?.addEventListener("input", () => previewStampSize(els.stampSize.value));
     els.stampSize?.addEventListener("change", commitStampSize);
+
+    els.stampScaleX?.addEventListener("input", () => previewStampScaleX(els.stampScaleX.value));
+    els.stampScaleX?.addEventListener("change", commitStampScaleX);
+    els.stampScaleY?.addEventListener("input", () => previewStampScaleY(els.stampScaleY.value));
+    els.stampScaleY?.addEventListener("change", commitStampScaleY);
 
     els.stampRotation?.addEventListener("input", () => previewStampRotation(els.stampRotation.value));
     els.stampRotation?.addEventListener("change", commitStampRotation);

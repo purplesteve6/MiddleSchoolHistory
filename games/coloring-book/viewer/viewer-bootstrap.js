@@ -70,8 +70,8 @@
 
   document.title = `${page.title} | Middle School History`;
 
-  loadScript("/games/coloring-book/engine/coloring-book-shell.js?v=9.6")
-    .then(() => loadScript("/games/coloring-book/engine/coloring-book.js?v=9.6"))
+  loadScript("/games/coloring-book/engine/coloring-book-shell.js?v=9.7")
+    .then(() => loadScript("/games/coloring-book/engine/coloring-book.js?v=9.7"))
     .catch((error) => {
       console.error("[coloring-book-viewer]", error);
       showViewerError("The coloring tools could not be loaded. Please return to the gallery and try again.");

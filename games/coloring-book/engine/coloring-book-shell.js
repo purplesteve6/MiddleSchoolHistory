@@ -159,12 +159,22 @@
               </div>
 
               <div class="stamp-control-block">
+                <div class="stamp-control-head stamp-control-head--rotation"><label for="stampScaleX">Horizontal Scale</label><output id="stampScaleXValue" for="stampScaleX">100%</output></div>
+                <input class="stamp-slider" id="stampScaleX" type="range" min="25" max="200" step="5" value="100" aria-label="Stamp horizontal scale" />
+              </div>
+
+              <div class="stamp-control-block">
+                <div class="stamp-control-head stamp-control-head--rotation"><label for="stampScaleY">Vertical Scale</label><output id="stampScaleYValue" for="stampScaleY">100%</output></div>
+                <input class="stamp-slider" id="stampScaleY" type="range" min="25" max="200" step="5" value="100" aria-label="Stamp vertical scale" />
+              </div>
+
+              <div class="stamp-control-block">
                 <div class="stamp-control-head stamp-control-head--rotation"><label for="stampRotation">Rotate</label><output id="stampRotationValue" for="stampRotation">0°</output></div>
                 <input class="stamp-slider" id="stampRotation" type="range" min="-180" max="180" step="1" value="0" aria-label="Stamp rotation" />
               </div>
 
               <button class="delete-text-button" id="deleteStampBtn" type="button" disabled>Delete Selected Stamp</button>
-              <p class="tool-help">Choose a stamp, set its size and rotation, then click the artwork to place it. Drag a placed stamp to move it.</p>
+              <p class="tool-help">Choose a stamp, then adjust its size, horizontal/vertical scale, and rotation. Click the artwork to place it. Drag a placed stamp to move it.</p>
             </section>
           </div>
 
