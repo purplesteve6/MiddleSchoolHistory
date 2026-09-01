@@ -26,6 +26,8 @@ window.COLORING_BOOK_FILTERS = {
     { id: "civics", label: "Civics" },
     { id: "economics", label: "Economics" },
     { id: "mythology", label: "Mythology" },
+    { id: "native-americans", label: "Native Americans" },
+
   ]
 };
 
@@ -51,7 +53,7 @@ window.COLORING_BOOK_PAGES = [
     thumbnail: "/games/images/thumbs/coloring-book/foraging-on-land-bridge.webp",
     description: "Color a scene of early humans foraging and traveling across the Bering Land Bridge",
     gradeLevels: ["7"],
-    subjects: ["world-history"],
+    subjects: ["world-history", "native-americans"],
     tags: ["Bering Land Bridge", "early humans", "migration", "foraging", "hunter-gatherers", "Ice Age", "Beringia", "mammoth", "prehistoric animals"]
 
   },
@@ -89,7 +91,7 @@ window.COLORING_BOOK_PAGES = [
   thumbnail: "/games/images/thumbs/coloring-book/haudenosaunee_longhouse.webp",
   description: "Color a woodland scene featuring a traditional Haudenosaunee longhouse.",
   gradeLevels: ["7"],
-  subjects: ["us-history"],
+  subjects: ["us-history", "native-americans"],
   tags: ["haudenosaunee", "longhouse", "iroquois", "iroquois confederacy", "haudenosaunee confederacy", "native americans", "indigenous peoples", "northeast woodlands", "woodland indians", "new york", "traditional housing", "longhouse village", "white-tailed deer", "deer"]
 },
 
@@ -101,7 +103,7 @@ window.COLORING_BOOK_PAGES = [
   thumbnail: "/games/images/thumbs/coloring-book/jigonsaseh_and_tadadaho.webp",
   description: "Color a scene of Jigonsaseh combing the snakes from Tadadaho's hair in the Haudenosaunee Peacemaker legend.",
   gradeLevels: ["7"],
-  subjects: ["us-history"],
+  subjects: ["us-history", "native-americans"],
   tags: ["jigonsaseh", "tadadaho", "haudenosaunee", "iroquois", "iroquois confederacy", "great law of peace", "peacemaker", "haudenosaunee confederacy", "five nations", "clan mother", "native american history", "indigenous history", "new york history", "onondaga", "peace", "confederacy"]
 },
 
