@@ -83,6 +83,18 @@ window.COLORING_BOOK_PAGES = [
   },
 
 {
+  id: "haudenosaunee_longhouse",
+  title: "Haudenosaunee Longhouse",
+  file: "/games/coloring-book/pages/haudenosaunee_longhouse.svg",
+  thumbnail: "/games/images/thumbs/coloring-book/haudenosaunee_longhouse.webp",
+  description: "Color a woodland scene featuring a traditional Haudenosaunee longhouse.",
+  gradeLevels: ["7"],
+  subjects: ["us-history"],
+  tags: ["haudenosaunee", "longhouse", "iroquois", "iroquois confederacy", "haudenosaunee confederacy", "native americans", "indigenous peoples", "northeast woodlands", "woodland indians", "new york", "traditional housing", "longhouse village", "white-tailed deer", "deer"]
+},
+
+
+{
   id: "jigonsaseh_and_tadadaho",
   title: "Jigonsaseh and Tadadaho",
   file: "/games/coloring-book/pages/jigonsaseh_and_tadadaho.svg",
