@@ -43,6 +43,20 @@ window.COLORING_BOOK_PAGES = [
 
   },
 
+
+  {
+    id: "foraging-on-land-bridge",
+    title: "Foraging on the Land Bridge",
+    file: "/games/coloring-book/pages/foraging-on-land-bridge.svg",
+    thumbnail: "/games/images/thumbs/coloring-book/foraging-on-land-bridge.webp",
+    description: "Color a scene of early humans foraging and traveling across the Bering Land Bridge",
+    gradeLevels: ["7"],
+    subjects: ["world-history"],
+    tags: ["Bering Land Bridge", "early humans", "migration", "foraging", "hunter-gatherers", "Ice Age", "Beringia", "mammoth", "prehistoric animals"]
+
+  },
+
+
   {
     id: "general-washington",
     title: "General Washington",
