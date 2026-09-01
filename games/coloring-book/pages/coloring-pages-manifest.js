@@ -82,6 +82,16 @@ window.COLORING_BOOK_PAGES = [
     tags: ["Harriet Tubman", "Underground Railroad", "abolition", "slavery", "Civil War"]
   },
 
+{
+  id: "jigonsaseh_and_tadadaho",
+  title: "Jigonsaseh and Tadadaho",
+  file: "/games/coloring-book/pages/jigonsaseh_and_tadadaho.svg",
+  thumbnail: "/games/images/thumbs/coloring-book/jigonsaseh_and_tadadaho.webp",
+  description: "Color a scene of Jigonsaseh combing the snakes from Tadadaho's hair in the Haudenosaunee Peacemaker legend.",
+  gradeLevels: ["7"],
+  subjects: ["us-history"],
+  tags: ["jigonsaseh", "tadadaho", "haudenosaunee", "iroquois confederacy", "great law of peace", "peacemaker", "haudenosaunee confederacy", "five nations", "clan mother", "native american history", "indigenous history", "new york history", "onondaga", "peace", "confederacy"]
+},
 
   {
     id: "sphynx",
