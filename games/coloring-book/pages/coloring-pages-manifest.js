@@ -84,6 +84,20 @@ window.COLORING_BOOK_PAGES = [
 
 
   {
+    id: "sphynx",
+    title: "Sphinx",
+    file: "/games/coloring-book/pages/sphynx.svg",
+    thumbnail: "/games/images/thumbs/coloring-book/sphynx.webp",
+    description: "Color a scene featuring the Great Sphinx of Ancient Egypt.",
+    gradeLevels: ["6"],
+    subjects: ["world-history"],
+    tags: ["sphinx", "great sphinx", "ancient egypt", "egypt", "giza", "giza plateau", "pyramids", "great pyramid", "pharaoh", "egyptian civilization", "ancient civilization", "desert", "palm trees", "egyptian monuments", "egyptian architecture"]
+
+  },
+
+
+
+  {
     id: "washington-crossing-delaware",
     title: "Washington Crossing the Delaware",
     file: "/games/coloring-book/pages/washington-crossing-delaware.svg",
