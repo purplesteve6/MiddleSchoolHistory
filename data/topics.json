@@ -33,5 +33,12 @@
     "url": "/5/WesternHemisphere/",
     "image": "/assets/images/featured/western-hemisphere.webp",
     "description": "Explore the four regions of the Western Hemisphere used in Grade 5 Social Studies."
+  },
+  {
+    "title": "John Brown",
+    "grade": 8,
+    "url": "/8/JohnBrown/",
+    "image": "/assets/images/featured/john-brown.svg",
+    "description": "Follow John Brown from Bleeding Kansas and a Missouri liberation raid to Harpers Ferry, his trial, execution, and polarizing legacy."
   }
 ]
