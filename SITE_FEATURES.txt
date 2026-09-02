@@ -15,6 +15,18 @@ GENERAL ASSET RULES
 • A distinct subtitle is okay when useful (example: Big Question sticker + “Final Reflection”).
 • Keep sticker graphics responsive and preserve their aspect ratio.
 
+EXACT CURRENT UI STICKER FILENAMES
+----------------------------------
+These are the currently available reusable sticker graphics in /assets/images/ui/:
+• big_question.png
+• bigidea.png
+• decision_point.png
+• didyouknow.png
+• helpremember.png
+• primary_source.png
+• quickquiz.png
+• sixty_seconds_with.png
+
 CURRENT STICKER / CALLOUT GRAPHICS
 ----------------------------------
 1. BIG IDEA
@@ -49,6 +61,19 @@ CURRENT STICKER / CALLOUT GRAPHICS
    Use for: Direct quotations, letters, speeches, laws, newspaper excerpts, diary entries, photographs/documents being analyzed, etc.
    Pair with: source/date note and brief context.
    Important: Do not repeat “Primary Source” as a text heading when the sticker is displayed.
+
+7. TO HELP YOU REMEMBER
+   File: /assets/images/ui/helpremember.png
+   Use for: Mnemonic devices, memory tricks, acronyms, rhymes, associations, visual cues, and other simple ways to help students remember important facts or sequences.
+   Good pattern: Show the memory device prominently, then briefly explain what each part helps the student recall.
+   Important: Do not repeat “To Help You Remember” as a text heading when the sticker is displayed.
+
+8. QUICK QUIZ
+   File: /assets/images/ui/quickquiz.png
+   Use for: Short knowledge checks embedded within or at the end of a page.
+   Suggested format: 1–5 concise questions, usually multiple-choice or another quickly answerable format, with immediate feedback when practical.
+   Use it to reinforce material just taught rather than introduce new information.
+   Important: Do not repeat “Quick Quiz” as a text heading when the sticker is displayed.
 
 REUSABLE SITE FEATURES / INTERACTIONS
 -------------------------------------
@@ -91,6 +116,16 @@ REUSABLE SITE FEATURES / INTERACTIONS
    Parchment/document-style box for quotations or source excerpts.
    Use the Primary Source sticker at the top instead of a duplicate text label.
 
+10. QUICK QUIZ / KNOWLEDGE CHECK
+   Use with the Quick Quiz sticker for a brief embedded check for understanding.
+   Can be static or interactive; if interactive, give immediate, age-appropriate feedback.
+   Keep it short enough that it feels like a break in the reading rather than a separate assessment.
+
+11. MEMORY AID / MNEMONIC CALLOUT
+   Use with the To Help You Remember sticker.
+   Appropriate for mnemonics, acronyms, rhymes, memorable comparisons, chunking strategies, and other recall aids.
+   The memory device should be accurate and simpler to remember than the facts it is teaching.
+
 DESIGN / CONSISTENCY NOTES
 --------------------------
 • Normal body copy should follow the established site/topic body font unless a topic intentionally specifies otherwise.
@@ -111,4 +146,4 @@ Whenever a new reusable sticker, callout, interaction, or page pattern is create
 LAST UPDATED
 ------------
 September 2, 2026
-Added Decision Point and Primary Source stickers and documented current reusable John Brown/site features.
+Added To Help You Remember and Quick Quiz stickers, an exact UI filename inventory, and expanded the reusable feature documentation.
