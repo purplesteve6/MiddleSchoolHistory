@@ -71,6 +71,17 @@ window.COLORING_BOOK_PAGES = [
 
   },
 
+{
+  id: "grant_and_lee",
+  title: "Grant and Lee at Appomattox",
+  file: "/games/coloring-book/pages/grant_and_lee.svg",
+  thumbnail: "/games/images/thumbs/coloring-book/grant_and_lee.webp",
+  description: "Color Ulysses S. Grant and Robert E. Lee shaking hands at Appomattox Court House at the end of the Civil War.",
+  gradeLevels: ["7", "8"],
+  subjects: ["us-history"],
+  tags: ["ulysses s grant", "robert e lee", "grant and lee", "appomattox", "appomattox court house", "appomattox courthouse", "civil war", "american civil war", "confederacy", "union", "union army", "confederate army", "surrender at appomattox", "civil war surrender", "end of the civil war", "mclean house", "virginia", "1865", "general grant", "general lee"]
+},
+
 
 
   {
