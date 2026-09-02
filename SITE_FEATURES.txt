@@ -1,0 +1,114 @@
+MIDDLE SCHOOL HISTORY — SITE FEATURES & STICKERS
+=================================================
+
+PURPOSE
+-------
+Keep this file in the MAIN REPOSITORY ROOT and include it whenever the repo is shared for future website work.
+Before inventing a new callout style, check this list for an existing reusable option.
+
+GENERAL ASSET RULES
+-------------------
+• Sticker/logo graphics live in: /assets/images/ui/
+• Sticker files are PNG unless noted otherwise.
+• Normal historical/content images should preferably be WEBP.
+• When a sticker already contains its own title words, DO NOT repeat those same title words as text beside or below it.
+• A distinct subtitle is okay when useful (example: Big Question sticker + “Final Reflection”).
+• Keep sticker graphics responsive and preserve their aspect ratio.
+
+CURRENT STICKER / CALLOUT GRAPHICS
+----------------------------------
+1. BIG IDEA
+   File: /assets/images/ui/bigidea.png
+   Use for: The central takeaway, thesis, or essential understanding for a page/section.
+   Existing examples: Greek Mythology, Western Hemisphere, John Brown.
+
+2. DID YOU KNOW?
+   File: /assets/images/ui/didyouknow.png
+   Use for: Memorable, surprising, unusual, or high-interest facts.
+   Important: Do not add a second “Did You Know?” text heading. The graphic is the heading.
+
+3. 60 SECONDS WITH...
+   File: /assets/images/ui/sixty_seconds_with.png
+   Use for: A very fast overview of a person, place, civilization, event, concept, etc.
+   Suggested contents: 4–6 short facts in cards/tiles.
+   The subject name may appear separately below the sticker (example: “John Brown”).
+
+4. BIG QUESTION
+   File: /assets/images/ui/big_question.png
+   Use for: Open-ended historical thinking questions, lesson framing questions, reflection prompts, or debate questions.
+   Optional subtitle examples: “Final Reflection,” “Turning Point,” “Think Like a Historian.”
+
+5. DECISION POINT
+   File: /assets/images/ui/decision_point.png
+   Use for: Interactive or hypothetical historical choices where the student chooses between actions and then learns what actually happened.
+   Good pattern: Give context → offer 2–3 choices → reveal historical outcome/explanation.
+   Important: Do not repeat “Decision Point” as a text heading when the sticker is displayed.
+
+6. PRIMARY SOURCE
+   File: /assets/images/ui/primary_source.png
+   Use for: Direct quotations, letters, speeches, laws, newspaper excerpts, diary entries, photographs/documents being analyzed, etc.
+   Pair with: source/date note and brief context.
+   Important: Do not repeat “Primary Source” as a text heading when the sticker is displayed.
+
+REUSABLE SITE FEATURES / INTERACTIONS
+-------------------------------------
+1. VOCABULARY HOVER DEFINITIONS
+   Pattern: <span class="vocabWord" data-def="Definition here.">term</span>
+   Use for important academic/history vocabulary without interrupting the reading flow.
+
+2. CLICKABLE / EXPANDING TIMELINE
+   Use for sequences where students click events to reveal more information.
+   Existing John Brown example: Bleeding Kansas escalation timeline.
+
+3. 36-HOUR / EVENT-SEQUENCE INTERACTIVE
+   Use for a short, tightly ordered event where timing matters.
+   Existing John Brown example: Harpers Ferry raid sequence.
+
+4. DECISION INTERACTIVE
+   Use with the Decision Point sticker.
+   Students select an option; JavaScript reveals the historical choice/outcome and explanation.
+   Existing John Brown example: Frederick Douglass deciding whether to join Brown at Harpers Ferry.
+
+5. INTERACTIVE INTERPRETATION / EVIDENCE CARDS
+   Use for competing historical interpretations.
+   Students click a label/position to reveal evidence supporting that viewpoint.
+   Existing John Brown example: Freedom Fighter / Martyr / Murderer / Dangerous Radical.
+
+6. ROUTE / JOURNEY DIAGRAM
+   Use for migrations, escapes, expeditions, trade routes, military movements, etc.
+   Can be a simple HTML/CSS sequence or a custom map/SVG when geography is important.
+   Existing John Brown example: Missouri-to-Canada liberation route.
+
+7. QUICK-FACT TILE GRID
+   Use for short biographical/event facts that scan quickly.
+   Works especially well inside “60 Seconds With...” sections.
+
+8. CHAPTER / TOPIC PAGE NAVIGATION
+   Multi-page topics can use a horizontal/stacking chapter-nav row plus previous/next page buttons.
+   Existing John Brown example: Home → Bleeding Kansas → Missouri Liberation → Allies & Arguments → Harpers Ferry → Trial & Legacy.
+
+9. PRIMARY-SOURCE DOCUMENT PANEL
+   Parchment/document-style box for quotations or source excerpts.
+   Use the Primary Source sticker at the top instead of a duplicate text label.
+
+DESIGN / CONSISTENCY NOTES
+--------------------------
+• Normal body copy should follow the established site/topic body font unless a topic intentionally specifies otherwise.
+• Decorative/display fonts are okay for major topic titles when appropriate.
+• Existing global header/footer partials should be reused rather than recreated locally.
+• Avoid generic CSS selectors that accidentally alter shared header/footer elements.
+• Topic-specific CSS should stay scoped whenever practical.
+• Build pages for middle-school readability: short sections, strong hierarchy, visuals, vocabulary help, and interactive breaks.
+
+ADDING A NEW STICKER OR FEATURE
+-------------------------------
+Whenever a new reusable sticker, callout, interaction, or page pattern is created:
+1. Add its asset to /assets/images/ui/ if applicable.
+2. Add its exact filename and intended use to this file.
+3. Note any special behavior (no repeated text, interactive JS requirement, sizing, etc.).
+4. Mention at least one page that uses it once it has been implemented.
+
+LAST UPDATED
+------------
+September 2, 2026
+Added Decision Point and Primary Source stickers and documented current reusable John Brown/site features.
