@@ -50,10 +50,9 @@ PUBLIC-DOMAIN / FREE-REUSE IMAGE OPTIONS
    John Brown, 1859: https://www.loc.gov/item/2009633567/
 
 7) images/chambersburg-meeting.webp
-   REFERENCE: NPS illustration of Brown / Douglass / Shields Green meeting.
-   Use the NPS page as a reference and check the specific image credit before copying it locally.
-   https://www.nps.gov/hafe/learn/historyculture/frederick-douglass-at-harpers-ferry.htm
-   If the image credit is not clearly reusable, keep this as a custom graphic / portrait montage instead.
+   BEST SOURCE: Richard Schlecht illustration of John Brown, Frederick Douglass, and Shields Green meeting in a stone quarry near Chambersburg, Pennsylvania.
+   https://commons.wikimedia.org/wiki/File:John_Brown,_Frederick_Douglass,_Shields_Green.jpg
+   Public domain; commissioned by the National Park Service.
 
 8) images/harpers-ferry.webp
    BEST SOURCE: Library of Congress — Engine house fortified by John Brown at Harpers Ferry, ca. 1865
@@ -81,3 +80,19 @@ NOTE FOR IMAGE REPLACEMENT
 - Keep the filenames above and save replacements as .webp; the HTML is already wired to them.
 - The current files are lightweight WEBP placeholders so the topic works immediately.
 - This source list deliberately favors Library of Congress items marked “No known restrictions” and public-domain files rather than modern copyrighted illustrations.
+
+ADDITIONAL VERIFIED PUBLIC-DOMAIN SOURCES (Sept. 2026)
+- John Brown portrait, 1859, Wikimedia Commons copy of LOC image:
+  https://commons.wikimedia.org/wiki/File:John_Brown_portrait,_1859_(3x4_close_cropped).png
+- Harpers Ferry engine-house interior, Frank Leslie's Illustrated Newspaper, Nov. 5, 1859:
+  https://commons.wikimedia.org/wiki/File:John_brown_interior_engine_house.jpg
+- John Brown execution, Dec. 2, 1859:
+  https://commons.wikimedia.org/wiki/File:John_Brown%27s_execution.jpg
+- John Brown execution wood engraving (LOC copy on Commons):
+  https://commons.wikimedia.org/wiki/File:The_execution_of_John_Brown,_in_a_stubble_field,_near_Charleston,_(W.)_Va._(men_on_horseback_in_foregrd.)_LCCN99614009.jpg
+- Harriet Tubman, 1868-69:
+  https://commons.wikimedia.org/wiki/File:Harriet_Tubman_c1868-69.jpg
+- Frederick Douglass, 1856 ambrotype:
+  https://commons.wikimedia.org/wiki/File:Frederick_Douglass_ambrotype_(1856).jpg
+- Reynolds's 1856 political map of the United States (includes Kansas Territory / slave-free context):
+  https://commons.wikimedia.org/wiki/File:Reynolds%27s_Political_Map_of_the_United_States_1856.jpg

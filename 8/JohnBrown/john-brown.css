@@ -40,6 +40,41 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}.card{background
 .legacyBtns{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}.legacyBtns button{background:var(--navy);color:white;border:2px solid var(--navy)}.legacyBtns button:hover{background:var(--khaki);color:var(--navy)}.legacyEvidence{display:none;margin-top:.8rem;padding:1rem;background:var(--paper);border:1px solid var(--khaki2);border-radius:12px}.legacyEvidence.show{display:block}
 .pagePager{display:flex;justify-content:space-between;gap:1rem;margin-top:1.2rem}.pagePager a{text-decoration:none;background:var(--navy);color:white;padding:.7rem 1rem;border-radius:999px;font-weight:900}.pagePager a:hover{background:var(--red)}
 .miniNote{font-size:.86rem;color:var(--muted)}
-footer{background:var(--navy2);color:white;padding:1.5rem;margin-top:2rem}footer a{color:var(--khaki)}
+/* ===== Footer: match the Greek Mythology topic footer exactly ===== */
+.site-footer{
+  margin-top:0;
+  padding:18px 1rem 40px;
+  color: rgba(246,243,230,.78);
+}
+.footer-rule{
+  border:none;
+  height:1px;
+  margin:0 auto 16px;
+  max-width:var(--max);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+}
+.footer-inner{
+  max-width:var(--max);
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.footer-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.footer-logo-icon{height:40px;width:auto;display:block}
+.footer-logo-text{height:22px;width:auto;display:block;opacity:.9}
+.footer-copy{font-size:13px;line-height:1.4}
+.footer-site{font-weight:900}
+@media (max-width:640px){
+  .footer-inner{flex-direction:column;align-items:flex-start;gap:12px}
+  .footer-logo-icon{height:36px}
+  .footer-logo-text{height:20px}
+}
+
 @media(max-width:900px){.hero,.media,.media.reverse,.grid2{grid-template-columns:1fr}.chapterNav{grid-template-columns:repeat(2,1fr)}.factGrid,.sixtyGrid,.raiderCards{grid-template-columns:repeat(2,1fr)}.personCards{grid-template-columns:1fr}.route{grid-template-columns:1fr}.routeArrow{transform:rotate(90deg)}.legacyBtns{grid-template-columns:1fr 1fr}.nav{padding-left:175px}.nav-logo-img{height:100px}}
 @media(max-width:600px){main{padding-top:125px}.nav{padding-left:125px}.nav-logo-img{height:82px}.brandSub{display:none}.heroText{padding:1rem}.dyk,.bigIdea{grid-template-columns:1fr}.factGrid,.sixtyGrid,.raiderCards,.legacyBtns{grid-template-columns:1fr}.chapterNav{grid-template-columns:1fr}.pagePager{flex-direction:column}.pagePager a{text-align:center}}
