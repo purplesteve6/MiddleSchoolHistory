@@ -96,3 +96,10 @@ ADDITIONAL VERIFIED PUBLIC-DOMAIN SOURCES (Sept. 2026)
   https://commons.wikimedia.org/wiki/File:Frederick_Douglass_ambrotype_(1856).jpg
 - Reynolds's 1856 political map of the United States (includes Kansas Territory / slave-free context):
   https://commons.wikimedia.org/wiki/File:Reynolds%27s_Political_Map_of_the_United_States_1856.jpg
+
+USER-CREATED TOPIC ART
+----------------------
+images/john-brown-freedom-trail.webp
+  John Brown's Freedom Trail graphic supplied by the site owner.
+  Used on the Missouri Liberation page in place of the earlier CSS route diagram.
+  Transparent WEBP; no background/card treatment is required.
