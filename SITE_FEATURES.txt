@@ -147,3 +147,5 @@ LAST UPDATED
 ------------
 September 2, 2026
 Added To Help You Remember and Quick Quiz stickers, an exact UI filename inventory, and expanded the reusable feature documentation.
+
+- topic page icon navigation badges (for multi-page topic subnavigation; can use illustrated icons plus labels on desktop)
