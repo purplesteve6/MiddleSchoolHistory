@@ -3,7 +3,7 @@ JOHN BROWN TOPIC — DROP-IN PACKAGE (REVISION 2)
 Copy the contents of this ZIP into the root of the MiddleSchoolHistory repository.
 
 Adds:
-  /8/JohnBrown/               complete six-page topic
+  /7/JohnBrown/               complete six-page topic
   /assets/images/featured/    temporary John Brown WEBP featured image
 
 Updates:
@@ -25,7 +25,7 @@ The pages expect these existing shared assets from your live repo:
   /assets/images/ui/didyouknow.png
   /assets/images/ui/sixty_seconds_with.png
   /assets/images/ui/big_question.png
-  /assets/images/icons/8_icon.png
+  /assets/images/icons/7_icon.png
   /assets/images/logo/MSHistory_Logo_Basic_Web.png
   /include.js
   /partials/header.html
@@ -61,9 +61,9 @@ SEPTEMBER 2, 2026 — CONTENT / PORTRAIT / STICKER UPDATE
 NEW FILES INCLUDED IN THIS UPDATE
 ---------------------------------
 Only the three newly supplied historical portraits are included:
-  /8/JohnBrown/images/harriet-tubman.webp
-  /8/JohnBrown/images/frederick-douglass.webp
-  /8/JohnBrown/images/shields-green.webp
+  /7/JohnBrown/images/harriet-tubman.webp
+  /7/JohnBrown/images/frederick-douglass.webp
+  /7/JohnBrown/images/shields-green.webp
 
 Existing John Brown content images, finalized chapter-navigation icons, UI stickers, and the John Brown
 display font are NOT repackaged here, so this update will not overwrite customized/finalized copies.
@@ -73,9 +73,9 @@ This update expects these existing UI stickers in /assets/images/ui/:
 - vocabulary.png
 
 It also preserves the icon-navigation markup that expects the user's finalized files in:
-  /8/JohnBrown/images/nav/home.webp
-  /8/JohnBrown/images/nav/bleeding-kansas.webp
-  /8/JohnBrown/images/nav/missouri-liberation.webp
-  /8/JohnBrown/images/nav/allies-and-arguments.webp
-  /8/JohnBrown/images/nav/harpers-ferry.webp
-  /8/JohnBrown/images/nav/trial-and-legacy.webp
+  /7/JohnBrown/images/nav/home.webp
+  /7/JohnBrown/images/nav/bleeding-kansas.webp
+  /7/JohnBrown/images/nav/missouri-liberation.webp
+  /7/JohnBrown/images/nav/allies-and-arguments.webp
+  /7/JohnBrown/images/nav/harpers-ferry.webp
+  /7/JohnBrown/images/nav/trial-and-legacy.webp
