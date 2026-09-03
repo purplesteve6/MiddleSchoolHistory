@@ -133,12 +133,3 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}.card{background
 @media(max-width:600px){
   .personPortrait{height:auto;max-height:430px}
 }
-
-/* DRED SCOTT LEAD */
-.dredScottLead{padding:1.25rem 1.35rem;margin:1rem 0;border-left:7px solid var(--red)}
-.dredScottMedia{display:grid;grid-template-columns:minmax(190px,.48fr) 1.52fr;gap:1.2rem;align-items:start}
-.dredScottMedia>img{width:100%;max-width:330px;justify-self:center;border-radius:13px;border:2px solid var(--khaki2);background:#ddd;object-fit:cover}
-.dredScottLead h2{margin:.55rem 0 .6rem}
-.dredScottBridge{margin-top:.9rem;padding:.8rem .9rem;background:var(--paper);border-left:5px solid var(--navy);border-radius:10px;line-height:1.5}
-.dredScottBridge b{color:var(--navy)}
-@media(max-width:700px){.dredScottMedia{grid-template-columns:1fr}.dredScottMedia>img{max-width:280px}}
