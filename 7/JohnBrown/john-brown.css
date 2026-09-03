@@ -47,7 +47,7 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}.card{background
 .personCards{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}.personCard{padding:1rem;background:var(--paper);border:1px solid var(--khaki2);border-radius:13px}.personCard h3{margin:.1rem 0 .4rem}.choiceBox{background:linear-gradient(135deg,#ece2cb,#fff);border:2px dashed var(--navy);padding:1rem;border-radius:16px}.featureSticker{display:block;width:min(260px,70vw);height:auto;margin:0 auto .55rem;object-fit:contain}.decisionSticker{width:min(280px,72vw)}.choiceBox h2,.choiceBox>p{text-align:center}.choiceBtns{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}.choiceBtns button{background:var(--navy);color:white;min-width:170px}.choiceResult{margin-top:.8rem;padding:.8rem;background:white;border-radius:10px;display:none}.choiceResult.show{display:block}
 .raiderCards{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}.raiderCard{background:var(--paper);padding:.8rem;border-radius:12px;border-top:5px solid var(--navy)}.raiderCard b{color:var(--navy)}
 .primarySource{background:#efe4c9;border:1px solid #c6b383;border-radius:12px;padding:1rem 1.15rem;font-family:Georgia,"Times New Roman",serif;position:relative}.primarySource .featureSticker{width:min(250px,68vw);margin-bottom:.2rem}.quote{font-size:1.2rem;line-height:1.45;margin:.45rem 0}.sourceNote{font-family:ui-sans-serif,system-ui,sans-serif;font-size:.78rem;color:#625a49}
-.legacyBtns{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}.legacyBtns button{background:var(--navy);color:white;border:2px solid var(--navy)}.legacyBtns button:hover{background:var(--khaki);color:var(--navy)}.legacyEvidence{display:none;margin-top:.8rem;padding:1rem;background:var(--paper);border:1px solid var(--khaki2);border-radius:12px}.legacyEvidence.show{display:block}
+.johnBrownQuestion h2{text-align:center}.legacyIntro{text-align:center;max-width:78ch;margin:.1rem auto 1rem}.legacyChooser{display:grid;grid-template-columns:150px minmax(0,1fr);gap:1rem;align-items:center;max-width:900px;margin:0 auto}.legacyThinker{width:140px;height:auto;justify-self:center;object-fit:contain}.legacyControls{min-width:0}.legacyHint{text-align:center;color:var(--muted);font-size:.88rem;font-weight:800;margin:0 0 .55rem}.legacyBtns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}.legacyBtns button{background:var(--navy);color:white;border:2px solid var(--navy);transition:background .14s,color .14s,border-color .14s,transform .14s,box-shadow .14s}.legacyBtns button:hover,.legacyBtns button:focus-visible{background:var(--paper2);color:var(--navy);border-color:var(--khaki2);outline:none;transform:translateY(-1px)}.legacyBtns button.is-selected{background:var(--khaki);color:var(--navy2);border-color:var(--red);box-shadow:0 0 0 3px rgba(127,59,50,.12)}.legacyDisplay{max-width:900px;margin:.85rem auto 0}.legacyEvidence{display:none;padding:1rem 1.1rem;background:var(--paper);border:1px solid var(--khaki2);border-radius:12px}.legacyEvidence.show{display:block}.legacyEvidence h3{margin:.05rem 0 .35rem}.legacyEvidence p{margin:.15rem 0}.legacyDefault{color:#394650}
 .pagePager{display:flex;justify-content:space-between;gap:1rem;margin-top:1.2rem}.pagePager a{text-decoration:none;background:var(--navy);color:white;padding:.7rem 1rem;border-radius:999px;font-weight:900}.pagePager a:hover{background:var(--red)}
 .miniNote{font-size:.86rem;color:var(--muted)}
 /* ===== Footer: match the Greek Mythology topic footer exactly ===== */
@@ -88,8 +88,8 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}.card{background
 }
 
 @media(max-width:900px){.hero,.media,.media.reverse,.grid2{grid-template-columns:1fr}.chapterNav{grid-template-columns:repeat(3,1fr);gap:.35rem}.factGrid,.sixtyGrid,.raiderCards,.vocabGrid{grid-template-columns:repeat(2,1fr)}.personCards{grid-template-columns:1fr}.route{grid-template-columns:1fr}.routeArrow{transform:rotate(90deg)}.legacyBtns{grid-template-columns:1fr 1fr}.nav{padding-left:175px}.nav-logo-img{height:100px}}
-@media(max-width:600px){main{padding-top:125px}.nav{padding-left:125px}.nav-logo-img{height:82px}.brandSub{display:none}.heroText{padding:1rem}.dyk,.bigIdea{grid-template-columns:1fr}.factGrid,.sixtyGrid,.raiderCards,.legacyBtns,.vocabGrid{grid-template-columns:1fr}.chapterNav{grid-template-columns:repeat(2,1fr);gap:.3rem}.chapterNav a img{width:min(100%,110px)}.pagePager{flex-direction:column}.pagePager a{text-align:center}}
-@media(max-width:420px){.chapterNav{grid-template-columns:repeat(2,1fr)}.chapterNav a img{width:min(100%,94px)}}
+@media(max-width:600px){.legacyChooser{grid-template-columns:1fr}.legacyThinker{width:120px}.legacyBtns{grid-template-columns:1fr 1fr}main{padding-top:125px}.nav{padding-left:125px}.nav-logo-img{height:82px}.brandSub{display:none}.heroText{padding:1rem}.dyk,.bigIdea{grid-template-columns:1fr}.factGrid,.sixtyGrid,.raiderCards,.legacyBtns,.vocabGrid{grid-template-columns:1fr}.chapterNav{grid-template-columns:repeat(2,1fr);gap:.3rem}.chapterNav a img{width:min(100%,110px)}.pagePager{flex-direction:column}.pagePager a{text-align:center}}
+@media(max-width:420px){.legacyBtns{grid-template-columns:1fr}.chapterNav{grid-template-columns:repeat(2,1fr)}.chapterNav a img{width:min(100%,94px)}}
 
 
 /* ===== September 2026 content/sticker update ===== */
@@ -134,11 +134,39 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}.card{background
   .personPortrait{height:auto;max-height:430px}
 }
 
-/* DRED SCOTT LEAD */
-.dredScottLead{padding:1.25rem 1.35rem;margin:1rem 0;border-left:7px solid var(--red)}
-.dredScottMedia{display:grid;grid-template-columns:minmax(190px,.48fr) 1.52fr;gap:1.2rem;align-items:start}
-.dredScottMedia>img{width:100%;max-width:330px;justify-self:center;border-radius:13px;border:2px solid var(--khaki2);background:#ddd;object-fit:cover}
+
+/* ===== Dred Scott lead — Missouri Liberation page ===== */
+.dredScottLead{
+  padding:1.25rem 1.35rem;
+  margin:1rem 0;
+  border-left:7px solid var(--red);
+}
+.dredScottMedia{
+  display:grid;
+  grid-template-columns:minmax(190px,.48fr) 1.52fr;
+  gap:1.2rem;
+  align-items:start;
+}
+.dredScottMedia>img{
+  width:100%;
+  max-width:330px;
+  justify-self:center;
+  border-radius:13px;
+  border:2px solid var(--khaki2);
+  background:#ddd;
+  object-fit:cover;
+}
 .dredScottLead h2{margin:.55rem 0 .6rem}
-.dredScottBridge{margin-top:.9rem;padding:.8rem .9rem;background:var(--paper);border-left:5px solid var(--navy);border-radius:10px;line-height:1.5}
+.dredScottBridge{
+  margin-top:.9rem;
+  padding:.8rem .9rem;
+  background:var(--paper);
+  border-left:5px solid var(--navy);
+  border-radius:10px;
+  line-height:1.5;
+}
 .dredScottBridge b{color:var(--navy)}
-@media(max-width:700px){.dredScottMedia{grid-template-columns:1fr}.dredScottMedia>img{max-width:280px}}
+@media(max-width:700px){
+  .dredScottMedia{grid-template-columns:1fr}
+  .dredScottMedia>img{max-width:280px}
+}

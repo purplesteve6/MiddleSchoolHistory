@@ -22,10 +22,39 @@ document.addEventListener('click', (e) => {
     }
   }
 
-  const legacy = e.target.closest('[data-legacy]');
-  if (legacy) {
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const legacyButtons = Array.from(document.querySelectorAll('[data-legacy]'));
+  if (!legacyButtons.length) return;
+
+  let lockedLegacy = null;
+
+  const showLegacy = (id) => {
     document.querySelectorAll('.legacyEvidence').forEach(x => x.classList.remove('show'));
-    const box = document.getElementById('legacy-' + legacy.dataset.legacy);
+    const box = document.getElementById('legacy-' + (id || 'default'));
     if (box) box.classList.add('show');
-  }
+  };
+
+  const restoreLocked = () => showLegacy(lockedLegacy || 'default');
+
+  legacyButtons.forEach(button => {
+    const id = button.dataset.legacy;
+
+    button.addEventListener('mouseenter', () => showLegacy(id));
+    button.addEventListener('mouseleave', restoreLocked);
+    button.addEventListener('focus', () => showLegacy(id));
+    button.addEventListener('blur', restoreLocked);
+
+    button.addEventListener('click', () => {
+      lockedLegacy = id;
+      legacyButtons.forEach(b => {
+        const selected = b === button;
+        b.classList.toggle('is-selected', selected);
+        b.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      });
+      showLegacy(id);
+    });
+  });
 });
