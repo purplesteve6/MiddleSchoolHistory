@@ -25,7 +25,9 @@ These are the currently available reusable sticker graphics in /assets/images/ui
 • helpremember.png
 • primary_source.png
 • quickquiz.png
+• quick_facts.png
 • sixty_seconds_with.png
+• vocabulary.png
 
 CURRENT STICKER / CALLOUT GRAPHICS
 ----------------------------------
@@ -75,6 +77,20 @@ CURRENT STICKER / CALLOUT GRAPHICS
    Use it to reinforce material just taught rather than introduce new information.
    Important: Do not repeat “Quick Quiz” as a text heading when the sticker is displayed.
 
+9. QUICK FACTS
+   File: /assets/images/ui/quick_facts.png
+   Use for: Compact grids or collections of short, highly scannable facts about a person, place, event, or topic.
+   Good pattern: Place the sticker above a 3–6 tile fact grid.
+   Important: Do not repeat “Quick Facts” as a visible text heading when the sticker is displayed.
+   Existing example: John Brown Home page.
+
+10. VOCABULARY
+   File: /assets/images/ui/vocabulary.png
+   Use for: A dedicated vocabulary/reference section that collects important terms and definitions in one place.
+   Pair with: vocabWord hover definitions inside the reading when useful.
+   Important: Do not repeat “Vocabulary” as a visible text heading when the sticker is displayed.
+   Existing example: John Brown Home page.
+
 REUSABLE SITE FEATURES / INTERACTIONS
 -------------------------------------
 1. VOCABULARY HOVER DEFINITIONS
@@ -106,6 +122,7 @@ REUSABLE SITE FEATURES / INTERACTIONS
 
 7. QUICK-FACT TILE GRID
    Use for short biographical/event facts that scan quickly.
+   Use the Quick Facts sticker when the grid is a standalone named section.
    Works especially well inside “60 Seconds With...” sections.
 
 8. CHAPTER / TOPIC PAGE NAVIGATION
@@ -146,6 +163,5 @@ Whenever a new reusable sticker, callout, interaction, or page pattern is create
 LAST UPDATED
 ------------
 September 2, 2026
-Added To Help You Remember and Quick Quiz stickers, an exact UI filename inventory, and expanded the reusable feature documentation.
-
-- topic page icon navigation badges (for multi-page topic subnavigation; can use illustrated icons plus labels on desktop)
+Added Quick Facts and Vocabulary stickers and documented their use on the John Brown Home page.
+Earlier the same day: added To Help You Remember and Quick Quiz stickers, an exact UI filename inventory, and expanded reusable feature documentation.

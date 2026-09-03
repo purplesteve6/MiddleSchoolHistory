@@ -90,3 +90,46 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}.card{background
 @media(max-width:900px){.hero,.media,.media.reverse,.grid2{grid-template-columns:1fr}.chapterNav{grid-template-columns:repeat(3,1fr);gap:.35rem}.factGrid,.sixtyGrid,.raiderCards,.vocabGrid{grid-template-columns:repeat(2,1fr)}.personCards{grid-template-columns:1fr}.route{grid-template-columns:1fr}.routeArrow{transform:rotate(90deg)}.legacyBtns{grid-template-columns:1fr 1fr}.nav{padding-left:175px}.nav-logo-img{height:100px}}
 @media(max-width:600px){main{padding-top:125px}.nav{padding-left:125px}.nav-logo-img{height:82px}.brandSub{display:none}.heroText{padding:1rem}.dyk,.bigIdea{grid-template-columns:1fr}.factGrid,.sixtyGrid,.raiderCards,.legacyBtns,.vocabGrid{grid-template-columns:1fr}.chapterNav{grid-template-columns:repeat(2,1fr);gap:.3rem}.chapterNav a img{width:min(100%,110px)}.pagePager{flex-direction:column}.pagePager a{text-align:center}}
 @media(max-width:420px){.chapterNav{grid-template-columns:repeat(2,1fr)}.chapterNav a img{width:min(100%,94px)}}
+
+
+/* ===== September 2026 content/sticker update ===== */
+.sixtySummary{
+  max-width:90ch;
+  margin:.95rem auto .1rem;
+  padding:.85rem 1rem 0;
+  border-top:1px solid rgba(255,255,255,.24);
+  text-align:center;
+  font-size:1rem;
+  line-height:1.55;
+  color:rgba(255,255,255,.94);
+}
+.stickerHeading{
+  margin:0 0 .75rem !important;
+  line-height:1;
+}
+.stickerHeading img{
+  width:min(270px,72vw);
+  height:auto;
+  margin:0 auto;
+  object-fit:contain;
+}
+.stickerHeading.vocabularySticker img{
+  width:min(285px,74vw);
+}
+.personPortrait{
+  width:100%;
+  height:270px;
+  object-fit:contain;
+  object-position:center top;
+  margin:0 0 .75rem;
+  padding:.35rem;
+  border:2px solid var(--khaki2);
+  border-radius:12px;
+  background:linear-gradient(135deg,#efe4ca,#f8f2e4);
+}
+@media(max-width:900px){
+  .personPortrait{height:min(420px,58vw)}
+}
+@media(max-width:600px){
+  .personPortrait{height:auto;max-height:430px}
+}
