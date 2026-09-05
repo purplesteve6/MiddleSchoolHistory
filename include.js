@@ -42,6 +42,14 @@ function applyConfig(){
     if(cfg[key]) el.setAttribute("href", cfg[key]);
   });
 
+  // Optional hierarchy link: topic -> parent course unit.
+  // Older topics remain unchanged until unitLabel + unitHref are added to their config.
+  const unitLink = document.querySelector("[data-unit-link]");
+  if(unitLink && cfg.unitLabel && cfg.unitHref){
+    unitLink.setAttribute("href", cfg.unitHref);
+    unitLink.hidden = false;
+  }
+
   const y = document.getElementById("copyright-year");
   if(y) y.textContent = new Date().getFullYear();
 }
