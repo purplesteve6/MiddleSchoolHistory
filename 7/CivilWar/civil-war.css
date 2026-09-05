@@ -107,3 +107,15 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}
 .mapAccordion{scroll-margin-top:150px}
 
 .mapAccordion:target{border-color:rgba(47,79,112,.52);box-shadow:0 0 0 3px rgba(47,79,112,.10),0 12px 28px rgba(26,42,58,.16)}
+
+
+/* Visual placeholders used while permanent historical images are selected */
+.contentVisual{margin:1rem 0 0;border:1px solid var(--cw-line);border-radius:16px;overflow:hidden;background:var(--cw-paper);box-shadow:0 9px 22px rgba(26,42,58,.10)}
+.contentVisual img{display:block;width:100%;height:auto}
+.contentVisual--wide img{aspect-ratio:16/9;object-fit:cover}
+.contentVisual--event{max-width:560px}
+.contentVisual--event img{aspect-ratio:16/9;object-fit:cover}
+.pathItem .contentVisual{margin:.75rem 0 0}
+.landingMap{margin-top:1rem}
+.landingMap figcaption a{display:inline-block;margin-left:.25rem;font-weight:900;color:var(--cw-blue);text-decoration:none}
+.landingMap figcaption a:hover{text-decoration:underline}
