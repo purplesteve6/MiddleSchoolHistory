@@ -308,3 +308,25 @@ img[data-zoomable-content="true"]{cursor:zoom-in}
 .coloringThumb img{display:block;width:100%;height:92px;object-fit:cover}
 .coloringCalloutLink{display:block;text-decoration:none;transition:background .14s ease}
 .coloringCalloutLink:hover{background:#eef2f5}
+
+
+/* Reusable Coloring Book callout sticker */
+.coloringCalloutLink{
+  display:flex;
+  align-items:center;
+  gap:.55rem;
+  padding:.45rem .55rem .5rem;
+}
+.coloringCalloutIcon{
+  flex:0 0 auto;
+  width:54px;
+  height:auto;
+  object-fit:contain;
+}
+.coloringCalloutLink .coloringCalloutText{
+  min-width:0;
+  padding:0;
+}
+@media(max-width:650px){
+  .coloringCalloutIcon{width:50px}
+}

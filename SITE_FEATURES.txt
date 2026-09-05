@@ -28,6 +28,7 @@ These are the currently available reusable sticker graphics in /assets/images/ui
 • quick_facts.png
 • sixty_seconds_with.png
 • vocabulary.png
+• coloring-book.png
 
 CURRENT STICKER / CALLOUT GRAPHICS
 ----------------------------------
@@ -91,6 +92,13 @@ CURRENT STICKER / CALLOUT GRAPHICS
    Important: Do not repeat “Vocabulary” as a visible text heading when the sticker is displayed.
    Existing example: John Brown Home page.
 
+11. COLORING BOOK
+    File: /assets/images/ui/coloring-book.png
+    Use for: Callouts that link students to a related page in the site's Coloring Book game.
+    Good pattern: Pair the sticker with a small coloring-page thumbnail, a short title, and a clear link such as “Open the coloring page →”.
+    Important: The sticker can serve as the visual label for the callout; do not add a redundant “Coloring Book” heading unless the layout specifically needs text for accessibility or clarity.
+    Existing example: Civil War → War at a Glance → Appomattox surrender callout.
+
 REUSABLE SITE FEATURES / INTERACTIONS
 -------------------------------------
 1. VOCABULARY HOVER DEFINITIONS
@@ -143,6 +151,12 @@ REUSABLE SITE FEATURES / INTERACTIONS
    Appropriate for mnemonics, acronyms, rhymes, memorable comparisons, chunking strategies, and other recall aids.
    The memory device should be accurate and simpler to remember than the facts it is teaching.
 
+12. COLORING BOOK CALLOUT
+    Use with the Coloring Book sticker when a topic has a related coloring page.
+    Recommended pattern: small page thumbnail + Coloring Book sticker + page title + direct link to the coloring-book viewer.
+    Keep the callout compact so it supplements the history content rather than taking over the section.
+    Existing example: Civil War → War at a Glance → Grant & Lee at Appomattox.
+
 DESIGN / CONSISTENCY NOTES
 --------------------------
 • Normal body copy should follow the established site/topic body font unless a topic intentionally specifies otherwise.
@@ -162,6 +176,8 @@ Whenever a new reusable sticker, callout, interaction, or page pattern is create
 
 LAST UPDATED
 ------------
+September 5, 2026
+Added the Coloring Book sticker and reusable Coloring Book callout pattern; first implemented on Civil War → War at a Glance for Grant & Lee at Appomattox.
 September 2, 2026
 Added Quick Facts and Vocabulary stickers and documented their use on the John Brown Home page.
 Earlier the same day: added To Help You Remember and Quick Quiz stickers, an exact UI filename inventory, and expanded reusable feature documentation.
