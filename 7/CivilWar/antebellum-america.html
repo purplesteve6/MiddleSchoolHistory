@@ -153,7 +153,7 @@
         </summary>
         <div class="mapAccordionBody mapStudy">
           <figure class="mapFigure studyMap">
-            <img class="zoomableMap" src="/7/CivilWar/images/maps/major-cash-crops-south-1860.webp" alt="Map showing major agricultural cash crops in the southern United States in 1860" loading="lazy">
+            <button type="button" class="mapZoom" aria-label="Enlarge this map"><img class="zoomableMap" src="/7/CivilWar/images/maps/major-cash-crops-south-1860.webp" alt="Map showing major agricultural cash crops in the southern United States in 1860" loading="lazy"><span class="zoomHint" aria-hidden="true">Enlarge map</span></button>
             <figcaption>This map shows where the South's major cash crops were grown in 1860. Different colors mark the main crop regions, making it easier to compare which crops dominated different parts of the South.</figcaption>
           </figure>
           <div class="considerCard">
@@ -174,7 +174,7 @@
         </summary>
         <div class="mapAccordionBody mapStudy">
           <figure class="mapFigure studyMap">
-            <img class="zoomableMap" src="/7/CivilWar/images/maps/us-manufacturing-employment-1820-1850.webp" alt="Side-by-side maps showing U.S. manufacturing employment by county in 1820 and 1850" loading="lazy">
+            <button type="button" class="mapZoom" aria-label="Enlarge this map"><img class="zoomableMap" src="/7/CivilWar/images/maps/us-manufacturing-employment-1820-1850.webp" alt="Side-by-side maps showing U.S. manufacturing employment by county in 1820 and 1850" loading="lazy"><span class="zoomHint" aria-hidden="true">Enlarge map</span></button>
             <figcaption>These side-by-side maps compare manufacturing employment in 1820 and 1850. They make it easier to see where factory work was concentrated early on and how much more manufacturing had grown by 1850.</figcaption>
           </figure>
           <div class="considerCard">
@@ -209,40 +209,74 @@
 
   <section class="subjectTimeline" aria-label="Civil War timeline"><div class="subjectTimelineHead"><h2>Where Does This Fit?</h2><p>The timeline begins before the shooting war because the crisis that caused it had been building for years.</p></div><iframe src="/timeline/timeline.html?topic=/7/CivilWar&amp;active=compromise_1850" loading="lazy" title="Civil War timeline" frameborder="0"></iframe></section>
 </main>
-<dialog class="mapLightbox" id="mapLightbox" aria-label="Enlarged map view">
+<div class="mapLightbox" id="mapLightbox" role="dialog" aria-modal="true" aria-label="Enlarged map view" aria-hidden="true" hidden>
   <div class="mapLightboxInner">
     <button type="button" class="mapLightboxClose" aria-label="Close enlarged map">×</button>
     <img id="mapLightboxImage" src="" alt="">
   </div>
-</dialog>
+</div>
 <div id="siteFooter"></div>
 <script src="/7/CivilWar/config.js"></script><script src="/include.js"></script><script src="/7/CivilWar/navigation-config.js"></script><script src="/topic-nav/topic-tree.js"></script>
 
+
 <script>
 (() => {
-  const dialog = document.getElementById('mapLightbox');
+  const lightbox = document.getElementById('mapLightbox');
   const fullImage = document.getElementById('mapLightboxImage');
-  const closeButton = dialog?.querySelector('.mapLightboxClose');
-  if (!dialog || !fullImage || !closeButton) return;
+  const closeButton = lightbox?.querySelector('.mapLightboxClose');
+  if (!lightbox || !fullImage || !closeButton) return;
 
-  document.querySelectorAll('.mapZoom').forEach((button) => {
-    button.addEventListener('click', () => {
-      const image = button.querySelector('img');
-      if (!image) return;
-      fullImage.src = image.currentSrc || image.src;
-      fullImage.alt = image.alt;
-      dialog.showModal();
-      closeButton.focus();
-    });
-  });
+  let lastTrigger = null;
 
-  closeButton.addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) dialog.close();
-  });
-  dialog.addEventListener('close', () => {
+  const openMap = (image, trigger) => {
+    if (!image) return;
+    lastTrigger = trigger || image;
+    fullImage.src = image.currentSrc || image.src;
+    fullImage.alt = image.alt || 'Enlarged map';
+    lightbox.hidden = false;
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('mapLightboxOpen');
+    closeButton.focus();
+  };
+
+  const closeMap = () => {
+    lightbox.hidden = true;
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('mapLightboxOpen');
     fullImage.removeAttribute('src');
     fullImage.alt = '';
+    if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+    lastTrigger = null;
+  };
+
+  document.querySelectorAll('img.zoomableMap').forEach((image) => {
+    const button = image.closest('.mapZoom');
+
+    if (button) {
+      if (button.dataset.zoomBound !== 'true') {
+        button.dataset.zoomBound = 'true';
+        button.addEventListener('click', () => openMap(image, button));
+      }
+    } else {
+      image.tabIndex = 0;
+      image.setAttribute('role', 'button');
+      image.setAttribute('aria-label', `Enlarge ${image.alt || 'map'}`);
+      image.addEventListener('click', () => openMap(image, image));
+      image.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openMap(image, image);
+        }
+      });
+    }
+  });
+
+  closeButton.addEventListener('click', closeMap);
+  lightbox.addEventListener('click', (event) => {
+    if (event.target === lightbox) closeMap();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !lightbox.hidden) closeMap();
   });
 })();
 </script>
