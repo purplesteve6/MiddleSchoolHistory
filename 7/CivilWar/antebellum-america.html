@@ -29,7 +29,7 @@
     <p class="mapOverviewHint">Use the questions with each map as things to notice and think about. You do not need to find every answer immediately.</p>
 
     <div class="mapAccordionList">
-      <details class="mapAccordion" open>
+      <details class="mapAccordion" open id="map-free-slave-states">
         <summary>
           <span>Free States, Slave States, and Territories</span>
           <small>United States, 1860</small>
@@ -42,7 +42,7 @@
         </div>
       </details>
 
-      <details class="mapAccordion">
+      <details class="mapAccordion" id="map-railroads">
         <summary>
           <span>Railroads</span>
           <small>1850–1860</small>
@@ -62,7 +62,7 @@
         </div>
       </details>
 
-      <details class="mapAccordion">
+      <details class="mapAccordion" id="map-enslaved-population">
         <summary>
           <span>Enslaved Population</span>
           <small>1860</small>
@@ -83,7 +83,7 @@
       </details>
 
 
-      <details class="mapAccordion">
+      <details class="mapAccordion" id="map-free-african-americans">
         <summary>
           <span>Free African Americans</span>
           <small>1850</small>
@@ -104,7 +104,7 @@
       </details>
 
 
-      <details class="mapAccordion">
+      <details class="mapAccordion" id="map-foreign-born">
         <summary>
           <span>Foreign-Born Population</span>
           <small>1860</small>
@@ -124,29 +124,7 @@
           </div>
         </div>
       </details>
-
-
-      <details class="mapAccordion">
-        <summary>
-          <span>Changing Value of Land</span>
-          <small>1860–1870</small>
-        </summary>
-        <div class="mapAccordionBody mapStudy">
-          <figure class="mapFigure studyMap">
-            <button type="button" class="mapZoom" aria-label="Enlarge this map"><img class="zoomableMap" src="/7/CivilWar/images/maps/changing-value-of-land-1860-1870.webp" alt="Map showing changes in the inflation-adjusted value of land per acre across the United States from 1860 to 1870" loading="lazy"><span class="zoomHint" aria-hidden="true">Enlarge map</span></button>
-            <figcaption>This map compares how the value of land per acre changed between 1860 and 1870. Green areas gained value, yellow areas changed relatively little, and orange or red areas lost value; gray areas have no available data.</figcaption>
-          </figure>
-          <div class="considerCard">
-            <h3>As you look at this map...</h3>
-            <ol>
-              <li>Between 1860 and 1870, which section of the country seems to experience the greatest loss in land value? What might explain that pattern?</li>
-              <li>In the North, which area seems to be gaining value at the highest rate?</li>
-            </ol>
-          </div>
-        </div>
-      </details>
-
-      <details class="mapAccordion">
+<details class="mapAccordion" id="map-cash-crops">
         <summary>
           <span>Major Cash Crops of the American South</span>
           <small>1860</small>
@@ -167,7 +145,7 @@
       </details>
 
 
-      <details class="mapAccordion">
+      <details class="mapAccordion" id="map-manufacturing">
         <summary>
           <span>Manufacturing Employment</span>
           <small>1820 and 1850</small>
@@ -189,7 +167,7 @@
       </details>
 
 
-      <details class="mapAccordion">
+      <details class="mapAccordion" id="map-commanders">
         <summary>
           <span>Where Leading Civil War Commanders Came From</span>
           <small>Selected Commanders and Prewar Experience</small>
@@ -213,7 +191,7 @@
       </details>
 
 
-      <details class="mapAccordion">
+      <details class="mapAccordion" id="map-battlefields">
         <summary>
           <span>Where Civil War Battles Took Place</span>
           <small>Battlefield Inventory</small>
@@ -296,6 +274,27 @@
     if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
     lastTrigger = null;
   };
+
+  const mapSections = Array.from(document.querySelectorAll('details.mapAccordion[id]'));
+
+  const openLinkedMap = () => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id) return;
+
+    const target = document.getElementById(id);
+    if (!target || !target.matches('details.mapAccordion')) return;
+
+    mapSections.forEach((section) => {
+      section.open = section === target;
+    });
+
+    window.setTimeout(() => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  };
+
+  openLinkedMap();
+  window.addEventListener('hashchange', openLinkedMap);
 
   document.querySelectorAll('img.zoomableMap').forEach((image) => {
     const button = image.closest('.mapZoom');
