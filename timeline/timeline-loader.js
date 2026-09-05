@@ -7,6 +7,9 @@
   // topic can be a path like "/6/RomanEmperors"
   let topic = getParam("topic") || "/6/RomanEmperors";
 
+  // Optional event id: centers and highlights a specific event on load.
+  window.TIMELINE_ACTIVE_ID = getParam("active") || "";
+
   // normalize: ensure it starts with "/" and does not end with "/"
   if (!topic.startsWith("/")) topic = "/" + topic;
   topic = topic.replace(/\/+$/, "");

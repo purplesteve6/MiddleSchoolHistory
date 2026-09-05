@@ -173,3 +173,21 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}.card{background
 
 /* Parent-unit + topic-home links in the shared topic header */
 .topicActions{display:flex;align-items:center;justify-content:flex-end;gap:.45rem;flex-wrap:wrap}
+
+
+/* ===== Civil War subject navigation + shared timeline ===== */
+:root{
+  --tree-bg:#273f56;
+  --tree-bg2:#192d40;
+  --tree-text:#f4f7fa;
+  --tree-muted:#c6d0d8;
+  --tree-accent:#bdc8d2;
+  --tree-active:#edf2f6;
+  --tree-active-text:#233b52;
+}
+.subjectTimeline{margin:2rem 0 .2rem}
+.subjectTimelineHead{text-align:center;margin:0 0 .65rem}
+.subjectTimelineHead h2{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--navy);margin:0;font-size:1.7rem}
+.subjectTimelineHead p{margin:.25rem auto 0;color:var(--muted);max-width:72ch}
+.subjectTimeline iframe{width:100%;height:790px;border:0;border-radius:18px;box-shadow:var(--shadow);background:var(--navy2);display:block}
+@media(max-width:600px){.subjectTimeline iframe{height:735px}}

@@ -941,6 +941,7 @@ line.style.height = Math.max(0, spineY) + "px";
 
         const card = document.createElement("a");
         card.className = `eventCard ${laneClass}` + (ev.isContextCard ? " contextCard" : "");
+        if (ev.id && String(ev.id) === String(window.TIMELINE_ACTIVE_ID || "")) card.classList.add("activeEvent");
         card.href = resolveAsset(ev.href || "#");
         card.style.left = x + "px";
         card.dataset.eid = String(ev.id || "");
@@ -969,12 +970,21 @@ line.style.height = Math.max(0, spineY) + "px";
 
         if (ev.image){
           const img = document.createElement("img");
-          img.alt = ev.label ? `Portrait of ${ev.label}` : "Timeline image";
+          img.alt = ev.label ? `Image for ${ev.label}` : "Timeline image";
           img.src = resolveAsset(ev.image);
-          img.onerror = () => { avatarWrap.innerHTML = `<div class="ph">Image<br/>Missing</div>`; };
+          img.onerror = () => {
+            avatarWrap.innerHTML = "";
+            const tile = document.createElement("div");
+            tile.className = "eventTypeTile";
+            tile.textContent = ev.eventType || "EVENT";
+            avatarWrap.appendChild(tile);
+          };
           avatarWrap.appendChild(img);
         } else {
-          avatarWrap.innerHTML = `<div class="ph">No<br/>Image</div>`;
+          const tile = document.createElement("div");
+          tile.className = "eventTypeTile";
+          tile.textContent = ev.eventType || "EVENT";
+          avatarWrap.appendChild(tile);
         }
 
         if (laneClass === "laneAbove"){
