@@ -5,15 +5,16 @@
    ============================================================ */
 
 :root{
-  --g7-navy:#17324d;
-  --g7-navy2:#0f2236;
-  --g7-red:#8f3f37;
-  --g7-gold:#d0ae68;
-  --g7-paper:#f8f1df;
-  --g7-paper2:#fffaf0;
-  --g7-ink:#1c2934;
-  --g7-muted:#5d6a74;
-  --g7-line:rgba(23,50,77,.18);
+  /* Grade 7 course hubs follow the main site's purple + brown identity. */
+  --g7-navy:#3a1f63;
+  --g7-navy2:#1f0f33;
+  --g7-red:#7f573b;
+  --g7-gold:#c79b6b;
+  --g7-paper:#f7f0e7;
+  --g7-paper2:#fffaf4;
+  --g7-ink:#2d2030;
+  --g7-muted:#665b68;
+  --g7-line:rgba(58,31,99,.18);
   --g7-shadow:0 18px 42px rgba(0,0,0,.28);
   --g7-radius:20px;
 }
@@ -21,9 +22,27 @@
 body.grade7-page{
   color:#fff;
   background:
-    radial-gradient(900px 600px at 7% 12%, rgba(143,63,55,.28), transparent 58%),
-    radial-gradient(900px 620px at 95% 18%, rgba(208,174,104,.17), transparent 58%),
-    linear-gradient(180deg,#17324d 0%,#10283e 46%,#0b1d2e 100%);
+    radial-gradient(1200px 600px at 20% 0%, rgba(181,140,255,.20), transparent 55%),
+    radial-gradient(900px 520px at 82% 18%, rgba(155,110,74,.16), transparent 56%),
+    linear-gradient(180deg,#3a1f63 0%,#2a1746 46%,#1f0f33 100%);
+  background-attachment:fixed;
+}
+
+/* Civil War gets its own Union-blue / period-gray unit identity. */
+body.grade7-page.civil-war-unit{
+  --g7-navy:#2f4f70;
+  --g7-navy2:#1d334a;
+  --g7-red:#5f6f7d;
+  --g7-gold:#aeb7c0;
+  --g7-paper:#edf0f2;
+  --g7-paper2:#f8f9fa;
+  --g7-ink:#24313d;
+  --g7-muted:#5c6873;
+  --g7-line:rgba(47,79,112,.20);
+  background:
+    radial-gradient(1000px 600px at 15% 4%, rgba(116,148,181,.26), transparent 58%),
+    radial-gradient(900px 560px at 88% 22%, rgba(196,203,210,.18), transparent 58%),
+    linear-gradient(180deg,#344f6c 0%,#293f56 48%,#202f40 100%);
   background-attachment:fixed;
 }
 
@@ -46,8 +65,19 @@ body.grade7-page{
   border-radius:26px;
   background:
     linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.055)),
-    rgba(8,25,40,.42);
+    rgba(31,15,51,.46);
   box-shadow:var(--g7-shadow);
+}
+
+body.civil-war-unit .grade7-hero{
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.055)),
+    rgba(27,47,66,.58);
+  border-color:rgba(220,227,233,.22);
+}
+
+body.civil-war-unit .grade7-hero::after{
+  background:rgba(190,199,208,.13);
 }
 
 .grade7-hero::after{
@@ -58,7 +88,7 @@ body.grade7-page{
   right:-115px;
   bottom:-170px;
   border-radius:50%;
-  background:rgba(208,174,104,.12);
+  background:rgba(199,155,107,.14);
   border:1px solid rgba(255,255,255,.08);
   pointer-events:none;
 }
@@ -70,13 +100,14 @@ body.grade7-page{
   font-weight:700;
   letter-spacing:.08em;
   text-transform:uppercase;
-  color:#f2dba9;
+  color:#e3c39f;
 }
 
 .grade7-hero h1{
   margin:.05rem 0 .6rem;
   font-family:"Lemon Milk",system-ui,sans-serif;
-  font-size:clamp(2rem,5vw,4rem);
+  /* Match the title scale used by the main landing page featured hero. */
+  font-size:clamp(28px,4.5vw,52px);
   line-height:1.02;
   letter-spacing:.025em;
 }
@@ -124,13 +155,13 @@ body.grade7-page{
   box-shadow:0 12px 28px rgba(0,0,0,.19);
 }
 
-.unitAccordion.u1{--unit-accent:#587f6d}
-.unitAccordion.u2{--unit-accent:#b46d3e}
-.unitAccordion.u3{--unit-accent:#9c7441}
-.unitAccordion.u4{--unit-accent:#a43d43}
-.unitAccordion.u5{--unit-accent:#567499}
-.unitAccordion.u6{--unit-accent:#7e6746}
-.unitAccordion.u7{--unit-accent:#7b3d35}
+.unitAccordion.u1{--unit-accent:#7f573b}
+.unitAccordion.u2{--unit-accent:#56329d}
+.unitAccordion.u3{--unit-accent:#9b6e4a}
+.unitAccordion.u4{--unit-accent:#6d4aa8}
+.unitAccordion.u5{--unit-accent:#64402a}
+.unitAccordion.u6{--unit-accent:#8a61c0}
+.unitAccordion.u7{--unit-accent:#5a3a23}
 
 .unitAccordion summary{
   list-style:none;
@@ -274,19 +305,21 @@ body.grade7-page{
   color:rgba(255,255,255,.78);
   font-size:.9rem;
 }
-.unit-breadcrumb a{color:#f2dba9;font-weight:800}
+.unit-breadcrumb a{color:#e3c39f;font-weight:800}
+body.civil-war-unit .unit-breadcrumb a{color:#d7e1ea}
 
 .unit-page-hero{
   --unit-accent:var(--g7-gold);
   border-top:7px solid var(--unit-accent);
 }
-.unit-page-hero.u1{--unit-accent:#587f6d}
-.unit-page-hero.u2{--unit-accent:#b46d3e}
-.unit-page-hero.u3{--unit-accent:#9c7441}
-.unit-page-hero.u4{--unit-accent:#a43d43}
-.unit-page-hero.u5{--unit-accent:#567499}
-.unit-page-hero.u6{--unit-accent:#7e6746}
-.unit-page-hero.u7{--unit-accent:#7b3d35}
+.unit-page-hero.u1{--unit-accent:#7f573b}
+.unit-page-hero.u2{--unit-accent:#56329d}
+.unit-page-hero.u3{--unit-accent:#9b6e4a}
+.unit-page-hero.u4{--unit-accent:#6d4aa8}
+.unit-page-hero.u5{--unit-accent:#64402a}
+.unit-page-hero.u6{--unit-accent:#8a61c0}
+.unit-page-hero.u7{--unit-accent:#9aa7b4}
+body.civil-war-unit .unit-page-hero.u7{--unit-accent:#b8c1ca}
 
 .unit-overview-grid{
   display:grid;
