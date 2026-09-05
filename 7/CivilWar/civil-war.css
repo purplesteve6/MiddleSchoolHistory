@@ -230,50 +230,13 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}
   text-shadow:0 1px 2px rgba(0,0,0,.55);
 }
 
-.coloringCallout{
-  align-self:stretch;
-  display:flex;
-  flex-direction:column;
-  width:260px;
-  border:1px solid var(--cw-line);
-  border-radius:12px;
-  overflow:hidden;
-  background:#f7f9fa;
-  box-shadow:0 5px 14px rgba(26,42,58,.08);
-}
-.coloringThumb{
-  position:relative;
-  flex:0 0 auto;
-  min-height:0;
-  margin:0;
-  background:#fff;
-}
-.coloringThumb img{
-  display:block;
-  width:100%;
-  height:auto;
-  min-height:0;
-  object-fit:contain;
-  background:#fff;
-}
-.coloringCalloutLink{
-  display:block;
-  text-decoration:none;
-  transition:background .14s ease;
-}
-.coloringCalloutLink:hover{background:#eef2f5}
-.coloringCalloutText{display:block;padding:.52rem .62rem .6rem;line-height:1.22}
-.coloringCalloutKicker{display:block;font-size:.6rem;letter-spacing:.08em;color:var(--cw-red);font-weight:900}
-.coloringCallout strong{display:block;margin:.12rem 0 .18rem;color:var(--cw-blue2);font-family:"Tommy Soft",system-ui,sans-serif;font-size:.86rem}
-.coloringCalloutText>span:last-child{display:block;color:var(--cw-muted);font-size:.7rem}
 
 @media(max-width:900px){
   .sectionInlineMedia{grid-template-columns:minmax(0,1fr) 275px}
   .sectionInlineMedia--left{grid-template-columns:250px minmax(0,1fr)}
   .pathItem--withMedia{grid-template-columns:82px minmax(0,1fr) 230px}
   .sectionBanner img{height:280px}
-  .coloringCallout{width:225px}
-}
+  }
 @media(max-width:650px){
   .sectionInlineMedia,.sectionInlineMedia--left{grid-template-columns:1fr}
   .sectionSideVisual{width:100%;max-width:none;min-height:0}
@@ -281,12 +244,9 @@ main{max-width:var(--max);margin:0 auto;padding:108px 1rem 4rem}
   .sectionInlineMedia--right .sectionSideVisual{order:2}
 
   .pathItem--withMedia{grid-template-columns:1fr}
-  .pathMedia,.coloringCallout{width:100%;max-width:none;margin-top:.35rem}
-  .pathMedia{min-height:0}
+  .pathMedia,  .pathMedia{min-height:0}
   .pathMedia img{height:auto;min-height:0;aspect-ratio:16/9}
-  .coloringThumb{min-height:0}
-  .coloringThumb img{height:auto;min-height:0;aspect-ratio:16/9}
-  .sectionBanner{margin:-1rem -1rem .9rem}
+      .sectionBanner{margin:-1rem -1rem .9rem}
   .sectionBanner img{height:auto;aspect-ratio:16/7}
 }
 
@@ -303,30 +263,127 @@ img[data-zoomable-content="true"]{cursor:zoom-in}
 .contentImageLightboxOpen{overflow:hidden}
 
 /* Appomattox coloring thumbnail: zoom image, link text */
-.coloringCallout{align-self:start;display:block;width:175px;border:1px solid var(--cw-line);border-radius:12px;overflow:hidden;background:#f7f9fa;box-shadow:0 5px 14px rgba(26,42,58,.08)}
-.coloringThumb{margin:0;background:#fff}
-.coloringThumb img{display:block;width:100%;height:92px;object-fit:cover}
-.coloringCalloutLink{display:block;text-decoration:none;transition:background .14s ease}
-.coloringCalloutLink:hover{background:#eef2f5}
 
 
-/* Reusable Coloring Book callout sticker */
-.coloringCalloutLink{
-  display:flex;
+max-width:650px){
+}
+
+
+/* Appomattox Coloring Book callout */
+#appomattox.pathItem--withMedia{
+  grid-template-columns:96px minmax(0,1fr) 350px;
+}
+
+.coloringCallout{
+  align-self:center;
+  display:grid;
+  grid-template-columns:100px minmax(0,1fr);
   align-items:center;
-  gap:.55rem;
-  padding:.45rem .55rem .5rem;
+  width:350px;
+  max-width:100%;
+  overflow:visible;
+  background:transparent;
+  border:0;
+  box-shadow:none;
 }
+
 .coloringCalloutIcon{
-  flex:0 0 auto;
-  width:54px;
+  position:relative;
+  z-index:3;
+  display:block;
+  width:108px;
   height:auto;
+  max-width:none;
+  margin-right:-18px;
   object-fit:contain;
+  filter:drop-shadow(0 6px 10px rgba(26,42,58,.2));
 }
-.coloringCalloutLink .coloringCalloutText{
-  min-width:0;
-  padding:0;
+
+.coloringThumb{
+  position:relative;
+  z-index:2;
+  margin:0;
+  overflow:hidden;
+  border:1px solid var(--cw-line);
+  border-radius:0;
+  background:#fff;
+  box-shadow:0 6px 16px rgba(26,42,58,.10);
 }
+
+.coloringThumb img{
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:0;
+  object-fit:contain;
+  background:#fff;
+}
+
+.coloringThumbCaption{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:2;
+  margin:0;
+  padding:1.25rem .65rem .58rem;
+  color:#fff;
+  background:linear-gradient(180deg,rgba(11,18,25,0),rgba(11,18,25,.82) 45%,rgba(11,18,25,.92));
+  text-shadow:0 1px 2px rgba(0,0,0,.55);
+}
+
+.coloringThumbCaption a{
+  display:block;
+  color:#fff;
+  text-decoration:none;
+}
+
+.coloringThumbCaption strong{
+  display:block;
+  margin:0 0 .12rem;
+  color:#fff;
+  font-family:"Tommy Soft",system-ui,sans-serif;
+  font-size:.82rem;
+  line-height:1.15;
+}
+
+.coloringThumbCaption span{
+  display:block;
+  font-size:.68rem;
+  line-height:1.15;
+  opacity:.92;
+}
+
+.coloringThumbCaption a:hover span,
+.coloringThumbCaption a:focus-visible span{
+  text-decoration:underline;
+}
+
+@media(max-width:900px){
+  #appomattox.pathItem--withMedia{
+    grid-template-columns:82px minmax(0,1fr) 305px;
+  }
+  .coloringCallout{
+    grid-template-columns:86px minmax(0,1fr);
+    width:305px;
+  }
+  .coloringCalloutIcon{
+    width:94px;
+    margin-right:-15px;
+  }
+}
+
 @media(max-width:650px){
-  .coloringCalloutIcon{width:50px}
+  #appomattox.pathItem--withMedia{
+    grid-template-columns:1fr;
+  }
+  .coloringCallout{
+    grid-template-columns:92px minmax(0,1fr);
+    width:min(100%,350px);
+    margin-top:.45rem;
+  }
+  .coloringCalloutIcon{
+    width:100px;
+    margin-right:-16px;
+  }
 }
