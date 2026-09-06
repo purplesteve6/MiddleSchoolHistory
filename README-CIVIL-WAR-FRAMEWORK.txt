@@ -34,3 +34,17 @@ The timeline href can link to an entire topic or directly to a specific subpage/
 PLANNED TREE ITEMS
 ------------------
 Some future pages appear dimmed in the navigation tree to show the developing structure without creating dead links. Remove or rename those entries any time.
+
+
+SEPTEMBER 6, 2026 — KEY BATTLES EXTENSION
+------------------------------------------
+• Added /7/CivilWar/Battles/ as the first new standalone Civil War topic nested inside the CivilWar folder.
+• John Brown remains at its existing /7/JohnBrown/ URL to avoid breaking established links and assets.
+• Added twelve battle/campaign pages plus a dedicated battle timeline.
+• Civil War topic tree now links the Battles home and all twelve pages.
+• Main Civil War timeline now sends Fort Sumter, Antietam, Gettysburg, Vicksburg, Atlanta, and Appomattox to detailed battle pages.
+• Civil War home, War at a Glance, and Grade 7 landing now link the Battles topic.
+
+FOLDER CONVENTION GOING FORWARD
+--------------------------------
+New Civil War standalone topics may be nested under /7/CivilWar/ when practical. Existing standalone topics with stable URLs (especially /7/JohnBrown/) do not need to be moved simply to mirror the logical topic hierarchy.

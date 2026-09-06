@@ -34,10 +34,19 @@ window.TOPIC_TREE_CONFIG = {
     {
       label: "Battles",
       items: [
-        { label: "Fort Sumter", disabled: true },
-        { label: "Antietam", disabled: true },
-        { label: "Gettysburg", disabled: true },
-        { label: "Vicksburg", disabled: true }
+        { label: "Key Battles", href: "/7/CivilWar/Battles/" },
+        { label: "Fort Sumter", href: "/7/CivilWar/Battles/battles/fort-sumter.html" },
+        { label: "First Bull Run", href: "/7/CivilWar/Battles/battles/first-bull-run.html" },
+        { label: "Hampton Roads", href: "/7/CivilWar/Battles/battles/hampton-roads.html" },
+        { label: "Shiloh", href: "/7/CivilWar/Battles/battles/shiloh.html" },
+        { label: "Antietam", href: "/7/CivilWar/Battles/battles/antietam.html" },
+        { label: "Fredericksburg", href: "/7/CivilWar/Battles/battles/fredericksburg.html" },
+        { label: "Chancellorsville", href: "/7/CivilWar/Battles/battles/chancellorsville.html" },
+        { label: "Gettysburg", href: "/7/CivilWar/Battles/battles/gettysburg.html" },
+        { label: "Vicksburg", href: "/7/CivilWar/Battles/battles/vicksburg.html" },
+        { label: "Wilderness & Spotsylvania", href: "/7/CivilWar/Battles/battles/wilderness-spotsylvania.html" },
+        { label: "Atlanta & Sherman's March", href: "/7/CivilWar/Battles/battles/atlanta-march.html" },
+        { label: "Appomattox", href: "/7/CivilWar/Battles/battles/appomattox.html" }
       ]
     }
   ]
