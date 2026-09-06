@@ -1,76 +1,15 @@
-KEY BATTLES OF THE CIVIL WAR — CONTENT SOURCES
-===============================================
+KEY BATTLES OF THE CIVIL WAR — CONTENT NOTES
+===========================================
 
-Core historical references used to fact-check dates, outcomes, significance, and terminology.
+This revision keeps the same general historical grounding as the original package but expands middle-school context in three areas requested by the user:
+1. landing-page background information before the Confederate-flag section
+2. political context (emancipation, changes in generals, Lincoln’s 1864 reelection, etc.)
+3. fun “Did You Know?” battle facts
 
-National Park Service
----------------------
-Fort Sumter and Fort Moultrie NHP — History & Culture
-https://www.nps.gov/fosu/learn/historyculture/index.htm
-
-First Bull Run / Manassas background (NPS Appomattox July 1861)
-https://www.nps.gov/apco/july-1861.htm
-
-Battle of the Ironclads
-https://www.nps.gov/articles/battle-of-the-ironclads.htm
-
-Shiloh National Military Park
-https://www.nps.gov/shil/learn/historyculture/shiloh.htm
-
-Antietam National Battlefield — Emancipation Proclamation background
-https://www.nps.gov/articles/the-emancipation-proclamation.htm
-
-Fredericksburg & Spotsylvania NMP — Marye's Heights / Sunken Road
-https://www.nps.gov/frsp/learn/historyculture/fburg-hist-maryesh.htm
-https://www.nps.gov/places/the-sunken-road.htm
-
-Gettysburg National Military Park — Gettysburg Overview
-https://www.nps.gov/gett/learn/historyculture/gettysburg-overview.htm
-
-Vicksburg National Military Park — Campaign for Vicksburg
-https://www.nps.gov/vick/learn/historyculture/campaign-for-vicksburg.htm
-
-Fredericksburg & Spotsylvania NMP — Wilderness / Spotsylvania
-https://www.nps.gov/frsp/learn/historyculture/wildspot.htm
-https://www.nps.gov/frsp/learn/photosmultimedia/spotsylvania-battlefield-tour.htm
-
-NPS — The Military Experience / Changing War / Civil War industry and economy
-https://www.nps.gov/articles/the-military-experience.htm
-https://www.nps.gov/articles/the-changing-war.htm
-https://www.nps.gov/articles/industry-and-economy-during-the-civil-war.htm
-
-Appomattox Court House NHP — The Surrender
-https://www.nps.gov/apco/the-surrender.htm
-
-CONFEDERATE FLAG FEATURE
-------------------------
-NPS — Southern Battle Flags
-https://www.nps.gov/peri/learn/historyculture/southern-battle-flags.htm
-
-NPS — Flags of the Civil War
-https://www.nps.gov/pete/learn/education/flags-of-the-civil-war.htm
-
-NPS — Flags at Antietam
-https://www.nps.gov/anti/learn/historyculture/flags.htm
-
-Smithsonian National Museum of American History — First Confederate National Flag
-https://americanhistory.si.edu/collections/object/nmah_461713
-
-Smithsonian National Museum of American History — Confederate Battle Flag
-https://americanhistory.si.edu/collections/object/nmah_439645
-
-Smithsonian National Museum of American History — The Flag in the Sixties
-https://amhistory.si.edu/starspangledbanner/the-flag-in-the-sixties.aspx/default.aspx
-
-National Park Service — The Civil War in American Memory
-https://www.nps.gov/articles/the-civil-war-in-american-memory.htm
-
-National Park Service — Slavery as a Cause of the Civil War
-https://www.nps.gov/liho/learn/historyculture/slavery-cause-civil-war.htm
-
-Library of Congress — Tracing General Sherman's “March to the Sea”
-https://blogs.loc.gov/maps/2023/09/tracing-general-shermans-march-to-the-sea/
-
-NOTE ON TERMINOLOGY
--------------------
-The Atlanta/Sherman page explains that “total war” is common school-textbook language, while “hard war” is often a more precise term for Union strategy in 1864–65. The Wilderness/Spotsylvania page separately defines attrition rather than treating every 1864 operation as the same strategy.
+The Confederate-flag visuals are now supplied as temporary image assets rather than inline drawings in the page source.
+If you later decide to replace them with outside/public-domain photographs, useful searches would be:
+- First National Confederate flag stars and bars
+- Army of Northern Virginia battle flag square
+- Second National Confederate flag stainless banner
+- Third National Confederate flag
+- Confederate battle flag rectangular
