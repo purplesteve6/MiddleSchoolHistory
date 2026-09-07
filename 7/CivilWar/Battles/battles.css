@@ -499,3 +499,75 @@ body:not(.battlesLanding) .heroVisualStack .stackPanel small{display:none}.battl
   .keyTakeawaySticker{width:min(310px,88vw)}
   .keyTakeaway p{font-size:1.1rem}
 }
+
+
+/* ===== Battle image zoom ===== */
+.battleZoomTarget{
+  cursor:zoom-in;
+  transition:filter .15s ease, transform .15s ease;
+}
+.battleZoomTarget:hover{filter:brightness(1.035)}
+.battleZoomTarget:focus-visible{
+  outline:3px solid var(--dark);
+  outline-offset:3px;
+}
+body.battleImageLightboxOpen{overflow:hidden}
+.battleImageLightbox[hidden]{display:none}
+.battleImageLightbox{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(8,18,28,.92);
+  backdrop-filter:blur(5px);
+}
+.battleImageLightboxInner{
+  position:relative;
+  width:min(94vw,1500px);
+  max-height:94vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.55rem;
+}
+.battleImageLightboxImage{
+  display:block;
+  max-width:100%;
+  max-height:84vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border-radius:10px;
+  box-shadow:0 20px 55px rgba(0,0,0,.45);
+  background:#fff;
+}
+.battleImageLightboxCaption{
+  max-width:1000px;
+  color:#f3f6f8;
+  font-size:.95rem;
+  line-height:1.4;
+  text-align:center;
+}
+.battleImageLightboxClose{
+  position:absolute;
+  right:-10px;
+  top:-12px;
+  z-index:2;
+  width:44px;
+  height:44px;
+  border:2px solid rgba(255,255,255,.6);
+  border-radius:50%;
+  background:var(--dark);
+  color:#fff;
+  font:800 30px/1 ui-sans-serif,system-ui,sans-serif;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+.battleImageLightboxClose:hover{filter:brightness(1.15)}
+@media(max-width:650px){
+  .battleImageLightbox{padding:14px}
+  .battleImageLightboxImage{max-height:80vh}
+  .battleImageLightboxClose{right:0;top:-8px}
+}

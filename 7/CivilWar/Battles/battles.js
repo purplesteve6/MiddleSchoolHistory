@@ -37,3 +37,92 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, { passive: false });
 });
+
+
+// Enlarged-view lightbox for the overview battlefield-distribution map and
+// Mathew Brady / Antietam gallery photographs.
+document.addEventListener('DOMContentLoaded', () => {
+  const targets = Array.from(document.querySelectorAll(
+    '.overviewHeroRow .mapPanel img, .antietamGallery img, img.battleZoomTarget'
+  ));
+  if (!targets.length || document.getElementById('battleImageLightbox')) return;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'battleImageLightbox';
+  overlay.className = 'battleImageLightbox';
+  overlay.hidden = true;
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-label', 'Enlarged image');
+  overlay.innerHTML = `
+    <div class="battleImageLightboxInner">
+      <button type="button" class="battleImageLightboxClose" aria-label="Close enlarged image">×</button>
+      <img class="battleImageLightboxImage" src="" alt="">
+      <div class="battleImageLightboxCaption" hidden></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const fullImage = overlay.querySelector('.battleImageLightboxImage');
+  const caption = overlay.querySelector('.battleImageLightboxCaption');
+  const closeButton = overlay.querySelector('.battleImageLightboxClose');
+  let lastTrigger = null;
+
+  const getCaption = (img) => {
+    if (img.dataset.zoomCaption) return img.dataset.zoomCaption;
+    const figure = img.closest('figure');
+    const figcaption = figure?.querySelector('figcaption');
+    if (figcaption) return figcaption.textContent.trim();
+    const panel = img.closest('.stackPanel');
+    const small = panel?.querySelector('small');
+    return small ? small.textContent.trim() : '';
+  };
+
+  const open = (img) => {
+    lastTrigger = img;
+    fullImage.src = img.currentSrc || img.src;
+    fullImage.alt = img.alt || 'Enlarged image';
+    const text = getCaption(img);
+    caption.textContent = text;
+    caption.hidden = !text;
+    overlay.hidden = false;
+    document.body.classList.add('battleImageLightboxOpen');
+    closeButton.focus();
+  };
+
+  const close = () => {
+    overlay.hidden = true;
+    document.body.classList.remove('battleImageLightboxOpen');
+    fullImage.removeAttribute('src');
+    fullImage.alt = '';
+    caption.textContent = '';
+    caption.hidden = true;
+    if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+    lastTrigger = null;
+  };
+
+  [...new Set(targets)].forEach((img) => {
+    img.classList.add('battleZoomTarget');
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
+    img.setAttribute('aria-label', `Enlarge ${img.alt || 'image'}`);
+    img.addEventListener('click', (event) => {
+      event.preventDefault();
+      open(img);
+    });
+    img.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        open(img);
+      }
+    });
+  });
+
+  closeButton.addEventListener('click', close);
+  overlay.addEventListener('click', (event) => {
+    if (event.target === overlay) close();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !overlay.hidden) close();
+  });
+});

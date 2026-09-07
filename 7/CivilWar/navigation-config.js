@@ -33,7 +33,7 @@ window.TOPIC_TREE_CONFIG = {
       ]
     },
     {
-      label: "Battles",
+      label: "Key Battles",
       items: [
         { label: "Overview", href: "/7/CivilWar/Battles/" },
         { label: "Fort Sumter", href: "/7/CivilWar/Battles/battles/fort-sumter.html" },
