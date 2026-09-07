@@ -29,6 +29,7 @@ These are the currently available reusable sticker graphics in /assets/images/ui
 • sixty_seconds_with.png
 • vocabulary.png
 • coloring-book.png
+• person-of-interest.png
 
 CURRENT STICKER / CALLOUT GRAPHICS
 ----------------------------------
@@ -98,6 +99,15 @@ CURRENT STICKER / CALLOUT GRAPHICS
     Good pattern: Pair the sticker with a small coloring-page thumbnail, a short title, and a clear link such as “Open the coloring page →”.
     Important: The sticker can serve as the visual label for the callout; do not add a redundant “Coloring Book” heading unless the layout specifically needs text for accessibility or clarity.
     Existing example: Civil War → War at a Glance → Appomattox surrender callout.
+
+12. PERSON OF INTEREST
+    File: /assets/images/ui/person-of-interest.png
+    Use for: Short biographical callouts that introduce a historical person directly relevant to the surrounding event or topic.
+    Good pattern: Small centered Person of Interest sticker → portrait → person's name → concise context explaining why the person matters here.
+    Portrait rule: Preserve the supplied portrait ratio (500 × 640, or 25:32) and show the full portrait without cropping.
+    Sticker sizing: Keep the sticker modest—about 75% of the portrait width, centered above the portrait.
+    Important: The sticker already contains “Person of Interest,” so do not repeat those words as a text heading.
+    Existing example: Civil War → Key Battles person callouts.
 
 REUSABLE SITE FEATURES / INTERACTIONS
 -------------------------------------
