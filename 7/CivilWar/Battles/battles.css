@@ -188,3 +188,180 @@ body:not(.battlesLanding) .heroVisualStack .stackPanel small{display:none}.battl
   .contextAside .coloringCallout{grid-template-columns:92px minmax(0,1fr);width:min(100%,350px)}
   .coloringCalloutIcon{width:100px;margin-right:-16px}
 }
+
+
+/* ===== September 2026 battle icon navigation ===== */
+.battleIconNav{
+  position:sticky;
+  top:85px;
+  z-index:24;
+  display:flex;
+  align-items:center;
+  gap:.55rem;
+  padding:.5rem .6rem .42rem;
+  overflow:hidden;
+  background:linear-gradient(105deg,rgba(15,49,77,.97) 0 58%,rgba(53,63,73,.97) 100%);
+  border:1px solid rgba(255,255,255,.18);
+  border-bottom:3px solid rgba(213,195,155,.7);
+  box-shadow:0 10px 25px rgba(15,28,40,.28);
+}
+.battleIconNav .battleNavHome{
+  flex:0 0 auto;
+  align-self:stretch;
+  min-width:86px;
+  display:grid;
+  place-items:center;
+  margin:0;
+  padding:.55rem .7rem;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.09);
+  color:#fff;
+  font-size:.82rem;
+  font-weight:950;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.battleIconNav .battleNavHome:hover,
+.battleIconNav .battleNavHome.active{
+  background:#f5f0e3;
+  color:#17324d;
+  border-color:#d5c39b;
+}
+.battleIconNav .battleNavScroll{
+  flex:1 1 auto;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:.38rem;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:.12rem .12rem .42rem;
+  scroll-behavior:smooth;
+  scroll-snap-type:x proximity;
+  overscroll-behavior-inline:contain;
+  touch-action:pan-x;
+  scrollbar-width:auto;
+  scrollbar-color:#557998 rgba(255,255,255,.12);
+}
+.battleIconNav .battleNavScroll:focus-visible{
+  outline:2px solid #d5c39b;
+  outline-offset:2px;
+  border-radius:8px;
+}
+.battleIconNav .battleNavScroll::-webkit-scrollbar{height:10px}
+.battleIconNav .battleNavScroll::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.22);
+}
+.battleIconNav .battleNavScroll::-webkit-scrollbar-thumb{
+  background:linear-gradient(90deg,#2e638f 0 58%,#737c85 58% 100%);
+  border:2px solid #263746;
+  border-radius:999px;
+  box-shadow:0 0 0 1px rgba(213,195,155,.36);
+}
+.battleIconNav .battleNavScroll::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(90deg,#3f7aad 0 58%,#8a939c 58% 100%);
+}
+.battleIconNav .battleNavItem{
+  flex:0 0 112px;
+  min-width:112px;
+  height:104px;
+  display:grid;
+  place-items:center;
+  margin:0;
+  padding:.15rem;
+  border:1px solid transparent;
+  border-radius:13px;
+  background:transparent;
+  scroll-snap-align:center;
+  transition:transform .15s ease,background .15s ease,border-color .15s ease,box-shadow .15s ease;
+}
+.battleIconNav .battleNavItem img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 5px rgba(0,0,0,.28));
+  transition:transform .15s ease,filter .15s ease,opacity .15s ease;
+}
+.battleIconNav .battleNavItem:not(.active){opacity:.92}
+.battleIconNav .battleNavItem:not(.active):hover{
+  opacity:1;
+  background:rgba(255,255,255,.09);
+  border-color:rgba(255,255,255,.18);
+  transform:translateY(-2px);
+}
+.battleIconNav .battleNavItem:not(.active):hover img{transform:scale(1.035)}
+.battleIconNav .battleNavItem.active{
+  background:linear-gradient(135deg,#fffdf6,#ece2c9);
+  border:2px solid #d5b96b;
+  box-shadow:0 0 0 2px rgba(255,255,255,.12),0 7px 15px rgba(0,0,0,.26);
+  transform:translateY(-1px);
+}
+.battleIconNav .battleNavItem.active img{
+  filter:drop-shadow(0 5px 7px rgba(0,0,0,.24));
+}
+
+/* Icon-based previous / next controls */
+.iconPager{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:end;
+  gap:1rem;
+  margin:1.35rem 0 .4rem;
+}
+.iconPager .pagerIconLink{
+  width:min(180px,42vw);
+  display:flex;
+  flex-direction:column;
+  gap:.35rem;
+  padding:.35rem;
+  border-radius:16px;
+  background:transparent;
+  color:var(--dark);
+  text-decoration:none;
+  box-shadow:none;
+  transition:transform .16s ease,background .16s ease;
+}
+.iconPager .pagerIconLink.prev{justify-self:start;align-items:flex-start}
+.iconPager .pagerIconLink.next{justify-self:end;align-items:flex-end}
+.iconPager .pagerIconLink:hover{
+  background:var(--soft);
+  transform:translateY(-3px);
+  filter:none;
+}
+.iconPager .pagerIconLink img{
+  width:155px;
+  max-width:100%;
+  height:auto;
+  object-fit:contain;
+  filter:drop-shadow(0 5px 8px rgba(20,31,43,.18));
+}
+.iconPager .pagerDirection{
+  display:inline-block;
+  padding:.25rem .62rem;
+  border-radius:999px;
+  background:var(--dark);
+  color:#fff;
+  font-size:.76rem;
+  font-weight:950;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.iconPager .pagerSpacer{display:block}
+
+@media(max-width:900px){
+  .battleIconNav{display:flex;padding:.45rem .5rem .38rem}
+  .battleIconNav .battleNavHome{min-width:72px;font-size:.72rem;padding:.45rem .5rem;margin:0}
+  .battleIconNav .battleNavItem{flex-basis:100px;min-width:100px;height:94px}
+}
+@media(max-width:600px){
+  .battleIconNav{top:72px;border-radius:11px}
+  .battleIconNav .battleNavHome{min-width:64px;font-size:.66rem}
+  .battleIconNav .battleNavItem{flex-basis:90px;min-width:90px;height:84px}
+  .battleIconNav .battleNavScroll::-webkit-scrollbar{height:8px}
+  .iconPager .pagerIconLink{width:min(155px,43vw)}
+  .iconPager .pagerIconLink img{width:135px}
+}
