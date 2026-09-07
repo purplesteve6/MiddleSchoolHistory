@@ -30,6 +30,7 @@ These are the currently available reusable sticker graphics in /assets/images/ui
 • vocabulary.png
 • coloring-book.png
 • person-of-interest.png
+• key-takeaway.png
 
 CURRENT STICKER / CALLOUT GRAPHICS
 ----------------------------------
@@ -109,6 +110,14 @@ CURRENT STICKER / CALLOUT GRAPHICS
     Important: The sticker already contains “Person of Interest,” so do not repeat those words as a text heading.
     Existing example: Civil War → Key Battles person callouts.
 
+13. KEY TAKEAWAY
+    File: /assets/images/ui/key-takeaway.png
+    Use for: The single most important fact, connection, or memory-worthy idea a student should retain from a page.
+    Good pattern: Use once in a consistent location near the top of a content page, after the main hero/at-a-glance material and before the detailed reading.
+    Writing rule: Keep the accompanying takeaway to one short, plain-language statement. It should answer: “If a 7th grader remembers only one thing from this page, what should it be?”
+    Important: The sticker already contains its own wording, so do not add a redundant “Key Takeaway” text heading.
+    Existing example: Civil War → Battles → each individual battle page.
+
 REUSABLE SITE FEATURES / INTERACTIONS
 -------------------------------------
 1. VOCABULARY HOVER DEFINITIONS
@@ -167,6 +176,11 @@ REUSABLE SITE FEATURES / INTERACTIONS
     Keep the callout compact so it supplements the history content rather than taking over the section.
     Existing example: Civil War → War at a Glance → Grant & Lee at Appomattox.
 
+13. KEY TAKEAWAY CALLOUT
+    Use with the Key Takeaway sticker to isolate the one essential memory from a page.
+    Keep it concise and consistent; it is not a replacement for the Big Idea feature, which can carry a broader interpretation or thesis.
+    Existing example: Civil War → Battles individual battle pages.
+
 DESIGN / CONSISTENCY NOTES
 --------------------------
 • Normal body copy should follow the established site/topic body font unless a topic intentionally specifies otherwise.
@@ -186,6 +200,8 @@ Whenever a new reusable sticker, callout, interaction, or page pattern is create
 
 LAST UPDATED
 ------------
+September 7, 2026
+Added the Key Takeaway sticker and documented its one-essential-memory use on Civil War battle pages.
 September 5, 2026
 Added the Coloring Book sticker and reusable Coloring Book callout pattern; first implemented on Civil War → War at a Glance for Grant & Lee at Appomattox.
 September 2, 2026
