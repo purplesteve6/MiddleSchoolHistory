@@ -34,7 +34,7 @@ window.TOPIC_TREE_CONFIG = {
     {
       label: "Battles",
       items: [
-        { label: "Key Battles", href: "/7/CivilWar/Battles/" },
+        { label: "Overview", href: "/7/CivilWar/Battles/" },
         { label: "Fort Sumter", href: "/7/CivilWar/Battles/battles/fort-sumter.html" },
         { label: "First Bull Run", href: "/7/CivilWar/Battles/battles/first-bull-run.html" },
         { label: "Hampton Roads", href: "/7/CivilWar/Battles/battles/hampton-roads.html" },
