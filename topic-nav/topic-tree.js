@@ -10,11 +10,24 @@
     return String(p || '/').replace(/\/+$/, '') || '/';
   };
   const current = norm(location.pathname);
+  const currentHash = location.hash || '';
+  const hrefKey = href => {
+    try { const u = new URL(href, location.origin); return norm(u.pathname) + (u.hash || ''); }
+    catch(e){ return norm(href); }
+  };
 
   const allItems = cfg.sections.flatMap(s => s.items || []);
   let activeHref = null;
-  const exact = allItems.find(i => i.href && norm(i.href) === current);
-  if(exact) activeHref = exact.href;
+  // Prefer an exact path + hash match. This lets a navigator item point directly to a named feature on a page.
+  if(currentHash){
+    const hashExact = allItems.find(i => i.href && hrefKey(i.href) === current + currentHash);
+    if(hashExact) activeHref = hashExact.href;
+  }
+  // If no anchor-specific item matched, prefer the ordinary page link without a hash.
+  if(!activeHref){
+    const exact = allItems.find(i => i.href && !new URL(i.href, location.origin).hash && norm(i.href) === current);
+    if(exact) activeHref = exact.href;
+  }
   if(!activeHref){
     const pref = allItems
       .filter(i => i.matchPrefix && current.startsWith(norm(i.matchPrefix)))
@@ -49,7 +62,7 @@
       if(item.href && !item.disabled){
         el = document.createElement('a');
         el.href = item.href;
-        if(activeHref && norm(activeHref) === norm(item.href)){
+        if(activeHref && hrefKey(activeHref) === hrefKey(item.href)){
           el.classList.add('active');
           el.setAttribute('aria-current','page');
         }

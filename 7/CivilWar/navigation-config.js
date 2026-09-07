@@ -25,6 +25,7 @@ window.TOPIC_TREE_CONFIG = {
       label: "People",
       items: [
         { label: "John Brown", href: "/7/JohnBrown/", matchPrefix: "/7/JohnBrown/" },
+        { label: "Mathew Brady & Photography", href: "/7/CivilWar/Battles/battles/antietam.html#brady-photography" },
         { label: "Abraham Lincoln", disabled: true },
         { label: "Frederick Douglass", disabled: true },
         { label: "Harriet Tubman", disabled: true },

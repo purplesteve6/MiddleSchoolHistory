@@ -33,3 +33,144 @@ body:not(.battlesLanding) .heroVisualStack .stackPanel small{display:none}.battl
 .overviewFactGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem}.overviewFactGrid article{background:linear-gradient(135deg,var(--soft3),var(--soft));border:1px solid var(--line);border-top:6px solid var(--dark);border-radius:13px;padding:.85rem}.overviewFactGrid b{display:block;color:var(--dark);font-size:1rem;margin-bottom:.2rem}.overviewFactGrid span{font-size:.92rem;line-height:1.42}.strategySplit{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.strategySplit article{border-radius:15px;padding:1rem 1.05rem;border:1px solid var(--line)}.strategyUnion{background:linear-gradient(135deg,#eef7fd,#cfe4f3);border-left:8px solid #184a74!important}.strategyConfederate{background:linear-gradient(135deg,#f7f8f9,#dfe3e7);border-left:8px solid #59636e!important}.strategySplit h3{font-size:1.3rem;margin-top:0}.theaterGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}.theaterGrid article,.meaningGrid article,.factorGrid article,.overviewColumns>div{background:linear-gradient(135deg,var(--soft3),var(--soft));border:1px solid var(--line);border-radius:14px;padding:.95rem}.theaterGrid h3,.overviewColumns h3{margin-top:0}.meaningGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}.meaningGrid b,.factorGrid b{display:block;color:var(--dark);font-size:1rem;margin-bottom:.15rem}.meaningGrid p{margin:.15rem 0 0;line-height:1.42}.factorGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}.factorGrid span{line-height:1.42}.overviewColumns{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}.flagAside{border-style:dashed;border-width:2px}.compactFlags .flagCard{grid-template-columns:128px 1fr;padding:.65rem}.compactFlags .flagVisual{height:82px;padding:.18rem}.compactFlags .squareFlag{width:82px;height:82px}.compactFlags .flagCopy h3{font-size:.98rem;margin:.1rem 0 .15rem}.compactFlags .flagCopy p{font-size:.85rem;line-height:1.3;margin:0}.modernFlagHistory{grid-template-columns:.68fr 1.32fr}.modernFlagHistory p{margin:.35rem 0;line-height:1.48}.inlineBattleImage{margin:1rem 0;border-radius:18px;background:linear-gradient(135deg,var(--soft3),var(--soft));padding:.75rem;border:1px solid var(--line);box-shadow:var(--shadow)}.inlineBattleImage img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:13px;border:2px solid var(--line)}.inlineBattleImage figcaption{font-size:.87rem;color:var(--muted);line-height:1.4;margin:.45rem .2rem .05rem}.overviewHeroRow .stackPanel small{font-size:.76rem}.overviewHeroRow .mapPanel img{object-fit:cover;padding:0;background:transparent}
 @media(max-width:900px){.overviewFactGrid,.strategySplit,.theaterGrid,.meaningGrid,.factorGrid,.overviewColumns{grid-template-columns:1fr 1fr}.modernFlagHistory{grid-template-columns:1fr}.compactFlags .flagCard{grid-template-columns:110px 1fr}.compactFlags .flagVisual{height:74px}.compactFlags .squareFlag{width:74px;height:74px}}
 @media(max-width:650px){.overviewFactGrid,.strategySplit,.theaterGrid,.meaningGrid,.factorGrid,.overviewColumns{grid-template-columns:1fr}.compactFlags .flagCard{grid-template-columns:90px 1fr}.compactFlags .flagVisual{height:64px}.compactFlags .squareFlag{width:64px;height:64px}.inlineBattleImage{padding:.55rem}}
+
+
+/* ===== September 7, 2026 — people, photography & primary-source pass ===== */
+#brady-photography{scroll-margin-top:155px}
+
+/* Gold/yellow side profiles are deliberately independent of the blue/gray battle-result theme. */
+.contextAside.personAside{
+  background:linear-gradient(145deg,#fff8d6,#f3df8a 62%,#e4c460);
+  border:2px solid #caa33a;
+  border-left:8px solid #a97d16;
+  color:#3c321c;
+  box-shadow:0 14px 30px rgba(73,55,13,.18);
+}
+.personAside .asideKicker{
+  color:#6d5010;
+  background:rgba(255,255,255,.5);
+  border-color:rgba(116,84,12,.22);
+}
+.personAside h3{color:#604713}
+.personAside .personPortrait{
+  display:block;
+  width:100%;
+  aspect-ratio:500/640;
+  max-height:330px;
+  object-fit:cover;
+  object-position:center top;
+  margin:.55rem 0 .72rem;
+  border:2px solid rgba(116,84,12,.38);
+  border-radius:12px;
+  background:#eee7cf;
+  box-shadow:0 6px 14px rgba(74,55,15,.15);
+}
+.personFeatureWide{
+  display:grid;
+  grid-template-columns:190px minmax(0,1fr);
+  gap:1rem;
+  align-items:center;
+  margin:1rem 0;
+  padding:1rem;
+  border-radius:18px;
+  background:linear-gradient(145deg,#fff8d6,#f3df8a 62%,#e4c460);
+  border:2px solid #caa33a;
+  border-left:8px solid #a97d16;
+  color:#3c321c;
+  box-shadow:var(--shadow);
+}
+.personFeatureWide img{width:100%;max-height:250px;object-fit:cover;object-position:center top;border:2px solid rgba(116,84,12,.38);border-radius:12px}
+.personFeatureWide h3{margin:.15rem 0 .35rem;color:#604713;font-size:1.35rem}
+.personFeatureWide .asideKicker{color:#6d5010;font-weight:900;text-transform:uppercase;letter-spacing:.1em;font-size:.76rem}
+
+/* Rich primary sources: parchment independent from battle-result color. */
+.primarySourceParchment{
+  margin:1rem 0;
+  padding:1.25rem 1.4rem 1.35rem;
+  border:1px solid #a9874e;
+  border-left:7px solid #735428;
+  border-radius:16px;
+  background:
+    linear-gradient(rgba(239,224,184,.92),rgba(239,224,184,.92)),
+    repeating-linear-gradient(0deg,rgba(78,54,25,.035) 0 1px,transparent 1px 5px);
+  color:#382b1d;
+  box-shadow:0 12px 28px rgba(69,49,25,.18);
+}
+.primarySourceParchment h2{margin:.2rem 0 .15rem;color:#503a20;text-align:center;font-size:1.7rem}
+.primarySourceParchment .sourceDate{text-align:center;margin:.05rem auto .85rem;color:#6c5637;font-size:.83rem;font-weight:800}
+.primarySourceParchment .sourceText,
+.gettysburgAddress .addressText{
+  font-family:"John Brown Print",Georgia,"Times New Roman",serif;
+  font-synthesis:none;
+  color:#38291a;
+}
+.primarySourceParchment .sourceText{margin:.75rem auto;font-size:1.15rem;line-height:1.62;max-width:86ch}
+.primarySourceParchment .sourceEngage{margin-top:1rem;padding:.8rem .9rem;border-radius:12px;background:rgba(255,250,232,.55);border:1px solid rgba(99,71,33,.18);font-family:ui-sans-serif,system-ui,sans-serif}
+.primarySourceParchment .sourceEngage h3{margin:0 0 .25rem;color:#59401f}
+.primarySourceParchment .sourceNote{color:#6b5a43}
+.gettysburgAddress .addressText{font-size:1.08rem;line-height:1.72;max-width:90ch;margin:0 auto}
+.gettysburgAddress .addressText p{margin:.72rem 0}
+.gettysburgAddress mark{background:rgba(196,151,55,.34);color:#2e2115;padding:.03em .08em;border-bottom:2px solid rgba(104,70,22,.55)}
+.sourceCommentGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-top:1rem;font-family:ui-sans-serif,system-ui,sans-serif}
+.sourceCommentGrid>div{padding:.72rem .78rem;background:rgba(255,250,232,.62);border:1px solid rgba(99,71,33,.18);border-radius:11px}
+.sourceCommentGrid b{display:block;color:#59401f;margin-bottom:.18rem}
+.sourceCommentGrid span{font-size:.9rem;line-height:1.4}
+
+/* Brady / Antietam photography feature */
+.bradyFeature{background:linear-gradient(135deg,var(--soft3),var(--soft));overflow:hidden}
+.bradyIntro{display:grid;grid-template-columns:220px minmax(0,1fr);gap:1.15rem;align-items:start}
+.bradyPortraitWrap{padding:.72rem;border-radius:16px;background:linear-gradient(145deg,#fff8d6,#f3df8a);border:2px solid #caa33a;text-align:center}
+.bradyPortraitWrap img{width:100%;aspect-ratio:500/640;object-fit:cover;object-position:center top;border-radius:11px;border:2px solid rgba(116,84,12,.35)}
+.bradyPortraitWrap span{display:block;margin-top:.45rem;color:#604713;font-weight:1000;font-size:1.05rem}
+.photoProcessGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin:1rem 0}
+.photoProcessGrid>div{padding:.78rem .85rem;border-radius:12px;background:linear-gradient(135deg,var(--soft3),var(--soft2));border:1px solid var(--line)}
+.photoProcessGrid b{display:block;color:var(--dark);margin-bottom:.18rem}
+.photoProcessGrid span{font-size:.9rem;line-height:1.4}
+.galleryHeading{font-size:1.4rem!important;margin-top:1.1rem!important}
+.galleryIntro{margin:.2rem 0 .85rem;color:var(--muted)}
+.antietamGallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}
+.antietamGallery figure{margin:0;background:rgba(255,255,255,.78);border:1px solid var(--line);border-radius:13px;overflow:hidden;box-shadow:0 7px 17px rgba(20,31,43,.10)}
+.antietamGallery img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#ddd}
+.antietamGallery figcaption{padding:.65rem .72rem .72rem;font-size:.87rem;line-height:1.42;color:#334654}
+.antietamGallery figcaption b{color:var(--dark)}
+.bradyQuestion{margin-top:1rem;padding:.85rem 1rem;border-left:7px solid var(--dark);border-radius:12px;background:linear-gradient(135deg,var(--soft2),var(--soft3));font-weight:700}
+
+/* Appomattox surrender document + exact War-at-a-Glance coloring-book treatment. */
+.documentExcerpt{margin:.8rem 0 .25rem;padding:.75rem .8rem;border-radius:10px;background:rgba(255,255,255,.68);border:1px solid var(--line);font-family:Georgia,"Times New Roman",serif;font-size:.95rem;line-height:1.48}
+.documentSource{margin:.25rem 0 .9rem!important;font-size:.78rem;color:var(--muted);font-weight:800}
+.contextAside .coloringCallout{
+  align-self:center;
+  display:grid;
+  grid-template-columns:100px minmax(0,1fr);
+  align-items:center;
+  width:350px;
+  max-width:100%;
+  margin:.9rem auto 0;
+  padding:0;
+  overflow:visible;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+.coloringCalloutIcon{position:relative;z-index:3;display:block;width:108px;height:auto;max-width:none;margin-right:-18px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(26,42,58,.2))}
+.coloringThumb{position:relative;z-index:2;margin:0;overflow:hidden;border:1px solid var(--line);border-radius:0;background:#fff;box-shadow:0 6px 16px rgba(26,42,58,.10)}
+.coloringThumb img{display:block;width:100%;height:auto;min-height:0;object-fit:contain;background:#fff}
+.coloringThumbCaption{position:absolute;left:0;right:0;bottom:0;z-index:2;margin:0;padding:1.25rem .65rem .58rem;color:#fff;background:linear-gradient(180deg,rgba(11,18,25,0),rgba(11,18,25,.82) 45%,rgba(11,18,25,.92));text-shadow:0 1px 2px rgba(0,0,0,.55)}
+.coloringThumbCaption a{display:block;color:#fff;text-decoration:none}
+.coloringThumbCaption strong{display:block;margin:0 0 .12rem;color:#fff;font-family:"Tommy Soft",system-ui,sans-serif;font-size:.82rem;line-height:1.15}
+.coloringThumbCaption span{display:block;font-size:.68rem;line-height:1.15;opacity:.92}
+.coloringThumbCaption a:hover span,.coloringThumbCaption a:focus-visible span{text-decoration:underline}
+
+@media(max-width:900px){
+  .bradyIntro{grid-template-columns:180px minmax(0,1fr)}
+  .photoProcessGrid,.sourceCommentGrid{grid-template-columns:1fr}
+  .personFeatureWide{grid-template-columns:160px minmax(0,1fr)}
+}
+@media(max-width:650px){
+  .bradyIntro,.personFeatureWide{grid-template-columns:1fr}
+  .bradyPortraitWrap{max-width:250px;margin:0 auto}
+  .antietamGallery{grid-template-columns:1fr}
+  .personFeatureWide img{max-width:220px;margin:0 auto}
+  .contextAside .coloringCallout{grid-template-columns:92px minmax(0,1fr);width:min(100%,350px)}
+  .coloringCalloutIcon{width:100px;margin-right:-16px}
+}

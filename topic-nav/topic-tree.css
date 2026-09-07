@@ -26,10 +26,10 @@
   margin-left:0 !important;
   margin-right:0 !important;
 }
-.topicTreeRail{padding-top:145px;min-width:0}
+.topicTreeRail{position:sticky;top:0;align-self:start;height:100vh;padding-top:145px;min-width:0}
 .topicTreePanel{
-  position:sticky;
-  top:142px;
+  position:relative;
+  top:auto;
   max-height:calc(100vh - 155px);
   overflow-y:auto;
   overflow-x:hidden;
@@ -62,4 +62,13 @@ a.topicTreeItem.active{background:var(--tree-active);color:var(--tree-active-tex
   .topicTreeClose{display:grid;place-items:center;position:absolute;right:10px;top:9px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.10);color:#fff;font-size:1.55rem;cursor:pointer}
   .topicTreeShade{display:block;position:fixed;inset:0;z-index:115;background:rgba(6,13,20,.52);opacity:0;pointer-events:none;transition:opacity .2s ease}
   .topicTreeOpen .topicTreeShade{opacity:1;pointer-events:auto}
+}
+
+/* September 2026: keep the left topic navigator visible while desktop pages scroll. */
+@media(min-width:1100px){
+  .topicTreeRail{position:sticky;top:0;align-self:start;height:100vh;padding-top:145px}
+  .topicTreePanel{position:relative;top:auto;max-height:calc(100vh - 155px)}
+}
+@media(max-width:1099px){
+  .topicTreeRail{height:auto;align-self:auto}
 }

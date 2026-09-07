@@ -106,12 +106,14 @@ window.TIMELINE_CONFIG = {
     {
       id:"fort_sumter", label:"Fort Sumter", dateLabel:"April 12–13, 1861",
       start:"1861-04-12", end:"1861-04-13", anchor:"1861-04-12",
+      image:"/7/CivilWar/Battles/images/heroes/fort-sumter.webp",
       href:"/7/CivilWar/Battles/battles/fort-sumter.html", side:"below",
       showInterval:true, intervalColor:"default", eventType:"BATTLE", lineLength:160
     },
     {
       id:"antietam", label:"Antietam", dateLabel:"Sept. 17, 1862",
       start:"1862-09-17", end:"1862-09-17", anchor:"1862-09-17",
+      image:"/7/CivilWar/Battles/images/heroes/antietam.webp",
       href:"/7/CivilWar/Battles/battles/antietam.html", side:"above",
       showInterval:false, eventType:"BATTLE", lineLength:85
     },
@@ -124,20 +126,23 @@ window.TIMELINE_CONFIG = {
     {
       id:"gettysburg", label:"Gettysburg", dateLabel:"July 1–3, 1863",
       start:"1863-07-01", end:"1863-07-03", anchor:"1863-07-02",
+      image:"/7/CivilWar/Battles/images/heroes/gettysburg.webp",
       href:"/7/CivilWar/Battles/battles/gettysburg.html", side:"above",
       showInterval:true, intervalColor:"default", eventType:"BATTLE", lineLength:170
     },
     {
-      id:"vicksburg", label:"Vicksburg Surrenders", dateLabel:"July 4, 1863",
-      start:"1863-07-04", end:"1863-07-04", anchor:"1863-07-04",
+      id:"vicksburg", label:"Vicksburg", dateLabel:"May 18–July 4, 1863",
+      start:"1863-05-18", end:"1863-07-04", anchor:"1863-06-10",
+      image:"/7/CivilWar/Battles/images/heroes/vicksburg.webp",
       href:"/7/CivilWar/Battles/battles/vicksburg.html", side:"below",
-      showInterval:false, eventType:"BATTLE", lineLength:95
+      showInterval:true, intervalColor:"default", eventType:"SIEGE", lineLength:120
     },
     {
       id:"atlanta", label:"Atlanta Falls", dateLabel:"Sept. 2, 1864",
       start:"1864-09-02", end:"1864-09-02", anchor:"1864-09-02",
+      image:"/7/CivilWar/Battles/images/heroes/atlanta-march.webp",
       href:"/7/CivilWar/Battles/battles/atlanta-march.html", side:"above",
-      showInterval:false, eventType:"CAMPAIGN", lineLength:110
+      showInterval:false, eventType:"CAMPAIGN", lineLength:130
     },
     {
       id:"thirteenth_amendment", label:"13th Amendment Passes Congress", dateLabel:"Jan. 31, 1865",
@@ -148,6 +153,7 @@ window.TIMELINE_CONFIG = {
     {
       id:"appomattox", label:"Lee Surrenders", dateLabel:"April 9, 1865",
       start:"1865-04-09", end:"1865-04-09", anchor:"1865-04-09",
+      image:"/7/CivilWar/Battles/images/heroes/appomattox.webp",
       href:"/7/CivilWar/Battles/battles/appomattox.html", side:"above",
       showInterval:false, eventType:"SURRENDER", lineLength:175
     },
