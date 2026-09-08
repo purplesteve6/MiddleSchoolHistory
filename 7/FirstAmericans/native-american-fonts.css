@@ -1,11 +1,10 @@
 /*
   Shared typography for Native American / First Americans topic pages.
-  Font files are self-hosted from /assets/fonts/native-american/ so the display
-  does not depend on fonts installed on a visitor's device.
 */
+
 @font-face{
-  font-family:"Cahokia-Bold";
-  src:url("/assets/fonts/native-american/Cahokia-Bold.woff2?v=20260908b") format("woff2");
+  font-family:"Cahokia";
+  src:url("/assets/fonts/native-american/cahokia-regular.woff2?v=20260908d") format("woff2");
   font-weight:400;
   font-style:normal;
   font-display:swap;
@@ -20,6 +19,6 @@
 }
 
 :root{
-  --native-hero-font:"Cahokia-Bold", Georgia, "Times New Roman", serif;
+  --native-hero-font:"Cahokia", Georgia, "Times New Roman", serif;
   --native-subhead-font:"Aztec Way", "Tommy Soft", system-ui, sans-serif;
 }
