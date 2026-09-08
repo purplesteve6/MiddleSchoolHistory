@@ -1,10 +1,12 @@
 /*
   Shared typography for Native American / First Americans topic pages.
+  Display font is bundled directly inside /7/FirstAmericans/fonts/ so it is
+  self-hosted with these topic pages.
 */
 
 @font-face{
-  font-family:"cahokia";
-  src:url("/assets/fonts/native-american/cahokia-regular.woff2?v=20260908e") format("woff2");
+  font-family:"Holy Grail Lore";
+  src:url("fonts/CCHolyGrailLore-Bold.ttf?v=20260908g") format("truetype");
   font-weight:400;
   font-style:normal;
   font-display:swap;
@@ -12,13 +14,13 @@
 
 @font-face{
   font-family:"Aztec Way";
-  src:url("/assets/fonts/native-american/AztecWay-OVRr6.otf?v=20260908e") format("opentype");
+  src:url("/assets/fonts/native-american/AztecWay-OVRr6.otf") format("opentype");
   font-weight:400;
   font-style:normal;
   font-display:swap;
 }
 
 :root{
-  --native-hero-font:"cahokia", Georgia, "Times New Roman", serif;
+  --native-hero-font:"Holy Grail Lore", Georgia, "Times New Roman", serif;
   --native-subhead-font:"Aztec Way", "Tommy Soft", system-ui, sans-serif;
 }
