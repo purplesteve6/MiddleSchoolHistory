@@ -1,0 +1,25 @@
+/*
+  Shared typography for Native American / First Americans topic pages.
+  Font files are self-hosted from /assets/fonts/native-american/ so the display
+  does not depend on fonts installed on a visitor's device.
+*/
+@font-face{
+  font-family:"Tribal Schoolhouse";
+  src:url("/assets/fonts/native-american/TribalSchoolhouse-v2XM.ttf") format("truetype");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Aztec Way";
+  src:url("/assets/fonts/native-american/AztecWay-OVRr6.otf") format("opentype");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+:root{
+  --native-hero-font:"Tribal Schoolhouse", Georgia, "Times New Roman", serif;
+  --native-subhead-font:"Aztec Way", "Tommy Soft", system-ui, sans-serif;
+}

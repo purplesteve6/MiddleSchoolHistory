@@ -1,0 +1,15 @@
+/* First Americans unit typography only. */
+.first-americans-page .grade7-hero h1{
+  font-family:var(--native-hero-font);
+  font-weight:400;
+  letter-spacing:.01em;
+  font-synthesis:none;
+}
+
+.first-americans-page .unitPanel > h2,
+.first-americans-page .topicCard > h3{
+  font-family:var(--native-subhead-font);
+  font-weight:400;
+  letter-spacing:.025em;
+  font-synthesis:none;
+}

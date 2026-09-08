@@ -181,6 +181,21 @@ REUSABLE SITE FEATURES / INTERACTIONS
     Keep it concise and consistent; it is not a replacement for the Big Idea feature, which can carry a broader interpretation or thesis.
     Existing example: Civil War → Battles individual battle pages.
 
+
+NATIVE AMERICAN / FIRST AMERICANS TYPOGRAPHY
+--------------------------------------------
+Use this shared typography convention for Native American / First Americans topic pages unless a specific page has a strong reason to differ.
+
+• Shared font stylesheet: /7/FirstAmericans/native-american-fonts.css
+• Tribal Schoolhouse: major hero/topic titles and other large display-title moments.
+• Aztec Way: major section subheadings and compact chapter/topic labels.
+• Detailed body content: continue using the established site/topic body fonts for readability.
+• Keep decorative fonts out of long paragraphs and dense explanatory text.
+• Self-hosted font paths:
+  - /assets/fonts/native-american/TribalSchoolhouse-v2XM.ttf
+  - /assets/fonts/native-american/AztecWay-OVRr6.otf
+• Pages using these fonts should load /7/FirstAmericans/native-american-fonts.css before their topic-specific stylesheet.
+
 DESIGN / CONSISTENCY NOTES
 --------------------------
 • Normal body copy should follow the established site/topic body font unless a topic intentionally specifies otherwise.
@@ -200,6 +215,8 @@ Whenever a new reusable sticker, callout, interaction, or page pattern is create
 
 LAST UPDATED
 ------------
+September 8, 2026
+Added the shared First Americans / Native American typography convention using Tribal Schoolhouse for display titles and Aztec Way for major subheadings.
 September 7, 2026
 Added the Key Takeaway sticker and documented its one-essential-memory use on Civil War battle pages.
 September 5, 2026

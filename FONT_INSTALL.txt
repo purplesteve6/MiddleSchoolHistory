@@ -1,0 +1,23 @@
+NATIVE AMERICAN FONT INSTALLATION
+=================================
+
+The site files in this update are wired to self-host the two supplied fonts so
+visitors see the intended typography even when the fonts are not installed on
+their devices.
+
+Create this folder in the repo if it does not already exist:
+  /assets/fonts/native-american/
+
+Place the two ORIGINAL font files you supplied into it with these exact names:
+  TribalSchoolhouse-v2XM.ttf
+  AztecWay-OVRr6.otf
+
+Expected final paths:
+  /assets/fonts/native-american/TribalSchoolhouse-v2XM.ttf
+  /assets/fonts/native-american/AztecWay-OVRr6.otf
+
+The shared stylesheet is:
+  /7/FirstAmericans/native-american-fonts.css
+
+Once those two files are in the repo and pushed to GitHub, the fonts are served
+by the site itself rather than relying on a student's computer.
