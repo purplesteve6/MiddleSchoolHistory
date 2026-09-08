@@ -187,12 +187,12 @@ NATIVE AMERICAN / FIRST AMERICANS TYPOGRAPHY
 Use this shared typography convention for Native American / First Americans topic pages unless a specific page has a strong reason to differ.
 
 • Shared font stylesheet: /7/FirstAmericans/native-american-fonts.css
-• Tribal Schoolhouse: major hero/topic titles and other large display-title moments.
+• Cahokia (Cahokia-Bold.woff2 / Dragging Canoe): major hero/topic titles and other large display-title moments.
 • Aztec Way: major section subheadings and compact chapter/topic labels.
 • Detailed body content: continue using the established site/topic body fonts for readability.
 • Keep decorative fonts out of long paragraphs and dense explanatory text.
 • Self-hosted font paths:
-  - /assets/fonts/native-american/TribalSchoolhouse-v2XM.ttf
+  - /assets/fonts/native-american/Cahokia-Bold.woff2
   - /assets/fonts/native-american/AztecWay-OVRr6.otf
 • Pages using these fonts should load /7/FirstAmericans/native-american-fonts.css before their topic-specific stylesheet.
 
@@ -216,7 +216,8 @@ Whenever a new reusable sticker, callout, interaction, or page pattern is create
 LAST UPDATED
 ------------
 September 8, 2026
-Added the shared First Americans / Native American typography convention using Tribal Schoolhouse for display titles and Aztec Way for major subheadings.
+Updated the shared First Americans / Native American typography convention to use Cahokia-Bold (Dragging Canoe) for display titles and Aztec Way for major subheadings.
+Earlier: added the shared First Americans / Native American typography convention.
 September 7, 2026
 Added the Key Takeaway sticker and documented its one-essential-memory use on Civil War battle pages.
 September 5, 2026

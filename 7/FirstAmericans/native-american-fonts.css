@@ -4,8 +4,8 @@
   does not depend on fonts installed on a visitor's device.
 */
 @font-face{
-  font-family:"Tribal Schoolhouse";
-  src:url("/assets/fonts/native-american/TribalSchoolhouse-v2XM.ttf") format("truetype");
+  font-family:"Cahokia";
+  src:url("/assets/fonts/native-american/Cahokia-Bold.woff2") format("woff2");
   font-weight:400;
   font-style:normal;
   font-display:swap;
@@ -20,6 +20,6 @@
 }
 
 :root{
-  --native-hero-font:"Tribal Schoolhouse", Georgia, "Times New Roman", serif;
+  --native-hero-font:"Cahokia", Georgia, "Times New Roman", serif;
   --native-subhead-font:"Aztec Way", "Tommy Soft", system-ui, sans-serif;
 }
