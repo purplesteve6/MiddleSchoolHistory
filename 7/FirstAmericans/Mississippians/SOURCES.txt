@@ -57,3 +57,7 @@ Used for descendant/continuity language and for the effects of modern developmen
 Smithsonian Magazine — “Why Did Cahokia, One of North America’s Largest Pre-Hispanic Cities, Collapse?”
 https://www.smithsonianmag.com/smart-news/why-did-cahokia-one-largest-pre-hispanic-cities-north-america-collapse-180977528/
 Used to keep the decline discussion appropriately uncertain and multi-causal rather than presenting one unproven explanation as fact.
+
+Additional local page images added in revision:
+- images/cahokia-hero.webp (user-supplied Cahokia/Monks Mound reconstruction)
+- images/platform-mounds-diagram.webp (user-supplied platform mounds diagram)

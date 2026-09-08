@@ -30,15 +30,13 @@
         <h1>Cahokia</h1>
         <p>About a thousand years ago, thousands of people lived in a carefully organized city just across the Mississippi River from present-day St. Louis. Cahokia had neighborhoods, plazas, walls, timber circles, workshops, and more than one hundred earthen mounds. At the center rose a structure unlike anything else north of Mexico: <strong>Monks Mound</strong>.</p>
       </div>
-      <div class="cahokiaScene" aria-label="Stylized illustration of Cahokia's mound landscape">
-        <span class="sceneSun"></span>
-        <span class="sceneRiver r1"></span>
-        <span class="sceneRiver r2"></span>
-        <div class="sceneMound backMound"></div>
-        <div class="sceneMound mainMound"><span class="sceneBuilding"></span></div>
-        <div class="sceneMound smallMound"></div>
-        <div class="sceneLabel"><b>Monks Mound</b><span>about 100 feet high</span></div>
-      </div>
+      <figure class="cahokiaHeroImage">
+        <button class="imageButton zoomable" type="button" data-zoom-src="images/cahokia-hero.webp" aria-label="Enlarge the Cahokia reconstruction image">
+          <img src="images/cahokia-hero.webp" alt="Reconstruction image of Cahokia with Monks Mound at the center of the city" />
+          <span class="zoomHint">Click to enlarge</span>
+        </button>
+        <figcaption>This reconstruction image places <strong>Monks Mound</strong> at the center of Cahokia’s broad ceremonial and residential landscape.</figcaption>
+      </figure>
     </section>
 
     <section class="feature sixty">
@@ -83,17 +81,13 @@
         <p>Monks Mound is a four-terraced platform built from layers of earth carried and piled by people. It covers roughly 14 acres at its base and rises about 100 feet above the surrounding ground.</p>
         <p>Its size is evidence of organization. Building and rebuilding a mound this large required planning, leadership, food supplies, and the coordinated labor of many people over time.</p>
       </div>
-      <div class="monksDiagram" aria-label="Simplified Monks Mound height diagram">
-        <div class="heightLine"><b>≈100 ft</b><span>30 m</span></div>
-        <div class="monksMoundShape">
-          <div class="monksBuilding"></div>
-          <div class="monksTier mt1"></div>
-          <div class="monksTier mt2"></div>
-          <div class="monksTier mt3"></div>
-          <div class="monksTier mt4"></div>
-        </div>
-        <div class="groundLine"></div>
-      </div>
+      <figure class="monksFigure">
+        <button class="imageButton zoomable" type="button" data-zoom-src="images/platform-mounds-diagram.webp" aria-label="Enlarge the platform mound diagram">
+          <img src="images/platform-mounds-diagram.webp" alt="Diagram showing the structure of Eastern North American platform mounds, including terraces, summit structures, mound layers, and ramp stairs" />
+          <span class="zoomHint">Click to enlarge</span>
+        </button>
+        <figcaption>This diagram shows how many <strong>platform mounds</strong> were built in layers and often supported important summit buildings.</figcaption>
+      </figure>
     </section>
 
     <section class="card section archaeologySection">
@@ -150,6 +144,11 @@
   </main>
 
   <div id="siteFooter"></div>
+
+  <div class="lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="Enlarged image" hidden>
+    <button class="lightboxClose" type="button" aria-label="Close enlarged image">×</button>
+    <img id="lightboxImage" alt="" />
+  </div>
 
   <script src="/7/FirstAmericans/Mississippians/config.js"></script>
   <script src="/include.js"></script>
