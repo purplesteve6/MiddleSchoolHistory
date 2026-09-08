@@ -61,3 +61,9 @@ Used to keep the decline discussion appropriately uncertain and multi-causal rat
 Additional local page images added in revision:
 - images/cahokia-hero.webp (user-supplied Cahokia/Monks Mound reconstruction)
 - images/platform-mounds-diagram.webp (user-supplied platform mounds diagram)
+
+Inside Cahokia image notes:
+- images/monks-mound-today.webp — user-supplied image; displayed with caption “Monk's Mound Today.”
+- images/grand-plaza.webp — user-supplied image.
+- images/stockade-construction.webp — user-supplied image.
+- images/woodhenge.gif — retained as animated GIF; credited on-page to ORIAS, UC Berkeley: https://orias.berkeley.edu/resources-teachers/societies-americas/cahokia
