@@ -3,8 +3,8 @@
 */
 
 @font-face{
-  font-family:"Cahokia";
-  src:url("/assets/fonts/native-american/cahokia-regular.woff2?v=20260908d") format("woff2");
+  font-family:"cahokia";
+  src:url("/assets/fonts/native-american/cahokia-regular.woff2?v=20260908e") format("woff2");
   font-weight:400;
   font-style:normal;
   font-display:swap;
@@ -12,13 +12,13 @@
 
 @font-face{
   font-family:"Aztec Way";
-  src:url("/assets/fonts/native-american/AztecWay-OVRr6.otf") format("opentype");
+  src:url("/assets/fonts/native-american/AztecWay-OVRr6.otf?v=20260908e") format("opentype");
   font-weight:400;
   font-style:normal;
   font-display:swap;
 }
 
 :root{
-  --native-hero-font:"Cahokia", Georgia, "Times New Roman", serif;
+  --native-hero-font:"cahokia", Georgia, "Times New Roman", serif;
   --native-subhead-font:"Aztec Way", "Tommy Soft", system-ui, sans-serif;
 }
