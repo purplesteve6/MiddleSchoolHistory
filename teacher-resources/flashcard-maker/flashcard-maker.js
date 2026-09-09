@@ -14,7 +14,6 @@
     duplex: $("duplexMode"),
     cutLines: $("cutLineMode"),
     termFont: $("termFont"),
-    rotateBacks: $("rotateBacks"),
     preview: $("sheetPreview"),
     status: $("cardStatus"),
     prevSheet: $("prevSheetBtn"),
@@ -152,8 +151,9 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     const g = group.slice(0, 4);
     while (g.length < 4) g.push(null);
 
-    if (mode === "long") return [g[2], g[3], g[0], g[1]]; // swap rows
-    return g;                                               // short edge: same positions
+    if (mode === "long") return [g[2], g[3], g[0], g[1]];  // mirror top/bottom
+    if (mode === "short") return [g[1], g[0], g[3], g[2]]; // mirror left/right
+    return g;
   }
 
   function previewGroup() {
@@ -194,7 +194,6 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
   function renderPreview() {
     const previewCards = getPreviewCards();
     const showLines = shouldShowCutLines(previewSide);
-    const rotate = previewSide === "back" && els.rotateBacks.checked;
     const unit = els.unit.value.trim();
     const showSubcategory = els.showSubcategory.checked;
 
@@ -204,7 +203,6 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     els.preview.innerHTML = previewCards.map(card => {
       const classes = ["preview-card"];
       if (showLines) classes.push("has-cut-lines");
-      if (rotate) classes.push("is-rotated");
 
       if (!card) {
         return `<div class="${classes.join(" ")}"><div class="preview-empty">Blank</div></div>`;
@@ -325,15 +323,10 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     return { size: minSize, lines, lineHeight: minSize * lineHeightFactor };
   }
 
-  function drawCenteredLines(doc, lines, xCenter, yTop, lineHeight, rotationCenterY = null) {
+  function drawCenteredLines(doc, lines, xCenter, yTop, lineHeight) {
     lines.forEach((line, index) => {
       const y = yTop + (index * lineHeight);
-      if (rotationCenterY === null) {
-        doc.text(line, xCenter, y, { align: "center" });
-      } else {
-        const rotatedY = (2 * rotationCenterY) - y;
-        doc.text(line, xCenter, rotatedY, { align: "center", angle: 180 });
-      }
+      doc.text(line, xCenter, y, { align: "center" });
     });
   }
 
@@ -368,8 +361,6 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
 
     const unit = els.unit.value.trim();
     const subcategory = els.showSubcategory.checked ? String(card.subcategory || "").trim() : "";
-    const rotate = els.rotateBacks.checked;
-    const cardCenterY = y + CARD_H / 2;
     const xCenter = x + CARD_W / 2;
 
     const padX = 0.32 * PT;
@@ -383,18 +374,12 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
 
     if (unit) {
       const labelY = y + 17;
-      doc.text(unit.toUpperCase(), xCenter, rotate ? (2 * cardCenterY) - labelY : labelY, {
-        align: "center",
-        angle: rotate ? 180 : 0
-      });
+      doc.text(unit.toUpperCase(), xCenter, labelY, { align: "center" });
     }
 
     if (subcategory) {
       const labelY = y + CARD_H - 12;
-      doc.text(subcategory.toUpperCase(), xCenter, rotate ? (2 * cardCenterY) - labelY : labelY, {
-        align: "center",
-        angle: rotate ? 180 : 0
-      });
+      doc.text(subcategory.toUpperCase(), xCenter, labelY, { align: "center" });
     }
 
     const fit = fitText(doc, card.definition, usableW, usableH, {
@@ -415,14 +400,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     const blockHeight = fit.lines.length * fit.lineHeight;
     const firstBaseline = centerY - blockHeight / 2 + fit.size;
 
-    drawCenteredLines(
-      doc,
-      fit.lines,
-      xCenter,
-      firstBaseline,
-      fit.lineHeight,
-      rotate ? cardCenterY : null
-    );
+    drawCenteredLines(doc, fit.lines, xCenter, firstBaseline, fit.lineHeight);
   }
 
   function addSheetSide(doc, group, side, isFirstPage) {
@@ -506,7 +484,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     loadCardsFromText();
   });
 
-  [els.unit, els.showSubcategory, els.duplex, els.cutLines, els.rotateBacks]
+  [els.unit, els.showSubcategory, els.duplex, els.cutLines]
     .forEach(el => el.addEventListener("input", renderPreview));
 
   els.termFont.addEventListener("change", renderPreview);
