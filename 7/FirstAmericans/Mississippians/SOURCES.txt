@@ -74,3 +74,6 @@ Revision notes (2026-09-08):
 - Added a Did You Know comparison noting that peak Cahokia was in roughly the same population range as London around the same period.
 - Added a brief section on Mound 72 and archaeological evidence of human sacrifice after the Evidence in the Ground section.
 - Reworked bottom navigation so the topic-to-topic movement uses a single icon rather than showing both topic icons together.
+
+- Added a richer Mound 72 subsection using three user-supplied images: a reconstruction scene, an excavation photo, and an elite burial re-creation.
+- Bones photo caption credits St. Louis Community College, as requested by the user.
