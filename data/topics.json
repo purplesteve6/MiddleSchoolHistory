@@ -40,5 +40,26 @@
     "url": "/7/JohnBrown/",
     "image": "/assets/images/featured/john-brown.webp",
     "description": "Follow John Brown from Bleeding Kansas and a Missouri liberation raid to Harpers Ferry, his trial, execution, and polarizing legacy."
+  },
+  {
+    "title": "Mississippian Culture & Cahokia",
+    "grade": 7,
+    "url": "/7/FirstAmericans/Mississippians/",
+    "image": "/assets/images/featured/mississippian-cahokia.webp",
+    "description": "Explore Mississippian mound-building societies, then zoom in on Cahokia—one of the largest cities in North America about a thousand years ago."
+  },
+  {
+    "title": "Civil War Overview",
+    "grade": 7,
+    "url": "/7/CivilWar/",
+    "image": "/assets/images/featured/civil-war.webp",
+    "description": "Start with an overview of the Civil War: how it began, who fought, how the two sides compared, and how the war ended at Appomattox."
+  },
+  {
+    "title": "Key Battles of the Civil War",
+    "grade": 7,
+    "url": "/7/CivilWar/Battles/",
+    "image": "/assets/images/featured/civil-war-battles.webp",
+    "description": "Follow twelve major battles and campaigns—from Fort Sumter and Hampton Roads to Gettysburg, Sherman’s March, and Appomattox."
   }
 ]
