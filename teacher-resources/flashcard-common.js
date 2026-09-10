@@ -49,6 +49,90 @@
         patternColor: "#ffffff"
       }
     },
+    special8: {
+      name: "Special 8",
+      theme: {
+        pageBackground: "#28183f",
+        cardFront: "#00c0e4",
+        cardBack: "#00c0e4",
+        termText: "#000000",
+        definitionText: "#000000",
+        menuBackground: "#3a2258",
+        menuText: "#ffffff",
+        accent: "#d4b7ff",
+        flipButton: "#4a3266",
+        flipButtonText: "#ffffff",
+        learnedButton: "#6d4f89",
+        learnedButtonText: "#ffffff",
+        nextButton: "#d4b7ff",
+        nextButtonText: "#28183f",
+        pattern: "dots",
+        patternColor: "#ffffff"
+      }
+    },
+    special7: {
+      name: "Special 7",
+      theme: {
+        pageBackground: "#28183f",
+        cardFront: "#ffd200",
+        cardBack: "#ffd200",
+        termText: "#000000",
+        definitionText: "#000000",
+        menuBackground: "#3a2258",
+        menuText: "#ffffff",
+        accent: "#d4b7ff",
+        flipButton: "#4a3266",
+        flipButtonText: "#ffffff",
+        learnedButton: "#6d4f89",
+        learnedButtonText: "#ffffff",
+        nextButton: "#d4b7ff",
+        nextButtonText: "#28183f",
+        pattern: "dots",
+        patternColor: "#ffffff"
+      }
+    },
+    special6: {
+      name: "Special 6",
+      theme: {
+        pageBackground: "#28183f",
+        cardFront: "#a9cf00",
+        cardBack: "#a9cf00",
+        termText: "#000000",
+        definitionText: "#000000",
+        menuBackground: "#3a2258",
+        menuText: "#ffffff",
+        accent: "#d4b7ff",
+        flipButton: "#4a3266",
+        flipButtonText: "#ffffff",
+        learnedButton: "#6d4f89",
+        learnedButtonText: "#ffffff",
+        nextButton: "#d4b7ff",
+        nextButtonText: "#28183f",
+        pattern: "dots",
+        patternColor: "#ffffff"
+      }
+    },
+    special5: {
+      name: "Special 5",
+      theme: {
+        pageBackground: "#28183f",
+        cardFront: "#f6000f",
+        cardBack: "#f6000f",
+        termText: "#000000",
+        definitionText: "#000000",
+        menuBackground: "#3a2258",
+        menuText: "#ffffff",
+        accent: "#d4b7ff",
+        flipButton: "#4a3266",
+        flipButtonText: "#ffffff",
+        learnedButton: "#6d4f89",
+        learnedButtonText: "#ffffff",
+        nextButton: "#d4b7ff",
+        nextButtonText: "#28183f",
+        pattern: "dots",
+        patternColor: "#ffffff"
+      }
+    },
     blue: {
       name: "Blue Classroom",
       theme: {
