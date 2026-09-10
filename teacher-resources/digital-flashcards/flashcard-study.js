@@ -34,6 +34,26 @@
     let currentIndex = deck.cards.findIndex(card => card.enabled !== false);
     if (currentIndex < 0 && deck.cards.length) currentIndex = 0;
     let flipped = false;
+
+    function animateCardFlip(card, toFlipped) {
+      if (!card) return;
+      card.classList.toggle("is-flipped", toFlipped);
+
+      const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduceMotion || typeof card.animate !== "function") return;
+
+      card.getAnimations().forEach(animation => animation.cancel());
+      const from = toFlipped ? 0 : 180;
+      const to = toFlipped ? 180 : 0;
+      card.animate([
+        { transform: `rotateY(${from}deg) scale(1)` },
+        { transform: "rotateY(90deg) scale(.965)", offset: 0.5 },
+        { transform: `rotateY(${to}deg) scale(1)` }
+      ], {
+        duration: 580,
+        easing: "cubic-bezier(.2,.72,.2,1)"
+      });
+    }
     const learned = new Set(Array.isArray(options.initialLearned) ? options.initialLearned.filter(index => Number.isInteger(index) && index >= 0 && index < deck.cards.length) : []);
     let previousRandomIndex = -1;
 
@@ -254,7 +274,7 @@
     function flipCard() {
       if (currentIndex < 0 || !deck.cards.length) return;
       flipped = !flipped;
-      els.card.classList.toggle("is-flipped", flipped);
+      animateCardFlip(els.card, flipped);
     }
 
     function chooseRandom() {

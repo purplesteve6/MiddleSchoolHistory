@@ -73,6 +73,26 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
   let previewFlipped = false;
   let applyingPreset = false;
 
+  function animateCardFlip(card, toFlipped) {
+    if (!card) return;
+    card.classList.toggle("is-flipped", toFlipped);
+
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || typeof card.animate !== "function") return;
+
+    card.getAnimations().forEach(animation => animation.cancel());
+    const from = toFlipped ? 0 : 180;
+    const to = toFlipped ? 180 : 0;
+    card.animate([
+      { transform: `rotateY(${from}deg) scale(1)` },
+      { transform: "rotateY(90deg) scale(.965)", offset: 0.5 },
+      { transform: `rotateY(${to}deg) scale(1)` }
+    ], {
+      duration: 580,
+      easing: "cubic-bezier(.2,.72,.2,1)"
+    });
+  }
+
   function currentTheme() {
     return F.normalizeTheme({
       pageBackground: els.pageBackground.value,
@@ -326,11 +346,11 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
 
   els.previewScene.addEventListener("click", () => {
     previewFlipped = !previewFlipped;
-    renderCreatorPreview();
+    animateCardFlip(els.previewCard, previewFlipped);
   });
   els.previewFlip.addEventListener("click", () => {
     previewFlipped = !previewFlipped;
-    renderCreatorPreview();
+    animateCardFlip(els.previewCard, previewFlipped);
   });
   els.previewPrev.addEventListener("click", () => {
     if (!cards.length) return;
