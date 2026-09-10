@@ -136,7 +136,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     els.previewScene.hidden = !hasCards;
     els.previewActions.hidden = !hasCards;
     F.applyTheme(els.previewShell, currentTheme());
-    els.previewShell.style.setProperty("--fc-term-font", els.termFont.value === "times" ? '"Times New Roman", Times, serif' : els.termFont.value === "courier" ? '"Courier New", Courier, monospace' : 'Arial, Helvetica, sans-serif');
+    els.previewShell.style.setProperty("--fc-term-font", els.termFont.value === "marker" ? '"Marker Style", cursive' : els.termFont.value === "times" ? '"Times New Roman", Times, serif' : els.termFont.value === "courier" ? '"Courier New", Courier, monospace' : 'Arial, Helvetica, sans-serif');
 
     if (!hasCards) return;
     previewIndex = Math.max(0, Math.min(previewIndex, cards.length - 1));

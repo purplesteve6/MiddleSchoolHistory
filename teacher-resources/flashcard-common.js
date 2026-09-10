@@ -288,7 +288,7 @@
       title: String(src.title || "Flashcard Deck").trim().slice(0, 120) || "Flashcard Deck",
       unit: String(src.unit || "").trim().slice(0, 120),
       showSubcategory: src.showSubcategory !== false,
-      termFont: ["helvetica", "times", "courier"].includes(src.termFont) ? src.termFont : "helvetica",
+      termFont: ["helvetica", "times", "courier", "marker"].includes(src.termFont) ? src.termFont : "helvetica",
       theme: normalizeTheme(src.theme),
       cards: cards
         .map(card => ({

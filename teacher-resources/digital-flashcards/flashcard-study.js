@@ -11,6 +11,7 @@
   }
 
   function fontStack(font) {
+    if (font === "marker") return '"Marker Style", cursive';
     if (font === "times") return '"Times New Roman", Times, serif';
     if (font === "courier") return '"Courier New", Courier, monospace';
     return 'Arial, Helvetica, sans-serif';

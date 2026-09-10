@@ -193,7 +193,8 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     const stacks = {
       helvetica: 'Arial, Helvetica, sans-serif',
       times: '"Times New Roman", Times, serif',
-      courier: '"Courier New", Courier, monospace'
+      courier: '"Courier New", Courier, monospace',
+      marker: '"Marker Style", cursive'
     };
     return stacks[els.termFont.value] || stacks.helvetica;
   }
@@ -280,6 +281,33 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     return window.jspdf.jsPDF;
   }
 
+  function arrayBufferToBase64(buffer) {
+    const bytes = new Uint8Array(buffer);
+    const chunkSize = 0x8000;
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(i, Math.min(i + chunkSize, bytes.length)));
+    }
+    return btoa(binary);
+  }
+
+  async function registerSelectedCustomFont(doc) {
+    if (els.termFont.value !== "marker") return;
+
+    const response = await fetch("/assets/fonts/MarkerStyle-Regular.ttf", { cache: "force-cache" });
+    if (!response.ok) throw new Error("Marker Style could not be loaded from /assets/fonts/MarkerStyle-Regular.ttf.");
+
+    const base64 = arrayBufferToBase64(await response.arrayBuffer());
+    doc.addFileToVFS("MarkerStyle-Regular.ttf", base64);
+    doc.addFont("MarkerStyle-Regular.ttf", "marker", "normal");
+  }
+
+  function selectedPdfTermFont() {
+    return els.termFont.value === "marker"
+      ? { font: "marker", style: "normal" }
+      : { font: els.termFont.value, style: "bold" };
+  }
+
   // All PDF geometry is in points. 72 points = 1 inch.
   const PT = 72;
   const PAGE_W = 11 * PT;
@@ -346,17 +374,17 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     const padY = 0.35 * PT;
     const usableW = CARD_W - padX * 2;
     const usableH = CARD_H - padY * 2;
-    const font = els.termFont.value;
+    const { font, style } = selectedPdfTermFont();
 
     const fit = fitText(doc, card.term, usableW, usableH, {
       font,
-      style: "bold",
+      style,
       maxSize: 34,
       minSize: 13,
       lineHeightFactor: 1.08
     });
 
-    doc.setFont(font, "bold");
+    doc.setFont(font, style);
     doc.setFontSize(fit.size);
     doc.setTextColor(22, 22, 22);
 
@@ -427,7 +455,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     });
   }
 
-  function generatePdf() {
+  async function generatePdf() {
     if (!cards.length) return;
 
     let jsPDF;
@@ -438,31 +466,44 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
       return;
     }
 
-    const doc = new jsPDF({
-      orientation: "landscape",
-      unit: "pt",
-      format: "letter",
-      compress: true
-    });
+    const originalLabel = els.generate.textContent;
+    els.generate.disabled = true;
+    if (els.termFont.value === "marker") els.generate.textContent = "Loading Marker Style…";
 
-    const totalGroups = Math.ceil(cards.length / 4);
-    let firstPage = true;
+    try {
+      const doc = new jsPDF({
+        orientation: "landscape",
+        unit: "pt",
+        format: "letter",
+        compress: true
+      });
 
-    for (let groupIndex = 0; groupIndex < totalGroups; groupIndex += 1) {
-      const group = cards.slice(groupIndex * 4, groupIndex * 4 + 4);
-      while (group.length < 4) group.push(null);
+      await registerSelectedCustomFont(doc);
 
-      addSheetSide(doc, group, "front", firstPage);
-      firstPage = false;
-      addSheetSide(doc, group, "back", false);
+      const totalGroups = Math.ceil(cards.length / 4);
+      let firstPage = true;
+
+      for (let groupIndex = 0; groupIndex < totalGroups; groupIndex += 1) {
+        const group = cards.slice(groupIndex * 4, groupIndex * 4 + 4);
+        while (group.length < 4) group.push(null);
+
+        addSheetSide(doc, group, "front", firstPage);
+        firstPage = false;
+        addSheetSide(doc, group, "back", false);
+      }
+
+      const safeUnit = els.unit.value.trim()
+        .replace(/[^a-z0-9_-]+/gi, "-")
+        .replace(/^-+|-+$/g, "")
+        .toLowerCase();
+
+      doc.save(safeUnit ? `${safeUnit}-flashcards.pdf` : "flashcards.pdf");
+    } catch (error) {
+      alert(error && error.message ? error.message : "The PDF could not be created.");
+    } finally {
+      els.generate.textContent = originalLabel;
+      els.generate.disabled = cards.length === 0;
     }
-
-    const safeUnit = els.unit.value.trim()
-      .replace(/[^a-z0-9_-]+/gi, "-")
-      .replace(/^-+|-+$/g, "")
-      .toLowerCase();
-
-    doc.save(safeUnit ? `${safeUnit}-flashcards.pdf` : "flashcards.pdf");
   }
 
   els.file.addEventListener("change", () => {
