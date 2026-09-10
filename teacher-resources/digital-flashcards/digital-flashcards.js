@@ -27,6 +27,12 @@
     menuBackground: $("menuBackground"),
     menuText: $("menuText"),
     accent: $("accentColor"),
+    flipButton: $("flipButtonColor"),
+    flipButtonText: $("flipButtonTextColor"),
+    learnedButton: $("learnedButtonColor"),
+    learnedButtonText: $("learnedButtonTextColor"),
+    nextButton: $("nextButtonColor"),
+    nextButtonText: $("nextButtonTextColor"),
     previewShell: $("creatorPreviewShell"),
     previewEmpty: $("creatorPreviewEmpty"),
     previewScene: $("creatorCardScene"),
@@ -78,6 +84,12 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
       menuBackground: els.menuBackground.value,
       menuText: els.menuText.value,
       accent: els.accent.value,
+      flipButton: els.flipButton.value,
+      flipButtonText: els.flipButtonText.value,
+      learnedButton: els.learnedButton.value,
+      learnedButtonText: els.learnedButtonText.value,
+      nextButton: els.nextButton.value,
+      nextButtonText: els.nextButtonText.value,
       pattern: els.pattern.value
     });
   }
@@ -107,6 +119,12 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     els.menuBackground.value = t.menuBackground;
     els.menuText.value = t.menuText;
     els.accent.value = t.accent;
+    els.flipButton.value = t.flipButton;
+    els.flipButtonText.value = t.flipButtonText;
+    els.learnedButton.value = t.learnedButton;
+    els.learnedButtonText.value = t.learnedButtonText;
+    els.nextButton.value = t.nextButton;
+    els.nextButtonText.value = t.nextButtonText;
     els.pattern.value = t.pattern;
     els.preset.value = presetId;
     applyingPreset = false;
@@ -293,8 +311,12 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     syncStudyMeta();
   });
 
-  [els.pattern, els.pageBackground, els.patternColor, els.cardFront, els.cardBack, els.termText, els.definitionText, els.menuBackground, els.menuText, els.accent]
-    .forEach(input => input.addEventListener("input", () => {
+  [
+    els.pattern, els.pageBackground, els.patternColor, els.cardFront, els.cardBack,
+    els.termText, els.definitionText, els.menuBackground, els.menuText, els.accent,
+    els.flipButton, els.flipButtonText, els.learnedButton, els.learnedButtonText,
+    els.nextButton, els.nextButtonText
+  ].forEach(input => input.addEventListener("input", () => {
       if (!applyingPreset) els.preset.value = "custom";
       syncStudyMeta();
     }));

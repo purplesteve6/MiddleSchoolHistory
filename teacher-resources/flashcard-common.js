@@ -13,6 +13,12 @@
     menuBackground: "#34204f",
     menuText: "#ffffff",
     accent: "#c9a8ff",
+    flipButton: "#3f2a58",
+    flipButtonText: "#ffffff",
+    learnedButton: "#6a4b82",
+    learnedButtonText: "#ffffff",
+    nextButton: "#c9a8ff",
+    nextButtonText: "#20162c",
     pattern: "none",
     patternColor: "#ffffff"
   });
@@ -33,6 +39,12 @@
         menuBackground: "#3a2258",
         menuText: "#ffffff",
         accent: "#d4b7ff",
+        flipButton: "#4a3266",
+        flipButtonText: "#ffffff",
+        learnedButton: "#6d4f89",
+        learnedButtonText: "#ffffff",
+        nextButton: "#d4b7ff",
+        nextButtonText: "#28183f",
         pattern: "dots",
         patternColor: "#ffffff"
       }
@@ -48,6 +60,12 @@
         menuBackground: "#1d405f",
         menuText: "#ffffff",
         accent: "#9ed2ff",
+        flipButton: "#234b6b",
+        flipButtonText: "#ffffff",
+        learnedButton: "#356b90",
+        learnedButtonText: "#ffffff",
+        nextButton: "#9ed2ff",
+        nextButtonText: "#17324b",
         pattern: "grid",
         patternColor: "#ffffff"
       }
@@ -63,6 +81,12 @@
         menuBackground: "#214c40",
         menuText: "#ffffff",
         accent: "#a9d8b7",
+        flipButton: "#285448",
+        flipButtonText: "#ffffff",
+        learnedButton: "#3f735f",
+        learnedButtonText: "#ffffff",
+        nextButton: "#a9d8b7",
+        nextButtonText: "#193b32",
         pattern: "diagonal",
         patternColor: "#ffffff"
       }
@@ -78,6 +102,12 @@
         menuBackground: "#5a411f",
         menuText: "#fffdf7",
         accent: "#f0cf77",
+        flipButton: "#6b4c23",
+        flipButtonText: "#fffdf7",
+        learnedButton: "#8a682f",
+        learnedButtonText: "#fffdf7",
+        nextButton: "#f0cf77",
+        nextButtonText: "#3a2b16",
         pattern: "paper",
         patternColor: "#fff4ce"
       }
@@ -93,6 +123,12 @@
         menuBackground: "#102925",
         menuText: "#fffdf2",
         accent: "#f3d98a",
+        flipButton: "#315c53",
+        flipButtonText: "#fffdf2",
+        learnedButton: "#4f7568",
+        learnedButtonText: "#fffdf2",
+        nextButton: "#f3d98a",
+        nextButtonText: "#16342f",
         pattern: "chalk",
         patternColor: "#ffffff"
       }
@@ -233,6 +269,12 @@
       menuBackground: normalizeHex(src.menuBackground, DEFAULT_THEME.menuBackground),
       menuText: normalizeHex(src.menuText, DEFAULT_THEME.menuText),
       accent: normalizeHex(src.accent, DEFAULT_THEME.accent),
+      flipButton: normalizeHex(src.flipButton, DEFAULT_THEME.flipButton),
+      flipButtonText: normalizeHex(src.flipButtonText, DEFAULT_THEME.flipButtonText),
+      learnedButton: normalizeHex(src.learnedButton, DEFAULT_THEME.learnedButton),
+      learnedButtonText: normalizeHex(src.learnedButtonText, DEFAULT_THEME.learnedButtonText),
+      nextButton: normalizeHex(src.nextButton, DEFAULT_THEME.nextButton),
+      nextButtonText: normalizeHex(src.nextButtonText, DEFAULT_THEME.nextButtonText),
       pattern: ["none", "dots", "grid", "diagonal", "paper", "chalk"].includes(src.pattern) ? src.pattern : DEFAULT_THEME.pattern,
       patternColor: normalizeHex(src.patternColor, DEFAULT_THEME.patternColor)
     };
@@ -314,6 +356,12 @@
     element.style.setProperty("--fc-menu-bg", t.menuBackground);
     element.style.setProperty("--fc-menu-text", t.menuText);
     element.style.setProperty("--fc-accent", t.accent);
+    element.style.setProperty("--fc-flip-button", t.flipButton);
+    element.style.setProperty("--fc-flip-button-text", t.flipButtonText);
+    element.style.setProperty("--fc-learned-button", t.learnedButton);
+    element.style.setProperty("--fc-learned-button-text", t.learnedButtonText);
+    element.style.setProperty("--fc-next-button", t.nextButton);
+    element.style.setProperty("--fc-next-button-text", t.nextButtonText);
     element.style.setProperty("--fc-pattern", patternCss(t));
     element.style.setProperty("--fc-pattern-size", patternSize(t));
   }
@@ -391,7 +439,9 @@
       f: d.termFont,
       h: [
         t.pageBackground, t.cardFront, t.cardBack, t.termText, t.definitionText,
-        t.menuBackground, t.menuText, t.accent, t.pattern, t.patternColor
+        t.menuBackground, t.menuText, t.accent, t.pattern, t.patternColor,
+        t.flipButton, t.flipButtonText, t.learnedButton, t.learnedButtonText,
+        t.nextButton, t.nextButtonText
       ],
       c: d.cards.map(card => [card.term, card.definition, card.subcategory || "", card.enabled === false ? 0 : 1])
     };
@@ -415,7 +465,13 @@
         menuText: h[6],
         accent: h[7],
         pattern: h[8],
-        patternColor: h[9]
+        patternColor: h[9],
+        flipButton: h[10],
+        flipButtonText: h[11],
+        learnedButton: h[12],
+        learnedButtonText: h[13],
+        nextButton: h[14],
+        nextButtonText: h[15]
       },
       cards: compact.c.map(row => ({
         term: row[0],
