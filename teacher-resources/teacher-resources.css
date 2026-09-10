@@ -185,3 +185,59 @@
     grid-template-rows: 190px auto;
   }
 }
+
+/* Digital flashcard resource card */
+.resource-card__visual--digital{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:24px;
+  background:
+    radial-gradient(340px 170px at 65% 15%, rgba(255,255,255,.13), transparent 70%),
+    linear-gradient(145deg,#27465e,#1b2f41);
+}
+.digital-mini-nav{
+  width:58px;
+  height:132px;
+  padding:14px 9px;
+  display:grid;
+  align-content:start;
+  gap:9px;
+  border-radius:10px;
+  background:#18354a;
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 13px 24px rgba(0,0,0,.22);
+}
+.digital-mini-nav span{
+  height:7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.48);
+}
+.digital-mini-nav span:nth-child(2){width:80%}
+.digital-mini-nav span:nth-child(3){width:92%}
+.digital-mini-nav span:nth-child(4){width:68%}
+.digital-mini-card{
+  width:190px;
+  aspect-ratio:5/3;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:9px;
+  border-radius:10px;
+  background:#fbfaf6;
+  color:#17324b;
+  border:1px solid rgba(0,0,0,.18);
+  box-shadow:0 16px 28px rgba(0,0,0,.28);
+  font-family:"Lemon Milk",system-ui,sans-serif;
+  letter-spacing:.05em;
+  font-size:23px;
+}
+.digital-mini-card div{
+  font-family:system-ui,sans-serif;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.45;
+}

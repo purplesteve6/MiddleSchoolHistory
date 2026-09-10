@@ -139,7 +139,10 @@
           <strong>PDF format:</strong> landscape US Letter, four 5×3 cards per sheet, no gaps between cards.
           <div class="printer-note">Duplex printers vary. Print one test sheet before running a large batch.</div>
         </div>
-        <button class="primary-button" type="button" id="generateBtn" disabled>Download PDF</button>
+        <div class="generate-actions">
+          <button class="secondary-button" type="button" id="createDigitalBtn" disabled>Create Digital Deck →</button>
+          <button class="primary-button" type="button" id="generateBtn" disabled>Download PDF</button>
+        </div>
       </div>
     </section>
   </main>
@@ -148,6 +151,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="/include.js"></script>
+  <script src="/teacher-resources/flashcard-common.js"></script>
   <script src="/teacher-resources/flashcard-maker/flashcard-maker.js"></script>
 </body>
 </html>

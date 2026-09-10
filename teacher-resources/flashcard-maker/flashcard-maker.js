@@ -19,12 +19,15 @@
     prevSheet: $("prevSheetBtn"),
     nextSheet: $("nextSheetBtn"),
     previewSheetStatus: $("previewSheetStatus"),
-    generate: $("generateBtn")
+    generate: $("generateBtn"),
+    createDigital: $("createDigitalBtn")
   };
 
   let cards = [];
   let previewSide = "front";
   let previewSheetIndex = 0;
+  let handoffTheme = window.Flashcards ? window.Flashcards.getPresetTheme("classic") : null;
+  let handoffTitle = "";
 
   const demoText = `term,definition,subcategory
 Abolitionist,A person who wanted to end slavery.,People & Ideas
@@ -135,8 +138,12 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
       return;
     }
 
-    const delimiter = detectDelimiter(text);
-    cards = rowsToCards(parseDelimited(text, delimiter));
+    if (window.Flashcards) {
+      cards = window.Flashcards.parseCards(text);
+    } else {
+      const delimiter = detectDelimiter(text);
+      cards = rowsToCards(parseDelimited(text, delimiter));
+    }
     previewSheetIndex = 0;
 
     if (!cards.length) {
@@ -254,10 +261,12 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
       els.status.textContent = `${cards.length} card${cards.length === 1 ? "" : "s"} • ${sheets} sheet${sheets === 1 ? "" : "s"} • ${pages} PDF page${pages === 1 ? "" : "s"}`;
       els.status.classList.add("has-cards");
       els.generate.disabled = false;
+      if (els.createDigital) els.createDigital.disabled = false;
     } else {
       els.status.textContent = message || "No cards loaded";
       els.status.classList.remove("has-cards");
       els.generate.disabled = true;
+      if (els.createDigital) els.createDigital.disabled = true;
     }
 
     updatePreviewPager();
@@ -474,6 +483,8 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
   els.clear.addEventListener("click", () => {
     cards = [];
     previewSheetIndex = 0;
+    handoffTitle = "";
+    handoffTheme = window.Flashcards ? window.Flashcards.getPresetTheme("classic") : null;
     els.file.value = "";
     els.text.value = "";
     updateUI();
@@ -517,6 +528,51 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
   });
 
   els.generate.addEventListener("click", generatePdf);
+  if (els.createDigital) els.createDigital.addEventListener("click", createDigitalDeck);
 
-  updateUI();
+  function createDigitalDeck() {
+    if (!cards.length) return;
+    if (!window.Flashcards) {
+      alert("The digital deck tools could not be loaded. Refresh the page and try again.");
+      return;
+    }
+
+    const deck = window.Flashcards.normalizeDeck({
+      title: handoffTitle || els.unit.value.trim() || "Flashcard Deck",
+      unit: els.unit.value.trim(),
+      showSubcategory: els.showSubcategory.checked,
+      termFont: els.termFont.value,
+      theme: handoffTheme || window.Flashcards.getPresetTheme("classic"),
+      cards: cards.map(card => ({ ...card, enabled: true }))
+    });
+
+    if (!window.Flashcards.setHandoff(deck, "digital")) {
+      alert("Your browser blocked the temporary handoff. Copy the CSV into the digital maker instead.");
+      return;
+    }
+    location.href = "/teacher-resources/digital-flashcards/";
+  }
+
+  function loadPrintHandoff() {
+    if (!window.Flashcards) return false;
+    const deck = window.Flashcards.consumeHandoff("print");
+    if (!deck || !deck.cards.length) return false;
+
+    cards = deck.cards.map(card => ({
+      term: card.term,
+      definition: card.definition,
+      subcategory: card.subcategory || ""
+    }));
+    handoffTheme = deck.theme;
+    handoffTitle = deck.title;
+    els.text.value = window.Flashcards.cardsToCsv(cards);
+    els.unit.value = deck.unit || "";
+    els.showSubcategory.checked = deck.showSubcategory;
+    els.termFont.value = deck.termFont;
+    previewSheetIndex = 0;
+    updateUI();
+    return true;
+  }
+
+  if (!loadPrintHandoff()) updateUI();
 })();

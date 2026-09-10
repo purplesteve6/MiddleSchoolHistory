@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Digital Flashcard Maker | Teacher Resources | Middle School History</title>
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/teacher-resources/digital-flashcards/digital-flashcards.css" />
+</head>
+<body>
+  <div id="siteHeader" data-include="/partials/main-header.html"></div>
+
+  <section class="digital-band" aria-label="Digital Flashcard Maker banner">
+    <div class="digital-band__inner">
+      <h1 class="digital-band__title">DIGITAL FLASHCARD MAKER</h1>
+    </div>
+  </section>
+
+  <main class="page digital-page">
+    <div class="tool-intro-row">
+      <div>
+        <a class="back-link" href="/teacher-resources/">← Teacher Resources</a>
+        <p>Build a digital deck from the same CSV format used by the printable Flashcard Maker. Customize the deck, preview the study experience, then create a standalone student link with the deck stored directly in the URL.</p>
+      </div>
+      <a class="sister-link" href="/teacher-resources/flashcard-maker/">▤ Open Printable Maker</a>
+    </div>
+
+    <div class="creator-grid">
+      <div class="creator-stack">
+        <section class="digital-panel" aria-labelledby="digital-input-title">
+          <div class="panel-heading">
+            <div class="panel-heading__title">
+              <div class="step-number">1</div>
+              <h2 id="digital-input-title">Add your cards</h2>
+            </div>
+            <button class="text-button" type="button" id="digitalDemoBtn">Load demo</button>
+          </div>
+
+          <label class="field-label" for="digitalCsvFile">Import a .csv file</label>
+          <input class="file-input" id="digitalCsvFile" type="file" accept=".csv,text/csv,text/plain" />
+
+          <div class="or-divider"><span>or</span></div>
+
+          <label class="field-label" for="digitalCsvText">Paste CSV or columns copied from a spreadsheet</label>
+          <textarea id="digitalCsvText" class="csv-text" spellcheck="false" placeholder='term,definition,subcategory\nGettysburg,"Major 1863 Civil War battle in Pennsylvania.",Key Battles'></textarea>
+
+          <div class="action-row">
+            <button class="secondary-button" type="button" id="digitalParseBtn">Load cards</button>
+            <button class="ghost-button" type="button" id="digitalClearBtn">Clear</button>
+          </div>
+          <small class="field-help">Columns: <strong>term</strong>, <strong>definition</strong>, and optional <strong>subcategory</strong>. Quoted commas and spreadsheet-pasted columns are supported.</small>
+        </section>
+
+        <section class="digital-panel" aria-labelledby="deck-options-title">
+          <div class="panel-heading">
+            <div class="panel-heading__title">
+              <div class="step-number">2</div>
+              <h2 id="deck-options-title">Name & style the deck</h2>
+            </div>
+          </div>
+
+          <div class="meta-grid">
+            <label class="wide">
+              <span class="field-label">Deck title</span>
+              <input class="creator-input" id="deckTitle" type="text" maxlength="120" value="My Flashcard Deck" />
+            </label>
+            <label>
+              <span class="field-label">Unit line <span style="opacity:.55">optional</span></span>
+              <input class="creator-input" id="deckUnit" type="text" maxlength="120" placeholder="Civil War" />
+            </label>
+            <label>
+              <span class="field-label">Term typeface</span>
+              <select class="creator-select" id="digitalTermFont">
+                <option value="helvetica" selected>Helvetica / Arial style</option>
+                <option value="times">Times / serif style</option>
+                <option value="courier">Courier / typewriter style</option>
+              </select>
+            </label>
+            <label class="checkbox-field wide">
+              <input id="digitalShowSubcategory" type="checkbox" checked />
+              <span><strong>Show subcategory on definition side</strong><small>Categories also organize the student navigator and can be turned on or off as a group.</small></span>
+            </label>
+          </div>
+
+          <div class="theme-block">
+            <h3>Deck theme</h3>
+            <div class="meta-grid">
+              <label>
+                <span class="field-label">Preset</span>
+                <select class="creator-select" id="themePreset">
+                  <option value="classic">Classic Paper</option>
+                  <option value="purple">Purple Classroom</option>
+                  <option value="blue">Blue Classroom</option>
+                  <option value="green">Green Classroom</option>
+                  <option value="gold">Gold Classroom</option>
+                  <option value="chalkboard">Chalkboard</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </label>
+              <label>
+                <span class="field-label">Background pattern</span>
+                <select class="creator-select" id="backgroundPattern">
+                  <option value="none">None</option>
+                  <option value="dots">Dots</option>
+                  <option value="grid">Graph paper</option>
+                  <option value="diagonal">Diagonal lines</option>
+                  <option value="paper">Notebook paper</option>
+                  <option value="chalk">Chalk texture</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="theme-pickers" style="margin-top:12px">
+              <label class="color-field"><input type="color" id="pageBackground" value="#2a1746" /><span>Page background</span></label>
+              <label class="color-field"><input type="color" id="patternColor" value="#ffffff" /><span>Pattern color</span></label>
+              <label class="color-field"><input type="color" id="cardFront" value="#fbfaf6" /><span>Card front</span></label>
+              <label class="color-field"><input type="color" id="cardBack" value="#fffdf8" /><span>Card back</span></label>
+              <label class="color-field"><input type="color" id="termText" value="#201d24" /><span>Term text</span></label>
+              <label class="color-field"><input type="color" id="definitionText" value="#2d2931" /><span>Definition text</span></label>
+              <label class="color-field"><input type="color" id="menuBackground" value="#34204f" /><span>Navigator / menus</span></label>
+              <label class="color-field"><input type="color" id="menuText" value="#ffffff" /><span>Navigator text</span></label>
+              <label class="color-field"><input type="color" id="accentColor" value="#c9a8ff" /><span>Buttons / accent</span></label>
+            </div>
+            <small class="field-help">This first version uses colors and lightweight built-in patterns so shared deck links stay compact. Custom hosted image themes can be added later without changing the deck system.</small>
+          </div>
+        </section>
+      </div>
+
+      <section class="preview-card-wrap" aria-labelledby="style-preview-title">
+        <div class="creator-preview-shell" id="creatorPreviewShell">
+          <div class="creator-preview-title" id="style-preview-title">Card appearance preview</div>
+          <div class="creator-preview-empty" id="creatorPreviewEmpty">Load some cards to preview the deck.</div>
+          <button class="creator-card-scene" type="button" id="creatorCardScene" aria-label="Flip preview card" hidden>
+            <span class="creator-card" id="creatorCard">
+              <span class="creator-card-face creator-card-front"><span class="creator-term" id="creatorTerm"></span></span>
+              <span class="creator-card-face creator-card-back">
+                <span class="creator-card-unit" id="creatorUnit"></span>
+                <span class="creator-def" id="creatorDefinition"></span>
+                <span class="creator-card-sub" id="creatorSubcategory"></span>
+              </span>
+            </span>
+          </button>
+          <div class="creator-preview-actions" id="creatorPreviewActions" hidden>
+            <button type="button" id="creatorPrev">← Previous</button>
+            <button type="button" id="creatorFlip">↻ Flip</button>
+            <button type="button" id="creatorNext">Next →</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="workspace-panel" id="workspaceSection" hidden aria-labelledby="workspace-title">
+      <div class="workspace-heading">
+        <div>
+          <h2 id="workspace-title">Study view preview</h2>
+          <p>The checkboxes set which terms are included when the shared deck first opens. Students can change their own rotation later.</p>
+        </div>
+        <div class="workspace-actions">
+          <button class="ghost-button" type="button" id="toPrintBtn">▤ Create Printable Cards</button>
+          <button class="secondary-button" type="button" id="openStudentBtn">Open Student View ↗</button>
+          <button class="primary-button" type="button" id="shareBtn">Create Share Link</button>
+        </div>
+      </div>
+
+      <div class="fc-study-root" id="builderStudyRoot" tabindex="0"></div>
+
+      <div class="share-panel" id="sharePanel" hidden>
+        <label class="field-label" for="shareOutput">Standalone student link</label>
+        <input class="share-output" id="shareOutput" type="text" readonly />
+        <div class="action-row">
+          <button class="secondary-button" type="button" id="copyShareBtn">Copy link</button>
+        </div>
+        <div class="share-meta">
+          <span id="shareLength"></span>
+          <span id="shareMessage"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="siteFooter" data-include="/partials/footer.html"></div>
+
+  <script src="/include.js"></script>
+  <script src="/teacher-resources/flashcard-common.js"></script>
+  <script src="/teacher-resources/digital-flashcards/flashcard-study.js"></script>
+  <script src="/teacher-resources/digital-flashcards/digital-flashcards.js"></script>
+</body>
+</html>

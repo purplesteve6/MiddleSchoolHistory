@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Digital Flashcards | Middle School History</title>
+  <link rel="stylesheet" href="/teacher-resources/digital-flashcards/digital-flashcards.css" />
+</head>
+<body class="study-page-body">
+  <header class="study-brandbar">
+    <div class="study-brand">MiddleSchoolHistory.com<small>Digital Flashcards</small></div>
+    <div class="study-brand-note">Study mode • deck editing tools are not shown</div>
+  </header>
+
+  <main class="study-main">
+    <div class="study-loading" id="studyLoading">Opening flashcard deck…</div>
+    <div class="study-error" id="studyError" hidden>
+      <strong>This deck could not be opened.</strong>
+      <span id="studyErrorMessage">The link may be incomplete or damaged.</span>
+    </div>
+    <div class="fc-study-root" id="studentStudyRoot" tabindex="0" hidden></div>
+  </main>
+
+  <script src="/teacher-resources/flashcard-common.js"></script>
+  <script src="/teacher-resources/digital-flashcards/flashcard-study.js"></script>
+  <script src="/teacher-resources/digital-flashcards/study/study.js"></script>
+</body>
+</html>

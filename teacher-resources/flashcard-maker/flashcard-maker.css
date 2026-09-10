@@ -613,3 +613,23 @@
     width: 100%;
   }
 }
+
+/* September 2026: sister-tool handoff to the digital flashcard maker. */
+.generate-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+@media (max-width:640px){
+  .generate-actions{
+    width:100%;
+    justify-content:stretch;
+  }
+  .generate-actions .primary-button,
+  .generate-actions .secondary-button{
+    flex:1 1 180px;
+  }
+}

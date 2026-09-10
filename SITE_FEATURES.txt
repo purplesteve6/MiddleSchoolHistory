@@ -181,6 +181,17 @@ REUSABLE SITE FEATURES / INTERACTIONS
     Keep it concise and consistent; it is not a replacement for the Big Idea feature, which can carry a broader interpretation or thesis.
     Existing example: Civil War → Battles individual battle pages.
 
+14. SHARED FLASHCARD DECK SYSTEM
+    Shared data/parser utilities: /teacher-resources/flashcard-common.js
+    Printable maker: /teacher-resources/flashcard-maker/
+    Digital deck creator: /teacher-resources/digital-flashcards/
+    Standalone student study view: /teacher-resources/digital-flashcards/study/
+    Digital study engine: /teacher-resources/digital-flashcards/flashcard-study.js
+    CSV convention: term, definition, optional subcategory. The printable and digital makers use the same card data and can hand a working deck directly to the sister tool through temporary same-site browser storage.
+    Digital deck behavior: subcategory-grouped term navigator; category and individual include/exclude checkboxes; direct term selection; animated card flip; learned status; random next-card rotation; customizable colors and built-in CSS background patterns.
+    Share behavior: the creator compresses deck data into the URL fragment for a standalone student study page. No database or upload is required. Student learned/rotation progress stays in that student's browser and is not part of the shared deck.
+    Design rule: keep the student study URL free of deck-creation/editing controls. Custom uploaded background images are not part of the first serverless share format; use colors/patterns or site-hosted theme assets when added later.
+
 
 NATIVE AMERICAN / FIRST AMERICANS TYPOGRAPHY
 --------------------------------------------
@@ -215,6 +226,9 @@ Whenever a new reusable sticker, callout, interaction, or page pattern is create
 
 LAST UPDATED
 ------------
+September 9, 2026
+Added the shared printable/digital flashcard deck system, standalone compressed-link study view, and sister-tool handoff workflow.
+
 September 8, 2026
 Updated the shared First Americans / Native American typography convention to use Cahokia-Bold (Dragging Canoe) for display titles and Aztec Way for major subheadings.
 Earlier: added the shared First Americans / Native American typography convention.
