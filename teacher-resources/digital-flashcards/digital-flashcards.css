@@ -294,8 +294,10 @@
   background-attachment:fixed;
 }
 .study-brandbar{display:flex;align-items:center;justify-content:flex-start;min-height:68px;padding:7px clamp(14px,4vw,28px);background:linear-gradient(180deg,#5a3a23,#3f2817);border-bottom:1px solid rgba(255,255,255,.12)}
-.study-logo-link{display:inline-flex;align-items:center;text-decoration:none;color:inherit}
+.study-logo-link{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
 .study-logo-icon{display:block;width:auto;height:58px}
+.study-brand{font-family:"Lemon Milk",system-ui,sans-serif;letter-spacing:.06em;font-size:14px;line-height:1.1}
+.study-brand small{display:block;margin-top:4px;font-family:"Tommy Soft",system-ui,sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.70}
 .study-main{max-width:1280px;margin:0 auto;padding:18px}
 .study-loading,.study-error{padding:28px;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:rgba(255,255,255,.05);text-align:center}
 .study-error strong{display:block;font-size:20px;margin-bottom:8px}.study-error span{color:rgba(255,255,255,.66);line-height:1.5}
@@ -337,5 +339,7 @@
   .fc-controls{gap:7px}.fc-control{padding:8px 11px;font-size:13px}
   .fc-lower-controls{padding:0 4px}
   .study-logo-icon{height:50px}
+  .study-brand{font-size:12px}
+  .study-brand small{font-size:9px}
   .study-main{padding:8px}.study-page-body .fc-study-root{border-radius:12px}
 }
