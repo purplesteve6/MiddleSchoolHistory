@@ -20,7 +20,25 @@
   font-display:swap;
 }
 
+@font-face{
+  font-family:"Southwest";
+  src:url("/assets/fonts/native-american/southwest.ttf") format("truetype");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Apache Display";
+  src:url("/assets/fonts/native-american/Apache.ttf") format("truetype");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
 :root{
   --native-hero-font:"Holy Grail Lore", Georgia, "Times New Roman", serif;
   --native-subhead-font:"Aztec Way", "Tommy Soft", system-ui, sans-serif;
+  --southwest-title-font:"Southwest", var(--native-hero-font);
+  --apache-title-font:"Apache Display", "Southwest", var(--native-hero-font);
 }

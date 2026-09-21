@@ -1,0 +1,61 @@
+KEY BATTLES OF THE CIVIL WAR — CONTENT NOTES
+===========================================
+
+This revision keeps the same general historical grounding as the original package but expands middle-school context in three areas requested by the user:
+1. landing-page background information before the Confederate-flag section
+2. political context (emancipation, changes in generals, Lincoln’s 1864 reelection, etc.)
+3. fun “Did You Know?” battle facts
+
+The Confederate-flag visuals are now supplied as temporary image assets rather than inline drawings in the page source.
+If you later decide to replace them with outside/public-domain photographs, useful searches would be:
+- First National Confederate flag stars and bars
+- Army of Northern Virginia battle flag square
+- Second National Confederate flag stainless banner
+- Third National Confederate flag
+- Confederate battle flag rectangular
+
+
+SEPTEMBER 7, 2026 — OVERVIEW / FLAG-HISTORY CHECKS
+---------------------------------------------------
+National Park Service — Civil War Overview
+https://www.nps.gov/civilwar/overview.htm
+Traditional count: 620,000 military deaths; NPS notes recent scholarship places the number at 750,000 or more.
+
+National Park Service — Southern Battle Flags (Pea Ridge NMP)
+https://www.nps.gov/peri/learn/historyculture/southern-battle-flags.htm
+Explains battlefield confusion with the Stars and Bars, the lack of one universal Confederate Army battle flag, and postwar popularity of rectangular versions because they were easier for manufacturers to mass-produce.
+
+Smithsonian National Museum of American History — The Flag in the Sixties
+https://amhistory.si.edu/starspangledbanner/the-flag-in-the-sixties.aspx/default.aspx
+Documents use of Confederate flags by white segregationists opposing federal intervention and civil rights during the 1960s.
+
+Smithsonian National Museum of American History — Confederate Battle Flag
+https://americanhistory.si.edu/collections/object/nmah_439645
+Documents the square Army of Northern Virginia battle-flag form and its development after First Bull Run.
+
+
+SEPTEMBER 7, 2026 — PHOTOGRAPHY & PRIMARY SOURCES
+--------------------------------------------------
+Antietam National Battlefield (NPS) — Photography at Antietam
+https://www.nps.gov/anti/learn/historyculture/photography.htm
+
+Antietam National Battlefield (NPS) — Historic Photographs by Alexander Gardner
+https://www.nps.gov/anti/learn/photosmultimedia/gardnerphotos.htm
+
+Library of Congress — Brady's album gallery / Antietam photographs
+https://www.loc.gov/pictures/item/2005688698/
+
+Library of Congress — Gettysburg Address, standard Lincoln Memorial text
+https://www.loc.gov/exhibits/gettysburg-address/ext/trans-nicolay-inscribed.html
+
+National Park Service — Gettysburg Address / Bliss-copy standard text
+https://www.nps.gov/linc/learn/historyculture/gettysburgaddress.htm
+
+National Archives — Preliminary Emancipation Proclamation
+https://www.archives.gov/exhibits/featured-documents/emancipation-proclamation/preliminary-emancipation.html
+
+Appomattox Court House NHP (NPS) — Surrender Documents
+https://www.nps.gov/apco/learn/historyculture/surrender-documents.htm
+
+PHOTO CAPTION NOTE
+The supplied Antietam photographs were matched to well-known Gardner/Brady-network images where identification was clear. The seventh supplied image received a conservative descriptive caption rather than a specific historical title because its exact item identification was not certain from the image alone.

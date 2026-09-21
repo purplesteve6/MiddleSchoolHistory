@@ -1,0 +1,60 @@
+NATIVE AMERICANS OF THE SOUTHWEST — SOURCE NOTES
+=================================================
+Research baseline for the Southwest overview and first four people/group pages.
+Pages are written for middle-school readability and paraphrase these sources rather than reproducing them.
+
+REGIONAL OVERVIEW
+- National Park Service — Cultural Definitions of the Southwest
+  https://www.nps.gov/articles/cultural-definitions-of-the-southwest.htm
+- Native Ed Project — cultural regions map/resources (used as a comparison for region organization)
+  https://www.nativeedproject.org/map
+
+APACHE
+- National Park Service — The Chiricahua Apache, Fort Bowie National Historic Site
+  https://www.nps.gov/fobo/learn/historyculture/the-chiricahua-apache.htm
+- National Park Service — Apache Wars: Cochise, Chiricahua National Monument
+  https://www.nps.gov/chir/learn/historyculture/apache-wars-cochise.htm
+- National Park Service — Apache Wars: Geronimo, Chiricahua National Monument
+  https://www.nps.gov/chir/learn/historyculture/apache-wars-geronimo.htm
+
+HOPI
+- The Hopi Tribe — official website
+  https://www.hopi-nsn.gov/
+- The Hopi Tribe — Department of Natural Resources
+  https://www.hopi-nsn.gov/tribal-services/department-natural-resources-2/
+- The Hopi Tribe — Hopi Cultural Preservation Office
+  https://www.hopi-nsn.gov/tribal-services/department-natural-resources-2/hopi-cultural-preservation-office/
+- National Park Service — Awatovi Ruins
+  https://www.nps.gov/places/awatovi-ruins-arizona.htm
+- National Park Service — Wupatki National Monument / Associated Tribes
+  https://www.nps.gov/wupa/learn/historyculture/associated-tribes.htm
+
+DINÉ / NAVAJO
+- Navajo Nation — Treaty of 1868 / leadership and Long Walk context
+  https://navajotreaty1868.navajo-nsn.gov/Leadership
+- Navajo Nation — The Enduring Role of Sheep
+  https://opvp.navajo-nsn.gov/260122-the-enduring-role-of-sheep/
+- National Park Service — Canyon de Chelly National Monument
+  https://www.nps.gov/articles/dechelly.htm
+- National Park Service — New Mexico Fiber Arts Traditions
+  https://www.nps.gov/articles/000/new-mexico-fiber-arts-traditions.htm
+
+PUEBLO PEOPLES
+- National Park Service — Ancestral Pueblo People, Bandelier National Monument
+  https://www.nps.gov/band/learn/historyculture/ancestral-pueblo-people.htm
+- National Park Service — Pueblo People, Bandelier National Monument
+  https://www.nps.gov/band/learn/historyculture/pueblopeople.htm
+- National Park Service — Pueblo Revolt / Spanish Missions resources
+  https://www.nps.gov/subjects/travelspanishmissions/mission-san-juan-bautista.htm
+- National Park Service — Acoma Pueblo: Ancient City in the Sky
+  https://www.nps.gov/articles/000/acoma-pueblo-ancient-city-in-the-sky.htm
+- National Park Service — Spanish Encounters, Pecos National Historical Park
+  https://home.nps.gov/peco/learn/historyculture/spanish-encounters.htm
+
+MAP
+- Wikimedia Commons — NativeAmericanRegions map 1.jpg, Spacenut525, public domain
+  https://commons.wikimedia.org/wiki/File:NativeAmericanRegions_map_1.jpg
+  Current implementation hotlinks the public-domain original while a local repo copy is pending.
+
+CLASSROOM REFERENCE
+- User-provided “WebQuest 3: Native Americans of the Southwest” was used to identify the kinds of concrete facts and questions traditionally emphasized in the course. The new pages are not limited to its structure.
