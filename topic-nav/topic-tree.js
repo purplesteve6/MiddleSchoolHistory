@@ -48,16 +48,53 @@
   head.querySelector('.topicTreeTitle').textContent = cfg.title || 'Topic';
   panel.appendChild(head);
 
-  cfg.sections.forEach(section => {
+  cfg.sections.forEach((section, sectionIndex) => {
     const group = document.createElement('section');
     group.className = 'topicTreeGroup';
-    const h = document.createElement('h2');
-    h.textContent = section.label;
-    group.appendChild(h);
 
     const list = document.createElement('div');
     list.className = 'topicTreeItems';
-    (section.items || []).forEach(item => {
+    const listId = `topicTreeItems-${sectionIndex}`;
+    list.id = listId;
+
+    const sectionItems = section.items || [];
+    const containsActive = sectionItems.some(item => item.href && activeHref && hrefKey(activeHref) === hrefKey(item.href));
+
+    if(cfg.accordion){
+      group.classList.add('isAccordion');
+      const sectionToggle = document.createElement('button');
+      sectionToggle.type = 'button';
+      sectionToggle.className = 'topicTreeGroupToggle';
+      sectionToggle.setAttribute('aria-controls', listId);
+      sectionToggle.innerHTML = `<span class="topicTreeGroupLabel"></span><span class="topicTreeChevron" aria-hidden="true">⌄</span>`;
+      sectionToggle.querySelector('.topicTreeGroupLabel').textContent = section.label;
+
+      const initiallyOpen = containsActive || (!activeHref && sectionIndex === 0) || section.open === true;
+      group.classList.toggle('is-open', initiallyOpen);
+      sectionToggle.setAttribute('aria-expanded', String(initiallyOpen));
+
+      sectionToggle.addEventListener('click', () => {
+        const opening = !group.classList.contains('is-open');
+        if(opening){
+          panel.querySelectorAll('.topicTreeGroup.isAccordion.is-open').forEach(other => {
+            if(other === group) return;
+            other.classList.remove('is-open');
+            const otherButton = other.querySelector('.topicTreeGroupToggle');
+            if(otherButton) otherButton.setAttribute('aria-expanded','false');
+          });
+        }
+        group.classList.toggle('is-open', opening);
+        sectionToggle.setAttribute('aria-expanded', String(opening));
+      });
+
+      group.appendChild(sectionToggle);
+    } else {
+      const h = document.createElement('h2');
+      h.textContent = section.label;
+      group.appendChild(h);
+    }
+
+    sectionItems.forEach(item => {
       let el;
       if(item.href && !item.disabled){
         el = document.createElement('a');

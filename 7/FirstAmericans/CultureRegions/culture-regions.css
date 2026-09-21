@@ -58,3 +58,7 @@ body.cultureRegionsPage #siteFooter a{color:#642522}
 @media(max-width:900px){body.cultureRegionsPage #siteHeader .nav{padding-left:175px}body.cultureRegionsPage #siteHeader .nav-logo-img{height:100px}}
 @media(max-width:680px){body.cultureRegionsPage #siteHeader .nav{padding-left:123px}body.cultureRegionsPage #siteHeader .nav-logo-img{height:82px}body.cultureRegionsPage #siteHeader .brandSub{display:none}}
 @media(max-width:640px){body.cultureRegionsPage #siteFooter .footer-inner{flex-direction:column;align-items:flex-start;gap:12px}body.cultureRegionsPage #siteFooter .footer-logo-icon{height:36px}body.cultureRegionsPage #siteFooter .footer-logo-text{height:20px}}
+
+/* Keep maroon CTA text high-contrast despite the topic-wide inherited link color. */
+body.cultureRegionsPage .crNext a{color:#ffe6a6}
+body.cultureRegionsPage .crNext a:hover{color:#fff2c8}

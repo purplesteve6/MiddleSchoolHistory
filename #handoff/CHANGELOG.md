@@ -4,6 +4,15 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-21 — Southwest typography, button contrast, and accordion navigation
+
+### Changed
+- Standardized the individual Southwest people pages so major page and section headings use the same Southwest display font; removed the Apache-only heading-font override that made the Apache page visually inconsistent.
+- Changed text on dark maroon Southwest/Culture Regions action buttons to a warm yellow for stronger contrast.
+- Added optional accordion support to the shared topic-tree engine and enabled it for Native American Culture Regions; the section containing the current page opens automatically and opening another section collapses the previous one.
+
+---
+
 ## 2026-09-21 — Culture Regions header/footer sizing fix
 
 ### Fixed

@@ -72,3 +72,18 @@ a.topicTreeItem.active{background:var(--tree-active);color:var(--tree-active-tex
 @media(max-width:1099px){
   .topicTreeRail{height:auto;align-self:auto}
 }
+
+
+/* Optional section accordion. Enabled per topic with TOPIC_TREE_CONFIG.accordion = true. */
+.topicTreeGroup.isAccordion{padding:0}
+.topicTreeGroupToggle{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:.55rem;
+  border:0;background:transparent;color:var(--tree-accent);padding:.72rem 1rem .66rem;
+  font:inherit;font-size:.72rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase;
+  text-align:left;cursor:pointer
+}
+.topicTreeGroupToggle:hover,.topicTreeGroupToggle:focus-visible{background:rgba(255,255,255,.07);outline:none}
+.topicTreeChevron{font-size:1rem;line-height:1;transition:transform .16s ease}
+.topicTreeGroup.isAccordion.is-open .topicTreeChevron{transform:rotate(180deg)}
+.topicTreeGroup.isAccordion .topicTreeItems{display:none;padding:.06rem .7rem .78rem}
+.topicTreeGroup.isAccordion.is-open .topicTreeItems{display:grid}

@@ -1,6 +1,7 @@
 window.TOPIC_TREE_CONFIG = {
   title: "Native American Culture Regions",
   mainId: "content",
+  accordion: true,
   sections: [
     {
       label: "Overview",
