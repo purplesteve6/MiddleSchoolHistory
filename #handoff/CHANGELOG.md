@@ -4,6 +4,23 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-21 — Southwest horses, homes, stories, and nested navigation
+
+### Added
+- Added a substantial Southwest overview feature explaining the reintroduction and spread of the horse, including the role of Native trade after the Pueblo Revolt of 1680 and distinct effects on Apache, Diné, Pueblo, and Hopi communities.
+- Added a comparative Southwest homes section breaking down the Diné hogan, Apache wickiup, Ancestral Pueblo cliff dwelling, and Pueblo adobe construction with diagram placeholders and clear culture/time-period labels.
+- Added one public traditional-story feature to each people/group page: Mescalero Apache White Painted Woman and her sons; Hopi Maasaw's gifts and covenant; Diné Hero Twins and Spider Woman; and an Acoma Haak'u migration/homeland tradition as one explicitly identified Pueblo example.
+- Added source notes for the new horse, architecture, and oral-tradition material.
+
+### Expanded
+- Fleshed out narrative text across Apache, Hopi, Diné (Navajo), and Pueblo Peoples pages, especially geography, food systems, housing, Spanish/U.S. contact, continuity, and modern sovereignty.
+
+### Navigation
+- Replaced the Culture Regions accordion organization with a visible nested hierarchy: Southwest is now a parent item with Apache, Hopi, Diné, and Pueblo pages nested directly beneath it.
+- Extended the shared topic-tree engine to support optional nested `children` while preserving existing flat topic trees.
+
+---
+
 ## 2026-09-21 — Southwest typography, button contrast, and accordion navigation
 
 ### Changed

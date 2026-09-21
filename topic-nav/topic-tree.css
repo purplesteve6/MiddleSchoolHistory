@@ -87,3 +87,11 @@ a.topicTreeItem.active{background:var(--tree-active);color:var(--tree-active-tex
 .topicTreeGroup.isAccordion.is-open .topicTreeChevron{transform:rotate(180deg)}
 .topicTreeGroup.isAccordion .topicTreeItems{display:none;padding:.06rem .7rem .78rem}
 .topicTreeGroup.isAccordion.is-open .topicTreeItems{display:grid}
+
+/* Optional nested item hierarchy (used by Culture Regions to place peoples under a region). */
+.topicTreeItemNode{min-width:0}
+.topicTreeChildren{display:grid;gap:.12rem;margin:.12rem 0 .28rem .62rem;padding-left:.58rem;border-left:2px solid rgba(255,255,255,.12)}
+.topicTreeChildren .topicTreeItem{font-size:.82rem;font-weight:760;padding:.38rem .5rem}
+.topicTreeItem.has-children{font-weight:950}
+.topicTreeItem.ancestor-active{color:#fff;background:rgba(255,255,255,.07)}
+.topicTreeChildren a.topicTreeItem.active{box-shadow:0 4px 12px rgba(0,0,0,.14)}

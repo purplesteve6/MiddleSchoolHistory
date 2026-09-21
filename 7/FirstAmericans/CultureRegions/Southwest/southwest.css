@@ -51,3 +51,21 @@ body.southwestPage #siteFooter a{color:var(--sw-dark)}
 /* Keep text readable on dark Southwest action buttons despite the topic-wide inherited link color. */
 body.southwestPage .pagePager a,body.southwestPage .exploreHistory a{color:#ffe39a}
 body.southwestPage .pagePager a:hover,body.southwestPage .exploreHistory a:hover{color:#fff1bd}
+
+/* September 2026: richer Southwest teaching features. */
+.horseFeature{margin:1rem 0;padding:1.35rem;border-radius:20px;background:linear-gradient(135deg,#6d2a28,#8d382e);color:#fff;border:3px solid var(--sw-gold);box-shadow:var(--sw-shadow)}
+.horseFeature h2{font-family:var(--southwest-title-font,var(--native-hero-font));font-weight:400;font-synthesis:none;color:#ffe19a;text-align:center;font-size:clamp(1.9rem,3.4vw,2.55rem);margin:.05rem 0 .7rem}
+.featureKicker,.storyKicker{display:block;text-align:center;text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;font-weight:1000;color:#ffd786}
+.horseIntro{max-width:88ch;margin:0 auto}.horseIntro p{margin:.45rem 0}
+.horseTimeline{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:1rem 0}
+.horseTimeline article{padding:.85rem;border-radius:14px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16)}
+.horseTimeline span{display:inline-flex;padding:.2rem .48rem;border-radius:999px;background:var(--sw-gold);color:var(--sw-dark);font-weight:1000;font-size:.78rem}.horseTimeline b{display:block;margin:.35rem 0 .18rem;color:#fff1c0}.horseTimeline p{margin:0;font-size:.9rem;color:rgba(255,255,255,.87)}
+.horseImpact{display:grid;grid-template-columns:250px 1fr;gap:1rem;align-items:center;margin-top:.85rem}.horseImpact h3{margin:.05rem 0 .35rem;color:#ffe19a;font-size:1.35rem}.horseImpact p{margin:.2rem 0}.compactPlaceholder{min-height:180px;background:rgba(255,255,255,.08);border-color:rgba(255,225,154,.45);color:#fff1c0}.compactPlaceholder small{color:rgba(255,255,255,.75)}
+.homeTypes{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin-top:.9rem}.homeTypeCard{padding:1rem;border-radius:16px;background:linear-gradient(180deg,#fffaf0,#f4dfbd);border:1px solid var(--sw-line);border-top:7px solid var(--sw-rust)}.homeTypeCard:nth-child(2){border-top-color:var(--sw-orange)}.homeTypeCard:nth-child(3){border-top-color:var(--sw-turq)}.homeTypeCard:nth-child(4){border-top-color:var(--sw-gold)}
+.homeSketch{min-height:105px;display:grid;place-items:center;text-align:center;border:2px dashed rgba(118,44,45,.28);border-radius:12px;background:rgba(255,255,255,.38);color:#815d50;font-weight:900;font-size:.82rem}.homeSketch small{font-weight:700;color:#91766c}
+.homeTypeCard h3{margin:.65rem 0 .4rem;color:var(--sw-dark);font-size:1.35rem}.homeTypeCard h3 span{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--sw-rust)}.homeBreakdown p{margin:.3rem 0;font-size:.94rem}.homeBreakdown b{color:var(--sw-maroon)}.homeNote{margin:.9rem 0 0;padding:.8rem 1rem;border-radius:12px;background:#fff1ca;border-left:6px solid var(--sw-gold)}
+.storyFeature{display:grid;grid-template-columns:78px 1fr;gap:1rem;align-items:start;margin:1rem 0;padding:1.25rem 1.35rem;border-radius:20px;background:linear-gradient(135deg,#4f2a3a,#6f3340);color:#fff;border:3px solid #d99b48;box-shadow:var(--sw-shadow)}
+.storyMark{width:64px;height:64px;display:grid;place-items:center;border-radius:50%;background:#e2a348;color:#4f2a3a;font-size:2rem;font-weight:1000;box-shadow:inset 0 0 0 4px rgba(255,255,255,.22)}
+.storyFeature .storyKicker{text-align:left;color:#ffd98d}.storyFeature h2{font-family:var(--southwest-title-font,var(--native-hero-font));font-weight:400;font-synthesis:none;color:#ffe0a0;font-size:clamp(1.8rem,3vw,2.3rem);line-height:1;margin:.08rem 0 .6rem}.storyFeature p{margin:.42rem 0;color:rgba(255,255,255,.93)}
+@media(max-width:900px){.horseTimeline{grid-template-columns:1fr}.horseImpact{grid-template-columns:1fr}.homeTypes{grid-template-columns:1fr}}
+@media(max-width:680px){.storyFeature{grid-template-columns:1fr}.storyMark{margin:0 auto}.storyFeature .storyKicker,.storyFeature h2{text-align:center}}

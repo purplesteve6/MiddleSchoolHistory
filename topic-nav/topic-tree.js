@@ -15,15 +15,14 @@
     try { const u = new URL(href, location.origin); return norm(u.pathname) + (u.hash || ''); }
     catch(e){ return norm(href); }
   };
+  const flatten = items => (items || []).flatMap(item => [item, ...flatten(item.children)]);
+  const allItems = cfg.sections.flatMap(s => flatten(s.items));
 
-  const allItems = cfg.sections.flatMap(s => s.items || []);
   let activeHref = null;
-  // Prefer an exact path + hash match. This lets a navigator item point directly to a named feature on a page.
   if(currentHash){
     const hashExact = allItems.find(i => i.href && hrefKey(i.href) === current + currentHash);
     if(hashExact) activeHref = hashExact.href;
   }
-  // If no anchor-specific item matched, prefer the ordinary page link without a hash.
   if(!activeHref){
     const exact = allItems.find(i => i.href && !new URL(i.href, location.origin).hash && norm(i.href) === current);
     if(exact) activeHref = exact.href;
@@ -34,6 +33,9 @@
       .sort((a,b) => norm(b.matchPrefix).length - norm(a.matchPrefix).length)[0];
     if(pref) activeHref = pref.href;
   }
+
+  const itemIsActive = item => !!(item.href && activeHref && hrefKey(activeHref) === hrefKey(item.href));
+  const itemContainsActive = item => itemIsActive(item) || (item.children || []).some(itemContainsActive);
 
   const rail = document.createElement('aside');
   rail.className = 'topicTreeRail';
@@ -48,6 +50,41 @@
   head.querySelector('.topicTreeTitle').textContent = cfg.title || 'Topic';
   panel.appendChild(head);
 
+  function buildItem(item, depth=0){
+    const node = document.createElement('div');
+    node.className = 'topicTreeItemNode';
+    if(depth) node.classList.add('is-nested');
+
+    let el;
+    if(item.href && !item.disabled){
+      el = document.createElement('a');
+      el.href = item.href;
+      if(itemIsActive(item)){
+        el.classList.add('active');
+        el.setAttribute('aria-current','page');
+      } else if((item.children || []).some(itemContainsActive)){
+        el.classList.add('ancestor-active');
+      }
+    } else {
+      el = document.createElement('span');
+      el.classList.add('planned');
+      el.setAttribute('aria-disabled','true');
+    }
+    el.classList.add('topicTreeItem');
+    if(item.children && item.children.length) el.classList.add('has-children');
+    el.textContent = item.label;
+    if(item.note) el.title = item.note;
+    node.appendChild(el);
+
+    if(item.children && item.children.length){
+      const children = document.createElement('div');
+      children.className = 'topicTreeChildren';
+      item.children.forEach(child => children.appendChild(buildItem(child, depth+1)));
+      node.appendChild(children);
+    }
+    return node;
+  }
+
   cfg.sections.forEach((section, sectionIndex) => {
     const group = document.createElement('section');
     group.className = 'topicTreeGroup';
@@ -58,7 +95,7 @@
     list.id = listId;
 
     const sectionItems = section.items || [];
-    const containsActive = sectionItems.some(item => item.href && activeHref && hrefKey(activeHref) === hrefKey(item.href));
+    const containsActive = sectionItems.some(itemContainsActive);
 
     if(cfg.accordion){
       group.classList.add('isAccordion');
@@ -68,11 +105,9 @@
       sectionToggle.setAttribute('aria-controls', listId);
       sectionToggle.innerHTML = `<span class="topicTreeGroupLabel"></span><span class="topicTreeChevron" aria-hidden="true">⌄</span>`;
       sectionToggle.querySelector('.topicTreeGroupLabel').textContent = section.label;
-
       const initiallyOpen = containsActive || (!activeHref && sectionIndex === 0) || section.open === true;
       group.classList.toggle('is-open', initiallyOpen);
       sectionToggle.setAttribute('aria-expanded', String(initiallyOpen));
-
       sectionToggle.addEventListener('click', () => {
         const opening = !group.classList.contains('is-open');
         if(opening){
@@ -86,7 +121,6 @@
         group.classList.toggle('is-open', opening);
         sectionToggle.setAttribute('aria-expanded', String(opening));
       });
-
       group.appendChild(sectionToggle);
     } else {
       const h = document.createElement('h2');
@@ -94,25 +128,7 @@
       group.appendChild(h);
     }
 
-    sectionItems.forEach(item => {
-      let el;
-      if(item.href && !item.disabled){
-        el = document.createElement('a');
-        el.href = item.href;
-        if(activeHref && hrefKey(activeHref) === hrefKey(item.href)){
-          el.classList.add('active');
-          el.setAttribute('aria-current','page');
-        }
-      } else {
-        el = document.createElement('span');
-        el.classList.add('planned');
-        el.setAttribute('aria-disabled','true');
-      }
-      el.classList.add('topicTreeItem');
-      el.textContent = item.label;
-      if(item.note) el.title = item.note;
-      list.appendChild(el);
-    });
+    sectionItems.forEach(item => list.appendChild(buildItem(item)));
     group.appendChild(list);
     panel.appendChild(group);
   });
