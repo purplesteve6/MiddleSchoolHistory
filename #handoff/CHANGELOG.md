@@ -4,6 +4,15 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-21 — Culture Regions header/footer sizing fix
+
+### Fixed
+- Added explicit compact-topic header and footer sizing to `CultureRegions/culture-regions.css` and `Southwest/southwest.css`.
+- Scoped the fixes to the new Culture Regions/Southwest pages so shared injected header/footer logos, navigation, and footer branding render at the same practical scale as mature topic pages instead of at their intrinsic image sizes.
+- Preserved the Southwest/Culture Regions color themes while matching the established compact topic-header responsive behavior.
+
+---
+
 ## 2026-09-21 — Native American Culture Regions + Southwest first build
 
 ### Added

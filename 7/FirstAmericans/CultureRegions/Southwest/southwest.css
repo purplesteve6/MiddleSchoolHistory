@@ -17,3 +17,33 @@
 .vocabWord{font-weight:900;color:var(--sw-maroon);border-bottom:2px dotted var(--sw-gold);position:relative;cursor:help}.vocabWord:hover::after{content:attr(data-def);position:absolute;left:0;bottom:calc(100% + 8px);z-index:20;width:min(310px,72vw);padding:.65rem .75rem;border-radius:10px;background:var(--sw-dark);color:white;font-size:.82rem;font-weight:650;box-shadow:0 8px 22px rgba(0,0,0,.25)}
 @media(max-width:900px){.swHero,.tribeHero,.twoCol{grid-template-columns:1fr}.heroVisual .placeholderPhoto{min-height:300px}.featureGrid{grid-template-columns:1fr}.geoFlow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);text-align:center;height:30px}.factTiles{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:680px){body.southwestPage main{padding-top:126px}.swBigIdea,.keyTakeaway,.personFeature,.exploreHistory{grid-template-columns:1fr;text-align:center}.swBigIdea img,.keyTakeaway img,.personFeature .personWrap img{margin-left:auto;margin-right:auto}.peopleGrid,.factTiles{grid-template-columns:1fr}.exploreHistory h2{text-align:center}.timelineMini article{grid-template-columns:1fr}.pagePager{flex-direction:column}.pagePager a{width:100%;text-align:center}}
+
+
+/* Shared compact topic header/footer sizing. These partials are injected by /include.js,
+   so this topic stylesheet must size their logo and navigation elements explicitly. */
+body.southwestPage #siteHeader header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(84,32,31,.97);border-bottom:3px solid var(--sw-gold);box-shadow:0 3px 16px rgba(0,0,0,.22)}
+body.southwestPage #siteHeader .nav-logo{position:absolute;left:12px;top:11px;z-index:99}
+body.southwestPage #siteHeader .nav-logo-img{height:122px;width:auto;max-width:none}
+body.southwestPage #siteHeader .nav{max-width:var(--sw-max);margin:auto;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;color:white}
+body.southwestPage #siteHeader .brand{display:flex;align-items:center;gap:.7rem}
+body.southwestPage #siteHeader .columnIcon{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--sw-gold);border:2px solid rgba(255,255,255,.35)}
+body.southwestPage #siteHeader .columnIcon img{width:75%;height:75%;object-fit:contain}
+body.southwestPage #siteHeader .brandText{line-height:1.08}
+body.southwestPage #siteHeader .brandKicker{font-size:.7rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#f8d88f}
+body.southwestPage #siteHeader .brandTitle{font-size:1.05rem;font-weight:1000}
+body.southwestPage #siteHeader .brandSub{font-size:.79rem;color:rgba(255,255,255,.76);margin-top:.12rem}
+body.southwestPage #siteHeader .nav a.btn{display:inline-flex;text-decoration:none;padding:.48rem .76rem;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.09);font-weight:800;color:#fff}
+body.southwestPage #siteHeader .nav a.btn:hover{background:var(--sw-gold);color:var(--sw-dark)}
+body.southwestPage #siteHeader .topicActions{display:flex;align-items:center;justify-content:flex-end;gap:.45rem;flex-wrap:wrap}
+body.southwestPage #siteFooter .site-footer{margin-top:0;padding:18px 1rem 40px;color:var(--sw-dark)}
+body.southwestPage #siteFooter .footer-rule{border:none;height:1px;margin:0 auto 16px;max-width:var(--sw-max);background:linear-gradient(90deg,transparent,rgba(118,44,45,.30),transparent)}
+body.southwestPage #siteFooter .footer-inner{max-width:var(--sw-max);margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+body.southwestPage #siteFooter .footer-brand{display:flex;align-items:center;gap:10px}
+body.southwestPage #siteFooter .footer-logo-icon{height:40px;width:auto;display:block}
+body.southwestPage #siteFooter .footer-logo-text{height:22px;width:auto;display:block;opacity:.9}
+body.southwestPage #siteFooter .footer-copy{font-size:13px;line-height:1.4;color:var(--sw-dark)}
+body.southwestPage #siteFooter .footer-site{font-weight:900;color:var(--sw-dark)}
+body.southwestPage #siteFooter a{color:var(--sw-dark)}
+@media(max-width:900px){body.southwestPage #siteHeader .nav{padding-left:175px}body.southwestPage #siteHeader .nav-logo-img{height:100px}}
+@media(max-width:680px){body.southwestPage #siteHeader .nav{padding-left:123px}body.southwestPage #siteHeader .nav-logo-img{height:82px}body.southwestPage #siteHeader .brandSub{display:none}}
+@media(max-width:640px){body.southwestPage #siteFooter .footer-inner{flex-direction:column;align-items:flex-start;gap:12px}body.southwestPage #siteFooter .footer-logo-icon{height:36px}body.southwestPage #siteFooter .footer-logo-text{height:20px}}

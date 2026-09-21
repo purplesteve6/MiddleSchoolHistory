@@ -553,7 +553,7 @@ Current build direction:
 - All ordinary content photos are currently intentional placeholders describing the needed image, orientation, and instructional purpose. The culture-regions page uses a public-domain Wikimedia cultural-regions map by Spacenut525 via the external original URL while a local repo copy remains desirable.
 - A reusable **Explore This History** National Park Service side feature is in use with a CSS text fallback. The user plans to create a dedicated sticker asset; once that sticker is added, replace the fallback and document its exact filename in `SITE_FEATURES.txt`.
 
-Immediate next steps after this first pass: visually review the new pages in-browser, replace photo placeholders as assets are selected, install the final Explore This History sticker, and refine any text/layout based on classroom use.
+Immediate next steps after this first pass: visually review the new pages in-browser, replace photo placeholders as assets are selected, install the final Explore This History sticker, and refine any text/layout based on classroom use. The Culture Regions and Southwest styles now explicitly size the shared compact header/footer elements; keep those rules (or a future shared equivalent) so injected logos/navigation do not fall back to oversized intrinsic image dimensions.
 
 ---
 
