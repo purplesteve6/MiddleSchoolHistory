@@ -4,6 +4,18 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-21 — Pueblo Peoples image integration
+
+### Added / changed
+- Created `/7/FirstAmericans/CultureRegions/Southwest/images/pueblo/`.
+- Converted all seven user-supplied Pueblo images to WEBP and renamed them for stable site use.
+- Replaced Pueblo-page placeholders with real images for living Pueblo dance, Zuni Pueblo architecture, waffle-garden farming, a Mesa Verde kiva, Coronado at Hawikuh, Po’pay, and Bandelier National Monument.
+- Added captions and responsive image treatments; preserved explicit credit clues from supplied filenames without inventing missing credits.
+- Added a cache-busting query to the Southwest stylesheet on the Pueblo page.
+- Updated `Southwest/SOURCES.txt` with the new local image inventory/caption notes.
+
+---
+
 ## 2026-09-21 — Southwest horses, homes, stories, and nested navigation
 
 ### Added

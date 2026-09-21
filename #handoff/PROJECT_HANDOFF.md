@@ -540,20 +540,11 @@ The `#handoff/` folder itself is intended to remain in the repo so a future chat
 
 ### Current active work
 
-**Native American Culture Regions expansion (begun 2026-09-21).**
+The active workstream is the Grade 7 **First Americans → Native American Culture Regions → Southwest** branch. The Culture Regions landing page, Southwest overview, and Apache, Hopi, Diné (Navajo), and Pueblo Peoples pages are built. The Southwest overview includes horse-introduction and Southwest-home comparison features; the individual people pages include expanded historical/cultural text and one carefully sourced public traditional story each.
 
-Current build direction:
-- Keep `/7/FirstAmericans/` as the Grade 7 Unit 1 umbrella.
-- Keep Mississippians/Cahokia prominent as ancestral/earlier material.
-- Add `/7/FirstAmericans/CultureRegions/` as a major branch with a cultural-regions landing page and map.
-- Build regions as substantial teaching pages, then break them into distinct people/nation pages.
-- First region: Southwest. Initial people/group pages: Apache Peoples, Hopi, Diné (Navajo), and Pueblo Peoples.
-- Southwest visual identity: maroon, burnt orange, ochre/gold, sandstone/tan, with restrained turquoise accents.
-- Newly added display fonts in `/assets/fonts/native-american/`: `southwest.ttf` and `Apache.ttf`; these are configured in the shared Native font stylesheet for display-title use only.
-- All ordinary content photos are currently intentional placeholders describing the needed image, orientation, and instructional purpose. The culture-regions page uses a public-domain Wikimedia cultural-regions map by Spacenut525 via the external original URL while a local repo copy remains desirable.
-- A reusable **Explore This History** National Park Service side feature is in use with a CSS text fallback. The user plans to create a dedicated sticker asset; once that sticker is added, replace the fallback and document its exact filename in `SITE_FEATURES.txt`.
+**Pueblo Peoples image pass (2026-09-21):** seven user-supplied images were converted to WEBP, saved under `/7/FirstAmericans/CultureRegions/Southwest/images/pueblo/`, and integrated into the Pueblo page. They cover living Pueblo dance, Zuni architecture (1873), waffle-garden farming, a Mesa Verde kiva, Coronado at Hawikuh, Po’pay, and Bandelier National Monument. Captions preserve only user-supplied/identifiable credit information.
 
-Current Southwest content now includes a horse-introduction feature, a comparative home/architecture breakdown (Diné hogan, Apache wickiup, Ancestral Pueblo cliff dwellings, and Pueblo adobe), and one carefully sourced public traditional story on each people/group page (Mescalero Apache White Painted Woman; Hopi Maasaw gifts/covenant; Diné Hero Twins and Spider Woman; Acoma Haak'u tradition as one Pueblo example). Text throughout the four people pages was expanded for greater historical context while keeping middle-school readability. Immediate next steps: visually review the expanded pages in-browser, replace photo/diagram placeholders as assets are selected, install the final Explore This History sticker, and refine any text/layout based on classroom use. The Culture Regions and Southwest styles now explicitly size the shared compact header/footer elements; keep those rules (or a future shared equivalent) so injected logos/navigation do not fall back to oversized intrinsic image dimensions. The Culture Regions topic tree now uses visible hierarchy instead of an accordion: Culture Regions is the branch root, Southwest is a parent item, and Apache Peoples, Hopi, Diné (Navajo), and Pueblo Peoples are visibly nested beneath Southwest. The shared topic-tree engine supports nested `children` while preserving flat configurations for topics such as Civil War. Individual Southwest people pages use the Southwest display font consistently for their main title and major section headings; the Apache font remains installed for possible decorative use but is not used as a competing heading font.
+**Publishing workflow:** Google Drive is the working copy that the user reviews/updates locally; the user can push these synced changes through their GitHub updater.
 
 ---
 
