@@ -69,3 +69,24 @@ body.southwestPage .pagePager a:hover,body.southwestPage .exploreHistory a:hover
 .storyFeature .storyKicker{text-align:left;color:#ffd98d}.storyFeature h2{font-family:var(--southwest-title-font,var(--native-hero-font));font-weight:400;font-synthesis:none;color:#ffe0a0;font-size:clamp(1.8rem,3vw,2.3rem);line-height:1;margin:.08rem 0 .6rem}.storyFeature p{margin:.42rem 0;color:rgba(255,255,255,.93)}
 @media(max-width:900px){.horseTimeline{grid-template-columns:1fr}.horseImpact{grid-template-columns:1fr}.homeTypes{grid-template-columns:1fr}}
 @media(max-width:680px){.storyFeature{grid-template-columns:1fr}.storyMark{margin:0 auto}.storyFeature .storyKicker,.storyFeature h2{text-align:center}}
+
+/* Pueblo Peoples page image integration — September 2026 */
+.puebloHeroFigure,.contentFigure,.personPhotoFigure,.explorePhotoFigure{margin:0}
+.puebloHeroFigure{align-self:stretch;display:flex;flex-direction:column;min-width:0;padding:.45rem;border-radius:16px;background:rgba(255,247,232,.66);border:1px solid var(--sw-line)}
+.puebloHeroFigure img{width:100%;height:100%;min-height:360px;object-fit:cover;object-position:center 42%;border-radius:12px;border:2px solid rgba(118,44,45,.15)}
+.puebloHeroFigure figcaption,.contentFigure figcaption,.personPhotoFigure figcaption,.explorePhotoFigure figcaption{font-size:.78rem;line-height:1.35;color:var(--sw-muted);padding:.48rem .2rem .05rem}
+.contentFigure{padding:.42rem;border-radius:15px;background:rgba(255,250,240,.82);border:1px solid var(--sw-line);align-self:start}
+.contentFigure img{width:100%;height:auto;display:block;border-radius:11px;border:2px solid rgba(118,44,45,.12);background:#fffaf0}
+.historicFigure img{filter:sepia(.08) contrast(1.02)}
+.puebloHistoryGrid,.puebloKivaGrid,.puebloContactGrid{align-items:start}
+.personPhotoFigure{margin-top:.55rem}
+.personFeature .personPhotoFigure img{width:100%;max-width:180px;height:auto;margin:0 auto;border-radius:10px;border:2px solid rgba(118,44,45,.14);background:#fffaf0}
+.personPhotoFigure figcaption{max-width:180px;margin:0 auto;text-align:center}
+.exploreHistory{grid-template-columns:260px 1fr;align-items:start}
+.exploreVisual{display:grid;gap:.75rem;align-self:stretch}
+.exploreVisual .exploreStickerFallback{min-height:86px}
+.explorePhotoFigure{padding:.35rem;border-radius:14px;background:rgba(255,255,255,.5);border:1px solid rgba(62,141,136,.25)}
+.explorePhotoFigure img{width:100%;height:165px;object-fit:cover;object-position:center;border-radius:10px}
+.explorePhotoFigure figcaption{color:#53675b;padding:.42rem .16rem .05rem}
+@media(max-width:900px){.puebloHeroFigure img{min-height:0;height:auto}.exploreHistory{grid-template-columns:1fr}.exploreVisual{grid-template-columns:190px minmax(0,1fr);align-items:center}.explorePhotoFigure img{height:180px}}
+@media(max-width:680px){.exploreVisual{grid-template-columns:1fr}.explorePhotoFigure img{height:auto}.puebloHeroFigure figcaption,.contentFigure figcaption,.personPhotoFigure figcaption,.explorePhotoFigure figcaption{text-align:center}}
