@@ -544,6 +544,8 @@ The active workstream is the Grade 7 **First Americans → Native American Cultu
 
 **Pueblo Peoples image pass (2026-09-21):** seven user-supplied images were converted to WEBP, saved under `/7/FirstAmericans/CultureRegions/Southwest/images/pueblo/`, and integrated into the Pueblo page. They cover living Pueblo dance, Zuni architecture (1873), waffle-garden farming, a Mesa Verde kiva, Coronado at Hawikuh, Po’pay, and Bandelier National Monument. Captions preserve only user-supplied/identifiable credit information.
 
+**Apache Peoples image pass (2026-09-22):** eight user-supplied images were converted/cropped to WEBP, saved under `/7/FirstAmericans/CultureRegions/Southwest/images/apache/`, and integrated into the Apache page. They cover a historic Apache group portrait, homelands/reservation map, Edward S. Curtis wickiup (1902), mounted Apache rider, Cochise portrait treatment, Geronimo portrait, Fort Bowie ruins, and a contemporary Apache cultural portrait credited to David Landry / Village News.
+
 **Publishing workflow:** Google Drive is the working copy that the user reviews/updates locally; the user can push these synced changes through their GitHub updater.
 
 ---

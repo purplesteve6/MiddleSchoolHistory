@@ -119,3 +119,20 @@ Converted to WEBP and stored under:
   Caption: Zuni Pueblo photographed by Timothy O'Sullivan in 1873.
 
 Image source/credit information above preserves only what was supplied in the uploaded filenames or was directly identifiable from the subject. Do not add an unsupported photographer/creator credit.
+
+
+LOCAL IMAGE ASSETS — APACHE PEOPLES PAGE (2026-09-22)
+------------------------------------------------------
+User-supplied images were converted to WEBP and stored under:
+  /7/FirstAmericans/CultureRegions/Southwest/images/apache/
+
+- apache-group-historic.webp — historic group portrait of Apache people; used in hero.
+- apache-homelands-map.webp — user-supplied map showing several modern Apache communities/reservations; used with a caption noting it does not represent all ancestral homelands.
+- apache-wickiup-historic.webp — supplied filename identifies Edward S. Curtis, 1902; used in the wickiup/housing section.
+- apache-warrior-on-horseback.webp — historic Apache rider; used with the horse/mobility discussion.
+- apache-man-portrait-headband.webp — supplied as “cochise.png”; page caption deliberately says “commonly identified as Cochise” rather than asserting photographic certainty.
+- geronimo-portrait.webp — supplied filename credits Collins & Green; Library of Congress / Corbis-VCG / Getty Images.
+- apache-historic-site-adobe-ruins.webp — supplied as Fort Bowie; used in the Explore This History feature.
+- apache-cultural-portrait-modern.webp — supplied as a present-day Apache chief; filename credits David Landry / Village News.
+
+Image captions preserve explicit clues/credits supplied with the filenames and do not invent missing attribution.

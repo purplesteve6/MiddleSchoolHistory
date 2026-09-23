@@ -4,6 +4,19 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-22 — Apache Peoples image integration
+
+### Added / changed
+- Created `/7/FirstAmericans/CultureRegions/Southwest/images/apache/`.
+- Converted/cropped all eight user-supplied Apache images to WEBP and renamed them for stable site use.
+- Replaced Apache-page placeholders with real images for the hero, homelands map, wickiup, horse/mobility section, Cochise, Geronimo, Fort Bowie, and Apache nations today.
+- Added captions and responsive image treatments, preserving supplied credit clues such as Edward S. Curtis (1902), David Landry / Village News, and the Geronimo credit string.
+- Used cautious wording on the portrait supplied as Cochise instead of presenting photographic identification as certain.
+- Updated `Southwest/SOURCES.txt` with the local Apache image inventory and caption notes.
+- Added a cache-busting query to the Southwest stylesheet on the Apache page.
+
+---
+
 ## 2026-09-21 — Pueblo Peoples image integration
 
 ### Added / changed
