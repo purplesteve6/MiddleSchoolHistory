@@ -136,3 +136,31 @@ User-supplied images were converted to WEBP and stored under:
 - apache-cultural-portrait-modern.webp — supplied as a present-day Apache chief; filename credits David Landry / Village News.
 
 Image captions preserve explicit clues/credits supplied with the filenames and do not invent missing attribution.
+
+
+LOCAL IMAGE ASSETS — HOPI PAGE (2026-09-22)
+----------------------------------------------
+User-supplied images were converted to WEBP and stored under:
+  /7/FirstAmericans/CultureRegions/Southwest/images/hopi/
+
+- hopi-village-on-mesa.webp — Hopi mesa village; used in the hero.
+- hopi-homelands-map.webp — map of Hopi Reservation/aboriginal lands and the three mesas.
+- hopi-dry-farming-field.webp — dry-farming landscape/corn field.
+- historic-hopi-village.webp — historic mesa-village photograph.
+- spanish-explorers-southwest-painting.webp — artistic depiction used with the 1540 Spanish-contact section.
+- wupatki-national-monument-ruins.webp — user-supplied NPS/Wupatki image used in Explore This History.
+
+LOCAL IMAGE ASSETS — DINÉ / NAVAJO PAGE (2026-09-22)
+------------------------------------------------------
+User-supplied images were converted to WEBP and stored under:
+  /7/FirstAmericans/CultureRegions/Southwest/images/navajo/
+
+- monument-valley-dine-homeland.webp — Monument Valley / Navajo Nation landscape; used in hero.
+- navajo-nation-map.webp — converted from the supplied SVG map.
+- navajo-sheep-herding-historic.webp — historic sheep-flock image; supplied filename identifies Edward S. Curtis, 1904.
+- navajo-weaver-at-loom.webp — Diné weaver at a loom; supplied filename references Britannica.
+- navajo-pottery-market-historic.webp — supplied historic market image; filename references Palace of the Governors Photo Archives, Negative 135047.
+- long-walk-painting.webp — user-supplied painting depicting the Long Walk.
+- horseshoe-bend-colorado-river.webp — Colorado River landscape / Horseshoe Bend image used for Diné homeland context.
+
+Image captions preserve explicit clues supplied in filenames or obvious subject context and avoid inventing unsupported creator credits.

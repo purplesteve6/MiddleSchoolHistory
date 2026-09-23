@@ -546,6 +546,8 @@ The active workstream is the Grade 7 **First Americans → Native American Cultu
 
 **Apache Peoples image pass (2026-09-22):** eight user-supplied images were converted/cropped to WEBP, saved under `/7/FirstAmericans/CultureRegions/Southwest/images/apache/`, and integrated into the Apache page. They cover a historic Apache group portrait, homelands/reservation map, Edward S. Curtis wickiup (1902), mounted Apache rider, Cochise portrait treatment, Geronimo portrait, Fort Bowie ruins, and a contemporary Apache cultural portrait credited to David Landry / Village News.
 
+**Hopi + Diné image pass (2026-09-22):** user-supplied Hopi and Diné/Navajo images were converted/cropped to WEBP, saved under `/7/FirstAmericans/CultureRegions/Southwest/images/hopi/` and `/images/navajo/`, and integrated directly into `hopi.html` and `dine-navajo.html`. Hopi now uses real images for the hero, reservation/mesa map, dry farming, historic village, Spanish contact, and Wupatki. Diné now uses real images for Monument Valley, Navajo Nation map, sheep, weaving, market/trade, the Long Walk, and Colorado River landscape context.
+
 **Publishing workflow:** Google Drive is the working copy that the user reviews/updates locally; the user can push these synced changes through their GitHub updater.
 
 ---

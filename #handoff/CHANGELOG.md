@@ -4,6 +4,19 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+
+## 2026-09-22 — Hopi and Diné (Navajo) image integration
+
+### Added / changed
+- Created `/7/FirstAmericans/CultureRegions/Southwest/images/hopi/` and `/images/navajo/`.
+- Converted/cropped all user-supplied Hopi and Diné/Navajo images to WEBP and renamed them for stable site use.
+- Replaced Hopi-page placeholders with real images for the mesa-village hero, homelands map, dry farming, historic village architecture, Spanish contact, and Wupatki National Monument.
+- Replaced Diné/Navajo placeholders and sparse visual sections with real images for Monument Valley, the Navajo Nation map, sheep herding, weaving, historic trade/market context, the Long Walk, and Colorado River landscape context.
+- Added captions directly in `hopi.html` and `dine-navajo.html` using the existing Southwest figure styles.
+- Applied the changes directly to the connected Google Drive repo so the user's GitHub updater can detect and push them.
+
+---
+
 ## 2026-09-22 — Apache Peoples image integration
 
 ### Added / changed
