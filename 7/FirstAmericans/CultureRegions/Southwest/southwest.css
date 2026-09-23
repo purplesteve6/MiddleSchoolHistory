@@ -103,3 +103,8 @@ body.southwestPage .pagePager a:hover,body.southwestPage .exploreHistory a:hover
 .apacheHomeGrid,.apacheHorseGrid,.apacheTodayGrid{align-items:center}
 @media(max-width:900px){.apacheHeroFigure img{min-height:0;height:auto}.apacheHorseFigure img,.geronimoFigure img,.apacheModernFigure img{max-height:none;height:auto}}
 @media(max-width:680px){.apacheHeroFigure figcaption{text-align:center}}
+
+/* Diné title: southwest.ttf lacks a precomposed é. Keep every letter in the Southwest face and draw the acute accent in CSS so the browser never substitutes a second font. */
+.tribeHero.dine h1{font-family:var(--southwest-title-font,var(--native-hero-font))}
+.swAccentE{position:relative;display:inline-block}
+.swAccentE::after{content:"";position:absolute;width:.34em;height:.095em;border-radius:.08em;background:currentColor;left:58%;top:-.055em;transform:translateX(-50%) rotate(-56deg);transform-origin:center}

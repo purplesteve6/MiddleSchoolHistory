@@ -4,6 +4,17 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-22 — Diné title font consistency fix
+
+### Fixed
+- Corrected the mixed-font rendering in the `Diné (Navajo)` hero title.
+- Root cause: `southwest.ttf` lacks a precomposed `é`, so the browser substituted a fallback font for that one character.
+- Kept the entire visible title in the existing Southwest display font and added the acute accent as a CSS-drawn mark over the final `e`, avoiding font fallback entirely.
+- Preserved accessible text with `aria-label="Diné (Navajo)"`.
+- Bumped the Diné page stylesheet cache query so the fix appears immediately after publishing.
+
+---
+
 
 ## 2026-09-22 — Hopi and Diné (Navajo) image integration
 

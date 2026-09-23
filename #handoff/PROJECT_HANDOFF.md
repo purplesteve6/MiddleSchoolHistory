@@ -550,6 +550,8 @@ The active workstream is the Grade 7 **First Americans → Native American Cultu
 
 **Publishing workflow:** Google Drive is the working copy that the user reviews/updates locally; the user can push these synced changes through their GitHub updater.
 
+**Diné title-font fix (2026-09-22):** `southwest.ttf` does not contain a precomposed `é`, which caused the browser to substitute a visibly different fallback glyph inside “Diné (Navajo).” The hero title now keeps every letter in the Southwest display face and uses a small CSS-drawn acute accent over the final `e`; the `h1` retains an accessible `aria-label="Diné (Navajo)"`.
+
 ---
 
 ## 16. High-value files to inspect first in a fresh chat
