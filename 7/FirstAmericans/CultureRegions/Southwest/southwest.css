@@ -108,3 +108,29 @@ body.southwestPage .pagePager a:hover,body.southwestPage .exploreHistory a:hover
 .tribeHero.dine h1{font-family:var(--southwest-title-font,var(--native-hero-font))}
 .swAccentE{position:relative;display:inline-block}
 .swAccentE::after{content:"";position:absolute;width:.34em;height:.095em;border-radius:.08em;background:currentColor;left:58%;top:-.055em;transform:translateX(-50%) rotate(-56deg);transform-origin:center}
+
+
+/* Southwest landing page image integration + Diné resource-card cleanup — 2026-09-22 */
+.southwestHeroFigure{padding:.55rem;overflow:hidden}
+.southwestHeroFigure img{width:100%;height:100%;min-height:430px;object-fit:cover;object-position:center 55%;border-radius:13px;border:2px solid rgba(118,44,45,.13)}
+.southwestHeroFigure figcaption,.horsePhotoFigure figcaption,.homeDiagramFigure figcaption,.resourceTileFigure figcaption{font-size:.78rem;line-height:1.35;color:var(--sw-muted)}
+.horsePhotoFigure{margin:0;padding:.38rem;border-radius:14px;background:rgba(255,255,255,.09);border:1px solid rgba(255,225,154,.34)}
+.horsePhotoFigure img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;filter:sepia(.08) contrast(1.03)}
+.horsePhotoFigure figcaption{padding:.42rem .18rem .06rem;color:rgba(255,255,255,.78)}
+.homeDiagramFigure{margin:0 0 .7rem;padding:.35rem;border-radius:13px;background:#ead4ae;border:1px solid rgba(118,44,45,.18)}
+.homeDiagramFigure a{display:block;border-radius:9px;overflow:hidden}
+.homeDiagramFigure img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform .16s ease}
+.homeDiagramFigure a:hover img{transform:scale(1.012)}
+.homeDiagramFigure figcaption{padding:.45rem .18rem .05rem;color:#705246}
+.navajoResourceGrid{align-items:stretch}
+.navajoResourceGrid article{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.resourceTileFigure{margin:0;background:#eadfc9;border-bottom:1px solid var(--sw-line)}
+.resourceTileFigure img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.resourceTileFigure.weaverTile img{object-position:center 30%}
+.resourceTileFigure.marketTile img{object-position:center 48%}
+.resourceTileFigure figcaption{padding:.42rem .75rem;background:rgba(255,250,240,.94);min-height:2.8rem}
+.resourceTileBody{padding:.2rem 1rem 1rem;display:flex;flex-direction:column;flex:1}
+.resourceTileBody h3{margin:.55rem 0 .15rem}
+.resourceTileBody p{margin:.25rem 0}
+@media(max-width:900px){.southwestHeroFigure img{min-height:0;height:auto}.homeDiagramFigure img{aspect-ratio:auto}.resourceTileFigure img{aspect-ratio:16/10}.resourceTileFigure.weaverTile img{object-position:center 34%}}
+@media(max-width:680px){.southwestHeroFigure figcaption,.horsePhotoFigure figcaption,.homeDiagramFigure figcaption,.resourceTileFigure figcaption{text-align:center}.resourceTileFigure img{aspect-ratio:4/3}}

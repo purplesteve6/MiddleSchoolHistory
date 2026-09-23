@@ -164,3 +164,21 @@ User-supplied images were converted to WEBP and stored under:
 - horseshoe-bend-colorado-river.webp — Colorado River landscape / Horseshoe Bend image used for Diné homeland context.
 
 Image captions preserve explicit clues supplied in filenames or obvious subject context and avoid inventing unsupported creator credits.
+
+
+USER-SUPPLIED SOUTHWEST LANDING PAGE IMAGE ASSETS — 2026-09-22
+----------------------------------------------------------------
+Converted/optimized to WEBP and stored under:
+  /7/FirstAmericans/CultureRegions/Southwest/images/southwest/
+
+- southwest-monument-valley.webp — broad Monument Valley landscape; used in the Southwest landing-page hero.
+- southwest-native-riders-edward-curtis.webp — historic Native riders on horseback; supplied filename credits Edward S. Curtis, Curtis (Edward S.) Collection, Library of Congress Prints and Photographs Division; used in the horse-introduction feature.
+- navajo-hogan-diagram.webp — user-supplied illustrated hogan teaching diagram; used in the homes comparison.
+- apache-wickiup-diagram.webp — user-supplied illustrated wickiup teaching diagram; used in the homes comparison.
+- cliff-dwellings-diagram.webp — user-supplied illustrated Ancestral Pueblo cliff-dwelling teaching diagram; used in the homes comparison.
+- pueblo-adobe-diagram.webp — user-supplied illustrated Pueblo/adobe teaching diagram; used in the homes comparison.
+
+DINÉ PAGE LAYOUT REVISION — 2026-09-22
+--------------------------------------
+- Removed the large duplicate Horseshoe Bend image from the early homeland section; the image remains only in the later Explore This History feature.
+- Reworked sheep, weaving, and trade into three equal image-topped teaching cards using the existing user-supplied sheep, weaving, and market images.

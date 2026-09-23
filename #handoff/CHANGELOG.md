@@ -4,6 +4,18 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-22 — Southwest overview images + Diné card layout cleanup
+
+### Added / changed
+- Added a local Southwest image folder with the user-supplied Monument Valley landscape, Edward S. Curtis riders image, and four teaching diagrams for hogan, wickiup, cliff dwellings, and Pueblo/adobe architecture.
+- Replaced the Southwest landing-page hero placeholder with Monument Valley and the horse-feature placeholder with the historic rider photograph.
+- Replaced all four Southwest-home diagram placeholders with full illustrated teaching diagrams; each diagram can be opened at full size.
+- Removed the duplicate large Horseshoe Bend image from the early Diné homeland section.
+- Rebuilt the Diné sheep / weaving / trade area as three visually uniform image-topped cards, placing each supplied photo directly with its matching concept.
+- Added responsive styling and bumped Southwest CSS cache versions on the two affected pages.
+
+---
+
 ## 2026-09-22 — Diné title font consistency fix
 
 ### Fixed
