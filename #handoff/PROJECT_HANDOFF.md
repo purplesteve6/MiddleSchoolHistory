@@ -285,21 +285,14 @@ Unit overview:
 /7/FirstAmericans/
 ```
 
-The current developed topic beneath it is:
+Two major developed branches now sit beneath the unit overview:
 
 ```text
 /7/FirstAmericans/Mississippians/
+/7/FirstAmericans/CultureRegions/
 ```
 
-with:
-
-- `index.html` — Mississippian culture overview;
-- `cahokia.html` — focused Cahokia page;
-- `mississippians.css`;
-- `mississippians.js`;
-- `config.js`;
-- `SOURCES.txt`;
-- local images and navigation art.
+`Mississippians/` contains the Mississippian culture overview and focused Cahokia page. `CultureRegions/` is the newer expandable framework for comparing Native peoples through broad geographic regions while repeatedly emphasizing that culture regions are study tools rather than tribal identities or hard borders.
 
 ### 7.1 Current Native/First Americans typography
 
@@ -317,7 +310,24 @@ Current live implementation:
 
 Do not use decorative fonts for dense body text.
 
-### 7.2 Mississippians/Cahokia page patterns
+### 7.2 Native American Culture Regions
+
+Shared branch:
+
+```text
+/7/FirstAmericans/CultureRegions/
+```
+
+The Culture Regions landing page and `navigation-config.js` provide one shared nested topic tree for all developed regions. The two currently developed region branches are:
+
+- `/7/FirstAmericans/CultureRegions/Southwest/` — regional overview plus Apache Peoples, Hopi, Diné (Navajo), and Pueblo Peoples.
+- `/7/FirstAmericans/CultureRegions/NorthwestCoast/` — regional overview plus Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples.
+
+The Northwest Coast branch uses its own scoped `northwest-coast.css` / `northwest-coast.js`, with a forest/ocean/cedar visual identity and a layout system deliberately based on the mature Southwest pages without copying their exact presentation. Its regional overview includes salmon, cedar technologies, permanent villages plus seasonal movement, canoe specialization, formline/monumental-pole interpretation, potlatch context, contact/change, and contemporary continuity.
+
+All Northwest Coast pages currently contain **intentional image-plan placeholders** describing the subject, orientation, and instructional purpose of the future image. The matching image folders already exist under `NorthwestCoast/images/`. When real images are supplied, replace the placeholders in context rather than simply adding images at the bottom of sections.
+
+### 7.3 Mississippians/Cahokia page patterns
 
 These pages are good references for:
 
@@ -521,7 +531,7 @@ The `#handoff/` folder itself is intended to remain in the repo so a future chat
 
 ---
 
-## 15. Current project status as of 2026-09-21
+## 15. Current project status as of 2026-09-29
 
 - Site-wide shared static architecture is established.
 - Grade 5 has a developed Western Hemisphere topic.
@@ -532,7 +542,8 @@ The `#handoff/` folder itself is intended to remain in the repo so a future chat
 - Civil War Key Battles contains twelve detailed pages and a dedicated timeline.
 - First Americans has a unit landing page plus a developed Mississippians/Cahokia topic.
 - A new `/7/FirstAmericans/CultureRegions/` branch is being built to organize Native American history by broad culture region while stressing that regions are study tools rather than identities.
-- The first developed region is `/7/FirstAmericans/CultureRegions/Southwest/`, with overview content plus Apache Peoples, Hopi, Diné (Navajo), and Pueblo Peoples pages.
+- Two Culture Regions are now developed: `/7/FirstAmericans/CultureRegions/Southwest/` and `/7/FirstAmericans/CultureRegions/NorthwestCoast/`.
+- Southwest contains overview content plus Apache Peoples, Hopi, Diné (Navajo), and Pueblo Peoples pages. Northwest Coast contains overview content plus Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples pages.
 - Units 2–6 of Grade 7 have permanent overview URLs, but several are still lighter/placeholder structures awaiting more developed topic content.
 - Grade 8 site content is not yet substantively built in the current repo audit.
 - Games include at least the Coloring Book and map challenges.
@@ -540,7 +551,11 @@ The `#handoff/` folder itself is intended to remain in the repo so a future chat
 
 ### Current active work
 
-The active workstream is the Grade 7 **First Americans → Native American Culture Regions → Southwest** branch. The Culture Regions landing page, Southwest overview, and Apache, Hopi, Diné (Navajo), and Pueblo Peoples pages are built. The Southwest overview includes horse-introduction and Southwest-home comparison features; the individual people pages include expanded historical/cultural text and one carefully sourced public traditional story each.
+The active workstream is Grade 7 **First Americans → Native American Culture Regions**. The Southwest branch is built and image-integrated. The **Northwest Coast branch was added on 2026-09-29** with a regional overview plus Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples pages. The new pages are fully structured and styled but intentionally retain image-plan placeholders until the user supplies the final image set.
+
+**Northwest Coast first build (2026-09-29):** the regional overview is organized around the coast's water/forest geography, salmon, cedar technology, established villages with seasonal resource travel, canoe engineering, formline art and monumental poles, potlatch context, contact/change, and living Native nations. Individual pages use the same mature teaching rhythm as Southwest—hero, Key Takeaway, thematic sections, carefully placed image slots, selected story/person/site features, present-day continuity, Big Question, and pager—while using a distinct forest/ocean/cedar visual theme.
+
+**Northwest Coast image workflow:** `/7/FirstAmericans/CultureRegions/NorthwestCoast/images/` contains `northwest/`, `tlingit/`, `haida/`, `makah/`, `coast-salish/`, and `chinookan/` folders. `SOURCES.txt` includes a section-by-section image plan. Replace each placeholder with an image chosen for that specific narrative job and preserve the designed aspect ratio/placement.
 
 **Pueblo Peoples image pass (2026-09-21):** seven user-supplied images were converted to WEBP, saved under `/7/FirstAmericans/CultureRegions/Southwest/images/pueblo/`, and integrated into the Pueblo page. They cover living Pueblo dance, Zuni architecture (1873), waffle-garden farming, a Mesa Verde kiva, Coronado at Hawikuh, Po’pay, and Bandelier National Monument. Captions preserve only user-supplied/identifiable credit information.
 
@@ -622,6 +637,15 @@ For the First Americans model:
 7/FirstAmericans/CultureRegions/Southwest/hopi.html
 7/FirstAmericans/CultureRegions/Southwest/dine-navajo.html
 7/FirstAmericans/CultureRegions/Southwest/pueblo-peoples.html
+7/FirstAmericans/CultureRegions/NorthwestCoast/index.html
+7/FirstAmericans/CultureRegions/NorthwestCoast/northwest-coast.css
+7/FirstAmericans/CultureRegions/NorthwestCoast/northwest-coast.js
+7/FirstAmericans/CultureRegions/NorthwestCoast/tlingit.html
+7/FirstAmericans/CultureRegions/NorthwestCoast/haida.html
+7/FirstAmericans/CultureRegions/NorthwestCoast/makah.html
+7/FirstAmericans/CultureRegions/NorthwestCoast/coast-salish.html
+7/FirstAmericans/CultureRegions/NorthwestCoast/chinookan.html
+7/FirstAmericans/CultureRegions/NorthwestCoast/SOURCES.txt
 7/FirstAmericans/Mississippians/index.html
 7/FirstAmericans/Mississippians/cahokia.html
 7/FirstAmericans/Mississippians/mississippians.css

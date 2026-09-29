@@ -4,6 +4,30 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-29 — Pacific Northwest Coast culture-region build
+
+### Added
+- Added `/7/FirstAmericans/CultureRegions/NorthwestCoast/` as the second fully developed Native American culture-region branch.
+- Built a Northwest Coast overview plus dedicated pages for Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples.
+- Added region-specific `northwest-coast.css`, `northwest-coast.js`, `config.js`, and `SOURCES.txt`.
+- Added organized image folders for the regional overview and all five people pages. Final content images are intentionally not populated yet; each page contains carefully sized and positioned image-plan placeholders so the user can source imagery after reviewing the finished structure.
+
+### Content / features
+- Built the regional overview around salmon, cedar, permanent villages plus seasonal resource movement, canoe engineering, formline art and monumental poles, potlatch context, contact/change, and present-day continuity.
+- Added an interactive formline explainer for ovoid, U-form, and S-form shapes.
+- Expanded well beyond the older classroom source while preserving its core factual checkpoints: Northwest water geography, cedar canoes, marine foods, poles, seasonal movement, potlatches, and living Native communities.
+- Corrected the older quiz's oversimplified “nomadic” framing by distinguishing established villages from seasonal travel to fishing, hunting, gathering, and trade locations.
+- Used tribal/nation sources, Smithsonian/NMAI, National Park Service, Parks Canada, NOAA, U.S. Fish & Wildlife Service, and other public-history sources; source notes and image-placement guidance are recorded in `NorthwestCoast/SOURCES.txt`.
+
+### Design / navigation
+- Created a distinct Northwest Coast visual identity using forest/ocean teal, cedar red, salmon, gold, mist, and cream while preserving the mature layout rhythm established by the Southwest branch.
+- Designed image slots around narrative purpose and aspect ratio instead of using generic repeated placeholders; hero, map, process, portrait, artifact, site, and landscape slots are placed where the eventual image will teach something specific.
+- Updated the Culture Regions landing page so Northwest Coast is now available and the bottom progression callout points to the new branch.
+- Updated the shared Culture Regions topic tree so Northwest Coast is a second nested parent containing Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples.
+- Checked the new pages in a rendered layout pass and adjusted the structure for balanced spacing, card heights, responsive stacking, and readable long-page pacing before publishing to Drive.
+
+---
+
 ## 2026-09-22 — Southwest overview images + Diné card layout cleanup
 
 ### Added / changed
