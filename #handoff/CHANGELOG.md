@@ -4,6 +4,16 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-29 — Thunderbird teaching callout
+
+### Added / changed
+- Added a compact Thunderbird callout inside the Northwest Coast overview's poles/formline section, restoring a memorable concept that appeared in the user's older Pacific Northwest materials.
+- Explains Thunderbird as a powerful supernatural bird appearing in the traditions and art of several Northwest Coast peoples, commonly associated with thunder/lightning and strength, with whale connections in some traditions.
+- Explicitly avoids presenting one universal “Thunderbird story”; the callout tells students that meanings vary by nation/community and that artwork should be identified in its specific cultural context.
+- Added focused styling that fits the existing dark formline feature without adding another large image placeholder, and documented Smithsonian/NMAI and National Park Service source support in `NorthwestCoast/SOURCES.txt`.
+
+---
+
 ## 2026-09-29 — Pacific Northwest Coast culture-region build
 
 ### Added
