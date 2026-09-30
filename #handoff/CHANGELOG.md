@@ -1,3 +1,10 @@
+## 2026-09-30 — Tlingit narrative density + Northwest Coast contrast pass
+
+- Expanded four visually sparse Tlingit panels: homeland/waterways, food/cedar/skilled work, formline/monumental poles, and K'alyaan. Added only material supported by the existing NPS/Sealaska source set, including coastal trade routes, salmon preservation, cedar technologies, formline structure/context, and K'alyaan's role in the 1804 defense.
+- Reworked all Northwest Coast figure captions into a consistent high-contrast cream caption plate with dark teal text so captions remain readable inside light and dark feature panels.
+- Hardened color contrast on previous/next navigation, Explore History links, and formline buttons across the Northwest Coast branch.
+- Bumped the Northwest Coast stylesheet cache token on the overview and all five people pages.
+
 ## 2026-09-30 — Tlingit page image integration
 
 - Converted/cropped seven user-supplied Tlingit images to WEBP and stored them under `/7/FirstAmericans/CultureRegions/NorthwestCoast/images/tlingit/`.

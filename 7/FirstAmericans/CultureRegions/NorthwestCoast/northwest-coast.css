@@ -50,3 +50,11 @@ body.northwestPage #siteHeader header{position:fixed;top:0;left:0;right:0;z-inde
 .todayGrid{display:grid;grid-template-columns:1fr .95fr;gap:1rem;align-items:center}
 .tlingitTodayPhoto{aspect-ratio:3/2;object-position:center}
 @media(max-width:900px){.todayGrid{grid-template-columns:1fr}.tlingitMapPhoto{aspect-ratio:3/4}}
+
+/* Northwest Coast cross-page contrast polish */
+body.northwestPage .visualFrame figcaption{color:#17363b!important;background:rgba(251,247,237,.94);padding:.42rem .55rem;border-radius:9px;font-weight:750;text-shadow:none!important}
+body.northwestPage .waterFeature .visualFrame figcaption,body.northwestPage .cedarFeature .visualFrame figcaption,body.northwestPage .artFeature .visualFrame figcaption,body.northwestPage .potFeature .visualFrame figcaption,body.northwestPage .personFeature .visualFrame figcaption,body.northwestPage .exploreHistory .visualFrame figcaption,body.northwestPage .todayBox .visualFrame figcaption{color:#17363b!important;background:rgba(251,247,237,.96);text-shadow:none!important}
+body.northwestPage .pagePager a,body.northwestPage .exploreHistory a{background:#16343a!important;color:#fff3ca!important;border-color:rgba(255,243,202,.38)!important}
+body.northwestPage .pagePager a:hover,body.northwestPage .pagePager a:focus-visible,body.northwestPage .exploreHistory a:hover,body.northwestPage .exploreHistory a:focus-visible{background:#d8b56c!important;color:#102b31!important;border-color:#d8b56c!important}
+body.northwestPage .formlineButton{color:#fff!important}
+body.northwestPage .formlineButton:hover,body.northwestPage .formlineButton.is-active{color:#182f33!important}

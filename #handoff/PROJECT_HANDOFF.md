@@ -562,6 +562,8 @@ The active workstream is Grade 7 **First Americans → Native American Culture R
 
 **Northwest Coast polish (2026-09-30):** switched the branch H1 font from Northwest.ttf to `wild river.ttf`, reduced title sizing, increased line-height to prevent vertical overlap, strengthened previous/next pager contrast, and corrected caption contrast inside dark salmon/cedar/art panels.
 
+**Northwest Coast readability polish (2026-09-30):** all image captions now use a high-contrast cream caption plate with dark teal text regardless of the surrounding panel color, and previous/next plus Explore History buttons use specificity-safe high-contrast colors across the entire Northwest Coast branch. The Tlingit page also received a second narrative-density pass so the homeland, food/cedar, formline, and K'alyaan panels better fill the visual space beside their images without adding trivia for its own sake.
+
 **Northwest Coast image workflow:** `/7/FirstAmericans/CultureRegions/NorthwestCoast/images/` contains `northwest/`, `tlingit/`, `haida/`, `makah/`, `coast-salish/`, and `chinookan/` folders. `SOURCES.txt` includes a section-by-section image plan. Replace each placeholder with an image chosen for that specific narrative job and preserve the designed aspect ratio/placement.
 
 **Pueblo Peoples image pass (2026-09-21):** seven user-supplied images were converted to WEBP, saved under `/7/FirstAmericans/CultureRegions/Southwest/images/pueblo/`, and integrated into the Pueblo page. They cover living Pueblo dance, Zuni architecture (1873), waffle-garden farming, a Mesa Verde kiva, Coronado at Hawikuh, Po’pay, and Bandelier National Monument. Captions preserve only user-supplied/identifiable credit information.
