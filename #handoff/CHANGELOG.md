@@ -4,6 +4,22 @@ This file records meaningful project changes. Newest entries go first.
 
 ---
 
+## 2026-09-30 — Northwest Coast title font + landing-page image pass
+
+### Typography
+- Scoped the new `/assets/fonts/native-american/Northwest.ttf` face to the main H1 on all six Northwest Coast pages.
+- Bumped the Northwest Coast stylesheet cache key across the branch so the new title face loads immediately.
+
+### Landing-page imagery
+- Converted/cropped nine user-supplied regional images to WEBP and integrated them into the Northwest Coast overview.
+- Replaced the hero, regional map, salmon, cedar, canoe, and monumental-pole placeholders with real teaching visuals.
+- Added the supplied plank-house teaching graphic to the permanent-villages section.
+- Rebuilt the potlatch visual area as a two-image modern/historical comparison.
+- Added click-to-open behavior, purposeful object positioning, responsive image layouts, descriptive alt text, and contextual captions.
+- Recorded the user-supplied image filenames in `NorthwestCoast/SOURCES.txt` without inventing credits.
+
+---
+
 ## 2026-09-29 — Thunderbird teaching callout
 
 ### Added / changed

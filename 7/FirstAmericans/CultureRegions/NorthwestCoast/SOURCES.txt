@@ -122,9 +122,9 @@ CONTENT NOTES
 - Monumental poles and formline art are not presented as generic pan-Native symbols. Clan ownership, artist/nation context, and purpose should be included whenever images are added.
 - Public traditional stories are summarized only when a Native organization has already made the teaching public and ownership/context can be stated. Restricted ceremonial details are not reproduced.
 
-IMAGE PLAN — USER TO SUPPLY / SELECT
-------------------------------------
-The HTML contains styled image-plan placeholders so page spacing and hierarchy are already built before image selection. Preferred final assets are WEBP and should be stored under:
+IMAGE PLAN / INTEGRATION STATUS
+-------------------------------
+The regional landing page is now image-integrated. Individual people pages still contain styled image-plan placeholders so spacing and hierarchy are built before their final image sets are selected. Preferred final assets are WEBP and should be stored under:
   /7/FirstAmericans/CultureRegions/NorthwestCoast/images/
 Recommended subfolders:
   northwest/
@@ -134,14 +134,15 @@ Recommended subfolders:
   coast-salish/
   chinookan/
 
-REGIONAL LANDING PAGE
-- Hero: wide 16:10 coastal landscape with Native canoe or village context.
-- Regional map: coastal Alaska/British Columbia/Washington/Oregon with selected peoples; avoid hard-border implication.
-- Salmon: active fishing, drying/smoking, First Salmon gathering, or habitat work.
-- Cedar: harvesting/carving/working cedar rather than forest-only scenery.
-- Canoes: side-by-side hull comparison or Canoe Journey group.
-- Pole/formline: vertical image with full pole visible and known nation/artist/clan context.
-- Potlatch: event with clear identification and permission/context.
+REGIONAL LANDING PAGE — INTEGRATED 2026-09-30
+- Hero: coastal-village-watercolor.webp
+- Regional map: pacific-northwest-map.webp
+- Salmon: salmon-smoking-scene.webp
+- Cedar: cedar-forest.webp
+- Permanent villages / plank house: plank-house-infographic.webp
+- Canoes: canoe-journey-hero.webp
+- Pole / Thunderbird: thunderbird-pole-portrait.webp
+- Potlatch: potlatch-modern.webp + potlatch-watercolor.webp
 
 TLINGIT
 - Hero: Southeast Alaska water + village/canoe/clan house.
@@ -178,3 +179,19 @@ CHINOOKAN
 - Cathlapotle-style plankhouse.
 - Concomly: appropriate historical portrait/illustration or trade-scene representation.
 - Explore: Cathlapotle Plankhouse at Ridgefield NWR.
+
+
+LANDING-PAGE IMAGE INTEGRATION — USER-SUPPLIED ASSETS (2026-09-30)
+------------------------------------------------------------------
+The regional landing page now uses user-supplied imagery converted to local WEBP files under images/northwest/.
+- coastal-village-watercolor.webp — landing-page hero / permanent coastal community context
+- pacific-northwest-map.webp — Northwest Coast regional map
+- salmon-smoking-scene.webp — salmon preparation and preservation
+- cedar-forest.webp — western red cedar forest
+- plank-house-infographic.webp — permanent village / cedar plank-house teaching visual
+- canoe-journey-hero.webp — canoe engineering and coastal travel section
+- thunderbird-pole-portrait.webp — monumental pole / Thunderbird and formline section
+- potlatch-modern.webp — contemporary potlatch / ceremonial gathering
+- potlatch-watercolor.webp — historical potlatch / plank-house gathering visual
+
+These are user-supplied classroom assets. Do not invent photographer/artist/source credits unless the user supplies them.

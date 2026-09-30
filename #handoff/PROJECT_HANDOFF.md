@@ -305,6 +305,7 @@ Shared stylesheet:
 Current live implementation:
 
 - **Holy Grail Lore** — large display/hero title font, bundled at `/7/FirstAmericans/fonts/CCHolyGrailLore-Bold.ttf`.
+- **Northwest** — Northwest Coast page H1/title font, bundled at `/assets/fonts/native-american/Northwest.ttf`; keep it scoped to the Northwest Coast branch rather than changing the shared First Americans title face.
 - **Aztec Way** — major section subheads/compact labels, loaded from `/assets/fonts/native-american/AztecWay-OVRr6.otf`.
 - Body copy should remain in the established readable site/topic body fonts.
 
@@ -325,7 +326,7 @@ The Culture Regions landing page and `navigation-config.js` provide one shared n
 
 The Northwest Coast branch uses its own scoped `northwest-coast.css` / `northwest-coast.js`, with a forest/ocean/cedar visual identity and a layout system deliberately based on the mature Southwest pages without copying their exact presentation. Its regional overview includes salmon, cedar technologies, permanent villages plus seasonal movement, canoe specialization, formline/monumental-pole interpretation, potlatch context, contact/change, and contemporary continuity.
 
-All Northwest Coast pages currently contain **intentional image-plan placeholders** describing the subject, orientation, and instructional purpose of the future image. The matching image folders already exist under `NorthwestCoast/images/`. When real images are supplied, replace the placeholders in context rather than simply adding images at the bottom of sections.
+Northwest Coast pages use intentional image-plan placeholders until real topic imagery is supplied. The **regional landing page is now image-integrated** with user-supplied WEBP assets for the hero, regional map, salmon preservation, cedar, plank houses, canoe travel, monumental-pole/Thunderbird material, and modern/historical potlatch context. Individual Tlingit, Haida, Makah, Coast Salish, and Chinookan pages still retain their planned slots until their own image sets are supplied.
 
 ### 7.3 Mississippians/Cahokia page patterns
 
@@ -551,7 +552,9 @@ The `#handoff/` folder itself is intended to remain in the repo so a future chat
 
 ### Current active work
 
-The active workstream is Grade 7 **First Americans → Native American Culture Regions**. The Southwest branch is built and image-integrated. The **Northwest Coast branch was added on 2026-09-29** with a regional overview plus Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples pages. The new pages are fully structured and styled but intentionally retain image-plan placeholders until the user supplies the final image set.
+The active workstream is Grade 7 **First Americans → Native American Culture Regions**. The Southwest branch is built and image-integrated. The **Northwest Coast branch was added on 2026-09-29** with a regional overview plus Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples pages. On 2026-09-30 the regional overview received its first full user-supplied image pass and all six Northwest Coast pages switched their main H1 to the dedicated `Northwest.ttf` display font. The five individual people pages still retain image-plan placeholders until their own image sets are supplied.
+
+**Northwest Coast landing-page image pass (2026-09-30):** nine user-supplied images were cropped/converted to WEBP and integrated into the regional overview: coastal-village hero, culture-region map, smoked/dried salmon, western red cedar forest, plank-house teaching graphic, canoe journey, Thunderbird monumental pole, modern potlatch, and historical potlatch artwork. The landing page uses purposeful figure placement and click-to-open full image files rather than generic image blocks. All Northwest Coast page H1s now use `/assets/fonts/native-american/Northwest.ttf`.
 
 **Northwest Coast first build (2026-09-29):** the regional overview is organized around the coast's water/forest geography, salmon, cedar technology, established villages with seasonal resource travel, canoe engineering, formline art and monumental poles, potlatch context, contact/change, and living Native nations. The poles/formline feature also includes a compact Thunderbird teaching callout: it identifies Thunderbird as a powerful supernatural being appearing in several Northwest Coast traditions while explicitly warning against treating one version as universal across nations. Individual pages use the same mature teaching rhythm as Southwest—hero, Key Takeaway, thematic sections, carefully placed image slots, selected story/person/site features, present-day continuity, Big Question, and pager—while using a distinct forest/ocean/cedar visual theme.
 
