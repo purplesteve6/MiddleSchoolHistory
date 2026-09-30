@@ -1,3 +1,11 @@
+## 2026-09-30 — Northwest Coast typography and contrast polish
+
+- Replaced the Northwest Coast H1 display font trial (`Northwest.ttf`) with `/assets/fonts/native-american/wild river.ttf`.
+- Reduced H1 size and increased line-height so long/multi-line page titles do not overlap vertically.
+- Fixed previous/next pager link contrast by using specificity-safe light text on the dark buttons and a high-contrast hover state.
+- Improved captions on images placed inside the dark salmon, cedar, and art feature panels; potlatch captions retain a dark-on-light treatment.
+- Bumped the Northwest Coast stylesheet cache token across the overview and all five people pages.
+
 # MiddleSchoolHistory — Changelog
 
 This file records meaningful project changes. Newest entries go first.
