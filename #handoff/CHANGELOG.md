@@ -1,3 +1,12 @@
+## 2026-09-30 — Tlingit page image integration
+
+- Converted/cropped seven user-supplied Tlingit images to WEBP and stored them under `/7/FirstAmericans/CultureRegions/NorthwestCoast/images/tlingit/`.
+- Replaced every planned image slot on `tlingit.html` with a real visual: coastal-village hero, homeland map, clan house, formline art, K'alyaan representation, Sitka National Historical Park, and contemporary Tlingit culture.
+- Added a new contemporary-culture figure to the final “Tlingit culture today” section rather than leaving that strong supplied image unused.
+- Preserved the supplied contemporary image credit as “Photo by Ian Johnson, HIA”; did not invent credits for the other user-supplied images.
+- Added click-to-open behavior, section-specific image fitting/cropping, descriptive alt text, contextual captions, and responsive Tlingit image rules.
+- Bumped the Tlingit page stylesheet cache token.
+
 ## 2026-09-30 — Northwest Coast typography and contrast polish
 
 - Replaced the Northwest Coast H1 display font trial (`Northwest.ttf`) with `/assets/fonts/native-american/wild river.ttf`.

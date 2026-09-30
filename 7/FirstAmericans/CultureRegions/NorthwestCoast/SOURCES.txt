@@ -195,3 +195,15 @@ The regional landing page now uses user-supplied imagery converted to local WEBP
 - potlatch-watercolor.webp — historical potlatch / plank-house gathering visual
 
 These are user-supplied classroom assets. Do not invent photographer/artist/source credits unless the user supplies them.
+
+TLINGIT PAGE — INTEGRATED 2026-09-30
+------------------------------------
+User-supplied images were converted/cropped to WEBP and stored under `images/tlingit/`.
+- `coastal_village.png` → `tlingit-coastal-village.webp` — hero coastal village illustration.
+- `tlingit map.png` → `tlingit-homeland-map.webp` — Tlingit homeland map; preserved essentially full-frame for instructional accuracy.
+- `tlingit clan house.jpeg` → `tlingit-clan-house.webp` — clan-house / cedar-construction visual.
+- `tlingit formline art.jpeg` → `tlingit-formline-art.webp` — formline-art feature.
+- `K'alyaan.jpg` → `k-alyaan.webp` — artistic representation used in Person of Interest; caption deliberately identifies it as a representation, not a historical photograph.
+- `sitka-nationa-historical-partk.jpeg` → `sitka-national-historical-park.webp` — Explore History visual.
+- `tlingit today Photo by Ian Johnson, HIA.jpg` → `tlingit-today.webp` — contemporary Tlingit culture visual; supplied credit preserved as “Photo by Ian Johnson, HIA.”
+- No other photographer/artist credits were supplied with this batch, so none were invented.

@@ -305,7 +305,7 @@ Shared stylesheet:
 Current live implementation:
 
 - **Holy Grail Lore** — large display/hero title font, bundled at `/7/FirstAmericans/fonts/CCHolyGrailLore-Bold.ttf`.
-- **Northwest** — Northwest Coast page H1/title font, bundled at `/assets/fonts/native-american/Northwest.ttf`; keep it scoped to the Northwest Coast branch rather than changing the shared First Americans title face.
+- **Wild River** — Northwest Coast page H1/title font, bundled at `/assets/fonts/native-american/wild river.ttf`; keep it scoped to the Northwest Coast branch rather than changing the shared First Americans title face.
 - **Aztec Way** — major section subheads/compact labels, loaded from `/assets/fonts/native-american/AztecWay-OVRr6.otf`.
 - Body copy should remain in the established readable site/topic body fonts.
 
@@ -555,6 +555,8 @@ The `#handoff/` folder itself is intended to remain in the repo so a future chat
 The active workstream is Grade 7 **First Americans → Native American Culture Regions**. The Southwest branch is built and image-integrated. The **Northwest Coast branch was added on 2026-09-29** with a regional overview plus Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples pages. On 2026-09-30 the regional overview received its first full user-supplied image pass and all six Northwest Coast pages switched their main H1 to the dedicated `Northwest.ttf` display font. The five individual people pages still retain image-plan placeholders until their own image sets are supplied.
 
 **Northwest Coast landing-page image pass (2026-09-30):** nine user-supplied images were cropped/converted to WEBP and integrated into the regional overview: coastal-village hero, culture-region map, smoked/dried salmon, western red cedar forest, plank-house teaching graphic, canoe journey, Thunderbird monumental pole, modern potlatch, and historical potlatch artwork. The landing page uses purposeful figure placement and click-to-open full image files rather than generic image blocks. All Northwest Coast page H1s now use `/assets/fonts/native-american/Northwest.ttf`.
+
+**Tlingit image pass (2026-09-30):** seven user-supplied images were converted/cropped to WEBP and integrated across the full Tlingit page: coastal-village hero, homeland map, clan house, formline art, K'alyaan representation, Sitka National Historical Park, and a contemporary Tlingit youth/culture image credited from the supplied filename to Ian Johnson, HIA. Images are placed in the narrative slots they were designed for, with click-to-open behavior, tailored object-fit/cropping, descriptive alt text, and contextual captions.
 
 **Northwest Coast first build (2026-09-29):** the regional overview is organized around the coast's water/forest geography, salmon, cedar technology, established villages with seasonal resource travel, canoe engineering, formline art and monumental poles, potlatch context, contact/change, and living Native nations. The poles/formline feature also includes a compact Thunderbird teaching callout: it identifies Thunderbird as a powerful supernatural being appearing in several Northwest Coast traditions while explicitly warning against treating one version as universal across nations. Individual pages use the same mature teaching rhythm as Southwest—hero, Key Takeaway, thematic sections, carefully placed image slots, selected story/person/site features, present-day continuity, Big Question, and pager—while using a distinct forest/ocean/cedar visual theme.
 
