@@ -28,6 +28,16 @@ window.TOPIC_TREE_CONFIG = {
             { label: "Coast Salish Peoples", href: "/7/FirstAmericans/CultureRegions/NorthwestCoast/coast-salish.html" },
             { label: "Chinookan Peoples", href: "/7/FirstAmericans/CultureRegions/NorthwestCoast/chinookan.html" }
           ]
+        },
+        {
+          label: "Southeast",
+          href: "/7/FirstAmericans/CultureRegions/Southeast/",
+          matchPrefix: "/7/FirstAmericans/CultureRegions/Southeast/",
+          children: [
+            { label: "Cherokee", href: "/7/FirstAmericans/CultureRegions/Southeast/cherokee.html" },
+            { label: "Muscogee (Creek)", href: "/7/FirstAmericans/CultureRegions/Southeast/muscogee-creek.html" },
+            { label: "Seminole", href: "/7/FirstAmericans/CultureRegions/Southeast/seminole.html" }
+          ]
         }
       ]
     },
@@ -35,7 +45,6 @@ window.TOPIC_TREE_CONFIG = {
       label: "Other Culture Regions",
       items: [
         { label: "Northeast Woodlands", disabled: true, note: "Planned" },
-        { label: "Southeast", disabled: true, note: "Planned" },
         { label: "Great Plains", disabled: true, note: "Planned" },
         { label: "Great Basin", disabled: true, note: "Planned" },
         { label: "Plateau", disabled: true, note: "Planned" },

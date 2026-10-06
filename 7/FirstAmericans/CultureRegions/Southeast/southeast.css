@@ -1,0 +1,109 @@
+@font-face{font-family:"Diamond Creek";src:url("fonts/diamond-creek-demo.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+body.southeastPage{--se-deep:#2d3e2f;--se-river:#315d63;--se-cane:#596740;--se-clay:#925238;--se-gold:#d6b56f;--se-cream:#fffaf0;--se-ink:#29352c;--se-line:rgba(45,62,47,.19);--se-shadow:0 12px 30px rgba(45,62,47,.12);--tree-bg:#354934;--tree-bg2:#243628;--tree-accent:#f2d699;--tree-muted:#dfdfce;--tree-active:#ffedc1;--tree-active-text:#243628;margin:0;color:var(--se-ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.65;background:radial-gradient(ellipse at 5% 5%,#dbe1c4 0,transparent 40%),radial-gradient(ellipse at 95% 25%,#e9d3bf 0,transparent 45%),#f1ecdd}
+.southeastPage *{box-sizing:border-box}
+.southeastPage img{max-width:100%;display:block}
+.southeastPage a{color:inherit}
+.southeastPage main{max-width:1080px;margin:0 auto;padding:126px 1rem 4rem;min-width:0}
+.southeastPage p{margin:.55rem 0 .85rem}
+.southeastPage h2{font-family:var(--native-subhead-font);font-size:clamp(1.65rem,3vw,2.25rem);font-weight:400;line-height:1.25;color:var(--se-deep);margin:.1rem 0 .8rem}
+.southeastPage h3{line-height:1.3;color:var(--se-deep);margin:.1rem 0 .45rem}
+.southeastPage section[id]{scroll-margin-top:130px}
+.southeastPage .seCard{background:var(--se-cream);border:1px solid var(--se-line);border-radius:20px;box-shadow:var(--se-shadow)}
+.southeastPage .peopleSection{padding:1.4rem;margin:1.1rem 0}
+.southeastPage .peopleHero{display:grid;grid-template-columns:1.04fr .96fr;gap:1.25rem;align-items:center;padding:1.5rem;margin:1rem 0;background:linear-gradient(130deg,#fff7df,#e1e6cc);border:2px solid var(--se-line);border-top:8px solid var(--se-cane);border-radius:23px;box-shadow:var(--se-shadow)}
+.southeastPage .peopleHero h1{font-family:"Diamond Creek",Georgia,serif;font-weight:400;font-synthesis:none;font-size:clamp(2.9rem,4.5vw,4.1rem);line-height:1.24;letter-spacing:.02em;color:var(--se-deep);margin:.8rem 0;overflow-wrap:normal}
+.southeastPage .dek,.southeastPage .seLead{font-size:1.07rem}
+.southeastPage .seEyebrow{display:inline-block;background:var(--se-deep);color:#fff6df;padding:.3rem .7rem;border-radius:999px;font-size:.75rem;font-weight:850;letter-spacing:.035em}
+.southeastPage .sectionTrail{display:flex;flex-wrap:wrap;gap:.45rem;font-size:.8rem}
+.southeastPage .sectionTrail a{padding:.35rem .65rem;border:1px solid var(--se-line);border-radius:999px;background:#fffaf0;text-decoration:none;font-weight:800}
+.southeastPage .sectionTrail a[aria-current]{background:var(--se-deep);color:#fff6df}
+.southeastPage .twoCol{display:grid;grid-template-columns:1.05fr .95fr;gap:1.2rem;align-items:start}
+.southeastPage .twoCol.reverse{grid-template-columns:.95fr 1.05fr}
+.southeastPage .twoCol>div{min-width:0}
+.southeastPage .visualFrame{display:flex;flex-direction:column;gap:.5rem;margin:0;padding:.6rem;min-width:0;border:1px solid var(--se-line);border-radius:17px;background:#fffaf0}
+.southeastPage .plannedPhoto{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.65rem;min-height:235px;padding:1.2rem;text-align:center;border:2px dashed #929b80;border-radius:12px;color:#354934;background:linear-gradient(140deg,#ebeeda,#f3eedf)}
+.southeastPage .plannedPhoto span{font-size:.67rem;letter-spacing:.13em;font-weight:850}
+.southeastPage .plannedPhoto strong{font-family:Georgia,serif;font-size:1.35rem;line-height:1.35;max-width:25ch}
+.southeastPage .plannedPhoto small{font-size:.76rem}
+.southeastPage .heroPlan{aspect-ratio:16/10;min-height:280px}
+.southeastPage .portraitPlan{aspect-ratio:5/6.4;min-height:245px}
+.southeastPage .mapPlan{aspect-ratio:4/5}
+.southeastPage .landscapePlan{aspect-ratio:4/3}
+.southeastPage .visualFrame figcaption{padding:.5rem .55rem;border-radius:8px;background:#f4eedf;color:#354232;font-size:.81rem;line-height:1.5}
+.southeastPage .keyTakeaway{display:grid;grid-template-columns:180px 1fr;gap:1rem;align-items:center;background:#fff0c9;border:2px solid var(--se-gold);border-radius:18px;padding:1rem 1.25rem;margin:1rem 0}
+.southeastPage .keyTakeaway img{width:180px}
+.southeastPage .keyTakeaway p{margin:0;font-size:1.03rem}
+.southeastPage .featureGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin:1rem 0}
+.southeastPage .featureGrid article{background:#fff8e8;color:var(--se-ink);border-radius:13px;border:1px solid var(--se-line);border-top:5px solid var(--se-gold);padding:.9rem}
+.southeastPage .featureGrid p{font-size:.9rem;margin:.4rem 0 0}
+.southeastPage .number{font-size:.72rem;font-weight:900;letter-spacing:.07em;color:var(--se-clay)}
+.southeastPage .riverFeature{background:linear-gradient(130deg,#2f555b,#3b686d);color:#fff7e7;border:3px solid var(--se-gold)}
+.southeastPage .caneFeature{background:linear-gradient(130deg,#3a5037,#596740);color:#fff7e7;border:3px solid var(--se-gold)}
+.southeastPage .historyFeature{background:linear-gradient(130deg,#683c2c,#865039);color:#fff7e7;border:3px solid var(--se-gold)}
+.southeastPage .riverFeature h2,.southeastPage .caneFeature h2,.southeastPage .historyFeature h2{color:#ffe8b1}
+.southeastPage .riverFeature .vocabWord,.southeastPage .caneFeature .vocabWord,.southeastPage .historyFeature .vocabWord{color:#ffe8b1}
+.southeastPage .termNote{padding:.85rem 1rem;background:#eee8d5;border-left:5px solid var(--se-gold);border-radius:10px;color:#29392d;font-size:.92rem}
+.southeastPage .historyTimeline{display:grid;gap:.65rem;margin:.9rem 0}
+.southeastPage .historyTimeline article{display:grid;grid-template-columns:120px 1fr;gap:1rem;padding:1rem;border:1px solid var(--se-line);border-radius:13px;background:#f5efdf}
+.southeastPage .historyTimeline .date{font-weight:900;color:#814831}
+.southeastPage .historyTimeline p{margin:.3rem 0 0}
+.southeastPage .peopleGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:1rem 0}
+.southeastPage .peopleCard{display:block;padding:1.1rem;border:1px solid var(--se-line);border-top:7px solid var(--se-river);border-radius:15px;text-decoration:none;background:#f3efdf;transition:transform .15s ease,box-shadow .15s ease}
+.southeastPage .peopleCard:nth-child(2){border-top-color:var(--se-cane)}
+.southeastPage .peopleCard:nth-child(3){border-top-color:var(--se-clay)}
+.southeastPage .peopleCard:hover{transform:translateY(-3px);box-shadow:var(--se-shadow)}
+.southeastPage .peopleCard span{font-size:.9rem;font-weight:850;color:#78462f}
+.southeastPage .otherNations{border-left:6px solid var(--se-gold);border-radius:12px;padding:1rem;background:#f3e8cd}
+.southeastPage .personFeature{display:grid;grid-template-columns:220px 1fr;gap:1.3rem;align-items:center;background:#ffedbe;border:2px solid var(--se-gold);border-radius:19px;padding:1.25rem;margin:1rem 0}
+.southeastPage .personWrap>img{width:165px;margin:0 auto .7rem}
+.southeastPage .todayBox{border-left:8px solid var(--se-river)}
+.southeastPage .bigQuestion{padding:1.3rem;text-align:center;background:var(--se-deep);color:#fff4d9;border-left:8px solid var(--se-gold);border-radius:18px;margin:1rem 0}
+.southeastPage .bigQuestion img{width:min(300px,75vw);margin:0 auto .6rem}
+.southeastPage .bigQuestion p{font-family:Georgia,serif;font-size:1.3rem;font-weight:700;line-height:1.45;margin:0 auto;max-width:65ch}
+.southeastPage .vocabWord{position:relative;font-weight:850;color:#82472f;border-bottom:2px dotted var(--se-gold);cursor:help}
+.southeastPage .vocabWord:hover::after,.southeastPage .vocabWord:focus::after{content:attr(data-def);position:absolute;bottom:calc(100% + 8px);left:0;z-index:30;width:min(270px,75vw);padding:.7rem;border-radius:10px;background:#253b2a;color:#fff8e8;font-family:system-ui,sans-serif;font-size:.83rem;line-height:1.5;font-weight:500;box-shadow:var(--se-shadow)}
+.southeastPage .quickChecks .quizSticker{width:190px;margin-bottom:.7rem}
+.southeastPage .checkIntro{font-size:.9rem}
+.southeastPage .check{margin:.65rem 0;border:1px solid var(--se-line);border-radius:12px;background:#f6efdc;color:var(--se-ink)}
+.southeastPage .check summary{padding:.85rem 1rem;cursor:pointer;font-weight:800;line-height:1.45}
+.southeastPage .check p{padding:0 1rem .8rem;margin:0}
+.southeastPage .sourcePanel{background:#fffaf0;border:1px solid var(--se-line);border-radius:13px;padding:1rem;font-size:.86rem;overflow-wrap:anywhere}
+.southeastPage .sourcePanel summary{cursor:pointer;font-weight:850}
+.southeastPage .sourcePanel li{margin:.4rem 0}
+.southeastPage .textLink{font-weight:850;text-underline-offset:3px}
+.southeastPage .pagePager{display:flex;justify-content:space-between;gap:1rem;margin:1.2rem 0}
+.southeastPage .pagePager a{display:block;text-align:center;text-decoration:none;background:var(--se-deep);color:#fff0c9;border:1px solid #596740;border-radius:999px;padding:.75rem 1rem;font-weight:850}
+.southeastPage .pagePager a:hover{background:#52673f}
+.southeastPage a:focus-visible,.southeastPage summary:focus-visible,.southeastPage .vocabWord:focus-visible{outline:3px solid #bc792b;outline-offset:4px}
+.southeastPage .skipLink{position:fixed;left:10px;top:-100px;background:#fff8dd;color:#253b2a;padding:.7rem;z-index:200}
+.southeastPage .skipLink:focus{top:10px}
+/* Keep the established shared compact header and footer. */
+.southeastPage #siteHeader header{position:fixed;top:0;left:0;right:0;z-index:50;background:#2d3e2f;border-bottom:3px solid var(--se-gold);box-shadow:0 3px 15px #0003}
+.southeastPage #siteHeader .nav-logo{position:absolute;left:12px;top:11px;z-index:99}
+.southeastPage #siteHeader .nav-logo-img{height:122px;width:auto;max-width:none}
+.southeastPage #siteHeader .nav{max-width:1080px;margin:auto;padding:.75rem 1rem .75rem 175px;display:flex;align-items:center;justify-content:space-between;gap:1rem;color:white}
+.southeastPage #siteHeader .brand{display:flex;align-items:center;gap:.7rem;min-width:0}
+.southeastPage #siteHeader .columnIcon{flex:none;width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--se-gold);border:2px solid #fff6}
+.southeastPage #siteHeader .columnIcon img{width:75%;height:75%;object-fit:contain}
+.southeastPage #siteHeader .brandText{line-height:1.15}
+.southeastPage #siteHeader .brandKicker{font-size:.7rem;font-weight:850;letter-spacing:.07em;text-transform:uppercase;color:#f2d699}
+.southeastPage #siteHeader .brandTitle{font-size:1.05rem;font-weight:850}
+.southeastPage #siteHeader .brandSub{font-size:.77rem;color:#e2e3ce;margin-top:.18rem}
+.southeastPage #siteHeader .topicActions{display:flex;gap:.45rem;flex-wrap:wrap;justify-content:flex-end}
+.southeastPage #siteHeader a.btn{display:inline-flex;text-decoration:none;padding:.45rem .65rem;border-radius:999px;border:1px solid #fff5;background:#ffffff12;color:#fff7e2;font-size:.83rem;font-weight:800;white-space:nowrap}
+.southeastPage #siteHeader a.btn:hover{background:var(--se-gold);color:#26392b}
+.southeastPage #siteHeader [hidden]{display:none!important}
+.southeastPage #siteFooter .site-footer{padding:18px 1rem 40px;color:var(--se-deep)}
+.southeastPage #siteFooter .footer-rule{border:0;height:1px;max-width:1080px;background:#2d3e2f40;margin:0 auto 16px}
+.southeastPage #siteFooter .footer-inner{max-width:1080px;margin:auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.southeastPage #siteFooter .footer-brand{display:flex;align-items:center;gap:10px}
+.southeastPage #siteFooter .footer-logo-icon{height:40px;width:auto}
+.southeastPage #siteFooter .footer-logo-text{height:22px;width:auto}
+.southeastPage #siteFooter .footer-copy{font-size:13px;line-height:1.4}
+.southeastPage #siteFooter .footer-site{font-weight:850}
+@media(max-width:900px){.southeastPage .peopleHero,.southeastPage .twoCol,.southeastPage .twoCol.reverse{grid-template-columns:1fr}.southeastPage .peopleGrid,.southeastPage .featureGrid{grid-template-columns:1fr}.southeastPage .mapPlan{aspect-ratio:4/3}.southeastPage .peopleHero h1{font-size:clamp(2.7rem,6vw,4rem)}.southeastPage #siteHeader .nav-logo-img{height:100px}.southeastPage #siteHeader .nav{padding-left:150px}}
+@media(max-width:680px){.southeastPage main{padding-top:160px}.southeastPage .peopleHero,.southeastPage .peopleSection{padding:1rem}.southeastPage .peopleHero h1{font-size:clamp(2.45rem,8vw,3.5rem)}.southeastPage .keyTakeaway,.southeastPage .personFeature{grid-template-columns:1fr}.southeastPage .keyTakeaway img{margin:auto}.southeastPage .personWrap .visualFrame{max-width:250px;margin:auto}.southeastPage .historyTimeline article{grid-template-columns:1fr;gap:.4rem}.southeastPage .pagePager{flex-direction:column}.southeastPage #siteHeader .nav{padding:.8rem .6rem .8rem 100px;align-items:flex-start;gap:.5rem;flex-direction:column}.southeastPage #siteHeader .nav-logo-img{height:76px}.southeastPage #siteHeader .brandSub{display:none}.southeastPage #siteHeader .columnIcon{display:none}.southeastPage #siteHeader .brandTitle{font-size:.96rem}.southeastPage #siteHeader a.btn{font-size:.69rem;white-space:normal}.southeastPage #siteFooter .footer-inner{flex-direction:column;align-items:flex-start}.southeastPage .vocabWord:hover::after,.southeastPage .vocabWord:focus::after{position:fixed;left:16px;bottom:80px;width:calc(100vw - 32px)}}
+@media(prefers-reduced-motion:reduce){.southeastPage .peopleCard{transition:none}.southeastPage .peopleCard:hover{transform:none}}
+
+/* The supplied demo font substitutes promotional stamps for punctuation glyphs. */
+.southeastPage .peopleHero h1 .titlePunctuation{font-family:Georgia,"Times New Roman",serif;font-size:.83em;letter-spacing:0}

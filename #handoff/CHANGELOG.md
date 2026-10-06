@@ -1,3 +1,14 @@
+## 2026-10-06 — Southeast Culture Regions first build
+
+- Added Southeast overview plus Cherokee, Muscogee (Creek), and Seminole pages using the existing shared static site architecture and topic tree.
+- Built a scoped river/cane/clay/cream visual theme. Bundled the supplied Diamond Creek Demo TTF and applied it to Southeast H1 titles only.
+- Added 34 intentional blank topic-image slots, specific sourcing captions, stable slot identifiers, and `Southeast/IMAGE_PLAN.md` for the later image pass.
+- Added researched middle-school content on geography, food systems, mounds/Moundville, river cane, clans and government, colonial change, forced removal, resistance, and contemporary Native nations. Choctaw and Chickasaw are represented in the overview.
+- Added native disclosure knowledge checks, accessible focusable vocabulary definitions, page sequencing, sources, and image notes.
+- Activated Southeast in Culture Regions landing/navigation and linked it from the First Americans unit overview. Added the existing Northwest Coast link to the unit overview as part of that same region-link update.
+- Refreshed PROJECT_HANDOFF's current-state summary to reflect the October 6 Northwest Coast imagery already present in the authoritative repo. This build does not modify Northwest Coast pages or assets.
+- Used old webquest/quiz only as subject guidance; did not create or alter classroom PDFs.
+
 ## 2026-09-30 — Tlingit narrative density + Northwest Coast contrast pass
 
 - Expanded four visually sparse Tlingit panels: homeland/waterways, food/cedar/skilled work, formline/monumental poles, and K'alyaan. Added only material supported by the existing NPS/Sealaska source set, including coastal trade routes, salmon preservation, cedar technologies, formline structure/context, and K'alyaan's role in the 1804 defense.

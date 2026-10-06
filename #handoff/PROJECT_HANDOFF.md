@@ -319,14 +319,15 @@ Shared branch:
 /7/FirstAmericans/CultureRegions/
 ```
 
-The Culture Regions landing page and `navigation-config.js` provide one shared nested topic tree for all developed regions. The two currently developed region branches are:
+The Culture Regions landing page and `navigation-config.js` provide one shared nested topic tree for all developed regions. The three currently developed region branches are:
 
 - `/7/FirstAmericans/CultureRegions/Southwest/` — regional overview plus Apache Peoples, Hopi, Diné (Navajo), and Pueblo Peoples.
 - `/7/FirstAmericans/CultureRegions/NorthwestCoast/` — regional overview plus Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples.
+- `/7/FirstAmericans/CultureRegions/Southeast/` — regional overview plus Cherokee, Muscogee (Creek), and Seminole.
 
 The Northwest Coast branch uses its own scoped `northwest-coast.css` / `northwest-coast.js`, with a forest/ocean/cedar visual identity and a layout system deliberately based on the mature Southwest pages without copying their exact presentation. Northwest Coast page H1 titles now use `/assets/fonts/native-american/wild river.ttf` at a restrained size and comfortable line-height; the earlier Northwest.ttf trial was removed because its stacked letterforms overlapped at multi-line title sizes. Its regional overview includes salmon, cedar technologies, permanent villages plus seasonal movement, canoe specialization, formline/monumental-pole interpretation, potlatch context, contact/change, and contemporary continuity.
 
-Northwest Coast pages use intentional image-plan placeholders until real topic imagery is supplied. The **regional landing page is now image-integrated** with user-supplied WEBP assets for the hero, regional map, salmon preservation, cedar, plank houses, canoe travel, monumental-pole/Thunderbird material, and modern/historical potlatch context. Individual Tlingit, Haida, Makah, Coast Salish, and Chinookan pages still retain their planned slots until their own image sets are supplied.
+Northwest Coast pages use intentional image-plan placeholders until real topic imagery is supplied. The **regional landing page is now image-integrated** with user-supplied WEBP assets for the hero, regional map, salmon preservation, cedar, plank houses, canoe travel, monumental-pole/Thunderbird material, and modern/historical potlatch context. All five people pages now use user-supplied imagery; consult their current HTML and image folders for exact placement.
 
 ### 7.3 Mississippians/Cahokia page patterns
 
@@ -532,7 +533,7 @@ The `#handoff/` folder itself is intended to remain in the repo so a future chat
 
 ---
 
-## 15. Current project status as of 2026-09-29
+## 15. Current project status as of 2026-10-06
 
 - Site-wide shared static architecture is established.
 - Grade 5 has a developed Western Hemisphere topic.
@@ -543,7 +544,7 @@ The `#handoff/` folder itself is intended to remain in the repo so a future chat
 - Civil War Key Battles contains twelve detailed pages and a dedicated timeline.
 - First Americans has a unit landing page plus a developed Mississippians/Cahokia topic.
 - A new `/7/FirstAmericans/CultureRegions/` branch is being built to organize Native American history by broad culture region while stressing that regions are study tools rather than identities.
-- Two Culture Regions are now developed: `/7/FirstAmericans/CultureRegions/Southwest/` and `/7/FirstAmericans/CultureRegions/NorthwestCoast/`.
+- Three Culture Regions are now developed: Southwest, Northwest Coast, and Southeast.
 - Southwest contains overview content plus Apache Peoples, Hopi, Diné (Navajo), and Pueblo Peoples pages. Northwest Coast contains overview content plus Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples pages.
 - Units 2–6 of Grade 7 have permanent overview URLs, but several are still lighter/placeholder structures awaiting more developed topic content.
 - Grade 8 site content is not yet substantively built in the current repo audit.
@@ -552,11 +553,17 @@ The `#handoff/` folder itself is intended to remain in the repo so a future chat
 
 ### Current active work
 
-The active workstream is Grade 7 **First Americans → Native American Culture Regions**. The Southwest branch is built and image-integrated. The **Northwest Coast branch was added on 2026-09-29** with a regional overview plus Tlingit, Haida, Makah, Coast Salish Peoples, and Chinookan Peoples pages. On 2026-09-30 the regional overview received its first full user-supplied image pass and all six Northwest Coast pages switched their main H1 to the dedicated `Northwest.ttf` display font. The five individual people pages still retain image-plan placeholders until their own image sets are supplied.
+The active workstream is Grade 7 **First Americans → Native American Culture Regions**. Southwest is built and image-integrated. Northwest Coast has an overview and five people pages; all now use supplied imagery in their narrative slots. The latest Haida, Makah, Coast Salish, and Chinookan image/layout work is present in the authoritative Drive files as of October 6. Preserve those files and assets; some older dated image-work notes below describe earlier stages.
 
-**Northwest Coast landing-page image pass (2026-09-30):** nine user-supplied images were cropped/converted to WEBP and integrated into the regional overview: coastal-village hero, culture-region map, smoked/dried salmon, western red cedar forest, plank-house teaching graphic, canoe journey, Thunderbird monumental pole, modern potlatch, and historical potlatch artwork. The landing page uses purposeful figure placement and click-to-open full image files rather than generic image blocks. All Northwest Coast page H1s now use `/assets/fonts/native-american/Northwest.ttf`.
+**Southeast first build (2026-10-06):** `/7/FirstAmericans/CultureRegions/Southeast/` contains `index.html`, `cherokee.html`, `muscogee-creek.html`, and `seminole.html`, supported by local `southeast.css` and `config.js`. The overview covers environment, agriculture plus hunting/fishing/gathering, mound towns/Moundville, river cane, town/clan organization, colonial change, removal, biased historical labels, and contemporary nations. Dedicated pages connect Cherokee writing/sovereignty/removal, Muscogee towns/confederacy/Creek War/Ocmulgee, and Seminole origins/chickees/Black Seminoles/three wars/patchwork to living communities. Choctaw and Chickasaw remain included in the overview; neither has a standalone page in this build.
 
-**Tlingit image pass (2026-09-30):** seven user-supplied images were converted/cropped to WEBP and integrated across the full Tlingit page: coastal-village hero, homeland map, clan house, formline art, K'alyaan representation, Sitka National Historical Park, and a contemporary Tlingit youth/culture image credited from the supplied filename to Ian Johnson, HIA. Images are placed in the narrative slots they were designed for, with click-to-open behavior, tailored object-fit/cropping, descriptive alt text, and contextual captions.
+**Southeast typography and layout:** self-hosted user-supplied `fonts/diamond-creek-demo.ttf` is scoped to Southeast H1 titles as “Diamond Creek.” The demo font substitutes promotional stamps for parentheses; the Muscogee H1 scopes its parentheses to Georgia so no stamp appears. Other major subheads use shared Aztec Way, with body text in the established readable system font. The region uses river blue, cane green, clay brown, gold, and cream. Shared header/footer and nested topic tree remain in use. Native HTML disclosures provide short answer checks without a new JavaScript engine; vocabulary definitions can be focused by keyboard.
+
+**Southeast images:** all 34 topic slots intentionally remain blank. Each figure has a stable `data-image-slot`, suggested aspect ratio, and a specific caption explaining what image to find. `IMAGE_PLAN.md` lists slots by page and `SOURCES.txt` records research and editorial guardrails. When images arrive, use the user's chosen images, accurate alt text/credits, and context-preserving crops. Preserve full maps and source pages. Do not treat current placeholder sourcing captions as final historical captions after replacement.
+
+**Navigation:** the shared Culture Regions tree and landing page now activate Southeast and nest all three people pages. The First Americans unit overview links Northwest Coast and Southeast alongside Southwest. No old topic URLs were moved.
+
+**Publishing workflow:** Google Drive remains the working copy. The user reviews synced changes and pushes with their GitHub updater. Direct Drive edits are authorized; ZIP delivery is optional when requested.
 
 **Northwest Coast first build (2026-09-29):** the regional overview is organized around the coast's water/forest geography, salmon, cedar technology, established villages with seasonal resource travel, canoe engineering, formline art and monumental poles, potlatch context, contact/change, and living Native nations. The poles/formline feature also includes a compact Thunderbird teaching callout: it identifies Thunderbird as a powerful supernatural being appearing in several Northwest Coast traditions while explicitly warning against treating one version as universal across nations. Individual pages use the same mature teaching rhythm as Southwest—hero, Key Takeaway, thematic sections, carefully placed image slots, selected story/person/site features, present-day continuity, Big Question, and pager—while using a distinct forest/ocean/cedar visual theme.
 

@@ -1,0 +1,55 @@
+SOUTHEAST — CONTENT SOURCES
+Build date: 2026-10-06
+
+The supplied webquest and quiz guided priorities only. Pacific Northwest questions were excluded.
+Main H1: user-supplied Diamond Creek Demo font, scoped to Southeast. Parentheses use Georgia because the supplied demo glyphs are promotional stamps.
+All topic image spaces are intentionally blank. IMAGE_PLAN.md maps each HTML data-image-slot to a suggested image.
+
+cherokee.html
+https://www.nps.gov/articles/000/protest-treaty-of-new-echota.htm
+https://www.cherokee.gov/about-the-nation/remember-the-removal/sites-on-the-trail/agency/
+https://www.cherokee.gov/about-the-nation/history/
+https://www.cherokee.gov/about-the-nation/culture/
+https://www.cherokee.gov/about-the-nation/frequently-asked-questions/culture/
+https://blogs.loc.gov/picturethis/2013/11/sequoyah-a-man-of-letters/
+https://www.loc.gov/item/sn83020866/
+https://www.nps.gov/articles/000/cherokee-resistance-and-relocation.htm
+https://www.ebci.gov/government/
+https://quallaartsandcrafts.org/river-cane-baskets/
+
+index.html
+https://moundville.museums.ua.edu/about/
+https://www.nps.gov/ocmu/learn/historyculture/index.htm
+https://www.nps.gov/ocmu/learn/nature/rivercane-restoration.htm
+https://www.nps.gov/trte/
+https://www.choctawnation.com/about/history/code-talkers/
+
+muscogee-creek.html
+https://www.nps.gov/ocmu/learn/historyculture/index.htm
+https://www.nps.gov/ocmu/learn/historyculture/upload/Accessible-Ancient-Creeks.pdf
+https://www.nps.gov/ocmu/learn/historyculture/upload/Accessible-Colonial-Southeast-Indians.pdf
+https://www.nps.gov/hobe/learn/historyculture/index.htm
+https://www.nps.gov/liri/learn/historyculture/the-muscogee-creek-1600-1840.htm
+https://cmn.edu/about-cmn/
+https://www.muscogeenation.com/
+
+seminole.html
+https://www.ahtahthiki.com/
+https://www.semtribe.com/history/introduction
+https://stofthpo.com/seminole-history/
+https://www.semtribe.com/culture/chickee
+https://www.semtribe.com/history/historic-seminole
+https://www.semtribe.com/culture/seminole-clothing
+https://www.nps.gov/articles/000/black-seminole-indian-scouts.htm
+https://dos.fl.gov/florida-facts/florida-history/seminole-history/the-seminole-wars/
+
+EDITORIAL GUARDRAILS
+Culture regions are approximate study groupings, not tribal borders.
+Mississippian is not one tribe or empire. Descendant communities belong in the account.
+Analyze the bias of “Five Civilized Tribes”; never use it as a neutral hierarchy.
+Cherokee writing is a syllabary. Newspaper claim: first Native American newspaper in the United States.
+Forced removals used multiple land and water routes; Cherokee main removal 1838–1839.
+Seminole history includes earlier Florida peoples and incoming towns. Florida was not empty.
+Three Seminole Wars; distinguish Florida survivors and families removed west.
+Patchwork developed especially in the early 1900s. Traditions can change.
+Private ceremonial knowledge and images are not required for this educational overview.
