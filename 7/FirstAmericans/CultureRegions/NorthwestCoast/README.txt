@@ -1,24 +1,16 @@
-COAST SALISH PAGE UPDATE
+CHINOOKAN PAGE UPDATE
 
 Copy:
-  coast-salish.html
-  coast-salish-page.css
+  chinookan.html
+  chinookan-page.css
 into:
   7/FirstAmericans/CultureRegions/NorthwestCoast/
 
 Copy the files inside:
-  images/coast-salish/
+  images/chinookan/
 into:
-  7/FirstAmericans/CultureRegions/NorthwestCoast/images/coast-salish/
+  7/FirstAmericans/CultureRegions/NorthwestCoast/images/chinookan/
 
 The HTML already references these exact filenames.
 
-Image placement:
-- coast-salish-canoe-gathering-hero.webp — modern canoe gathering hero; filename credit clue preserved as Seattle Times
-- coast-salish-map.webp — broad Coast Salish cultural region map
-- reef-net-diagram.webp — reef-net fishing section; Richard Perenyi / Bellingham Herald clue preserved
-- historic-coast-salish-shoreline.webp — food/shoreline section
-- coast-salish-plank-house.webp — plank-house section; Ruben M. Berry clue preserved
-- san-juan-islands-salish-sea.webp — Explore History / San Juan Island section
-
-The page-specific stylesheet makes the map fill its panel cleanly, preserves the full reef-net diagram, removes the nested-border look from the Explore History image, and keeps the image crops responsive.
+The old bare three-square Crossroads feature has been rebuilt into an image + explanation intro, four substantial trade-network cards, and a concluding teaching callout.

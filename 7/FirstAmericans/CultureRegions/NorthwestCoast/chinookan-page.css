@@ -1,0 +1,23 @@
+/* Chinookan page image sizing / placement */
+.chinookHeroPhoto{aspect-ratio:16/10;object-fit:cover;object-position:center 52%}
+.chinookMapFrame .imageZoom,.crossroadsVisual .imageZoom,.cathlapotleFrame .imageZoom{background:transparent}
+.chinookMapPhoto{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center}
+.chinookHousePhoto{aspect-ratio:16/9;object-fit:cover;object-position:center 50%}
+.tradeCrossroads{padding:1.4rem}
+.tradeIntro{display:grid;grid-template-columns:1.05fr .95fr;gap:1rem;align-items:center}
+.tradeIntro>div>p:first-child{margin-top:0}
+.crossroadsPhoto{aspect-ratio:4/3;object-fit:cover;object-position:center}
+.tradeRouteGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-top:1rem}
+.tradeRouteGrid article{position:relative;padding:1rem 1rem 1rem 3.6rem;border-radius:15px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);min-height:150px}
+.tradeRouteGrid article>span{position:absolute;left:.9rem;top:1rem;width:2rem;height:2rem;border-radius:50%;display:grid;place-items:center;background:#d8b56c;color:#16343a;font-weight:1000;font-size:.78rem}
+.tradeRouteGrid h3{color:#fff1c4;margin:.05rem 0 .28rem;font-size:1.08rem}
+.tradeRouteGrid p{margin:0;color:rgba(255,255,255,.88);font-size:.94rem}
+.tradeReality{margin-top:.9rem;padding:.9rem 1rem;border-radius:14px;background:rgba(216,181,108,.15);border-left:6px solid #d8b56c}
+.tradeReality strong{display:block;color:#ffe6a8;font-size:1.08rem;margin-bottom:.2rem}.tradeReality p{margin:.2rem 0 0}
+.concomlyPhoto{aspect-ratio:5/7;object-fit:contain;object-position:center top;background:#e8dcc5}
+.cathlapotleFrame{padding:0;border:0;background:transparent;border-radius:18px;overflow:hidden}
+.cathlapotlePhoto{aspect-ratio:4/3;object-fit:cover;object-position:center}
+.cathlapotleFrame .imageZoom,.cathlapotleFrame .contentPhoto{border-radius:18px 18px 0 0}.cathlapotleFrame figcaption{margin:0;border-radius:0 0 12px 12px!important}
+.chinookTodayPhoto{aspect-ratio:16/10;object-fit:cover;object-position:center 48%}
+@media(max-width:900px){.tradeIntro{grid-template-columns:1fr}}
+@media(max-width:680px){.tradeRouteGrid{grid-template-columns:1fr}.tradeRouteGrid article{min-height:0}}
