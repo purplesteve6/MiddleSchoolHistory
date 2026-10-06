@@ -1,0 +1,41 @@
+/* Haida page-specific image polish */
+.haidaMapFigure .imageZoom{
+  background:transparent;
+}
+.haidaMapPhoto{
+  display:block;
+  width:100%;
+  aspect-ratio:4 / 5;
+  object-fit:cover;
+  object-position:center;
+  border-radius:13px;
+}
+.haidaExploreFigure{
+  margin:0;
+  min-width:0;
+}
+.haidaExploreFigure .imageZoom{
+  background:transparent;
+  border-radius:18px;
+}
+.haidaExplorePhoto{
+  display:block;
+  width:100%;
+  aspect-ratio:4 / 3;
+  object-fit:cover;
+  object-position:center;
+  border-radius:18px;
+}
+.haidaExploreFigure figcaption{
+  margin:.55rem .1rem 0;
+  color:#17363b;
+  font-size:.78rem;
+  line-height:1.35;
+  font-weight:750;
+}
+.haidaExploreHistory{
+  align-items:center;
+}
+@media(max-width:900px){
+  .haidaMapPhoto{aspect-ratio:4 / 5}
+}

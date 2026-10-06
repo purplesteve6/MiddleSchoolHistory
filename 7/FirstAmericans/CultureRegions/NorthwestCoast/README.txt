@@ -1,9 +1,16 @@
-Haida page update package
+HAIDA PAGE UPDATE — 2026-10-06
 
-Copy haida.html to:
-7/FirstAmericans/CultureRegions/NorthwestCoast/haida.html
+Copy into:
+7/FirstAmericans/CultureRegions/NorthwestCoast/
+  - haida.html
+  - haida-page.css
 
-Copy all files in images/haida/ to:
+Copy the existing images/haida/ folder into:
 7/FirstAmericans/CultureRegions/NorthwestCoast/images/haida/
 
-This package does not include northwest-coast.css because the Haida image integration uses the shared image styles already present in that stylesheet.
+This revision:
+- expands Islands of abundance—and skill
+- expands Clan, matrilineal identity, and monumental art
+- expands Gwaii Haanas with Haida Heritage Site/cooperative-management/Watchmen context
+- makes the Haida Gwaii map fill its image viewport without the side bars
+- removes the nested visualFrame treatment from the Gwaii Haanas photo so it has one clean rounded image edge
