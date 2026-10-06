@@ -1,0 +1,19 @@
+/* Coast Salish page image sizing / placement */
+.salishHeroFrame .imageZoom,
+.salishMapFrame .imageZoom,
+.salishDiagramFrame .imageZoom,
+.salishExploreFrame .imageZoom{background:transparent}
+.salishHeroPhoto{aspect-ratio:16/10;object-fit:cover;object-position:center 50%}
+.salishMapPhoto{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center;background:transparent}
+.reefNetPhoto{width:100%;aspect-ratio:4/3;object-fit:contain;object-position:center;background:#fff}
+.salishHistoricFigure{max-width:880px;margin:1rem auto 0}
+.salishHistoricPhoto{width:100%;aspect-ratio:3/2;object-fit:cover;object-position:center 52%}
+.salishHousePhoto{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center}
+.salishExploreFrame{overflow:hidden}
+.salishExplorePhoto{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 58%}
+.exploreHistory .salishExploreFrame{padding:0;border:0;background:transparent;border-radius:18px}
+.exploreHistory .salishExploreFrame .imageZoom,
+.exploreHistory .salishExploreFrame .contentPhoto{border-radius:18px 18px 0 0}
+.exploreHistory .salishExploreFrame figcaption{border-radius:0 0 12px 12px !important;margin:0}
+@media(max-width:900px){.salishMapPhoto{aspect-ratio:3/2}}
+@media(max-width:680px){.salishMapPhoto{aspect-ratio:4/3}}
