@@ -1,0 +1,61 @@
+/* Makah page image sizing / placement */
+.makahHeroFrame .imageZoom,
+.makahMapFrame .imageZoom,
+.makahMuseumFrame .imageZoom{background:transparent}
+
+.makahHeroPhoto{
+  aspect-ratio:16/10;
+  object-fit:cover;
+  object-position:center 52%;
+}
+
+.makahMapPhoto{
+  width:100%;
+  aspect-ratio:4/5;
+  object-fit:cover;
+  object-position:center;
+  background:transparent;
+}
+
+.makahPanoramaFigure{
+  margin-top:1rem;
+}
+
+.makahPanoramaPhoto{
+  width:100%;
+  aspect-ratio:3.45/1;
+  object-fit:cover;
+  object-position:center 48%;
+}
+
+.makahWhalePhoto{
+  aspect-ratio:4/3;
+  object-fit:cover;
+  object-position:center 46%;
+}
+
+.makahOzettePhoto{
+  aspect-ratio:1/1;
+  object-fit:cover;
+  object-position:center;
+}
+
+.makahMuseumPhoto{
+  aspect-ratio:4/3;
+  object-fit:cover;
+  object-position:center;
+}
+
+.makahTodayPhoto{
+  aspect-ratio:16/9;
+  object-fit:cover;
+  object-position:center;
+}
+
+@media(max-width:900px){
+  .makahPanoramaPhoto{aspect-ratio:2.4/1}
+}
+
+@media(max-width:680px){
+  .makahPanoramaPhoto{aspect-ratio:16/9}
+}

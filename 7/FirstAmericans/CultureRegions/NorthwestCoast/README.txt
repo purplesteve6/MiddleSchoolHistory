@@ -1,16 +1,25 @@
-HAIDA PAGE UPDATE — 2026-10-06
+MAKAH PAGE UPDATE
 
-Copy into:
-7/FirstAmericans/CultureRegions/NorthwestCoast/
-  - haida.html
-  - haida-page.css
+Copy:
+  makah.html
+  makah-page.css
+into:
+  7/FirstAmericans/CultureRegions/NorthwestCoast/
 
-Copy the existing images/haida/ folder into:
-7/FirstAmericans/CultureRegions/NorthwestCoast/images/haida/
+Copy the files inside:
+  images/makah/
+into:
+  7/FirstAmericans/CultureRegions/NorthwestCoast/images/makah/
 
-This revision:
-- expands Islands of abundance—and skill
-- expands Clan, matrilineal identity, and monumental art
-- expands Gwaii Haanas with Haida Heritage Site/cooperative-management/Watchmen context
-- makes the Haida Gwaii map fill its image viewport without the side bars
-- removes the nested visualFrame treatment from the Gwaii Haanas photo so it has one clean rounded image edge
+The HTML already references these exact filenames.
+
+Image placement:
+- makah-whaling-canoe-hero.webp — page hero; UW Libraries Digital Collections clue preserved in caption
+- makah-homeland-map.webp — homeland map
+- makah-neah-bay-panorama.webp — historic Neah Bay / waterfront panorama
+- makah-whale-hunt-1910.webp — whaling section
+- makah-ozette-rock-art.webp — Ozette archaeology section
+- makah-cultural-research-center.webp — Explore History / Makah Museum
+- makah-days-today.webp — Makah life today
+
+The page-specific stylesheet controls aspect ratios and prevents the map from getting the odd side-bar treatment that appeared on earlier pages.
