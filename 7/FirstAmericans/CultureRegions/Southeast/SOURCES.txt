@@ -3,7 +3,7 @@ Build date: 2026-10-06
 
 The supplied webquest and quiz guided priorities only. Pacific Northwest questions were excluded.
 Main H1: user-supplied Diamond Creek Demo font, scoped to Southeast. Parentheses use Georgia because the supplied demo glyphs are promotional stamps.
-All topic image spaces are intentionally blank. IMAGE_PLAN.md maps each HTML data-image-slot to a suggested image.
+The overview contains nine user-supplied images. The 26 people-page image spaces remain intentional placeholders. IMAGE_PLAN.md maps installed overview assets and remaining slots.
 
 cherokee.html
 https://www.nps.gov/articles/000/protest-treaty-of-new-echota.htm
@@ -53,3 +53,16 @@ Seminole history includes earlier Florida peoples and incoming towns. Florida wa
 Three Seminole Wars; distinguish Florida survivors and families removed west.
 Patchwork developed especially in the early 1900s. Traditions can change.
 Private ceremonial knowledge and images are not required for this educational overview.
+
+OVERVIEW IMAGE RECORD — 2026-10-06
+All nine source files were supplied by the user; creators, dates, source URLs, and rights metadata were not supplied. No credits or depicted identities have been invented. Illustrated scenes are described as depictions rather than evidence of a specific nation or event. The Moundville identification follows the supplied filename. The round dwelling is used to illustrate materials, not to identify a particular southeastern house tradition.
+All images preserve their full compositions and original dimensions. The regional map is a stylized locator with approximate groupings; it is not a tribal-boundary or detailed geographic reference. Removal map retains the full legend and routes. Select any image to open the full-size asset.
+southeast-river-town.jpg -> images/overview/village-life.webp [hero]
+southeast-map.png -> images/overview/southeast-region-map.webp [map]
+southeastern-cornfield-scene.png -> images/overview/cornfield-town.webp [food]
+southeast-mound-town.jpg -> images/overview/mound-town.webp [mounds]
+moundville.webp -> images/overview/moundville.webp [moundville]
+river cane basketweaving.jpeg -> images/overview/basket-weaving.webp [cane]
+wattle and daub.jpeg -> images/overview/earthen-wall-dwelling.webp [dwelling]
+native-american-removal-from-the-southeast.jpg -> images/overview/removal-routes.webp [removal]
+southeastern native language class.jpeg -> images/overview/language-learning.webp [today]

@@ -1,3 +1,11 @@
+## 2026-10-06 — Southeast overview image integration
+
+- Installed all nine user-supplied landing-page images under `Southeast/images/overview/` as WEBP assets, retaining complete compositions and original dimensions.
+- Filled the eight planned overview slots and added the dwelling image beside the wattle-and-daub explanation.
+- Replaced sourcing prompts with contextual captions and descriptive alt text. Illustrated scenes are not presented as identified people or nations; missing source credits remain documented.
+- Added keyboard-accessible click-to-open full-size images, uncropped maps, bounded portrait sizing, an enlargement hint, and an overview stylesheet cache bump.
+- Updated `IMAGE_PLAN.md`, `SOURCES.txt`, and the project handoff. The 26 Cherokee/Muscogee/Seminole image placeholders remain available for the next image pass.
+
 ## 2026-10-06 — Southeast Culture Regions first build
 
 - Added Southeast overview plus Cherokee, Muscogee (Creek), and Seminole pages using the existing shared static site architecture and topic tree.

@@ -1,17 +1,24 @@
 # Southeast image plan
 
-All images remain intentional placeholders. Slot names match `data-image-slot` in each HTML page. Supply credited, historically identified images; use WEBP when integrating. Preserve aspect ratio, useful context, and full maps/documents.
+The overview now contains nine supplied images. The 26 image slots on the three people pages remain intentional placeholders. Slot names match `data-image-slot` in each HTML page. Preserve aspect ratio, useful context, and full maps/documents.
 
-## overview
+## overview — installed 2026-10-06
 
-- **map — Southeast culture-region map** (4:5): A map highlighting the Southeast on North America, with the southern Appalachians, major rivers, Gulf Coast, and Florida. Keep regional boundaries approximate.
-- **food — A southeastern food system** (4:3): A historically grounded scene of cornfields beside a river town, or a clear teaching image showing corn, beans, squash, fishing, and deer. Avoid Plains bison imagery.
-- **mounds — A mound town and central plaza** (4:3): A labeled reconstruction of a southeastern Mississippian town showing flat-topped mounds, a plaza, homes, and fields. Identify the actual site and time period.
-- **moundville — Moundville Archaeological Park** (4:3): A wide or aerial view that shows several mounds and the central plaza. Look for a site plan if a photograph does not show the arrangement clearly.
-- **cane — River cane and a finished basket** (4:3): A paired image of living river cane and a southeastern basket with the maker and nation identified. A labeled wattle-and-daub wall detail could complement it.
-- **removal — Several removal routes** (4:3): A clear map of Cherokee, Muscogee, Choctaw, Chickasaw, and Seminole routes toward Indian Territory. Show Oklahoma’s modern location and distinguish land and water travel.
-- **today — Native nations are here today** (4:3): A present-day southeastern Native language class, community event, or artist at work. Identify the actual nation, people if known, date, and photographer; avoid a generic powwow photograph.
-- **hero — The Southeast: homeland and community** (16:10): A historically grounded southeastern river-town reconstruction with fields, woodland, and a central community space. Identify the nation or site and the time period.
+All assets are under `images/overview/`. Original creators, dates, source URLs, and rights metadata were not supplied. Final captions avoid invented nation, person, maker, or period identifications. Full compositions are preserved, and each image opens at full size in a new tab.
+
+| Slot | Supplied file | Installed WEBP | Final caption |
+| --- | --- | --- | --- |
+| hero | southeast-river-town.jpg | village-life.webp | An artistic view of village life. Homes, shared work spaces, and surrounding woodland connect daily life with community and local resources. |
+| map | southeast-map.png | southeast-region-map.webp | This stylized locator highlights the Southeast within North America. Culture-region boundaries are approximate study groupings, not the borders of Native nations. |
+| food | southeastern-cornfield-scene.png | cornfield-town.webp | Illustration: cornfields beside a river town. Farming supported settled communities, while fishing, hunting, gathering, and trade supplied other foods and materials. |
+| mounds | southeast-mound-town.jpg | mound-town.webp | Illustration: homes, a central plaza, and earthen mounds form a planned town. The layout connects public gathering places with homes and the nearby river. |
+| moundville | moundville.webp | moundville.webp | A surviving earthen mound at Moundville in Alabama. Its broad, level top helps show how a mound could serve as a platform for a building. |
+| cane | river cane basketweaving.jpeg | basket-weaving.webp | Basket weaving brings together material knowledge and practiced skill. Preparing strips and weaving useful shapes are traditions passed from maker to maker. |
+| dwelling | wattle and daub.jpeg | earthen-wall-dwelling.webp | Earthen walls and a thatched roof illustrate how local materials could become shelter. In wattle-and-daub construction, an earthen coating covers a woven framework; house forms varied among communities. |
+| removal | native-american-removal-from-the-southeast.jpg | removal-routes.webp | Different nations endured different removal routes. The colored lines trace journeys toward Indian Territory, largely in present-day Oklahoma, by both land and water. |
+| today | southeastern native language class.jpeg | language-learning.webp | Illustration: learning across generations. Native nations support language teaching so younger people can carry their languages and community knowledge into the future. |
+
+The regional map is a stylized locator, not a detailed geographic or tribal-boundary reference. The language-class scene is labeled as an illustration, not a documented classroom or identified nation. The dwelling illustrates materials and is not identified as a particular nation's house. Moundville is identified from the supplied filename.
 
 ## cherokee
 

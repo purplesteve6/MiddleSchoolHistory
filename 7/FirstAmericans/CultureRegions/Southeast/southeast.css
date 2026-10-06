@@ -107,3 +107,12 @@ body.southeastPage{--se-deep:#2d3e2f;--se-river:#315d63;--se-cane:#596740;--se-c
 
 /* The supplied demo font substitutes promotional stamps for punctuation glyphs. */
 .southeastPage .peopleHero h1 .titlePunctuation{font-family:Georgia,"Times New Roman",serif;font-size:.83em;letter-spacing:0}
+
+/* Overview imagery: preserve complete scenes, maps, and portrait proportions. */
+.southeastPage .overviewImageLink{display:flex;justify-content:center;min-width:0;overflow:hidden;border-radius:10px;cursor:zoom-in}
+.southeastPage .overviewImageLink:focus-visible{outline:3px solid var(--se-river);outline-offset:3px}
+.southeastPage .overviewPhoto{display:block;width:100%;height:auto;object-fit:contain;border-radius:10px}
+.southeastPage .mapPhoto .overviewPhoto{width:auto;max-width:100%;max-height:560px}
+.southeastPage .portraitPhoto .overviewPhoto{width:auto;max-width:100%;max-height:480px}
+.southeastPage #technology [data-image-slot="dwelling"]{margin-top:1rem}
+.southeastPage .overviewImageHint{font-size:.8rem;color:var(--se-deep);text-align:right;margin:-.3rem .35rem 1rem}
