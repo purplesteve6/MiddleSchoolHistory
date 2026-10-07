@@ -1,6 +1,6 @@
 # Southeast image plan
 
-The overview now contains nine supplied images. The 26 image slots on the three people pages remain intentional placeholders. Slot names match `data-image-slot` in each HTML page. Preserve aspect ratio, useful context, and full maps/documents.
+The overview now contains nine supplied images. The eight Cherokee slots are now installed; the 18 Muscogee and Seminole slots remain intentional placeholders. Slot names match `data-image-slot` in each HTML page. Preserve aspect ratio, useful context, and full maps/documents.
 
 ## overview — installed 2026-10-06
 
@@ -20,16 +20,20 @@ All assets are under `images/overview/`. Original creators, dates, source URLs, 
 
 The regional map is a stylized locator, not a detailed geographic or tribal-boundary reference. The language-class scene is labeled as an illustration, not a documented classroom or identified nation. The dwelling illustrates materials and is not identified as a particular nation's house. Moundville is identified from the supplied filename.
 
-## cherokee
+## cherokee — installed 2026-10-07
 
-- **map — Cherokee ancestral homelands** (4:5): A map of southern Appalachian Cherokee homelands with major rivers, New Echota, and the present-day Qualla Boundary marked. Distinguish historical territory from modern lands.
-- **basket — Cherokee river-cane basket** (4:3): A clearly credited Cherokee river-cane basket, ideally with its maker identified, paired with a photograph of the maker or raw cane. Look at Qualla Arts and Crafts or a museum collection.
-- **person — Sequoyah** (5:6.4): A documented historic portrait or painting of Sequoyah. Label an artwork as an artistic representation rather than a photograph; portrait format about 500 × 640 pixels.
-- **newspaper — Cherokee Phoenix front page** (4:3): A legible 1828 issue showing both Cherokee syllabary and English columns. The Library of Congress has historical issues. Keep the whole page visible rather than cropping away the text.
-- **removal — Cherokee removal routes, 1838–1839** (4:3): A map showing multiple land and water routes from the Cherokee homelands to Indian Territory. Choose a readable NPS map rather than a single arrow marked “1,000-mile walk.”
-- **site — New Echota print shop or council house** (4:3): A credited photograph of New Echota’s reconstructed print shop or council house. Identify the reconstruction and its historical purpose.
-- **today — Cherokee nations today** (4:3): A current Cherokee language classroom, artist, or community gathering; identify whether it shows Cherokee Nation, Eastern Band, or United Keetoowah Band. A syllabary sign could provide a useful detail.
-- **hero — Cherokee: homeland and community** (16:10): A Cherokee town reconstruction in a southern Appalachian river valley, with the site and period identified. Avoid Plains tipis, feathered warbonnets, or a generic “Native village.”
+All eight supplied images are installed under `images/cherokee/`. Complete compositions and original dimensions are preserved. Images open at full size in a new tab. The town and basket-making scenes are labeled as illustrations; the latter carries NC Backstory credit visible in the source image. The dancers’ date and George Rose/Getty Images credit come from the supplied filename. Other makers, creators, and exact periods were not identified. The newspaper is a supplied upper-page detail, not a complete issue.
+
+| Slot | Supplied file | Installed WEBP | Final caption |
+| --- | --- | --- | --- |
+| hero | appalachian cherokee town.jpg | appalachian-town.webp | Illustration: a fortified Appalachian town beside a river. Homes, a central mound, and shared spaces show how a town could organize community life. |
+| map | cherokee-map.png | cherokee-homelands.webp | This stylized historical map highlights Cherokee territory in the southern Appalachians. The outline represents an approximate historical homeland, rather than the boundaries of Cherokee nations today. |
+| basket | cherokee-river-cane-basket-weaving.jpeg | river-cane-basket-making.webp | Illustration: a basket maker weaves prepared cane strips into a useful container. Harvesting, splitting, and weaving river cane require knowledge passed between generations. Image credit: NC Backstory. |
+| person | sequoyah.jpeg | sequoyah.webp | Portrait of Sequoyah holding Cherokee syllabary characters. His writing system made it possible to record Cherokee words with symbols representing syllables. |
+| newspaper | cherokee-phoenix.jpeg | cherokee-phoenix-detail.webp | Detail of the Cherokee Phoenix, dated March 13, 1828, at New Echota. English and Cherokee syllabary text appear together in the newspaper. |
+| removal | native-american-removal-from-the-southeast(1).jpg | removal-routes.webp | The blue lines trace Cherokee removal routes toward Indian Territory, largely in present-day Oklahoma. Other colors show the removals of neighboring nations; the journeys followed both land and water routes. |
+| site | new-echota-print-shop.jpg | new-echota-print-shop.webp | The reconstructed print shop at New Echota in Georgia connects the Cherokee Phoenix with the place where it was produced. Printing helped carry Cherokee news and political arguments to a wider audience. |
+| today | Two Cherokee Native American dancers pose for pictures along the highway on October 22, 2016 in Cherokee, North Carolina. George RoseGetty Images.jpg | cherokee-dancers-2016.webp | Two Cherokee dancers pose in colorful regalia in Cherokee, North Carolina, on October 22, 2016. Photo: George Rose/Getty Images. |
 
 ## muscogee-creek
 

@@ -3,7 +3,7 @@ Build date: 2026-10-06
 
 The supplied webquest and quiz guided priorities only. Pacific Northwest questions were excluded.
 Main H1: user-supplied Diamond Creek Demo font, scoped to Southeast. Parentheses use Georgia because the supplied demo glyphs are promotional stamps.
-The overview contains nine user-supplied images. The 26 people-page image spaces remain intentional placeholders. IMAGE_PLAN.md maps installed overview assets and remaining slots.
+The overview contains nine supplied images; Cherokee contains eight supplied images. The 18 Muscogee and Seminole image spaces remain intentional placeholders. IMAGE_PLAN.md maps installed assets and remaining slots.
 
 cherokee.html
 https://www.nps.gov/articles/000/protest-treaty-of-new-echota.htm
@@ -66,3 +66,6 @@ river cane basketweaving.jpeg -> images/overview/basket-weaving.webp [cane]
 wattle and daub.jpeg -> images/overview/earthen-wall-dwelling.webp [dwelling]
 native-american-removal-from-the-southeast.jpg -> images/overview/removal-routes.webp [removal]
 southeastern native language class.jpeg -> images/overview/language-learning.webp [today]
+
+Cherokee image integration — 2026-10-07
+Eight supplied images installed under images/cherokee/, with original dimensions and compositions preserved. Maps and the newspaper detail use lossless WEBP. The town and basket-making scenes are illustrations, not documented historical photographs. Basket illustration: NC Backstory (credit visible on source image). Dancers: George Rose/Getty Images; supplied filename identifies Cherokee, North Carolina, October 22, 2016. This is a contemporary posed photograph, not evidence of universal Cherokee dress. The Cherokee Phoenix image is an upper-page detail dated March 13, 1828. Sequoyah is a painted portrait; no artist/date attribution was supplied. Other image origins and makers are not inferred.

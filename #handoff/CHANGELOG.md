@@ -1,3 +1,10 @@
+## 2026-10-07 — Cherokee image integration
+
+- Filled all eight Cherokee image slots with the supplied visuals under `Southeast/images/cherokee/`.
+- Added contextual captions, descriptive alt text, and keyboard-accessible links to full-size images. Preserved complete compositions, original dimensions, and map/document legibility.
+- Labeled the town and basket-making scenes as illustrations, Sequoyah as a portrait, and the newspaper as a page detail. Included NC Backstory and supplied George Rose/Getty Images credits.
+- Reused existing image styles and updated Cherokee to the current stylesheet token. Updated image inventory, source notes, and handoff; 18 Muscogee/Seminole slots remain blank.
+
 ## 2026-10-06 — Southeast overview image integration
 
 - Installed all nine user-supplied landing-page images under `Southeast/images/overview/` as WEBP assets, retaining complete compositions and original dimensions.
