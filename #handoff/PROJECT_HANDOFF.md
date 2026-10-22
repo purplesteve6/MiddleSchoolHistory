@@ -696,3 +696,11 @@ The user should be able to upload **only this file** and say, in effect:
 > This is the MiddleSchoolHistory website project. Read the handoff, inspect the current repo files you need, and continue from here.
 
 If Google Drive is connected, use the paths in this file to retrieve current source files. If Drive is not connected, ask only for the specific current files needed for the requested work rather than requesting the entire repo again.
+
+
+## 2026-10-22 — Digital Flashcard Maker update
+
+- Shared `/teacher-resources/flashcard-common.js` now permits up to 3,000 terms instead of 500.
+- Digital Flashcard Maker includes independently adjustable front (18–80px, default 56px) and back (12–48px, default 29px) font sizes. Values persist in deck data and shared URL payloads; older links retain their original default appearance.
+- Font sizes are applied to the builder preview and student study cards. Mobile views cap displayed sizes against viewport width.
+- Deck links continue to contain all cards in the URL, so very large decks may exceed browser or learning-management-system link handling limits. No server storage has been added.

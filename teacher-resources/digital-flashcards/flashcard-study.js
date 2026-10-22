@@ -234,6 +234,8 @@
       els.navTitle.textContent = deck.title;
       els.unit.textContent = deck.unit || "Digital flashcards";
       root.style.setProperty("--fc-term-font", fontStack(deck.termFont));
+      root.style.setProperty("--fc-front-size", `${deck.frontFontSize}px`);
+      root.style.setProperty("--fc-back-size", `${deck.backFontSize}px`);
 
       if (!empty && currentIndex >= 0) {
         const card = deck.cards[currentIndex];
@@ -426,6 +428,8 @@
       deck.unit = next.unit;
       deck.showSubcategory = next.showSubcategory;
       deck.termFont = next.termFont;
+      deck.frontFontSize = next.frontFontSize;
+      deck.backFontSize = next.backFontSize;
       deck.theme = next.theme;
       window.Flashcards.applyTheme(root, deck.theme);
       updateCard();

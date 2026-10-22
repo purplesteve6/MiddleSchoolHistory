@@ -1,3 +1,9 @@
+## 2026-10-22 — Digital Flashcard Maker font sizing and 3,000-term cap
+
+- Added separate front/back font-size controls, synchronized with builder preview and student study experience and retained in shared deck links.
+- Raised shared deck normalization limit from 500 to 3,000 terms.
+- Kept backward compatibility with existing shared links and identified very-long-URL sharing caveat.
+
 ## 2026-10-07 — Cherokee image integration
 
 - Filled all eight Cherokee image slots with the supplied visuals under `Southeast/images/cherokee/`.

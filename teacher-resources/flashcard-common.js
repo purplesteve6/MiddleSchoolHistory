@@ -364,6 +364,11 @@
     };
   }
 
+  function normalizeFontSize(value, defaultSize, min, max) {
+    const size = Number(value);
+    return Number.isFinite(size) && size >= min && size <= max ? Math.round(size) : defaultSize;
+  }
+
   function normalizeDeck(deck) {
     const src = deck || {};
     const cards = Array.isArray(src.cards) ? src.cards : [];
@@ -373,6 +378,8 @@
       unit: String(src.unit || "").trim().slice(0, 120),
       showSubcategory: src.showSubcategory !== false,
       termFont: ["helvetica", "times", "courier", "marker"].includes(src.termFont) ? src.termFont : "helvetica",
+      frontFontSize: normalizeFontSize(src.frontFontSize, 56, 18, 80),
+      backFontSize: normalizeFontSize(src.backFontSize, 29, 12, 48),
       theme: normalizeTheme(src.theme),
       cards: cards
         .map(card => ({
@@ -382,7 +389,7 @@
           enabled: card && card.enabled !== false
         }))
         .filter(card => card.term && card.definition)
-        .slice(0, 500)
+        .slice(0, 3000)
     };
   }
 
@@ -521,6 +528,8 @@
       u: d.unit,
       s: d.showSubcategory ? 1 : 0,
       f: d.termFont,
+      fs: d.frontFontSize,
+      bs: d.backFontSize,
       h: [
         t.pageBackground, t.cardFront, t.cardBack, t.termText, t.definitionText,
         t.menuBackground, t.menuText, t.accent, t.pattern, t.patternColor,
@@ -539,6 +548,8 @@
       unit: compact.u,
       showSubcategory: compact.s !== 0,
       termFont: compact.f,
+      frontFontSize: compact.fs,
+      backFontSize: compact.bs,
       theme: {
         pageBackground: h[0],
         cardFront: h[1],

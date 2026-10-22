@@ -363,3 +363,17 @@
   .study-brand small{font-size:9px}
   .study-main{padding:8px}.study-page-body .fc-study-root{border-radius:12px}
 }
+
+/* Independently controlled flashcard text sizes. */
+.fc-font-size-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;grid-column:1/-1;margin:10px 0 14px}
+.fc-font-size-grid label{min-width:0}
+.fc-font-size-grid input{box-sizing:border-box;width:100%}
+.creator-term{font-size:calc(var(--fc-front-size,56px) * .77)}
+.creator-def{font-size:calc(var(--fc-back-size,29px) * .77)}
+.fc-term{font-size:var(--fc-front-size,56px)}
+.fc-definition{font-size:var(--fc-back-size,29px)}
+@media(max-width:600px){
+  .fc-font-size-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fc-term{font-size:min(var(--fc-front-size,56px),11vw)}
+  .fc-definition{font-size:min(var(--fc-back-size,29px),6vw)}
+}

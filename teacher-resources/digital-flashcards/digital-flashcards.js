@@ -15,6 +15,8 @@
     title: $("deckTitle"),
     unit: $("deckUnit"),
     termFont: $("digitalTermFont"),
+    frontSize: null,
+    backSize: null,
     showSubcategory: $("digitalShowSubcategory"),
     preset: $("themePreset"),
     pattern: $("backgroundPattern"),
@@ -56,6 +58,14 @@
     shareLength: $("shareLength"),
     shareMessage: $("shareMessage")
   };
+
+  // Add independent font controls beside the existing typeface control.
+  const fontSizeRow = document.createElement("div");
+  fontSizeRow.className = "fc-font-size-grid";
+  fontSizeRow.innerHTML = `<label><span class="field-label">Front font size (px)</span><input class="creator-input" id="digitalFrontFontSize" type="number" min="18" max="80" step="1" value="56"></label><label><span class="field-label">Back font size (px)</span><input class="creator-input" id="digitalBackFontSize" type="number" min="12" max="48" step="1" value="29"></label>`;
+  els.termFont.closest("label")?.insertAdjacentElement("afterend", fontSizeRow);
+  els.frontSize = $("digitalFrontFontSize");
+  els.backSize = $("digitalBackFontSize");
 
   const demoText = `term,definition,subcategory
 Abolitionist,A person who wanted to end slavery.,People & Ideas
@@ -122,6 +132,8 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
       unit: els.unit.value,
       showSubcategory: els.showSubcategory.checked,
       termFont: els.termFont.value,
+      frontFontSize: els.frontSize.value,
+      backFontSize: els.backSize.value,
       theme: currentTheme(),
       cards: sourceCards
     });
@@ -156,6 +168,9 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     els.previewScene.hidden = !hasCards;
     els.previewActions.hidden = !hasCards;
     F.applyTheme(els.previewShell, currentTheme());
+    const fontDeck = getDeck();
+    els.previewShell.style.setProperty("--fc-front-size", `${fontDeck.frontFontSize}px`);
+    els.previewShell.style.setProperty("--fc-back-size", `${fontDeck.backFontSize}px`);
     els.previewShell.style.setProperty("--fc-term-font", els.termFont.value === "marker" ? '"Marker Style", cursive' : els.termFont.value === "times" ? '"Times New Roman", Times, serif' : els.termFont.value === "courier" ? '"Courier New", Courier, monospace' : 'Arial, Helvetica, sans-serif');
 
     if (!hasCards) return;
@@ -223,6 +238,8 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     els.unit.value = normalized.unit;
     els.showSubcategory.checked = normalized.showSubcategory;
     els.termFont.value = normalized.termFont;
+    els.frontSize.value = normalized.frontFontSize;
+    els.backSize.value = normalized.backFontSize;
     setThemeControls(normalized.theme, "custom");
     previewIndex = 0;
     previewFlipped = false;
@@ -241,7 +258,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
     els.sharePanel.hidden = false;
     els.shareLength.textContent = `${url.length.toLocaleString()} characters`;
     if (url.length > 12000) {
-      els.shareMessage.textContent = "Long deck link — consider fewer cards if sharing through a system that shortens or wraps URLs.";
+      els.shareMessage.textContent = "Very long deck link — some browsers or classroom systems may reject or truncate it. Try a smaller deck if the student link does not open.";
       els.shareMessage.className = "share-warning";
     } else {
       els.shareMessage.textContent = "Deck data is contained in the link; nothing was uploaded.";
@@ -341,7 +358,7 @@ Reconstruction,The period after the Civil War when the nation worked to rebuild 
       syncStudyMeta();
     }));
 
-  [els.title, els.unit, els.termFont, els.showSubcategory]
+  [els.title, els.unit, els.termFont, els.frontSize, els.backSize, els.showSubcategory]
     .forEach(input => input.addEventListener("input", syncStudyMeta));
 
   els.previewScene.addEventListener("click", () => {
